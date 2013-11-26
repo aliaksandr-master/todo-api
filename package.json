@@ -1,12 +1,12 @@
 {
     "name": "listslider",
-    "version": "0.1.1",
+    "version": "0.2.1",
     "dependencies": {
         "underscore": "latest",
         "matchdep": "latest",
         "time-grunt": "latest",
 
-        "grunt": "latest",
+        "grunt": "~0.4",
 
         "grunt-urequire": "latest",
         "grunt-csso": "latest",
@@ -27,6 +27,7 @@
         "grunt-bower-task": "latest",
         "grunt-contrib-handlebars": "latest",
         "grunt-template": "latest",
+        "grunt-file-creator": "latest",
         "grunt-autoprefixer": "latest",
         "grunt-text-replace": "latest"
     }

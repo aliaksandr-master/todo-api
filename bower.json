@@ -3,6 +3,8 @@
     "version": "0.1.1",
     "dependencies": {
         "json3": "latest",
+		"jquery.event.move": "1.x",
+        "jquery.event.swipe": "0.5.x",
         "modernizr": "latest",
         "jquery": "latest",
         "underscore": "latest",

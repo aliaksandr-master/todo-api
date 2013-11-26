@@ -10,11 +10,9 @@ define("FrameView",[
 ],function(App, $, bb, ListView, ItemCollection, ListCollection){
     "use strict";
 
+	var tpl = window.JST['_src/client/templates/app/FrameTemplate.hbs'];
+
     return bb.View.extend({
-
-        template: window.JST['src/client/templates/app/FrameTemplate.hbs'],
-
-        TodoLists:[],
 
         events: {
             "click .add-todo-btn": "addTodoListBtnClick",
@@ -23,13 +21,16 @@ define("FrameView",[
         },
 
         initialize: function(){
-            var content = this.template({});
+            var content = tpl({});
+
             this.lists = new ListCollection();
-            this.$el.html(content);
+
+			this.$el.html(content);
             this.$wr = this.$(".todo-wr").eq(0);
-            this.lists.fetch();
-            this.lists.each(this.renderList, this);
-            this.listenTo(this.lists, "add", this.addNewList, this);
+
+			this.listenTo(this.lists, "add", this.addNewList, this);
+			this.lists.fetch();
+//			this.lists.each(this.renderList, this);
         },
 
         _currentTodo: 0,
@@ -45,27 +46,33 @@ define("FrameView",[
             var $turn = this.$(".todo-turn");
             var $leftTurn = $turn.filter(".todo-turn--left");
             var $rightTurn = $turn.filter(".todo-turn--right");
+
+//			console.log("FrameView set Active : ", id);
+
             if(!id || !l){
                 $leftTurn.addClass("todo-turn--inactive");
             }else{
                 $leftTurn.removeClass("todo-turn--inactive");
             }
+
             if(id == l-1 || !l){
                 $rightTurn.addClass("todo-turn--inactive");
             }else{
                 $rightTurn.removeClass("todo-turn--inactive");
             }
-            var oldId = this._currentTodo;
-            if(l > 0){
+
+			if(l > 0){
                 if(this.lists.length > this._currentTodo){
                     this.lists.at(this._currentTodo||0).trigger("setInactive");
                 }
-                if(this.lists.length > id){
+
+				if(this.lists.length > id){
                     this.lists.at(id).trigger("setActive");
                 }
+
                 this._currentTodo = id;
 
-                App.route.navigate("/todo/"+id);
+                App.router.navigate("/todo/"+id);
                 // asd adfs df
             }
         },
@@ -77,7 +84,7 @@ define("FrameView",[
         openTodoNext: function(){
             this.setActive(this._currentTodo+1);
         },
- // asd
+
         addNewList:function(model,index){
             this.renderList(model,index).focus();
         },
@@ -88,7 +95,7 @@ define("FrameView",[
 
             var todo = new ListView({
                 model: model,
-                el: $el,
+                el: $el[0],
                 collection: new ItemCollection({
                     listId: model.get("listId")
                 })

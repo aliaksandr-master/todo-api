@@ -13,7 +13,7 @@ define("ItemView",[
     return bb.View.extend({
 
         //Шаблон элемента
-        template: window.JST['src/client/templates/todo/ItemTemplate.hbs'],
+        template: window.JST['_src/client/templates/todo/ItemTemplate.hbs'],
 
         className: C_LI,
 

@@ -8,9 +8,9 @@ define("ListView",[
 ], function(App, $, bb, ItemView){
     "use strict";
 
-    return bb.View.extend({
+	var tpl = window.JST['_src/client/templates/todo/ListTemplate.hbs'];
 
-        template: window.JST['src/client/templates/todo/ListTemplate.hbs'],
+    return bb.View.extend({
 
         events: {
             "click .remove-todo-btn": "purgeThisTodoList",
@@ -23,9 +23,9 @@ define("ListView",[
         initialize: function() {
             var that = this;
 
-            console.log(this.model,arguments);
+            console.log("listView", this.model, arguments);
 
-            this.$el.append(this.template({
+            this.$el.append(tpl({
                 title: this.model.get("title")
             }));
 
@@ -70,11 +70,13 @@ define("ListView",[
 
         setActive:function(){
             this.model.set("isActive", true);
+//			console.log("isActive : ",this.model.get("isActive"));
             this.$el.addClass("todo--active").removeClass("todo--inactive");
         },
 
         setInactive:function(){
             this.model.set("isActive", false);
+//			console.log("isActive : ",this.model.get("isActive"));
             this.$el.addClass("todo--inactive").removeClass("todo--active");
         },
 
