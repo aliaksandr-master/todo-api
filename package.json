@@ -1,0 +1,33 @@
+{
+    "name": "listslider",
+    "version": "0.1.1",
+    "dependencies": {
+        "underscore": "latest",
+        "matchdep": "latest",
+        "time-grunt": "latest",
+
+        "grunt": "latest",
+
+        "grunt-urequire": "latest",
+        "grunt-csso": "latest",
+        "grunt-imgo": "latest",
+        "grunt-contrib-sass": "latest",
+        "grunt-contrib-jshint": "latest",
+        "grunt-contrib-clean": "latest",
+        "grunt-contrib-concat": "latest",
+        "grunt-contrib-connect": "latest",
+        "grunt-contrib-uglify": "latest",
+        "grunt-contrib-cssmin": "latest",
+        "grunt-contrib-watch": "latest",
+        "grunt-contrib-requirejs": "latest",
+        "grunt-contrib-copy": "latest",
+        "grunt-exec": "latest",
+        "grunt-webfont": "latest",
+        "grunt-remove-logging": "latest",
+        "grunt-bower-task": "latest",
+        "grunt-contrib-handlebars": "latest",
+        "grunt-template": "latest",
+        "grunt-autoprefixer": "latest",
+        "grunt-text-replace": "latest"
+    }
+}

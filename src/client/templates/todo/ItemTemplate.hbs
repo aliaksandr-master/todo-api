@@ -1,0 +1,24 @@
+<div class="todo-li-head">
+    <i class="todo-li-move"></i>
+    <div class="todo-li-h">{{title}}</div>
+    <div class="todo-li-h-controls">
+        <a href="#" class="btn btn-primary todo-li-h-btn">Save</a>
+        <div class="todo-li-h-input-wr">
+            <div class="input-wr">
+                <input type="text" class="todo-li-h-input form-control" value="{{title}}"/>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="todo-li-meta">
+    <div class="todo-li-dsc-wr">
+        <div class="todo-li-dsc-mask">{{description}}</div>
+        <textarea placeholder="Comment" class="todo-li-dsc form-control">{{description}}</textarea>
+    </div>
+    <div class="todo-li-btn-remove-wr">
+        <input id="chk-{{id}}" class="todo-li-chc" type="checkbox" value="1" />
+        <label for="chk-{{id}}" class="todo-li-chc-label todo-li-chc-label--done btn btn-danger">Done</label>
+        <label for="chk-{{id}}" class="todo-li-chc-label todo-li-chc-label--process btn btn-default">To Do</label>
+        <a href="#" class="todo-li-btn-remove btn btn-default">Remove</a>
+    </div>
+</div>
