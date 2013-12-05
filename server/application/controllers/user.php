@@ -4,7 +4,7 @@ class User extends MY_Controller {
 
     public function login(){
 
-        $user = new User();
+        $user = new User_Model();
         $userData = $user->read();
 
         return $userData;
