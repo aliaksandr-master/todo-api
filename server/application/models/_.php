@@ -1,5 +1,3 @@
 <?php
 
-class _ extends CI_Model {
-
-}
+class _ extends CI_Model {}
