@@ -2,16 +2,17 @@
 
 class User extends MY_Controller {
 
-    public function __construct(){
-        parent::__construct();
-        $this->loader()->model('User_model');
-    }
+    /**
+     * @var User_model
+     */
+    public $user;
 
     public function login(){
 
-        $user = new User_Model();
-        $userData = $user->read();
+        $this->load->model('user_model', 'user');
 
-        return $userData;
+        $data = $this->user->read();
+
+        var_dump($data);
     }
 }

@@ -6,3 +6,4 @@
 /temp/
 /vendor/
 *.DS_Store
+/server/.localAppConfig.php
