@@ -1,6 +1,6 @@
 <?php
 
-class User extends MY_Model {
+class User_Model extends MY_Model {
 
     public function setTableFields(){
         return array('*');
