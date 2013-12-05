@@ -8,7 +8,7 @@ define("ListView",[
 ], function(App, $, bb, ItemView){
     "use strict";
 
-	var tpl = window.JST['_src/client/templates/todo/ListTemplate.hbs'];
+	var tpl = window.JST['_src/client/templates/ListTemplate.hbs'];
 
     return bb.View.extend({
 

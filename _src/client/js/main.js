@@ -1,37 +1,52 @@
-define('run', [
+define('run', function(require, exports, module){
+    "use strict";
+    
+    var App = require('App');
+    var $ = require('jquery');
+	var bb = require('Backbone');
+	var FrameView = require('FrameView');
+	var HomeView = require('HomeView');
 
-    'App',
-    'jquery',
-    'Backbone',
-    'FrameView'
+	App.Router = bb.Router.extend({
 
-], function(App, $, bb, FrameView){
+		pages: {},
 
-    App.Router = bb.Router.extend({
+		initPage: function(name, viewName, route){
+			var that = this;
+			return function(){
+				if(!that.pages.hasOwnProperty(name)){
+					that.pages[name] = new (require(viewName))({
+						el: document.body
+					});
+				}
+				route.call(this, that.pages[name], that.pages);
+			}
+		},
 
-        initialize:function(){
+		initialize:function(){
 
-            App.router = this;
+			App.router = this;
 
-            var frame = new FrameView({
-                el: document.body
-            });
+			this.route('(/)', this.initPage('home', 'HomeView', function(home){
+				//
 
-            this.route('(todo)(/:id)(/)', function(){
-                var id = arguments[0] || 0;
-                id = +id;
-                frame.setActive(id);
-            });
+			}));
+
+			this.route('todo(/:id)(/)', this.initPage('todo', 'FrameView', function(frame){
+				var id = arguments[0] || 0;
+				id = +id;
+				frame.setActive(id);
+			}));
 
 
-        }
-    });
+		}
+	});
 
-    $(function(){
-        new App.Router();
+	$(function(){
+		new App.Router();
 		bb.history.start({pushState: true});
-    });
-
+	});
+    
 });
 
 require("run");

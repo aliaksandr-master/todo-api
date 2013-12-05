@@ -12,7 +12,7 @@ define('App',[
     if(window.localStorage != null){
         if(localStorage.getItem("build") != window.build){
             localStorage.clear();
-            localStorage.setItem("build",window.build);
+            localStorage.setItem("build", window.build);
             console.log("clear storage");
         }
     }
