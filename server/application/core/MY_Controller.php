@@ -2,4 +2,11 @@
 
 class MY_Controller extends CI_Controller {
 
+    /**
+     * @return CI_Loader
+     */
+    protected function loader(){
+        return $this->load;
+    }
+
 }

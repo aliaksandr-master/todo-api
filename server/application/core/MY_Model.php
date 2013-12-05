@@ -5,42 +5,40 @@ abstract class MY_Model extends CI_Model implements MY_CrudInterface {
     /**
      * @return CI_Loader
      */
-    protected function load(){
+    protected function loader(){
         return $this->load;
     }
 
     /**
      * @return CI_DB_active_record
      */
-    protected function db(){
+    protected function get_db(){
         return $this->db;
     }
 
     public function read(array $where = null, $resultAs = self::RESULT_ARRAY, $select = null){
 
-        var_dump('11111');
-
         if(!is_null($select)){
             throw new Exception("incorrect selected format, must be array!");
         }
 
-        $this->db()
-            ->select($this->setTableFields(), true)
-            ->from($this->setTableName());
+        $this->get_db()
+            ->select($this->getTableFields(), true)
+            ->from($this->getTableName());
 
         if($where){
-            $this->db()
+            $this->get_db()
                 ->where($where);
         }
 
         if($resultAs == self::RESULT_ACTIVE_RECORD){
-            return $this->db();
+            return $this->get_db();
         }elseif($resultAs == self::RESULT_OBJECT){
-            return $this->db()
+            return $this->get_db()
                 ->get();
         }
 
-        return $this->db()
+        return $this->get_db()
             ->get()
             ->result_array();
     }
@@ -63,8 +61,8 @@ interface MY_CrudInterface {
     const RESULT_OBJECT = "object";
     const RESULT_ACTIVE_RECORD = "active record";
 
-    function setTableName();
-    function setTableFields();
+    function getTableName();
+    function getTableFields();
 
     function read (array $where, $resultAs = self::RESULT_ARRAY, $select);
     function create (array $data);

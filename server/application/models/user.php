@@ -1,12 +1,12 @@
 <?php
 
-class User_Model extends MY_Model {
+class User_model extends MY_Model {
 
-    public function setTableFields(){
-        return array('*');
+    public function getTableFields(){
+        return array('nick_name', 'password');
     }
 
-    public function setTableName(){
+    public function getTableName(){
         return "user";
     }
 }
