@@ -6,7 +6,7 @@ define('HomeView',function(require, exports, module){
     
     return bb.View.extend({
 
-		template: window.JST['_src/client/templates/HomePageTemplate.hbs'],
+		template: window.JST['_src/client/templates/PageHome.hbs'],
 
 		initialize:function(){
 			//alert('HomeView');

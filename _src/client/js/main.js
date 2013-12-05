@@ -4,8 +4,6 @@ define('run', function(require, exports, module){
     var App = require('App');
     var $ = require('jquery');
 	var bb = require('Backbone');
-	var FrameView = require('FrameView');
-	var HomeView = require('HomeView');
 
 	App.Router = bb.Router.extend({
 
@@ -19,7 +17,7 @@ define('run', function(require, exports, module){
 						el: document.body
 					});
 				}
-				route.call(this, that.pages[name], that.pages);
+				route.call(this, that.pages[name], that.pages, arguments);
 			}
 		},
 
@@ -32,12 +30,16 @@ define('run', function(require, exports, module){
 
 			}));
 
-			this.route('todo(/:id)(/)', this.initPage('todo', 'FrameView', function(frame){
-				var id = arguments[0] || 0;
+			this.route('login(/)', this.initPage('login', 'PageLoginView', function(home){
+				//
+
+			}));
+
+			this.route('todo(/:id)(/)', this.initPage('todo', 'FrameView', function(frame, pages, args){
+				var id = args[0] || 0;
 				id = +id;
 				frame.setActive(id);
 			}));
-
 
 		}
 	});
