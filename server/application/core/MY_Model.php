@@ -19,7 +19,8 @@ interface MY_CrudInterface {
 abstract class MY_Model extends CI_Model implements MY_CrudInterface {
 
     function __construct(){
-        $this->load->database();
+        parent::__construct();
+        $this->loader()->database();
     }
 
     /**
@@ -32,7 +33,7 @@ abstract class MY_Model extends CI_Model implements MY_CrudInterface {
     /**
      * @return CI_DB_active_record
      */
-    protected function get_db(){
+    protected function getDb(){
         return $this->db;
     }
 
@@ -42,28 +43,43 @@ abstract class MY_Model extends CI_Model implements MY_CrudInterface {
             throw new Exception("incorrect selected format, must be array!");
         }
 
-        $this->get_db()
+        $this->getDb()
             ->select($this->getTableFields(), true)
             ->from($this->getTableName());
 
         if($where){
-            $this->get_db()
+            $this->getDb()
                 ->where($where);
         }
 
         if($resultAs == self::RESULT_ACTIVE_RECORD){
-            return $this->get_db();
+            return $this->getDb();
         }elseif($resultAs == self::RESULT_OBJECT){
-            return $this->get_db()
+            return $this->getDb()
                 ->get();
         }
 
-        return $this->get_db()
+        return $this->getDb()
             ->get()
             ->result_array();
     }
 
     public function create(array $data){
+
+        $tableFields = $this->getTableFields();
+
+        foreach ($data as $key => $value){
+            if(in_array($key, $tableFields)) {
+                $this->getDb()->set($key, $value);
+            } else {
+                throw new Exception('undefined key "'.$key.'" must be in array ['.implode(',', $tableFields).']');
+            }
+        }
+        $this->getDb()->update();
+
+        return $this->getDb()->result_id;
+
+
     }
 
     public function update(array $data, array $where){

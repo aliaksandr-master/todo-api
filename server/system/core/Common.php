@@ -171,7 +171,10 @@ if ( ! function_exists('load_class'))
 		// Keep track of what we just loaded
 		is_loaded($class);
 
-		$_classes[$class] = new $name();
+        // Abstract model loading solution
+        if ($name == 'MY_Model') return $name;
+
+        $_classes[$class] = new $name();
 		return $_classes[$class];
 	}
 }
