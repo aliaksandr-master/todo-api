@@ -3,6 +3,7 @@ module.exports = function(grunt) {
 
 	var _ = require('underscore');
 	var pkg = grunt.file.readJSON('package.json');
+	var date = Date.now();
 
 	require('time-grunt')(grunt);
 
@@ -31,7 +32,8 @@ module.exports = function(grunt) {
 		'concat:dev',
 		'cssmin:dev',
 		'replace:fonts_in_css',
-		'clean:templates'
+		'clean:templates',
+		'replace:srcVersion'
 	]);
 
 	grunt.registerTask("build", [
@@ -274,7 +276,7 @@ module.exports = function(grunt) {
 				],
 				replacements: [
 					{
-						from: /url\s*\([^\)]+\)/i,
+						from: /url\s*\([^\)]+\)/gi,
 						to: function($0){
 							$0 = $0.replace(/^url/,"");
 							var url = $0.replace(/['"\s]+|\(|\)/,"").trim();
@@ -287,6 +289,21 @@ module.exports = function(grunt) {
 							}
 //							console.log('url:',url);
 							return "url('"+url+"')";
+						}
+					}
+				]
+			},
+			srcVersion:{
+				overwrite: true,
+				src: [
+					'client/index.html'
+				],
+				replacements: [
+					{
+						from: /['"]\s*\/*client\//gi,
+						to: function($0){
+							$0 = $0+date+'/';
+							return $0;
 						}
 					}
 				]
@@ -317,7 +334,7 @@ module.exports = function(grunt) {
 				replacements: [
 					{
 						from: '</head>',
-						to: '<script>window.build="<%= grunt.template.today() %>";</script>\n</head>'
+						to: '<script>window.build='+date+';</script>\n</head>'
 					},
 					{
 						from: '</head>',

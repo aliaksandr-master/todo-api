@@ -25,6 +25,11 @@ RewriteRule .* %1/ [R=301,L]
 
 RewriteRule ^server(.*) - [L]
 
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^/?client/[0-9]+(/.+\.(js|png|woff|eot|ttf|svg|css|ico|json))$ client$1 [L,QSA]
+
+
 RewriteRule livereload\.js$ client/livereload.js [L,QSA]
 
 RewriteRule ^/?$ client/index.html [L,QSA]
