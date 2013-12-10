@@ -80,9 +80,7 @@ module.exports = function(grunt) {
 			dev: {
 				src: "client/js/app.js",
 				dest: "client/js/app.js",
-
-				options: {
-				}
+				options: {}
 			}
 		},
 
@@ -171,14 +169,13 @@ module.exports = function(grunt) {
 
 		cssmin: {
 			dev: {
-				files: (function(){
-					var dev_files = {};
-					dev_files['client/css/styles.min.css'] = [
+				files: {
+					'client/css/styles.min.css':[
 						'_src/client/vendor/bootstrap/custom/css/bootstrap.min.css',
+						'bower_components/jgrowl/jquery.jgrowl.css',
 						'_src/client/styles/styles.css'
-					];
-					return dev_files;
-				})()
+					]
+				}
 			}
 		},
 
@@ -187,6 +184,7 @@ module.exports = function(grunt) {
 				files:{
 					"client/js/app.js": [
 						'bower_components/jquery/jquery.min.js',
+						'bower_components/jgrowl/jquery.jgrowl.js',
 						'bower_components/underscore/underscore.js',
 						'bower_components/backbone/backbone.js',
 						'bower_components/backbone.localStorage/backbone.localStorage.js',
@@ -279,15 +277,16 @@ module.exports = function(grunt) {
 						from: /url\s*\([^\)]+\)/gi,
 						to: function($0){
 							$0 = $0.replace(/^url/,"");
-							var url = $0.replace(/['"\s]+|\(|\)/,"").trim();
-
-							var ext = url.split(".").pop();
-							if(/woff|ttf|eot|svg/.test(ext) && !/svg/.test(ext) || /font/.test(url)){
-								// FONTS
-								var fileName = url.split(/[\/\\]+/).pop();
-								url = '/client/fonts/'+fileName;
+							var url = $0.replace(/['"\s\(\)]+/g, "").trim();
+							var fileName;
+							// FONTS
+							if(/\.(woff|ttf|eot|svg)/.test(url)){
+								fileName = url.split(/[\/\\]+/).pop();
+								url = '/client/'+date+'/fonts/'+fileName;
+							}else if(/^[\/\\]*client\//.test(url) && /\.(png|jpg|jpeg|gif)/.test(url)){
+								url = url.replace(/^([\/\\]*)client/,'//client/'+date+'/');
 							}
-//							console.log('url:',url);
+							console.log($0,'  url:',url);
 							return "url('"+url+"')";
 						}
 					}

@@ -25,12 +25,17 @@ define('run', function(require, exports, module){
 
 			App.router = this;
 
-			this.route('(/)', this.initPage('home', 'HomeView', function(home){
+			this.route('(/)', this.initPage('home', 'HomeView', function(view){
 				//
 
 			}));
 
-			this.route('login(/)', this.initPage('login', 'PageLoginView', function(home){
+			this.route('login(/)', this.initPage('login', 'PageLoginView', function(view){
+				//
+
+			}));
+
+			this.route('register(/)', this.initPage('register', 'PageRegisterView', function(view){
 				//
 
 			}));
