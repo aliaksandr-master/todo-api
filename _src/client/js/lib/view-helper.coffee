@@ -1,6 +1,6 @@
 define [
   'handlebars'
-  'chaplin'
+  '../../../.'
   'lib/utils'
 ], (Handlebars, Chaplin, utils) ->
   'use strict'

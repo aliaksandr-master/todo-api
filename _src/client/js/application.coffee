@@ -1,5 +1,5 @@
 define [
-  'chaplin'
+  '../../.'
 ], (Chaplin) ->
   'use strict'
 

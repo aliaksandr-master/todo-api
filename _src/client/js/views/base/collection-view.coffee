@@ -1,5 +1,5 @@
 define [
-  'chaplin',
+  '../../../../.',
   'views/base/view'
 ], (Chaplin, View) ->
   'use strict'

@@ -64,9 +64,12 @@ module.exports = function(grunt) {
 		coffee: {
 			compile: {
 				expand: true,
-				cwd: '_src/client/coffee',
-				src: '*.coffee',
-				dest: 'client/js/',
+				cwd: '_src/client/js',
+				src: [
+					'*.coffee',
+					'**/*.coffee'
+				],
+				dest: 'temp/js/',
 				ext: '.js'
 			}
 		},

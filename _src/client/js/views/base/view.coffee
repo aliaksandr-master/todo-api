@@ -1,6 +1,6 @@
 define [
   'handlebars'
-  'chaplin'
+  '../../../../.'
   'lib/view-helper' # Just load the view helpers, no return value
 ], (Handlebars, Chaplin) ->
   'use strict'

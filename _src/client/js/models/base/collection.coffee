@@ -1,5 +1,5 @@
 define [
-  'chaplin'
+  '../../../../.'
   'models/base/model'
 ], (Chaplin, Model) ->
 

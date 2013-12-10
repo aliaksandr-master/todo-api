@@ -1,5 +1,5 @@
 define [
-  'underscore'
+  '../../../.'
   'chaplin'
 ], (_, Chaplin) ->
   'use strict'
