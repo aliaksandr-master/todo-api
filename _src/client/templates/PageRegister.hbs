@@ -1,24 +1,31 @@
 <form action="/server/">
 
     <div class="input-group">
+        <span class="input-group-addon">Username</span>
+        <input type="text" name="username" class="form-control">
+    </div>
+    <br>
+
+    <div class="input-group">
         <span class="input-group-addon">Email</span>
-        <input type="text" class="form-control">
+        <input type="text" name="email" class="form-control">
     </div>
     <br>
 
     <div class="input-group">
         <span class="input-group-addon">Password</span>
-        <input type="password" class="form-control">
+        <input type="password" name="password" class="form-control">
     </div>
     <br>
 
     <div class="input-group">
         <span class="input-group-addon">Confirm Password</span>
-        <input type="password" class="form-control">
+        <input type="password" name="confirm_password" class="form-control">
     </div>
     <br>
 
     <button class="btn btn-success register-submit">Send</button>
+    <br>
     <br>
 
     <div class="alert alert-success"></div>

@@ -26,6 +26,8 @@ define('PageRegisterView',function(require, exports, module){
 					url: '/server/user/register',
 					data: {
 						username: that.$('[name="username"]').val(),
+						email: that.$('[name="email"]').val(),
+						confirm_password: that.$('[name="confirm_password"]').val(),
 						password: that.$('[name="password"]').val()
 					},
 					success:function(response){
