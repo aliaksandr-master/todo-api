@@ -49,7 +49,7 @@ define("ListView",[
                             id: modelId
                         });
 
-                        if(m!=null){
+                        if(m != null){
                             m.save({
                                 sort_order: i
                             });
@@ -130,7 +130,7 @@ define("ListView",[
         },
 
         createOnEnter: function(e) {
-            if (e.keyCode == 13){
+            if (e.keyCode === 13){
                 this.onAadBtnClick();
             }
         },
@@ -153,7 +153,7 @@ define("ListView",[
         },
 
         toAddInput: function(e){
-            if(e.keyCode != 13 || !($(e.target).val()||"").trim()){
+            if(e.keyCode !== 13 || !($(e.target).val()||"").trim()){
                 return;
             }
             this.$input.focus();

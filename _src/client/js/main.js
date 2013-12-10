@@ -18,7 +18,7 @@ define('run', function(require, exports, module){
 					});
 				}
 				route.call(this, that.pages[name], that.pages, arguments);
-			}
+			};
 		},
 
 		initialize:function(){
@@ -45,7 +45,7 @@ define('run', function(require, exports, module){
 	});
 
 	$(function(){
-		new App.Router();
+		var router = new App.Router();
 		bb.history.start({pushState: true});
 	});
     

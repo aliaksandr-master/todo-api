@@ -1,3 +1,5 @@
 define('jquery', [], function(){
-    return window.jQuery;
+	"use strict";
+
+	return window.jQuery;
 });

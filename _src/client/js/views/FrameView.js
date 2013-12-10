@@ -53,7 +53,7 @@ define("FrameView", function(require, exports, module){
 				$leftTurn.removeClass("todo-turn--inactive");
 			}
 
-			if(id == l-1 || !l){
+			if(!l || (id === l-1)){
 				$rightTurn.addClass("todo-turn--inactive");
 			}else{
 				$rightTurn.removeClass("todo-turn--inactive");

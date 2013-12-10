@@ -1,5 +1,7 @@
 define('Backbone', [
     'underscore'
 ], function(){
-    return window.Backbone;
+	"use strict";
+
+	return window.Backbone;
 });

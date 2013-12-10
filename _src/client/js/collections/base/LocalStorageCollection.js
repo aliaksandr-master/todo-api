@@ -3,8 +3,9 @@ define('LocalStorageCollection', [
     'Backbone'
 
 ], function(bb){
+	"use strict";
 
-    return bb.Collection.extend({
+	return bb.Collection.extend({
 
         _initLocalStorage:function(storageID){
             this.storageID = storageID;

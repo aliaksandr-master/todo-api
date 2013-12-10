@@ -1,3 +1,5 @@
 define('underscore', function(){
-    return window._;
+	"use strict";
+
+	return window._;
 });

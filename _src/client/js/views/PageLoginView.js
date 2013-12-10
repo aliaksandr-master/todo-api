@@ -2,6 +2,7 @@ define('PageLoginView',function(require, exports, module){
     "use strict";
     
     var App = require('App');
+    var $ = require('jquery');
     var bb = require('Backbone');
 
     return bb.View.extend({

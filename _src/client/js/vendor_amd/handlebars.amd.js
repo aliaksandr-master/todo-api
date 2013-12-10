@@ -1,5 +1,5 @@
 define('Handlebars', function(){
+	"use strict";
 
-    return window.Handlebars;
-
+	return window.Handlebars;
 });

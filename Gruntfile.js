@@ -20,10 +20,13 @@ module.exports = function(grunt) {
 	]);
 
 	grunt.registerTask('dev', [
+		'jshint:check_src',
+		'jshint:gruntfile',
 		'clean:dev',
 		'copy:dev',
 		'coffee:compile',
 		'replace:dev_index',
+		'replace:favicon',
 		'handlebars:compile',
 		'concat:dev',
 		'cssmin:dev',
@@ -126,23 +129,17 @@ module.exports = function(grunt) {
 				globals: {
 					define: true,
 					require: true,
+					requirejs: true,
 					console: true
 				}
 			}),
-			'search_all' : {
+			'check_src' : {
 				src: [
-					'_src/client/**/*.js',
-					'_src/client/*.js'
+					'_src/client/js/**/*.js',
+					'_src/client/js/*.js'
 				]
 			},
 			gruntfile: {
-				options: {
-					globals: {
-						console: true,
-						require: true,
-						module: true
-					}
-				},
 				src: [
 					'Gruntfile.js'
 				]
@@ -257,6 +254,10 @@ module.exports = function(grunt) {
 					{
 						src: '_src/client/index.html',
 						dest: 'client/index.html'
+					},
+					{
+						src: '_src/client/favicon.ico',
+						dest: 'client/favicon.ico'
 					}
 				]
 			}
@@ -294,6 +295,16 @@ module.exports = function(grunt) {
 					{
 						from: '</head>',
 						to: '<script async src="'+liveReloadProjectUrl+'"></script></head>'
+					}
+				]
+			},
+			favicon:{
+				overwrite: true,
+				src: [ 'client/index.html' ],
+				replacements: [
+					{
+						from: '<!--/meta-->',
+						to: '<link rel="icon" href="/client/favicon.ico" type="image/x-icon"><!--/meta-->'
 					}
 				]
 			},

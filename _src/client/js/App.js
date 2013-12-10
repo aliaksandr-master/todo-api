@@ -9,8 +9,8 @@ define('App',[
 
     var App = {};
 
-    if(window.localStorage != null){
-        if(localStorage.getItem("build") != window.build){
+    if(window.localStorage !== null || window.localStorage !== undefined){
+        if(localStorage.getItem("build") !== window.build){
             localStorage.clear();
             localStorage.setItem("build", window.build);
             console.log("clear storage");
