@@ -16,6 +16,8 @@
 
 # server ignore
 /server/application/logs/
+!/server/application/logs/index.html
+!/server/application/logs/.htaccess
 /server/application/cache/
 !/server/application/cache/index.html
 !/server/application/cache/.htaccess
