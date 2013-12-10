@@ -1,71 +1,35 @@
 {
     "name": "listslider",
-    "version": "0.1.1",
+    "version": "0.2.1",
+	"ignore": [
+		"**/.*",
+		".jshintrc",
+		"**/*.txt",
+		"node_modules",
+		"bower_components",
+		"test",
+		"tests"
+	],
+	"private": true,
     "dependencies": {
         "json3": "latest",
 		"jquery.event.move": "1.x",
         "jquery.event.swipe": "0.5.x",
         "modernizr": "latest",
-        "jquery": "latest",
         "underscore": "latest",
         "backbone": "latest",
         "backbone.localStorage": "latest",
-        "backbone-validation": "git://github.com/dbk2/backbone.validation.git#v0.8.1-1",
-        "requirejs": "latest",
         "require-css": "latest",
         "almond": "latest",
-        "chaplin": "git://github.com/YAndrew91/downloads.git#0.11.1-dev-3",
         "handlebars": "latest",
         "moment": "latest",
         "spin.js": "latest",
         "jgrowl": "latest",
-        "blueimp-file-upload": "latest"
-    },
-    "exportsOverride": {
-        "json3": {
-            ".": "lib/json3.js"
-        },
-        "jgrowl": {
-            ".": "jquery.jgrowl.js"
-        },
-        "jquery": {
-            ".": "jquery.js"
-        },
-        "almond": {
-            ".": "almond.js"
-        },
-        "backbone": {
-            ".": "backbone.js"
-        },
-        "backbone-validation": {
-            ".": "dist/backbone-validation.js"
-        },
-        "requirejs": {
-            ".": "require.js"
-        },
-        "require-css": {
-            ".": ["css.js", "normalize.js", "css-builder.js"]
-        },
-        "underscore": {
-            ".": "underscore.js"
-        },
-        "chaplin": {
-            ".": "chaplin.js"
-        },
-        "handlebars": {
-            ".": "handlebars.runtime.js"
-        },
-        "moment": {
-            ".": "moment.js"
-        },
-        "spin.js": {
-            ".": "dist/spin.js"
-        },
-        "blueimp-file-upload": {
-            ".": ["js/vendor/jquery.ui.widget.js", "js/jquery.fileupload.js", "js/jquery.iframe-transport.js"]
-        },
-        "blueimp-*": {
-            ".": []
-        }
+        "blueimp-file-upload": "latest",
+		"requirejs": "~2.1.9",
+		"chaplin": "~0.11.3",
+		"lodash": "~2.0.0",
+		"jquery": "~1.10.1",
+		"requirejs-text": "~2.0.9"
     }
 }

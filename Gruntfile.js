@@ -1,25 +1,18 @@
 module.exports = function(grunt) {
 	'use strict';
 
+	var _ = require('underscore');
+	var pkg = grunt.file.readJSON('package.json');
+
 	require('time-grunt')(grunt);
+
 	require('matchdep').filter('grunt-*').forEach(grunt.loadNpmTasks);
 	require('matchdep').filterDev('grunt-*').forEach(grunt.loadNpmTasks);
 
-	var o = {};
-	o.STORAGE_CACHE = 1;
-
-	var projectName = 'listslider';
+	var projectName = pkg.name;
 
 	var liveReloadPort = 35729;
 	var liveReloadProjectUrl = '//www.'+projectName+':'+liveReloadPort+'/livereload.js';
-
-	var watch = [
-		'handlebars:compile',
-		'concat:dev',
-		'cssmin:dev',
-		'replace:fonts_in_css',
-		'clean:templates'
-	];
 
 	grunt.registerTask('install', [
 		'clean:dev',
@@ -29,6 +22,7 @@ module.exports = function(grunt) {
 	grunt.registerTask('dev', [
 		'clean:dev',
 		'copy:dev',
+		'coffee:compile',
 		'replace:dev_index',
 		'handlebars:compile',
 		'concat:dev',
@@ -44,7 +38,6 @@ module.exports = function(grunt) {
 	]);
 
 	grunt.registerTask('default', [
-		'install',
 		'dev'
 	]);
 
@@ -55,15 +48,23 @@ module.exports = function(grunt) {
 		'watch:dev'
 	]);
 
+	var watch = [
+		'handlebars:compile',
+		'concat:dev',
+		'cssmin:dev',
+		'replace:fonts_in_css',
+		'clean:templates'
+	];
+
 	grunt.initConfig({
 
-		connect: {
-			test: {
-				options: {
-					hostname: projectName,
-					port: 8000,
-					base: '.'
-				}
+		coffee: {
+			compile: {
+				expand: true,
+				cwd: '_src/client/coffee',
+				src: '*.coffee',
+				dest: 'client/js/',
+				ext: '.js'
 			}
 		},
 
@@ -78,6 +79,7 @@ module.exports = function(grunt) {
 		},
 
 		uglify: {
+
 			dev_compile: {
 				options: {
 					stripBanners: true
@@ -102,9 +104,9 @@ module.exports = function(grunt) {
 			},
 			dev: {
 				files: [
-					'_src/**/*.js',
-					'_src/**/*.css',
-					'_src/**/*.hbs'
+					'_src/client/**/*.js',
+					'_src/client/**/*.css',
+					'_src/client/**/*.hbs'
 				],
 				tasks: watch
 			}
@@ -120,27 +122,17 @@ module.exports = function(grunt) {
 		},
 
 		jshint: {
-			options: {
-				curly: true,
-				eqeqeq: false,
-				immed: true,
-				latedef: true,
-				newcap: true,
-				noarg: true,
-				sub: true,
-				undef: true,
-				eqnull: true,
-				browser: true,
+			options: _.extend(grunt.file.readJSON('.jshintrc'),{
 				globals: {
 					define: true,
 					require: true,
 					console: true
 				}
-			},
+			}),
 			'search_all' : {
 				src: [
-					'_src/**/*.js',
-					'_src/*.js'
+					'_src/client/**/*.js',
+					'_src/client/*.js'
 				]
 			},
 			gruntfile: {
@@ -180,7 +172,7 @@ module.exports = function(grunt) {
 				files: (function(){
 					var dev_files = {};
 					dev_files['client/css/styles.min.css'] = [
-						'_src/vendor/bootstrap/custom/css/bootstrap.min.css',
+						'_src/client/vendor/bootstrap/custom/css/bootstrap.min.css',
 						'_src/client/styles/styles.css'
 					];
 					return dev_files;
@@ -197,9 +189,9 @@ module.exports = function(grunt) {
 						'bower_components/backbone/backbone.js',
 						'bower_components/backbone.localStorage/backbone.localStorage.js',
 						'bower_components/almond/almond.js',
-						'_src/vendor/jqueryui/jquery-ui-1.10.3.custom/js/jquery-ui-1.10.3.custom.min.js',
-						'_src/vendor/bootstrap/custom/js/bootstrap.min.js',
-						'_src/vendor/handlebars.js',
+						'_src/client/vendor/jqueryui/jquery-ui-1.10.3.custom/js/jquery-ui-1.10.3.custom.min.js',
+						'_src/client/vendor/bootstrap/custom/js/bootstrap.min.js',
+						'_src/client/vendor/handlebars.js',
 						'_src/client/js/vendor_amd/**/*.js',
 						'_src/client/js/vendor_amd/*.js',
 						'_src/client/js/models/**/*.js',
@@ -247,8 +239,13 @@ module.exports = function(grunt) {
 			dev: {
 				files: [
 					{
-						src: '_src/images/move.png',
-						dest: 'client/images/move.png'
+						expand: true,
+						cwd: "_src/client/images/",
+						src: [
+							'**/*.{png,jpg,jpeg,gif,ico}',
+							'*.{png,jpg,jpeg,gif,ico}'
+						],
+						dest: "client/images/"
 					},
 					{
 						expand: true,
@@ -258,7 +255,7 @@ module.exports = function(grunt) {
 						flatten: true
 					},
 					{
-						src: '_src/index.html',
+						src: '_src/client/index.html',
 						dest: 'client/index.html'
 					}
 				]
@@ -268,7 +265,9 @@ module.exports = function(grunt) {
 		replace: {
 			fonts_in_css:{
 				overwrite: true,
-				src: [ 'client/css/styles.min.css' ],
+				src: [
+					'client/css/styles.min.css'
+				],
 				replacements: [
 					{
 						from: /url\s*\([^\)]+\)/i,
@@ -282,7 +281,7 @@ module.exports = function(grunt) {
 								var fileName = url.split(/[\/\\]+/).pop();
 								url = '/client/fonts/'+fileName;
 							}
-							console.log('url:',url);
+//							console.log('url:',url);
 							return "url('"+url+"')";
 						}
 					}

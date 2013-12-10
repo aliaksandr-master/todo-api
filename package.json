@@ -12,6 +12,8 @@
         "grunt-csso": "latest",
         "grunt-imgo": "latest",
         "grunt-contrib-sass": "latest",
+        "grunt-contrib-coffee": "latest",
+        "grunt-contrib-less": "latest",
         "grunt-contrib-jshint": "latest",
         "grunt-contrib-clean": "latest",
         "grunt-contrib-concat": "latest",
@@ -30,5 +32,8 @@
         "grunt-file-creator": "latest",
         "grunt-autoprefixer": "latest",
         "grunt-text-replace": "latest"
-    }
+    },
+	"scripts": {
+		"install": "grunt clean install dev"
+	}
 }

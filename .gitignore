@@ -1,9 +1,21 @@
+# ide and os files
 /.idea/
+*.DS_Store
+*/~*
+*/*~
+
+# temp local files
 /node_modules/
 /bower_components/
-/lib/
-/client/
+
+# temp compile files
 /temp/
-/vendor/
-*.DS_Store
-/server/.localAppConfig.php
+
+#build files
+/client/
+
+# server ignore
+/server/application/logs/
+/server/application/cache/
+!/server/application/cache/index.html
+!/server/application/cache/.htaccess
