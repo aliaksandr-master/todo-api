@@ -2,15 +2,11 @@
 
 class MY_Controller extends CI_Controller {
 
-    function __construct(){
-        parent::__construct();
-        $this->load->model('_',"______");
-        require_once('core/model.php');
-    }
-
     /**
      * @return CI_Loader
      */
-
+    protected function loader(){
+        return $this->load;
+    }
 }
 
