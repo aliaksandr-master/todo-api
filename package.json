@@ -8,6 +8,7 @@
 
         "grunt": "~0.4",
 
+        "grunt-typescript": "latest",
         "grunt-urequire": "latest",
         "grunt-csso": "latest",
         "grunt-imgo": "latest",

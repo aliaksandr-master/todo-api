@@ -1,9 +1,9 @@
 define('PageLoginView',function(require, exports, module){
     "use strict";
     
-    var App = require('App');
     var $ = require('jquery');
-    var bb = require('Backbone');
+	var bb = require('backbone');
+	var App = require('App');
 
     return bb.View.extend({
 		template: window.JST['_src/client/templates/PageLogin.hbs'],

@@ -1,11 +1,9 @@
-define("OptionModel", [
-
-    "Backbone"
-
-],function(Backbone){
+define("OptionModel", function(require){
     "use strict";
 
-    return Backbone.View.extend({
+	var bb = require('backbone');
+
+    return bb.View.extend({
 
         defaults:function(){
             return {

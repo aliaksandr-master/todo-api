@@ -1,21 +1,16 @@
-define('App',[
-
-    'underscore',
-    'Backbone',
-    'Handlebars'
-
-],function(_, bb, Handlebars){
+define('App',function(require){
     "use strict";
+
+	var _ = require('underscore');
+	var bb = require('backbone');
+	var Handlebars = require('handlebars');
 
     var App = {};
 
-    if(window.localStorage !== null || window.localStorage !== undefined){
-        if(localStorage.getItem("build") !== window.build){
-            localStorage.clear();
-            localStorage.setItem("build", window.build);
-            console.log("clear storage");
-        }
-    }
+	if(window.localStorage && localStorage.getItem("build") !== window.build){
+		localStorage.clear();
+		localStorage.setItem("build", window.build);
+	}
 
     App.renderers = {
         ext:{

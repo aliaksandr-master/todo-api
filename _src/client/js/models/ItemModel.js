@@ -1,11 +1,9 @@
-define("ItemModel",[
-
-    "Backbone"
-
-],function(Backbone){
+define("ItemModel",function(require){
     "use strict";
 
-    return Backbone.Model.extend({
+	var bb = require('backbone');
+
+    return bb.Model.extend({
 
         defaults: function() {
             return {

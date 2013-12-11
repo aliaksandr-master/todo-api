@@ -3,7 +3,7 @@ define('run', function(require, exports, module){
     
     var App = require('App');
     var $ = require('jquery');
-	var bb = require('Backbone');
+	var bb = require('backbone');
 
 	App.Router = bb.Router.extend({
 

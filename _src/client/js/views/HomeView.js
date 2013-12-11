@@ -2,7 +2,7 @@ define('HomeView',function(require, exports, module){
     "use strict";
     
     var App = require('App');
-	var bb = require("Backbone");
+	var bb = require("backbone");
     
     return bb.View.extend({
 

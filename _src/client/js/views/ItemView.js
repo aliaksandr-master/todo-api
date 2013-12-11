@@ -1,10 +1,8 @@
-define("ItemView",[
-
-    "App",
-    "Backbone"
-
-],function(App, bb){
+define("ItemView",function(require){
     "use strict";
+
+	var bb = require("backbone");
+	var App = require("App");
 
     var C_LI             = "todo-li";
     var C_LI_DONE        = "todo-li--done";

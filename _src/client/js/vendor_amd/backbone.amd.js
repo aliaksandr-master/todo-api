@@ -1,4 +1,4 @@
-define('Backbone', [
+define('backbone', [
     'underscore'
 ], function(){
 	"use strict";

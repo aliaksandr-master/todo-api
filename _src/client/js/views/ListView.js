@@ -1,12 +1,10 @@
-define("ListView",[
-
-    'App',
-    'jquery',
-    "Backbone",
-    "ItemView"
-
-], function(App, $, bb, ItemView){
+define("ListView",function(require){
     "use strict";
+
+	var $ = require("jquery");
+	var bb = require("backbone");
+	var App = require("App");
+	var ItemView = require("ItemView");
 
 	var tpl = window.JST['_src/client/templates/ListTemplate.hbs'];
 

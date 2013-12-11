@@ -26,6 +26,7 @@ module.exports = function(grunt) {
 		'clean:dev',
 		'copy:dev',
 		'coffee:compile',
+		'typescript:compile',
 		'replace:dev_index',
 		'replace:favicon',
 		'handlebars:compile',
@@ -73,6 +74,25 @@ module.exports = function(grunt) {
 				],
 				dest: 'temp/',
 				ext: '.js'
+			}
+		},
+
+		typescript: {
+			compile: {
+				expand: true,
+				cwd: '_src/client/',
+				src: [
+					'*.ts',
+					'**/*.ts'
+				],
+				dest: 'temp/',
+				ext: '.js',
+				options: {
+					module: 'amd', //or 'commonjs'
+					target: 'es5', //or 'es3'
+					sourcemap: false,
+					declaration: true
+				}
 			}
 		},
 
@@ -226,7 +246,10 @@ module.exports = function(grunt) {
 				options: {
 					install: true,
 					verbose: true,
-					copy: false
+					copy: true,
+					targetDir: 'temp/bower_components',
+					cleanBowerDir: false,
+					cleanTargetDir: false
 				}
 			}
 		},
@@ -286,7 +309,7 @@ module.exports = function(grunt) {
 							}else if(/^[\/\\]*client\//.test(url) && /\.(png|jpg|jpeg|gif)/.test(url)){
 								url = url.replace(/^([\/\\]*)client/,'//client/'+date+'/');
 							}
-							console.log($0,'  url:',url);
+//							console.log($0,'  url:',url);
 							return "url('"+url+"')";
 						}
 					}

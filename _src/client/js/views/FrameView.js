@@ -1,9 +1,9 @@
 define("FrameView", function(require, exports, module){
 	"use strict";
 
-	var App = require("App");
 	var $ = require("jquery");
-	var bb = require("Backbone");
+	var bb = require("backbone");
+	var App = require("App");
 	var ListView = require("ListView");
 	var ItemCollection = require("ItemCollection");
 	var ListCollection = require("ListCollection");

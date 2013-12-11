@@ -1,9 +1,7 @@
-define('LocalStorageCollection', [
-
-    'Backbone'
-
-], function(bb){
+define('LocalStorageCollection', function(require){
 	"use strict";
+
+	var bb = require('backbone');
 
 	return bb.Collection.extend({
 
