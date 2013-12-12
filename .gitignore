@@ -10,6 +10,8 @@
 
 # temp compile files
 /temp/
+/build_production/
+/build_development/
 
 #build files
 /client/

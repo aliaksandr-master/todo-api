@@ -3,5 +3,4 @@
 npm install -g grunt-cli
 npm install -g bower
 npm install
-grunt
-grunt dev
+grunt install dev build_development build_production

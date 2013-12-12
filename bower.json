@@ -1,6 +1,24 @@
 {
-    "name": "listslider",
-    "version": "0.2.1",
+	"dependencies": {
+		"json3": "latest",
+		"jquery": "~1.10.1",
+		"jquery.event.move": "1.x",
+		"jquery.event.swipe": "0.5.x",
+		"modernizr": "latest",
+		"underscore": "latest",
+		"backbone": "latest",
+		"backbone.localStorage": "latest",
+		"handlebars": "latest",
+		"chaplin": "~0.11.3",
+		"moment": "latest",
+		"jgrowl": "latest",
+		"lodash": "~2.0.0",
+		"almond": "latest",
+		"requirejs": "~2.1.9",
+		"require-css": "latest",
+		"requirejs-text": "~2.0.9"
+	},
+	"private": true,
 	"ignore": [
 		"**/.*",
 		".jshintrc",
@@ -9,27 +27,5 @@
 		"bower_components",
 		"test",
 		"tests"
-	],
-	"private": true,
-    "dependencies": {
-        "json3": "latest",
-		"jquery.event.move": "1.x",
-        "jquery.event.swipe": "0.5.x",
-        "modernizr": "latest",
-        "underscore": "latest",
-        "backbone": "latest",
-        "backbone.localStorage": "latest",
-        "require-css": "latest",
-        "almond": "latest",
-        "handlebars": "latest",
-        "moment": "latest",
-        "spin.js": "latest",
-        "jgrowl": "latest",
-        "blueimp-file-upload": "latest",
-		"requirejs": "~2.1.9",
-		"chaplin": "~0.11.3",
-		"lodash": "~2.0.0",
-		"jquery": "~1.10.1",
-		"requirejs-text": "~2.0.9"
-    }
+	]
 }
