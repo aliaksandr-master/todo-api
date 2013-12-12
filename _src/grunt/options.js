@@ -1,7 +1,8 @@
-module.exports = function(grunt){
-	var pkg = grunt.file.readJSON('package.json');
+module.exports = function(){
+	var pkg = this.file.readJSON('package.json');
 
 	return {
+		_: require('underscore'),
 		cacheKey: Date.now(),
 		pkg: pkg,
 		liveReload: {
