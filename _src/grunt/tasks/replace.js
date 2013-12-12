@@ -1,5 +1,7 @@
 module.exports = function(grunt){
 
+	var options = this;
+
 	return {
 		fonts_in_css:{
 			overwrite: true,
@@ -16,9 +18,9 @@ module.exports = function(grunt){
 						// FONTS
 						if(/\.(woff|ttf|eot|svg)/.test(url)){
 							fileName = url.split(/[\/\\]+/).pop();
-							url = '/client/'+this.cacheKey+'/fonts/'+fileName;
+							url = '/client/'+options.cacheKey+'/fonts/'+fileName;
 						}else if(/^[\/\\]*client\//.test(url) && /\.(png|jpg|jpeg|gif)/.test(url)){
-							url = url.replace(/^([\/\\]*)client/,'//client/'+cacheKey+'/');
+							url = url.replace(/^([\/\\]*)client/,'//client/'+options.cacheKey+'/');
 						}
 						//							console.log($0,'  url:',url);
 						return "url('"+url+"')";
@@ -35,7 +37,7 @@ module.exports = function(grunt){
 				{
 					from: /['"]\s*\/*client\//gi,
 					to: function($0){
-						$0 = $0+this.cacheKey+'/';
+						$0 = $0+options.cacheKey+'/';
 						return $0;
 					}
 				}
@@ -47,7 +49,7 @@ module.exports = function(grunt){
 			replacements: [
 				{
 					from: '</head>',
-					to: '<script async src="'+this.liveReload.url+'"></script></head>'
+					to: '<script async src="'+options.liveReload.url+'"></script></head>'
 				}
 			]
 		},
@@ -67,7 +69,7 @@ module.exports = function(grunt){
 			replacements: [
 				{
 					from: '</head>',
-					to: '<script>window.build='+this.cacheKey+';</script>\n</head>'
+					to: '<script>window.build='+options.cacheKey+';</script>\n</head>'
 				},
 				{
 					from: '</head>',
