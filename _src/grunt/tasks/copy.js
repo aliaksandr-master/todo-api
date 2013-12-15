@@ -1,3 +1,4 @@
+"use strict";
 module.exports = function(grunt){
 
 	return {
@@ -5,7 +6,50 @@ module.exports = function(grunt){
 		options: {
 			excludeEmpty: true
 		},
-		dev: {
+
+		env_production: {
+			files: [
+				{
+					expand: true,
+					cwd: "_src/environment/production/",
+					src: [
+						'**/*',
+						'*'
+					],
+					dest: "build_production/"
+				}
+			]
+		},
+
+		env_testing: {
+			files: [
+				{
+					expand: true,
+					cwd: "_src/environment/testing/",
+					src: [
+						'**/*',
+						'*'
+					],
+					dest: "build_testing/"
+				}
+			]
+		},
+
+		env_development: {
+			files: [
+				{
+					expand: true,
+					cwd: "_src/environment/development/",
+					src: [
+						'**/*',
+						'*'
+					],
+					dest: "build_development/"
+				}
+			]
+		},
+
+		pictures: {
 			files: [
 				{
 					expand: true,
@@ -17,21 +61,67 @@ module.exports = function(grunt){
 					dest: "client/images/"
 				},
 				{
-					expand: true,
-					cwd: "_src",
-					src: '**/*.{ttf,svg,eot,woff}',
-					dest: "client/fonts/",
-					flatten: true
-				},
-				{
-					src: '_src/client/index.html',
-					dest: 'client/index.html'
-				},
-				{
 					src: '_src/client/favicon.ico',
 					dest: 'client/favicon.ico'
 				}
 			]
+		},
+
+		styles: {
+			files: [
+				{
+					expand: true,
+					cwd: "_src/client/",
+					src: [
+						'**/*.{css}',
+						'*.{css}'
+					],
+					dest: "client/"
+				}
+			]
+		},
+
+		scripts: {
+			files: [
+				{
+					expand: true,
+					cwd: "_src/client/js/",
+					src: [
+						'**/*.js',
+						'*.js'
+					],
+					dest: "client/js/"
+				}
+			]
+		},
+
+		html: {
+			files: [
+				{
+					expand: true,
+					cwd: "_src/client/",
+					src: [
+						'**/*.{html,htm,xhtml}',
+						'*.{html,htm,xhtml}',
+					],
+					dest: "client/",
+					ext: '.html'
+				}
+			]
+		},
+
+		fonts: {
+			files: [
+				{
+					expand: true,
+					cwd: "_src/client/",
+					src: '**/*.{ttf,svg,eot,woff}',
+					dest: "client/fonts/",
+					flatten: true
+				}
+			]
 		}
+
 	};
+
 };

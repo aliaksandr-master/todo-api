@@ -1,16 +1,37 @@
+"use strict";
 module.exports = function(grunt){
 
+	var opt = this;
+
 	return {
+
 		options: {
-			livereload: this.liveReload.port
+			livereload: opt.liveReload.port
 		},
-		dev: {
+
+		scripts: {
 			files: [
-				'_src/client/**/*.js',
-				'_src/client/**/*.css',
-				'_src/client/**/*.hbs'
+				'_src/client/**/*.{coffee,ts,js}',
+				'_src/client/*.{coffee,ts,js}'
 			],
-			tasks: 'watched'
+			tasks: 'compile_scripts'
+		},
+
+		templates: {
+			files: [
+				'_src/client/**/*.hbs',
+				'_src/client/*.hbs'
+			],
+			tasks: 'compile_templates'
+		},
+
+		styles: {
+			files: [
+				'_src/client/**/*.{less,scss,sass,css}',
+				'_src/client/*.{less,scss,sass,css}'
+			],
+			tasks: 'compile_styles'
 		}
+
 	};
 };

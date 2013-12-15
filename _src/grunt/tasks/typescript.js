@@ -1,14 +1,15 @@
+"use strict";
 module.exports = function(grunt){
 
 	return {
-		compile2temp: {
+		compile: {
 			expand: true,
 			cwd: '_src/client/',
 			src: [
 				'*.ts',
 				'**/*.ts'
 			],
-			dest: 'temp/',
+			dest: 'client/',
 			ext: '.js',
 			options: {
 				module: 'amd', //or 'commonjs'

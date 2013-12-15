@@ -1,17 +1,27 @@
+"use strict";
 module.exports = function(grunt){
 
 	return {
+
 		compile: {
+
 			options: {
-				namespace: 'JST',
-				amd: false
+				namespace: 'tmp',
+				amd: true,
+				processContent: function(content){
+					return content.replace(/^[\x20\t]+/mg, '').replace(/[\x20\t]+$/mg, '').replace(/[\r\n]+/g, '');
+				}
 			},
+
 			files: [
 				{
 					expand: true,
-					cwd: "_src/client/",
-					src: ['templates/**/*.hbs'],
-					dest: 'client/',
+					cwd: "_src/client/templates",
+					src: [
+						'**/*.hbs',
+						'*.hbs'
+					],
+					dest: 'client/templates',
 					ext: '.js'
 				}
 			]

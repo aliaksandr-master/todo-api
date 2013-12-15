@@ -1,7 +1,10 @@
-define ['../../../../.', 'views/site-view'], (Chaplin, SiteView) ->
-  'use strict'
+define [
+	'chaplin',
+	'views/layout'
+], (Chaplin, SiteView) ->
+	'use strict'
 
-  class Controller extends Chaplin.Controller
-    # Place your application-specific controller features here
-    beforeAction: ->
-      @compose 'site', SiteView
+	class Controller extends Chaplin.Controller
+		# Place your application-specific controller features here
+		beforeAction: ->
+			@compose 'site', SiteView

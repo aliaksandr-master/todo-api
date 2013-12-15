@@ -1,5 +1,8 @@
 {
+	"name": "listslider",
+	"version": "0.0.1",
 	"dependencies": {
+		"h_less": "https://github.com/aliaksandr-pasynkau/H_Less.git",
 		"json3": "latest",
 		"jquery": "~1.10.1",
 		"jquery.event.move": "1.x",

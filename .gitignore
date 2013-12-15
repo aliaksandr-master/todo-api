@@ -1,22 +1,41 @@
 # ide and os files
+
 /.idea/
 *.DS_Store
+/robots.txt
+*.desktop
+*/.~*
 */~*
 */*~
 
+
+
 # temp local files
+
 /node_modules/
 /bower_components/
 
+
+
 # temp compile files
+
 /temp/
+/_temp_/
 /build_production/
 /build_development/
+/build_testing/
+
+
 
 #build files
+
+/build/client/
 /client/
 
+
+
 # server ignore
+
 /server/application/logs/
 !/server/application/logs/index.html
 !/server/application/logs/.htaccess

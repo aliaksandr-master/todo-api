@@ -1,15 +1,17 @@
+"use strict";
 module.exports = function(grunt){
 
 	return {
-		compile2temp: {
+		compile: {
 			expand: true,
 			cwd: '_src/client',
 			src: [
 				'*.coffee',
 				'**/*.coffee'
 			],
-			dest: 'temp/',
+			dest: 'client/',
 			ext: '.js'
 		}
 	};
+
 };

@@ -1,16 +1,31 @@
+"use strict";
 module.exports = function(grunt){
 
 	return {
-		dev: [
-			'client/',
-			'temp/'
+
+		all: [
+			'client/'
 		],
-		watched_css_js: [
-			'client/js',
+
+		scripts: [
+			'client/js'
+		],
+
+		pictures: [
+			'client/images'
+		],
+
+		styles: [
+			'client/styles'
+		],
+
+		fonts: [
 			'client/css'
 		],
+
 		templates: [
 			'client/templates'
 		]
+
 	};
 };

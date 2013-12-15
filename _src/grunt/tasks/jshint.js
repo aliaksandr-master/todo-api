@@ -1,24 +1,21 @@
+"use strict";
 module.exports = function(grunt){
 
 	return {
-		options: this._.extend(grunt.file.readJSON('.jshintrc'),{
-			globals: {
-				define: true,
-				require: true,
-				requirejs: true,
-				console: true
-			}
-		}),
-		'check_src' : {
+		options: grunt.file.readJSON('.jshintrc'),
+
+		check : {
 			src: [
 				'_src/client/js/**/*.js',
-				'_src/client/js/*.js'
-			]
-		},
-		gruntfile: {
-			src: [
+				'_src/client/js/*.js',
+				'_src/client/*.js',
+				'_src/grunt/**/*.js',
+				'_src/grunt/*.js',
+				'_src/environment/**/*.js',
+				'_src/environment/*.js',
 				'Gruntfile.js'
 			]
 		}
+
 	};
 };

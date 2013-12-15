@@ -15,5 +15,11 @@
 	"laxcomma": true,
 	"sub": true,
 	"browser": true,
-	"node": true
+	"node": true,
+	"globals": {
+		"define": true,
+		"require": true,
+		"alert": true,
+		"confirm": true
+	}
 }

@@ -1,3 +1,4 @@
+"use strict";
 module.exports = function(grunt){
 
 	return {
@@ -6,8 +7,8 @@ module.exports = function(grunt){
 				install: true,
 				verbose: false,
 				layout: 'byType',
-				//					copy: true,
-				targetDir: './temp/bower_components',
+//				copy: true,
+				targetDir: './client/vendor',
 				cleanBowerDir: false,
 				cleanTargetDir: true
 			}

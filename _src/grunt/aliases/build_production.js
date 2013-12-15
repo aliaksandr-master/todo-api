@@ -1,5 +1,4 @@
 module.exports = [
-	'jshint:search_all',
-	'dev',
+	'default',
 	'uglify:dev_compile'
 ];

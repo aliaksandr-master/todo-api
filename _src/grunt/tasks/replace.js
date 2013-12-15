@@ -1,12 +1,20 @@
+"use strict";
 module.exports = function(grunt){
 
 	var options = this;
+	var _ = options._;
+	var pkg = options.pkg;
+	var cfg = options;
+
+	var CACHE_KEY = options.cacheKey;
 
 	return {
-		fonts_in_css:{
+
+		fonts:{
 			overwrite: true,
 			src: [
-				'client/css/styles.min.css'
+				'client/**/*.{css,less,scss,sass}',
+				'client/*.{css,less,scss,sass}'
 			],
 			replacements: [
 				{
@@ -18,9 +26,9 @@ module.exports = function(grunt){
 						// FONTS
 						if(/\.(woff|ttf|eot|svg)/.test(url)){
 							fileName = url.split(/[\/\\]+/).pop();
-							url = '/client/'+options.cacheKey+'/fonts/'+fileName;
+							url = '/client/'+CACHE_KEY+'/fonts/'+fileName;
 						}else if(/^[\/\\]*client\//.test(url) && /\.(png|jpg|jpeg|gif)/.test(url)){
-							url = url.replace(/^([\/\\]*)client/,'//client/'+options.cacheKey+'/');
+							url = url.replace(/^([\/\\]*)client/,'//client/'+CACHE_KEY+'/');
 						}
 						//							console.log($0,'  url:',url);
 						return "url('"+url+"')";
@@ -28,66 +36,59 @@ module.exports = function(grunt){
 				}
 			]
 		},
-		srcVersion:{
+
+		matchConfigFromAnywhere: {
+			src: [
+				'client/js/**/*.js',
+				'client/js/*.js',
+				'client/*.{js,html}'
+			],
+			overwrite: true,
+			replacements: [{
+				from: /\$\{(config|package):([^\}]+)\}/g,
+				to: function (word, _i, _f, matches) {
+					var config = matches[0] === 'config' ? cfg : pkg,
+						name = matches[1],
+						value = _.reduce(name.split('.'), function(config, name) {
+							return config != null ? config[name] : null;
+						},config);
+
+					if (value == null) {
+						console.error('Configuration variable "' + name + '" is not defined in config files!');
+						grunt.fail();
+					}
+
+					console.log(word,value);
+					return value;
+				}
+			}]
+		},
+
+		indexReplaceResourceVersion: {
 			overwrite: true,
 			src: [
-				'client/index.html'
+				'client/*.{html,css}',
+				'client/**/*.{html,css}'
 			],
 			replacements: [
 				{
-					from: /['"]\s*\/*client\//gi,
-					to: function($0){
-						$0 = $0+options.cacheKey+'/';
-						return $0;
-					}
+					from: /(['"]\s*\/*)client\//gi,
+					to: '$1client'+CACHE_KEY+'/'
 				}
 			]
 		},
+
 		livereload: {
 			overwrite: true,
-			src: [ 'client/index.html' ],
+			src: 'client/index.html',
 			replacements: [
 				{
 					from: '</head>',
-					to: '<script async src="'+options.liveReload.url+'"></script></head>'
-				}
-			]
-		},
-		favicon:{
-			overwrite: true,
-			src: [ 'client/index.html' ],
-			replacements: [
-				{
-					from: '<!--/meta-->',
-					to: '<link rel="icon" href="/client/favicon.ico" type="image/x-icon"><!--/meta-->'
-				}
-			]
-		},
-		dev_index: {
-			overwrite: true,
-			src: [ 'client/index.html' ],
-			replacements: [
-				{
-					from: '</head>',
-					to: '<script>window.build='+options.cacheKey+';</script>\n</head>'
-				},
-				{
-					from: '</head>',
-					to: '<link type="text/css" rel="stylesheet" href="/client/css/styles.min.css"/>\n</head>'
-				},
-				{
-					from: '</head>',
-					to: '<script src="/client/js/app.js"></script>\n</head>'
-				},
-				{
-					from: /<body>\s*<\/body>/,
-					to: '<body></body>'
-				},
-				{
-					from: /\n\s+/g,
-					to: "\n"
+					to: '<script async src="'+options.liveReload.src+'"></script></head>'
 				}
 			]
 		}
+
 	};
+
 };

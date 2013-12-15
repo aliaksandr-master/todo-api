@@ -8,33 +8,36 @@
 
         "grunt": "~0.4",
 
+		"grunt-contrib-less": "~0.8.3",
+		"grunt-contrib-sass": "latest",
+		"grunt-contrib-coffee": "latest",
+		"grunt-contrib-jshint": "latest",
+		"grunt-contrib-clean": "latest",
+		"grunt-contrib-concat": "latest",
+		"grunt-contrib-connect": "latest",
+		"grunt-contrib-uglify": "latest",
+		"grunt-contrib-cssmin": "latest",
+		"grunt-contrib-watch": "latest",
+		"grunt-contrib-requirejs": "latest",
+		"grunt-contrib-copy": "latest",
+		"grunt-contrib-htmlmin": "~0.1.3",
+		"grunt-contrib-handlebars": "latest",
+
         "grunt-typescript": "latest",
         "grunt-urequire": "latest",
         "grunt-csso": "latest",
         "grunt-imgo": "latest",
-        "grunt-contrib-sass": "latest",
-        "grunt-contrib-coffee": "latest",
-        "grunt-contrib-less": "latest",
-        "grunt-contrib-jshint": "latest",
-        "grunt-contrib-clean": "latest",
-        "grunt-contrib-concat": "latest",
-        "grunt-contrib-connect": "latest",
-        "grunt-contrib-uglify": "latest",
-        "grunt-contrib-cssmin": "latest",
-        "grunt-contrib-watch": "latest",
-        "grunt-contrib-requirejs": "latest",
-        "grunt-contrib-copy": "latest",
-        "grunt-exec": "latest",
+
+		"grunt-exec": "latest",
         "grunt-webfont": "latest",
         "grunt-remove-logging": "latest",
         "grunt-bower-task": "latest",
-        "grunt-contrib-handlebars": "latest",
         "grunt-template": "latest",
         "grunt-file-creator": "latest",
         "grunt-autoprefixer": "latest",
         "grunt-text-replace": "latest"
     },
 	"scripts": {
-		"install": "grunt clean install dev"
+		"install": "grunt install default"
 	}
 }
