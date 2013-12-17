@@ -1,4 +1,7 @@
 module.exports = [
-	'default',
-	'uglify:dev_compile'
+	'install',
+	'build',
+	'copy:env_production',
+	'cssmin:env_production',
+	'uglify:env_production'
 ];

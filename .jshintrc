@@ -17,9 +17,14 @@
 	"browser": true,
 	"node": true,
 	"globals": {
+		"window": true,
+		"Error": true,
+		"RangeError": true,
 		"define": true,
 		"require": true,
+		"console": true,
 		"alert": true,
-		"confirm": true
+		"confirm": true,
+		"prompt": true
 	}
 }

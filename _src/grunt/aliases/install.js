@@ -1,4 +1,5 @@
 module.exports = [
 	'clean:all',
-	'bower:install'
+	'bower:install',
+	'copy:vendors'
 ];

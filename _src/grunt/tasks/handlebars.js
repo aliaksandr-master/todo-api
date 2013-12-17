@@ -6,7 +6,7 @@ module.exports = function(grunt){
 		compile: {
 
 			options: {
-				namespace: 'tmp',
+				namespace: false,
 				amd: true,
 				processContent: function(content){
 					return content.replace(/^[\x20\t]+/mg, '').replace(/[\x20\t]+$/mg, '').replace(/[\r\n]+/g, '');

@@ -6,17 +6,18 @@ module.exports = function(grunt){
 			options: {
 				compress: false,
 				cleancss: false,
-				syncImport: false,
+				syncImport: true,
 				dumpLineNumbers: false,
 				ieCompat: true,
 				sourceMap: false,
 				relativeUrls: false,
 				report: 'gzip',
 				strictUnits: true,
+				strictImports: true,
 				optimization: null,
 				rootpath: '',
 				paths: [
-					'_src/client/styles'
+					'_src/client'
 				]
 			},
 			files: [

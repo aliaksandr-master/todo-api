@@ -11,12 +11,25 @@ module.exports = function(grunt){
 			files: [
 				{
 					expand: true,
+					cwd: "client/",
+					src: [
+						'**/*',
+						'*'
+					],
+					dest: "build_production/client/"
+				},
+				{
+					expand: true,
 					cwd: "_src/environment/production/",
 					src: [
 						'**/*',
 						'*'
 					],
 					dest: "build_production/"
+				},
+				{
+					src: '.htaccess',
+					dest: "build_production/.htaccess"
 				}
 			]
 		},
@@ -77,6 +90,20 @@ module.exports = function(grunt){
 						'*.{css}'
 					],
 					dest: "client/"
+				}
+			]
+		},
+
+		vendors: {
+			files: [
+				{
+					expand: true,
+					cwd: "_src/client/vendor",
+					src: [
+						'**/*',
+						'*'
+					],
+					dest: "client/vendor"
 				}
 			]
 		},

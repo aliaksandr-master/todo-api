@@ -11,9 +11,8 @@
 		"underscore": "latest",
 		"backbone": "latest",
 		"backbone.localStorage": "latest",
-		"handlebars": "latest",
+		"handlebars": "~1.0.0",
 		"chaplin": "~0.11.3",
-		"moment": "latest",
 		"jgrowl": "latest",
 		"lodash": "~2.0.0",
 		"almond": "latest",
@@ -28,7 +27,73 @@
 		"**/*.txt",
 		"node_modules",
 		"bower_components",
+		"examples",
 		"test",
 		"tests"
-	]
+	],
+	"exportsOverride": {
+		"devicejs": {
+			".": "lib/device.js"
+		},
+		"detectizr": {
+			".": "detectizr.js"
+		},
+		"h_less": {
+			".h_less/less": "less"
+		},
+		"jgrowl": {
+			".": [
+				"jquery.jgrowl.css",
+				"jquery.jgrowl.js"
+			]
+		},
+		"json3": {
+			".": "lib/json3.js"
+		},
+		"jquery": {
+			".": "jquery.js"
+		},
+		"modernizr": {
+			".": "modernizr.js"
+		},
+		"requirejs-text": {
+			".": "text.js"
+		},
+		"jquery.event.move": {
+			".": "js/jquery.event.move.js"
+		},
+		"jquery.event.swipe": {
+			".": "js/jquery.event.swipe.js"
+		},
+		"almond": {
+			".": "almond.js"
+		},
+		"backbone": {
+			".": "backbone.js"
+		},
+		"backbone-validation": {
+			".": "dist/backbone-validation.js"
+		},
+		"requirejs": {
+			".": "require.js"
+		},
+		"require-css": {
+			".": ["css.js", "normalize.js", "css-builder.js"]
+		},
+		"underscore": {
+			".": "underscore.js"
+		},
+		"chaplin": {
+			".": "chaplin.js"
+		},
+		"handlebars": {
+			".": "handlebars.runtime.js"
+		},
+		"moment": {
+			".": "moment.js"
+		},
+		"blueimp-*": {
+			".": []
+		}
+	}
 }

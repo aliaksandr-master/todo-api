@@ -14,6 +14,21 @@ module.exports = function(grunt){
 				'**/*.js',
 				'*.js'
 			]
+		},
+
+		env_production: {
+			files: [
+				{
+					expand: true,
+					overwrite: true,
+					src: [
+						'build_production/client/*.js',
+						'build_production/client/**/*.js',
+						'!build_production/client/**/*.min.js',
+						'!build_production/client/vendor/spin/*',
+					]
+				}
+			]
 		}
 
 	};

@@ -28,15 +28,16 @@ module.exports = function(grunt){
 		},
 
 		env_production: {
-			files: {
-				expand: true,
-				cwd: "build_production/client/styles/",
-				src: [
-					'**/*.{css}',
-					'*.{css}'
-				],
-				dest: "build_production/client/styles/"
-			}
+			files: [
+				{
+					expand: true,
+					overwrite: true,
+					src: [
+						'build_production/**/*.css',
+						'!build_production/**/*.min.css',
+					]
+				}
+			]
 		}
 
 	};

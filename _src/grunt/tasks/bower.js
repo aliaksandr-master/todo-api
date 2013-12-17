@@ -5,7 +5,7 @@ module.exports = function(grunt){
 		install: {
 			options: {
 				install: true,
-				verbose: false,
+				verbose: true,
 				layout: 'byType',
 //				copy: true,
 				targetDir: './client/vendor',
