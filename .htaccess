@@ -57,7 +57,7 @@ errorDocument 500 /client/error.html
 
 # add charset to files
 <Files "\.(x?html?|css|js)$">
-    AddDefaultCharset UTF-8
+#    AddDefaultCharset UTF-8
 </Files>
 
 # BEGIN Expire headers

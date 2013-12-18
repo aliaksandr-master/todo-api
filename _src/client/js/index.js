@@ -5,6 +5,8 @@
 		baseUrl: '/client${config:cacheKey}/js/',
 
 		paths: {
+			styles: '../styles',
+			vendor: '../vendor',
 			templates: '../templates',
 			jquery: '../vendor/jquery/jquery',
 			underscore: '../vendor/underscore/underscore',
@@ -12,6 +14,13 @@
 			handlebars: '../vendor/handlebars/handlebars',
 			text: '../vendor/requirejs-text/text',
 			chaplin: '../vendor/chaplin/chaplin'
+		},
+
+		map:{
+
+			"*":{
+				css: 'vendor/require-css/css'
+			},
 		},
 
 		shim: {

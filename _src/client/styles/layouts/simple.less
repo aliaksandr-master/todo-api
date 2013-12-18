@@ -1,0 +1,39 @@
+@import url('../base/base.less');
+
+.main-header { background: #f4ebe3; ._clearfix(); padding: 5px; border-bottom: 1px solid #D1C5C5;  }
+.main-header-menu-wr { float: left; }
+.main-header-user-wr { float: right; }
+.main-header-nav-wr { overflow: hidden; }
+
+.main-menu {
+	display: block;
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 0;
+	overflow: hidden;
+	bottom: 0;
+	._animate(0.3s);
+	background: #f4ebe3;
+	border-right: #D1C5C5;
+	z-index: 100;
+}
+.main-menu.-open {
+	width: 220px;
+}
+.main-menu-l {
+	width: 220px;
+	display: block;
+	margin: 0;
+	padding: 10px;
+}
+.main-menu-li {
+	display: block;
+}
+.main-menu-li + .main-menu-li {
+	border-top: 1px solid #ccc;
+}
+.main-menu-li-a {
+	padding: 10px;
+	display: block;
+}
