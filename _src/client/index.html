@@ -11,10 +11,100 @@
     <title>List Slider Dashboard</title>
     <!--/meta-->
     <script>window.build='${config:cacheKey}';</script>
-    <script data-main="/client/js/index.js" src="/client/vendor/requirejs/require.js"></script>
+    <script src="/client/vendor/requirejs/require.js"></script>
     <link rel="icon" href="/client/favicon.ico" type="image/x-icon">
     <link rel="stylesheet" href="/client/styles/index.css"/>
+    <script type="text/javascript">
+        (function(){
+            'use strict';
+
+            require.config({
+                baseUrl: '/client${config:cacheKey}/js/',
+
+                paths: {
+                    styles: '../styles',
+                    vendor: '../vendor',
+                    templates: '../templates',
+                    jquery: '../vendor/jquery/jquery',
+                    underscore: '../vendor/underscore/underscore',
+                    backbone: '../vendor/backbone/backbone',
+                    handlebars: '../vendor/handlebars/handlebars',
+                    text: '../vendor/requirejs-text/text',
+                    chaplin: '../vendor/chaplin/chaplin'
+                },
+
+                map:{
+
+                    "*":{
+                        css: 'vendor/require-css/css'
+                    }
+                },
+
+                shim: {
+                    jquery: {
+                        init: function(jquery){
+                            return jquery.noConflict(true);
+                        }
+                    },
+                    underscore: {
+                        exports: '_'
+                    },
+                    backbone: {
+                        deps: [
+                            'underscore',
+                            'jquery'
+                        ],
+                        exports: 'Backbone'
+                    },
+                    handlebars: {
+                        exports: 'Handlebars'
+                    }
+                }
+
+            });
+        })();
+
+        require(['application', 'routes'],function(Application, routes){
+            'use strict';
+
+            if(window.localStorage && localStorage.getItem("build") !== window.build){
+                localStorage.clear();
+                localStorage.setItem("build", window.build);
+            }
+
+            var app = new Application({
+
+                routes: routes,
+                controllerSuffix: ''
+
+            });
+
+        });
+    </script>
+    <style type="text/css">
+        .pre-loader {
+            width: 44px;
+            height: 44px;
+            background: url('/client/images/preloader_44.gif');
+            position: absolute;
+            top: 0;
+            right: 0;
+            z-index: 999;
+            display: block;
+            border-radius: 100%;
+            -webkit-transition: all 0.3s linear;
+            -moz-transition: all 0.3s linear;
+            -o-transition: all 0.3s linear;
+            transition: all 0.3s linear;
+            opacity: 1;
+        }
+        .pre-loader.-inactive {
+            opacity: 0;
+            z-index: 0;
+        }
+    </style>
 </head>
 <body>
+    <div class="pre-loader"></div>
 </body>
 </html>

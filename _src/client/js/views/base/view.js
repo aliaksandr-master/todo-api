@@ -4,12 +4,16 @@ define(function(require, exports, module){
 	var Handlebars = require('handlebars');
 	var Chaplin = require('chaplin');
 	var $ = require('jquery');
-	var viewHelper = require('lib/view-helper');
+	require('lib/view-helper');
 
 	var BaseView = Chaplin.View.extend({
 
 		initialize: function(){
+
 			Chaplin.View.prototype.initialize.apply(this, arguments);
+			$('.pre-loader').addClass("-inactive");
+			console.log('pre-loader inactive');
+
 		},
 		
 		formSubmit: function(opt){

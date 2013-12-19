@@ -4,9 +4,7 @@ define(function(require, exports, module){
 	var Chaplin = require('chaplin');
 
 
-    var Application = Chaplin.Application.extend({
-
-	});
+    var Application = Chaplin.Application.extend({});
 
     return Application;
 });
