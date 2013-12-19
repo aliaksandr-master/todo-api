@@ -45,7 +45,6 @@ class User extends MY_Controller {
             if (!empty($_POST['date_register'])) $data['date_register'] = $_POST['date_register'];
 
             $user = new User_model();
-
             return $user->create($data);
 
         } else {

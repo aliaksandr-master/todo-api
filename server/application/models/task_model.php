@@ -7,6 +7,6 @@ class Task_model extends MY_Model {
     }
 
     public function getTableFields() {
-        return array('type_id', 'name', 'date_create', 'parent_id', 'sort_order');
+        return array('type_id', 'name', 'date_creation', 'parent_id', 'sort_order');
     }
 }
