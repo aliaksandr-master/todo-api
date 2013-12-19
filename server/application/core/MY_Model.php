@@ -7,7 +7,6 @@ interface MY_CrudInterface {
     const RESULT_ACTIVE_RECORD = "active record";
 
     function getTableName();
-
     function getTableFields();
 
     function read (array $where, $resultAs = self::RESULT_ARRAY, $select);
