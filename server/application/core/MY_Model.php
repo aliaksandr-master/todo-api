@@ -74,7 +74,9 @@ abstract class MY_Model extends CI_Model implements MY_CrudInterface {
                 throw new Exception('undefined key "'.$key.'" must be in array ['.implode(',', $tableFields).']');
             }
         }
-        $this->getDb()->update();
+        $this->getDb()
+            ->from($this->getTableName())
+            ->insert();
 
         return $this->getDb()->result_id;
 
