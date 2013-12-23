@@ -1,5 +1,7 @@
 <?php
 
+
+
 /*
  *---------------------------------------------------------------
  * APPLICATION ENVIRONMENT
@@ -192,6 +194,15 @@ if (defined('ENVIRONMENT'))
 	}
 
 /*
+ * -------------------------------------------------------------------
+ *  Load the abstract model
+ * -------------------------------------------------------------------
+ */
+require_once BASEPATH.'core/Model'.EXT;
+require_once APPPATH.'core/MY_Model'.EXT;
+
+
+/*
  * --------------------------------------------------------------------
  * LOAD THE BOOTSTRAP FILE
  * --------------------------------------------------------------------
@@ -199,7 +210,9 @@ if (defined('ENVIRONMENT'))
  * And away we go...
  *
  */
+
 require_once BASEPATH.'core/CodeIgniter.php';
+
 
 /* End of file index.php */
 /* Location: ./index.php */

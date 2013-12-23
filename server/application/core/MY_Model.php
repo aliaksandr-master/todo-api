@@ -7,7 +7,6 @@ interface MY_CrudInterface {
     const RESULT_ACTIVE_RECORD = "active record";
 
     function getTableName();
-
     function getTableFields();
 
     function read (array $where, $resultAs = self::RESULT_ARRAY, $select);
@@ -75,7 +74,9 @@ abstract class MY_Model extends CI_Model implements MY_CrudInterface {
                 throw new Exception('undefined key "'.$key.'" must be in array ['.implode(',', $tableFields).']');
             }
         }
-        $this->getDb()->update();
+        $this->getDb()
+            ->from($this->getTableName())
+            ->insert();
 
         return $this->getDb()->result_id;
 

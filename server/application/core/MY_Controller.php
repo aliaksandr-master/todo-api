@@ -8,5 +8,13 @@ class MY_Controller extends CI_Controller {
     protected function loader(){
         return $this->load;
     }
+
+
+    /**
+     * @return CI_Output
+     */
+    protected function output(){
+        return $this->output;
+    }
 }
 
