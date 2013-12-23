@@ -17,6 +17,30 @@ module.exports = function(grunt){
 			tasks: 'compile_scripts'
 		},
 
+		pitures: {
+			files: [
+				'_src/client/**/*.{png,gif,jpeg,jpg,ico}',
+				'_src/client/*.{png,gif,jpeg,jpg,ico}'
+			],
+			tasks: 'compile_pictures'
+		},
+
+		html: {
+			files: [
+				'_src/client/**/*.html',
+				'_src/client/*.html'
+			],
+			tasks: 'compile_html'
+		},
+
+		grunt: {
+			files: [
+				'_src/grunt/**/*.js',
+				'_src/grunt/*.js'
+			],
+			tasks: 'build'
+		},
+
 		templates: {
 			files: [
 				'_src/client/**/*.hbs',

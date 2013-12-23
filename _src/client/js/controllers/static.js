@@ -2,8 +2,8 @@ define(function(require, exports, module){
     "use strict";
 
     var BaseController = require('controllers/base/controller');
-    var PageHomeView = require('views/pages/home');
-    var PageAboutView = require('views/pages/about');
+    var PageHomeView = require('views/static/home');
+    var PageAboutView = require('views/static/about');
 
 	var StaticController = BaseController.extend({
 
@@ -11,12 +11,14 @@ define(function(require, exports, module){
 			this.view = new PageHomeView({
 				region: "main"
 			});
+			this.preloader.off();
 		},
 
 		about: function(){
 			this.view = new PageAboutView({
 				region: "main"
 			});
+			this.preloader.off();
 		}
 
 	});

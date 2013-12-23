@@ -19,7 +19,8 @@ define(function(require, exports, module){
 		container: 'body',
 
 		regions:{
-			main: '.main-content'
+			main: '.main-content',
+			"main-nav": '.main-header-nav'
 		},
 
 		template: template,
@@ -30,7 +31,7 @@ define(function(require, exports, module){
 
 		attach: function(){
 			var res = LayoutView.__super__.attach.apply(this, arguments);
-			$('.pre-loader').appendTo(".main-header-user-wr");
+			this.preloader.off();
 			return res;
 		},
 

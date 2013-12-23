@@ -2,9 +2,9 @@ define(function(require, exports, module){
     "use strict";
 
     var BaseController = require('controllers/base/controller');
-    var PageUserRegisterView = require('views/pages/user-register');
-    var PageUserLoginView = require('views/pages/user-login');
-    var PageUserProfileView = require('views/pages/user-profile');
+    var PageUserRegisterView = require('views/user/register');
+    var PageUserLoginView = require('views/user/login');
+    var PageUserProfileView = require('views/user/profile');
 
 	var UserController = BaseController.extend({
 
@@ -12,18 +12,21 @@ define(function(require, exports, module){
 			this.view = new PageUserLoginView({
 				region: "main"
 			});
+			this.preloader.off();
 		},
 
 		profile: function(params){
 			this.view = new PageUserProfileView({
 				region: "main"
 			});
+			this.preloader.off();
 		},
 
 		register: function(params){
 			this.view = new PageUserRegisterView({
 				region: "main"
 			});
+			this.preloader.off();
 		}
 
 	});
