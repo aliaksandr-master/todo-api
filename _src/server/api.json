@@ -1,0 +1,48 @@
+{
+	"#login": {
+		"method": "post",
+
+		"handler": "user:login",
+
+		"params": {
+			"requests": {
+				"username": {"string": "required"},
+				"password": {"string": "required"},
+				"remember": {"bool":   "optional"}
+			},
+			"response": {
+				"user_id": "number"
+			}
+		}
+	},
+	"#profile": {
+		"method": "post",
+
+		"handler": "user:profile",
+
+		"params": {
+			"requests": {
+				"user_id": {"number": "required"}
+			},
+			"response": {
+				"username": "string",
+				"email": "string"
+			}
+		}
+	},
+	"#register": {
+		"method": "post",
+
+		"handler": "user:register",
+
+		"params": {
+			"requests": {
+				"user_id": {"number": "required"}
+			},
+			"response": {
+				"username": "string",
+				"email": "string"
+			}
+		}
+	}
+}
