@@ -1,10 +1,9 @@
 define(function(require, exports, module){
     "use strict";
 
-	exports = {
+	var api = {
+
 		"#login": {
-			url: "user/login",
-			method: "post",
 			client2server: function(model){
 				return model.toJSON();
 			},
@@ -12,9 +11,8 @@ define(function(require, exports, module){
 				return response;
 			}
 		},
+
 		"#register": {
-			url: "user/register",
-			method: "post",
 			client2server: function(model){
 				return model.toJSON();
 			},

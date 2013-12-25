@@ -1,0 +1,4 @@
+{
+	"date:number": "required",
+	"data:object": "required"
+}

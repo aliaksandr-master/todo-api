@@ -1,0 +1,159 @@
+{
+	"#login": {
+
+		"request": {
+			"url": "user/login",
+
+			"method": "post",
+
+			"format": "json",
+
+			"data": {
+				"username:string": "required",
+				"password:string": "required",
+				"remember:bool": "optional"
+			}
+		},
+
+		"response": {
+			"format": "json",
+
+			"data": {
+				"session_id:string": "required"
+			},
+
+			"codes": {
+				"200": "Success",
+				"404": "NotFound"
+			},
+
+			"errors":{
+				"field": {
+					"username/required": "Username is required field",
+					"username/not_found": "User not found",
+					"password/required": "Password is required field",
+					"password/incorrect": "Password is incorrect",
+					"password/incorrect_format": "Password must have max 25 characters and min 4 characters"
+				}
+			}
+		}
+	},
+
+	"#logout": {
+
+		"request": {
+			"url": "user/logout",
+
+			"method": "post",
+
+			"format": "json",
+
+			"data": {
+				"session_id:string": "required"
+			}
+		},
+
+		"response": {
+			"format": "json",
+
+			"data": {
+				"session_id:string": "required"
+			},
+
+			"codes": {
+				"200": "Success"
+			},
+
+			"errors":{
+				"field": {
+				}
+			}
+		}
+	},
+
+	"#profile": {
+
+		"request": {
+			"url": "user/profile",
+
+			"method": "post",
+
+			"format": "json",
+
+			"data": {
+				"session_id:string": "required"
+			}
+		},
+
+		"response": {
+
+			"format": "json",
+
+			"data": {
+				"username:string": "required",
+				"email:string": "required"
+			},
+
+			"codes": {
+				"401": "Need Authorized",
+				"403": "Forbidden",
+				"200": "Success"
+			},
+
+			"errors": {
+				"field": {
+					"session_id/required": "Session Id is required",
+					"session_id/incorrect": "Session Id is incorrect"
+				}
+			}
+		}
+
+
+	},
+
+	"#register": {
+
+		"requests": {
+
+			"method": "post",
+
+			"format": "json",
+
+			"data": {
+				"username:string": "required",
+				"password:string": "required",
+				"email:string": "required",
+				"password_confirm:string": "required"
+			}
+		},
+
+		"response": {
+
+			"format": "json",
+
+			"data": {
+				"username:string": "required"
+			},
+
+			"codes": {
+				"200": "Success"
+			},
+
+			"errors": {
+				"field": {
+					"username/required": "User Name is required field",
+					"username/exists": "User Name was already exists",
+					"email/exists": "Email was already exists",
+					"email/required": "Email is required field",
+					"email/incorrect_format": "Email has invalid characters",
+					"email/not_found": "Email is inactive email",
+					"password/required": "Password is required field",
+					"password_confirm/required": "Confirm Password is required field",
+					"password_confirm/not_equal": "Confirm Password must be equal Password"
+				}
+			}
+		}
+
+
+	}
+}

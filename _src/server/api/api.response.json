@@ -1,0 +1,11 @@
+{
+	"data:object": "required",
+	"date:number": "required",
+	"code:number": "required",
+	"success:bool": "required",
+	"error:object": {
+		"field:object-array": "optional",
+		"access:object-array": "optional"
+	},
+	"debugger:object": "optional"
+}
