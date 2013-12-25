@@ -1,4 +1,4 @@
 {
-	"date:number": "required",
+	"timestamp:number": "required",
 	"data:object": "required"
 }

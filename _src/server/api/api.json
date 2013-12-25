@@ -36,7 +36,9 @@
 					"password/incorrect_format": "Password must have max 25 characters and min 4 characters"
 				}
 			}
-		}
+		},
+
+		"description": "to login in system"
 	},
 
 	"#logout": {

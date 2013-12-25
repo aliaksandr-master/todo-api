@@ -1,0 +1,14 @@
+[
+	"object",
+	"number",
+	"bool",
+	"string",
+	"html-string",
+	"hash-string",
+	"md-string",
+	"array",
+	"object-array",
+	"string-array",
+	"number-array",
+	"bool-array"
+]

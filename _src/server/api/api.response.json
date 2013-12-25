@@ -1,6 +1,6 @@
 {
 	"data:object": "required",
-	"date:number": "required",
+	"timestamp:number": "required",
 	"code:number": "required",
 	"success:bool": "required",
 	"error:object": {
