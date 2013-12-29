@@ -2,7 +2,6 @@
 	"data:object": "required",
 	"timestamp:number": "required",
 	"code:number": "required",
-	"success:bool": "required",
 	"error:object": {
 		"field:object-array": "optional",
 		"access:object-array": "optional"
