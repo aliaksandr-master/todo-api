@@ -1,6 +1,8 @@
-<?php
+<?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
-class Task extends MY_Controller {
+require APPPATH.'/libraries/REST_Controller.php';
+
+class Task extends REST_Controller {
 
     public function __construct() {
         parent::__construct();
@@ -8,22 +10,5 @@ class Task extends MY_Controller {
     }
 
     public function create() {
-
-        if (!empty($_POST['name'])) {
-
-            $task = new Task_model();
-            $data = $task->read();
-
-            dump($task);
-
-//            $data = array();
-
-
-//            $data['name'] = $_POST['name'];
-//            $data['name'] = $_POST['name'];
-
-        }
     }
-
-
 }
