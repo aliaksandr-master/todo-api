@@ -9,8 +9,6 @@ define(function(require, exports, module){
 
     var LayoutView = BaseView.extend({
 
-		className: 'main-wr',
-
 		events: {
 			'click .main-menu-head-btn': 'menuClick',
 			'click .main-menu-li-a': 'closeMenu'
@@ -26,6 +24,7 @@ define(function(require, exports, module){
 		template: template,
 
 		initialize: function(){
+			var that = this;
 			LayoutView.__super__.initialize.apply(this, arguments);
 		},
 

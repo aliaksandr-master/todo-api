@@ -1,20 +1,25 @@
-<div class="todo-l-title-wr">
-    <div class="input-wr">
-        <input type="text" class="input--click2edit input--tx-center form-control input-lg todo-l-title" placeholder="My tasks" value="{{title}}"/>
+<div class="todo-list">
+    <div class="todo-list-back-wr">
+        <a href="/todo/" class="btn btn-default todo-list-back">
+            <span class="glyphicon glyphicon-arrow-left"></span>
+            <span class="glyphicon glyphicon-list-alt"></span>
+        </a>
     </div>
-</div>
-<div class="todo-l-wr">
-    <div class="input-group todo-l-input ">
-        <input type="text" class="form-control todo-l-input-add"  placeholder="Add task here...">
-        <div class="input-group-btn">
-            <button type="button" class="btn btn-primary todo-l-input-add-submit"><span class="glyphicon glyphicon-plus"></span> ADD</button>
-            <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
-                <span class="caret"></span>
-            </button>
-            <ul class="dropdown-menu pull-right" role="menu">
-                <li><a href="#" class="remove-todo-btn">Remove This Todo List</a></li>
-            </ul>
+    <div class="todo-list-title-wr">
+        <input type="text" class="-click2edit -txt-center form-control todo-list-title" placeholder="My tasks" value="{{title}}"/>
+    </div>
+    <div class="todo-list-line"></div>
+    <div class="todo-list-head">
+        <div class="input-group todo-list-task-input-wr">
+            <input type="text" class="form-control todo-list-input-add"  placeholder="Add new task here...">
+            <div class="input-group-btn">
+                <button type="button" class="btn btn-primary todo-list-input-add-submit">
+                    <span class="glyphicon glyphicon-plus"></span> ADD
+                </button>
+            </div>
         </div>
     </div>
-    <div class="todo-list-l"></div>
+    <div class="todo-list-body">
+        <ul class="todo-list-l"></ul>
+    </div>
 </div>

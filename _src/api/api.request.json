@@ -1,4 +1,5 @@
 {
 	"timestamp:number": "required",
+	"client_id:string": "required",
 	"data:object": "required"
 }

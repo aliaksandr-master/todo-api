@@ -8,6 +8,8 @@ define(function(require){
         defaults: function(){
 
             return {
+				shared: false,
+				sortOrder: null,
                 isActive: false,
                 title: "",
                 listId: null

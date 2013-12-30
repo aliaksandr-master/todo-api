@@ -6,12 +6,10 @@ define(function(require, exports, module){
     return {
 
 		on: function(){
-			console.log("on");
 			$(document.body).removeClass("-preloader-inactive");
 		},
 
 		off: function(){
-			console.log("off");
 			$(document.body).addClass("-preloader-inactive");
 		}
 
