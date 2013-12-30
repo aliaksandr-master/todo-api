@@ -1,6 +1,7 @@
 # ide and os files
 
 /.idea/
+/npm-debug.log
 *.DS_Store
 /robots.txt
 *.desktop
