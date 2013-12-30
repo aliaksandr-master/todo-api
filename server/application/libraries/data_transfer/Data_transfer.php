@@ -1,38 +1,36 @@
 <?php defined('BASEPATH') OR exit('No direct script access allowed');
 
-require_once('DataTransferSimpleValueObject.php');
-require_once('DataTransferMultiValueObject.php');
-require_once('DataTransferErrorObject.php');
+require_once('Data_transfer_simple_value_object.php');
+require_once('Data_transfer_multi_value_object.php');
+require_once('Data_transfer_error_object.php');
 
-/**
- * DataTransfer class
- *
- * Used to transfer data between server and browser in the JSON format.
- *
- * @author Karpovich Alexandr & Pasynkov Alexandr
- * @package server\application\libraries\data_tranfer\
- *
- */
+///**
+// * DataTransfer class
+// *
+// * Used to transfer data between server and browser in the JSON format.
+// *
+// * @author Pasynkov Alexandr & Karpovich Alexandr
+// * @package server\application\libraries\data_transfer\
+// *
+// */
 
-class DataTransfer{
+class Data_transfer{
 
     private $_url;
     private $_code;
-    private $_completed;
+    private $_format;
+    private $_method;
     private $_data;
     private $_content;
     private $_error;
 
-    /**
-     * Constructor
-     *
-     */
     public function __construct(){
         $ci = &get_instance();
         $ci->load->helper('url');
         $this->_url = new DataTransferSimpleValueObject('url', false, uri_string().'/');
         $this->_code = new DataTransferSimpleValueObject('code', false, 200);
-        $this->_completed = new DataTransferSimpleValueObject('completed', false, true);
+        $this->_format = new DataTransferSimpleValueObject('format', false, 'json');
+        $this->_method = new DataTransferSimpleValueObject('method', false, 'post');
         $this->_data = new DataTransferMultiValueObject('data', true, DataTransferMultiValueObject::TYPE_OBJECT);
         $this->_content = new DataTransferSimpleValueObject('content', true, '');
         $this->_error = new DataTransferErrorObject();
@@ -44,7 +42,7 @@ class DataTransfer{
 
     public function getAllData(){
         $allData = array();
-        $objects = array('url', 'code', 'completed', 'data', 'content', 'error');
+        $objects = array('url', 'code', 'format', 'method', 'data', 'content', 'error');
         foreach ($objects as $name) {
             $object = '_'.$name;
             $data = $this->$object->getResult();
@@ -61,7 +59,6 @@ class DataTransfer{
     }
 
     public function error(){
-        $this->completed(false);
         return $this->_error;
     }
 
@@ -85,10 +82,13 @@ class DataTransfer{
         return $this;
     }
 
-    public function completed($completed){
-        if($this->_completed->getValue()){
-            $this->_completed->setValue($completed);
-        }
+    public function method($method){
+        $this->_method->setValue($method);
+        return $this;
+    }
+
+    public function format($format){
+        $this->_format->setValue($format);
         return $this;
     }
 

@@ -134,7 +134,7 @@
 			"format": "json",
 
 			"data": {
-				"username:hash-string": "required"
+				"user_id:string": "required"
 			},
 
 			"codes": {
