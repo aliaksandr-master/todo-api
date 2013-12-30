@@ -1,3 +1,12 @@
-<a href="/todo/{{listId}}/" class="todo-lists-li btn btn-default">
-    {{title}}
-</a>
+<li class="todo-lists-li{{#if shared}} -shared{{/if}}" data-listId="{{listId}}">
+    <span class="glyphicon glyphicon-resize-vertical todo-lists-li-move"></span>
+    <button class="btn todo-lists-li-remove">
+        <span class="glyphicon glyphicon-remove"></span>
+    </button>
+    <a href="/todo/share/{{listId}}/" class="btn todo-lists-li-share">
+        <span class="glyphicon glyphicon-share-alt"></span>
+    </a>
+    <a href="/todo/{{listId}}/" class="todo-lists-li-link">
+        {{title}}
+    </a>
+</li>

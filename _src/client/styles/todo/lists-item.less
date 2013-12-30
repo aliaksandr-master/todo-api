@@ -1,1 +1,14 @@
 @import url('../base/base.less');
+
+.todo-lists-li {  display: block; background: #ddd; ._clearfix(); border: 1px solid #ccc; }
+.todo-lists-li + .todo-lists-li { border-top-width: 0; }
+.todo-lists-li:first-child {  }
+.todo-lists-li-placeholder { height: 16px + 20px + 6px; display: block; }
+.todo-lists-li-move { float: left; display: block; text-align: center; width: 20px; height: 16px + 20px; line-height: 16px + 20px + 6px; cursor: pointer; }
+.todo-lists-li-move:hover { background: orange; }
+.todo-lists-li-link { ._text_overflow(); max-width: 90%; display: block; ._text(16px); padding: 10px; }
+.todo-lists-li-share { float: right; }
+.todo-lists-li-remove { float: right; }
+
+.todo-lists-li.-shared .todo-lists-li-share { color: red; }
+.todo-lists-li.-active { background: #fff; }

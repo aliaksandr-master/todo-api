@@ -78,7 +78,7 @@ abstract class MY_Model extends CI_Model implements MY_CrudInterface {
             ->from($this->getTableName())
             ->insert();
 
-        return $this->getDb()->result_id;
+        return $this->getDb()->insert_id();
 
 
     }

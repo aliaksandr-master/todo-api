@@ -10,6 +10,10 @@ module.exports = function(grunt){
 			'build_development/'
 		],
 
+		serverApi: [
+			'server/api/'
+		],
+
 		scripts: [
 			'client/js'
 		],

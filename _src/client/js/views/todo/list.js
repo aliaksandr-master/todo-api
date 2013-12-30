@@ -4,6 +4,9 @@ define(function(require, exports, module){
 
 	var $ = require("jquery");
 	require("jqueryui");
+	require('jquery/swipe');
+
+	require('css!styles/todo/list');
 	var BaseCollectionView = require('views/base/collection-view');
 
 	var ListItemView = require("views/todo/list-item");
@@ -11,19 +14,23 @@ define(function(require, exports, module){
 
 	var TodoLists = BaseCollectionView.extend({
 
-		className:"todo-list",
 		listSelector: '.todo-list-l',
 		itemSelector: '.todo-list-li',
 		template: template,
 		autoRender: true,
 		itemView: ListItemView,
 
+		regions: {
+			"todo-list/paginator": ".todo-list-line"
+		},
+
 		events: {
-			"click .remove-todo-btn": "purgeThisTodoList",
-			"click .todo-l-input-add-submit": "onAadBtnClick",
-			"change .todo-l-title": "saveTitle",
-			"keypress .todo-l-title": "toAddInput",
-			"keypress .todo-l-input-add":  "createOnEnter"
+			"click .todo-list-input-add-submit": "onAadBtnClick",
+			"change .todo-list-title": "saveTitle",
+			"keypress .todo-list-title": "toAddInput",
+			"keypress .todo-list-input-add": "createOnEnter",
+			'swipeleft .todo-list-li': 'onSwipeLeft',
+			'swiperight .todo-list-li': 'onSwipeRight'
 		},
 
 		initialize: function(options) {
@@ -34,26 +41,38 @@ define(function(require, exports, module){
 
 		},
 
+		onSwipeLeft: function(e){
+			console.log("swipe left", e);
+			return false;
+		},
+
+		onSwipeRight: function(e){
+			console.log("swipe right", e);
+			return false;
+		},
+
 		attach: function(){
 			ListItemView.__super__.attach.apply(this, arguments);
 			var that = this;
 
-			this.$('.todo-l-title').val(this.collectionModel.get("title"));
+			this.$('.todo-list-title').val(this.collectionModel.get("title"));
 			this._initTitleInputStatus();
 
 			var $l = this.$(".todo-list-l");
 			$l.sortable({
 
-				handle: ".todo-li-move",
+				handle: ".todo-list-li-move",
+
+				placeholder: "todo-list-li-placeholder",
 
 				update: function(event, ui){
 
-					$l.children().each(function(i){
+					$l.children(".todo-list-li").each(function(i){
 						var $e = $(this);
 						var m = that.collection.get($e.attr("data-itemId"));
 						if(m != null){
 							m.save({
-								sort_order: i
+								sortOrder: i
 							});
 						}
 					});
@@ -63,15 +82,9 @@ define(function(require, exports, module){
 			});
 		},
 
-		purgeThisTodoList: function(){
-			this.collection.clean();
-			this.collectionModel.destroy();
-			this.remove();
-		},
-
 		//Создание элемента
 		onAadBtnClick: function(){
-			var $input = $(".todo-l-input-add");
+			var $input = $(".todo-list-input-add");
 			var title = ($input.val()||"").trim();
 
 			if(!title){
@@ -79,7 +92,9 @@ define(function(require, exports, module){
 			}
 
 			this.collection.create({
+				sortOrder: this.collection.length,
 				listId: this.collectionModel.get("listId"),
+				itemId: Date.now() + "-" + Math.round(Math.random()*1000),
 				title: title
 			});
 
@@ -93,13 +108,13 @@ define(function(require, exports, module){
 		},
 
 		_initTitleInputStatus:function(){
-			var $titleInput = this.$('.todo-l-title');
+			var $titleInput = this.$('.todo-list-title');
 			var val = $titleInput.val().trim();
 			if(val.length){
-				$titleInput.removeClass("todo-l-title--empty");
-				this.$(".todo-l-input-add").focus();
+				$titleInput.removeClass("-empty");
+				this.$(".todo-list-input-add").focus();
 			}else{
-				$titleInput.addClass("todo-l-title--empty");
+				$titleInput.addClass("-empty");
 				$titleInput.focus();
 			}
 			return val;
@@ -115,7 +130,7 @@ define(function(require, exports, module){
 			if(e.keyCode !== 13 || !($(e.target).val()||"").trim()){
 				return;
 			}
-			this.$(".todo-l-input-add").focus();
+			this.$(".todo-list-input-add").focus();
 		}
 	});
 

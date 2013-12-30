@@ -1,12 +1,23 @@
-<div class="todo-li-meta">
-    <div class="todo-li-dsc-wr">
-        <div class="todo-li-dsc-mask">{{description}}</div>
-        <textarea placeholder="Comment" class="todo-li-dsc form-control">{{description}}</textarea>
+<div class="todo-list-item">
+
+    <div class="todo-list-item-head">
+        <input id="todo-list-item-chk" class="chk todo-list-item-done-chk" type="checkbox" value="1"{{#if done}} checked="checked"{{/if}}/>
+        <label for="todo-list-item-chk" class="todo-list-item-done btn btn-default" data-chk-on="Was Done" data-chk-off="Done"></label>
+        <button class="btn btn-success todo-list-item-save">
+            <span class="glyphicon glyphicon-ok"></span>
+            &nbsp;&nbsp;Save And Back To List
+        </button>
     </div>
-    <div class="todo-li-btn-remove-wr">
-        <input id="chk" class="todo-li-chc" type="checkbox" value="1" />
-        <label for="chk" class="todo-li-chc-label todo-li-chc-label--done btn btn-danger">Done</label>
-        <label for="chk" class="todo-li-chc-label todo-li-chc-label--process btn btn-default">To Do</label>
-        <a href="#" class="todo-li-btn-remove btn btn-default">Remove</a>
+
+    <div class="todo-list-item-body">
+        <textarea placeholder="Comment" class="todo-list-item-title form-control">{{title}}</textarea>
     </div>
+
+    <div class="todo-list-item-foot">
+        <button class="todo-li-btn-remove btn btn-default">
+            <span class="glyphicon glyphicon-remove"></span>
+            &nbsp;&nbsp;Remove
+        </button>
+    </div>
+
 </div>

@@ -11,7 +11,7 @@ define(function(require){
         model: ItemModel,
 
         comparator: function (model) {
-            return model.get("sort_order");
+            return model.get("sortOrder");
         },
 
         initialize: function (listId) {

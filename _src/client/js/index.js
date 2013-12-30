@@ -1,4 +1,4 @@
-require(["chaplin"],function(Chaplin){
+require(["chaplin", "routes"],function(Chaplin, routes){
 	'use strict';
 
 	var Application = Chaplin.Application.extend({});
@@ -10,16 +10,7 @@ require(["chaplin"],function(Chaplin){
 
 	return new Application({
 
-		routes: function(match){
-			match('user/register/', 'user#register');
-			match('user/profile/', 'user#profile');
-			match('user/login/', 'user#login');
-			match('todo/', 'todo#index');
-			match('todo/:listId/', 'todo#list');
-			match('todo/:listId/:itemId/', 'todo#item');
-			match('', 'static#home');
-			match('about/', 'static#about');
-		},
+		routes: routes,
 		controllerSuffix: ''
 
 	});

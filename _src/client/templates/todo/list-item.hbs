@@ -1,6 +1,6 @@
-<a href="/todo/{{listId}}/{{itemId}}/" class="todo-li" data-itemId="{{itemId}}">
-    <div class="todo-li-head">
-        <i class="todo-li-move"></i>
-        <div class="todo-li-h">{{title}}</div>
-    </div>
-</a>
+<li class="todo-list-li{{#if done}} -done{{/if}}" data-itemId="{{itemId}}">
+    <span class="glyphicon glyphicon-resize-vertical todo-list-li-move"></span>
+    <a href="/todo/{{listId}}/{{itemId}}/" class="todo-list-li-link">
+        {{firstRow title}}
+    </a>
+</li>

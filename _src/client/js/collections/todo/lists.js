@@ -12,6 +12,10 @@ define(function(require){
 
 		model: ListModel,
 
+		comparator: function (model) {
+			return model.get("sortOrder");
+		},
+
 		initialize: function () {
 			TodoListsCollection.__super__.initialize.apply(this, arguments);
 

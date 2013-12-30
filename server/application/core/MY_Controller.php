@@ -16,5 +16,11 @@ class MY_Controller extends CI_Controller {
     protected function output(){
         return $this->output;
     }
+
+    protected function checkTableField($name, $value){
+        $userObject = new User_model();
+        $user = $userObject->read(array($name => $value));
+        return (!empty($user)) ? true : false;
+    }
 }
 

@@ -201,7 +201,6 @@ if (defined('ENVIRONMENT'))
 require_once BASEPATH.'core/Model'.EXT;
 require_once APPPATH.'core/MY_Model'.EXT;
 
-
 /*
  * --------------------------------------------------------------------
  * LOAD THE BOOTSTRAP FILE

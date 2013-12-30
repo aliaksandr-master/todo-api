@@ -11,5 +11,13 @@ define(function(require, exports, module){
 		return Chaplin.helpers.reverse(routeName, params);
 	});
 
+	Handlebars.registerHelper('firstRow', function() {
+		return arguments[0].replace(/^\s+/, "").split(/\s+/).shift();
+	});
+
+	Handlebars.registerHelper('plus', function() {
+		return arguments[0] + arguments[1];
+	});
+
 	return null;
 });

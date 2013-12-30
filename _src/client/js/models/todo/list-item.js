@@ -10,6 +10,7 @@ define(function(require){
                 title: "",
                 description: "",
                 done: 0,
+				sortOrder: null,
 				listId: null,
 				itemId: null
             };

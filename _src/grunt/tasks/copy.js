@@ -7,6 +7,20 @@ module.exports = function(grunt){
 			excludeEmpty: true
 		},
 
+		serverApi: {
+			files: [
+				{
+					expand: true,
+					cwd: "_src/api/",
+					src: [
+						'**/*',
+						'*'
+					],
+					dest: "server/api/"
+				}
+			]
+		},
+
 		env_production: {
 			files: [
 				{

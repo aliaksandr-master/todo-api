@@ -17,21 +17,24 @@ html {
 	box-sizing: border-box;
 	border-bottom: 8px solid #00d134;
 }
-
 .main-header-user-wr {
 	float: right;
 	margin: 5px;
+	display: none;
 }
-
+.main-header-user-btn {
+	width: 50px;
+	padding-left: 0;
+	padding-right: 0;
+	text-align: center;
+}
 .main-header-nav-wr {
 	overflow: hidden;
 }
-
 body {
 	height: 100%;
 	min-height: 100%;
 }
-
 .main-menu {
 	display: block;
 	float: left;
@@ -42,8 +45,9 @@ body {
 	z-index: 100;
 }
 .main-wrapper {
-	padding: 20px;
+//	padding: 20px;
 }
+.main-content { min-height: 100%; }
 .main-menu.-open {
 }
 .main-menu.-open + .main .main-header-menu-wr {
