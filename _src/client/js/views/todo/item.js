@@ -12,13 +12,14 @@ define(function(require, exports, module){
 			"click .todo-li-btn-remove":  "removeModel"
 		},
 
-		binds: {
-			"change .todo-list-item-title": "title",
-			"change .todo-list-item-done-chk": "done"
+		bindings: {
+			".todo-list-item-title": "title",
+			".todo-list-item-done-chk": "done"
 		},
 
 		saveModel: function(){
 			this.model.save();
+			console.log(this.model.attributes);
 			this.remove();
 			this.trigger("modelWasSaved");
 		},
@@ -28,7 +29,6 @@ define(function(require, exports, module){
 				this.model.destroy();
 				this.remove();
 				this.trigger("modelWasRemoved");
-
 			}
 		},
 

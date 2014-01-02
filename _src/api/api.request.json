@@ -1,5 +1,6 @@
 {
 	"timestamp:number": "required",
-	"client_id:string": "required",
+	"clientId:string": "required",
+	"clientVersion:string": "required",
 	"data:object": "required"
 }

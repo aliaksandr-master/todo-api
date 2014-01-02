@@ -10,7 +10,8 @@
 		"modernizr": "latest",
 		"underscore": "latest",
 		"backbone": "latest",
-		"backbone.localStorage": "latest",
+		"backbone.dualstorage": "~1.1.0",
+		"backbone.stickit": "~0.7.0",
 		"handlebars": "~1.0.0",
 		"chaplin": "~0.11.3",
 		"jgrowl": "latest",
@@ -39,7 +40,7 @@
 			".": "detectizr.js"
 		},
 		"h_less": {
-			".h_less/less": "less"
+			"h_less/less": "less"
 		},
 		"jgrowl": {
 			".": [
@@ -73,6 +74,12 @@
 		},
 		"backbone-validation": {
 			".": "dist/backbone-validation.js"
+		},
+		"backbone.stickit": {
+			".": "backbone.stickit.js"
+		},
+		"backbone.dualstorage": {
+			".": "backbone.dualstorage.amd.js"
 		},
 		"requirejs": {
 			".": "require.js"

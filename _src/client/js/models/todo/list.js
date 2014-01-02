@@ -5,6 +5,10 @@ define(function(require){
 
     return BaseModel.extend({
 
+		url: function () {
+			return "/" + this.get("listId");
+		},
+
         defaults: function(){
 
             return {

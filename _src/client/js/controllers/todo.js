@@ -5,7 +5,7 @@ define(function(require, exports, module){
 
 	var _ = require("underscore");
 	var $ = require("jquery");
-	require('jquery/swipe');
+	require('jquery.swipe');
 
 	var TodoListCollectionView = require('views/todo/list');
 	var TodoListItemCollection = require('collections/todo/list-item');
@@ -22,13 +22,13 @@ define(function(require, exports, module){
 
 		initialize: function(){
 			TodoController.__super__.initialize.apply(this, arguments);
-			this.todoListsCollection = new TodoListsCollection({id: 0});
+			this.todoListsCollection = new TodoListsCollection();
 			this.todoListsCollection.fetch();
 			$(document).off('.mainSwipe');
 		},
 
 		create: function(){
-			var newId = -Date.now();
+			var newId = Date.now() + '-' + Math.round(Math.random() * 1000);
 
 			this.todoListsCollection.create({
 				title: "",
@@ -71,6 +71,7 @@ define(function(require, exports, module){
 		},
 
 		share: function(params){
+
 			this.listModel = this.todoListsCollection.get(params.listId);
 
 			if(!this.listModel){
@@ -97,7 +98,9 @@ define(function(require, exports, module){
 				return;
 			}
 
-			this.listItemColection = new TodoListItemCollection(params.listId);
+			this.listItemColection = new TodoListItemCollection({
+				propModel: this.listModel
+			});
 			this.listItemColection.fetch();
 
 			this.itemModel = this.listItemColection.get(params.itemId);
@@ -126,11 +129,15 @@ define(function(require, exports, module){
 			this.listModel = this.todoListsCollection.get(params.listId);
 
 			if(!this.listModel){
-				this.redirectTo({url: "/todo/"});
+				this.redirectTo({
+					url: "/todo/"
+				});
 				return;
 			}
 
-			this.listItemColection = new TodoListItemCollection(params.listId);
+			this.listItemColection = new TodoListItemCollection({
+				propModel: this.listModel
+			});
 			this.listItemColection.fetch();
 
 			this.todoListView = new TodoListCollectionView({

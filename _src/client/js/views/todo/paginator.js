@@ -19,9 +19,13 @@ define(function(require, exports, module){
 		render: function(){
 			TodoListPaginator.__super__.render.apply(this, arguments);
 			var length = this.collection.length;
-			this.$(".todo-paginator-li").width((Math.round(100*10/length)/10)+"%");
-			this.$("#todo-paginator-li-"+this.collectionModel.get("listId")).addClass("-active");
-
+			if(length > 1){
+				this.$el.show();
+				this.$(".todo-paginator-li").width((Math.round(100*10/length)/10)+"%");
+				this.$("#todo-paginator-li-"+this.collectionModel.get("listId")).addClass("-active");
+			}else{
+				this.$el.hide();
+			}
 		},
 
 		listSelector: '.todo-paginator-l',

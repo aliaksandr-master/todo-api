@@ -2,43 +2,30 @@ define(function(require, exports, module){
     "use strict";
 
     var Chaplin = require('chaplin');
-	var BackboneLocalStorage = require('backbone/localStorage');
 
 	var preloader = require('lib/preloader');
 
 	var BaseCollection = Chaplin.Collection.extend({
 
-		storagePref: null,
-
-		preloader: preloader,
-
-		initialize: function(){
-			BaseCollection.__super__.initialize.apply(this, arguments);
+		initialize: function(args){
+			this.propModel = (args || {}).propModel || {};
+			BaseCollection.__super__.initialize.call(this, args);
 		},
 
-		fetch: function(){
-			var that = this;
+		remote: false, // DualStorage option
 
-			this.preloader.on();
-			var jqXHR = BaseCollection.__super__.fetch.apply(this, arguments);
-			jqXHR.always(function(){
-				that.preloader.off();
-			});
-			return jqXHR;
+		local: true,   // DualStorage option
+
+		dispose: function(){
+			this.propModel = {};
+			return BaseCollection.__super__.dispose.apply(this, arguments);
 		},
 
 		clean: function(){
-			var model;
-			while ( this.length ) {
-				this.first().destroy();
+			while (this.length) {
+				this.first().destroy.apply(arguments);
 			}
 			return this;
-		},
-
-		initStorage:function(storageID){
-			if(this.storagePref){
-				this.localStorage = new BackboneLocalStorage(this.storagePref + (storageID || ""));
-			}
 		}
 
 	});

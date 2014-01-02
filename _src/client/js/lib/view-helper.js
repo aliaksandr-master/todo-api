@@ -12,7 +12,7 @@ define(function(require, exports, module){
 	});
 
 	Handlebars.registerHelper('firstRow', function() {
-		return arguments[0].replace(/^\s+/, "").split(/\s+/).shift();
+		return arguments[0].replace(/^\s+/, "").split(/[\n\r]+/).shift();
 	});
 
 	Handlebars.registerHelper('plus', function() {

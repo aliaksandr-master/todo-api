@@ -14,8 +14,8 @@ define(function(require, exports, module){
 			"click .todo-list-share-save": "saveShared"
 		},
 
-		binds: {
-			"change .todo-list-share-chk": "shared"
+		bindings: {
+			".todo-list-share-chk": "shared"
 		},
 
 		attach: function(){

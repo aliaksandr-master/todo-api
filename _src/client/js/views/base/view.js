@@ -8,7 +8,6 @@ define(function(require, exports, module){
 	var preloader = require('lib/preloader');
 
 	require('lib/view-helper');
-	var bind = require('lib/data-bind');
 
 	var BaseView = Chaplin.View.extend({
 
@@ -16,25 +15,25 @@ define(function(require, exports, module){
 
 		noWrap: true,
 
-		initialize: function(){
-			BaseView.__super__.initialize.apply(this, arguments);
-		},
-
-		attach: function(){
-			var r = BaseView.__super__.attach.apply(this, arguments);
-			this.unbindAll();
-			this.bind();
+		dispose: function(){
+			var r = BaseView.__super__.dispose.apply(this, arguments);
 			return r;
 		},
 
 		remove: function(){
-			this.unbindAll();
-			return BaseView.__super__.remove.apply(this, arguments);
+			var r = BaseView.__super__.remove.apply(this, arguments);
+			return r;
 		},
 
-		bind: bind.viewDataBind,
-		unbind: bind.viewDataUnBind,
-		unbindAll: bind.viewDataUnBindAll,
+		attach: function(){
+			var r = BaseView.__super__.attach.apply(this, arguments);
+
+			if(this.model && this.bindings){
+				this.unstickit();
+				this.stickit();
+			}
+			return r;
+		},
 
 		formSubmit: function(opt){
 
