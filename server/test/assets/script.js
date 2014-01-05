@@ -23,10 +23,12 @@
 
 		var $form = $("#formS form"),
 			$method = $('#_METHOD_'),
+			$format = $("#_FORMAT_"),
 			$url = $('#_URL_');
 
 		$method.val(($form.attr("method") || "").toUpperCase() || "GET");
 		$url.val(($form.attr("action") || "") || "/");
+		$format.val($form.attr("data-format") || "json");
 
 		$(document.body).on("submit", "form", function(){
 
@@ -48,25 +50,23 @@
 
 			var strParam = $.param(param);
 
-			var jsonParam = {
-				timestamp: Date.now(),
-				data: {}
-			};
+			var jsonParam = {};
 
 			for(var i = 0; i < param.length; i++){
-				jsonParam.data[param[i].name] = param[i].value;
+				jsonParam[param[i].name] = param[i].value;
 			}
 
 			var resultParams = param;
 
 			var resultParamsStr = strParam;
 
-			if($("#_FORMAT_").val() === "json" && pararms.type != "GET"){
+			if($format.val() === "json" && pararms.type != "GET"){
 				resultParams = jsonParam;
-				resultParamsStr = JSON.stringify(resultParams);
-			}
+				resultParamsStr = $.param({
+					json: JSON.stringify(resultParams)
+				});
 
-			console.log(pararms);
+			}
 
 			$("#requestParams").html("");
 			$("#errors").html("");

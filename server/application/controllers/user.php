@@ -13,15 +13,18 @@ class User extends REST_Controller {
         $this->loader()->helper('url');
     }
 
-    public function register_post(){
+    public function index_post(){
 
         $dataTransfer = new Data_transfer();
 
-        foreach($this->_post_args as $name => $value){
+        $post = $this->_post_args;
+
+        foreach($post as $name => $value){
             if(empty($value)){
                 $dataTransfer->error()->field($name, 'required');
             }
         }
+
         if(!valid_email($this->post('email'))){
             $dataTransfer->error()->field('email', 'incorrect_format');
         }
@@ -45,7 +48,7 @@ class User extends REST_Controller {
             $checkErrors = $dataTransfer->error()->getResult();
             if(!$checkErrors){
                 $data['password'] = md5($data['password']);
-                $data['date_register'] = date("Y-m-d h:i:s", gettimeofday(true));
+                $data['date_register'] = date("Y-m-d H:i:s", gettimeofday(true));
                 $activationCode = sha1(md5(microtime()));
                 $data['activation_code'] = $activationCode;
 
