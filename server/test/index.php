@@ -64,6 +64,10 @@ $uriParts = explode("/", $uri);
         </div>
     </div>
     <div style="margin: 10px 0 50px;">
+        <div class="panel panel-default" style="margin-bottom: 20px;">
+            <div class="panel-heading">Reqquest Params</div>
+            <div class="panel-body" id="jsonParamWr"></div>
+        </div>
         <div id="errorWr" style="margin-bottom: 20px;"></div>
         <div class="panel panel-default" style="margin-bottom: 20px;">
             <div class="panel-heading">Respoonse JSON</div>
@@ -85,9 +89,18 @@ $uriParts = explode("/", $uri);
             $(this).attr("placeholder", $(this).attr("name"))
         });
         $(document.body).on("submit", "form", function(){
-            $.ajax({
+            var pararms = {
                 type: $(this).attr("method"),
                 url: $(this).attr("action"),
+                data: $(this).serializeArray()
+            };
+            $("#jsonParamWr").html("");
+            JSONFormatter.format(pararms, {
+                collapse: false, // Setting to 'true' this will format the JSON into a collapsable/expandable tree
+                appendTo: '#jsonParamWr', // A string of the id, class or element name to append the formatted json
+                list_id: 'jsonParam' // The name of the id at the root ul of the formatted JSON
+            });
+            $.ajax($.extend(pararms,{
                 data: $(this).serialize(),
                 success: function(response){
                     $("#errorWr").hide();
@@ -103,15 +116,13 @@ $uriParts = explode("/", $uri);
                         $("#jsonP").text(response);
                         $("#respHtml").html(response);
                     }
-
-
                 },
                 error: function(){
                     $("#errorWr").show().html(
                         '<div class="alert alert-danger">Ajax Error</div>'
                     );
                 }
-            });
+            }));
             return false;
         });
     });
