@@ -1,0 +1,25 @@
+.form {  }
+.form-submit {  }
+
+form > .form-control + .form-control {
+	margin-top: 10px;
+}
+
+form {
+	padding: 10px;
+	border: 1px solid #0000FF;
+	margin-bottom: 20px;
+}
+
+form:empty {
+	padding: 0;
+	margin: 0;
+}
+
+.requestParams-panel-wr { float: right; width: 30%; }
+.form-panel-wr { float: left; width: 68%; }
+
+#json {
+	background: #fffae5;
+	padding: 10px;
+}

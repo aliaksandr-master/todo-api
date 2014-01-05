@@ -1,14 +1,8 @@
 <?php
-
-
 require_once("../application/helpers/dump_helper.php");
 require_once("../application/helpers/fs_helper.php");
-
-$uri = $_SERVER["REQUEST_URI"];
-
-$uri = str_replace("/server/test/", "", $uri);
+$uri = str_replace("/server/test/", "", makeValidPath($_SERVER["REQUEST_URI"], "/"));
 $uriParts = explode("/", $uri);
-
 ?>
 <!DOCTYPE html>
 <html>
@@ -16,13 +10,11 @@ $uriParts = explode("/", $uri);
     <title></title>
     <link rel="stylesheet" href="/server/test/assets/bootstrap/custom/css/bootstrap.css"/>
     <link rel="stylesheet" href="/server/test/assets/json-formatter/json-formatter.css"/>
+    <link rel="stylesheet" href="/server/test/assets/style.css"/>
     <script src="/server/test/assets/jquery/jquery.js"></script>
     <script src="/server/test/assets/bootstrap/custom/js/bootstrap.js"></script>
     <script src="/server/test/assets/json-formatter/json-formatter.js"></script>
-    <style>
-        /*SOME GLOBAL STYLES FOR TESTS*/
-
-    </style>
+    <script src="/server/test/assets/script.js"></script>
 </head>
 <body>
 <div style="margin: 10px;">
@@ -46,86 +38,79 @@ $uriParts = explode("/", $uri);
     </div>
 </div>
 <div style="margin: 10px;">
-    <div style="margin: 10px 0 10px;">
-        <h1><?php echo($uri)?></h1>
-    </div>
-    <div class="panel panel-default" style="margin-bottom: 20px;">
-        <div class="panel-heading">FORM</div>
-        <div class="panel-body" id="formS">
-            <?php
+    <h1><?php echo($uri)?></h1>
+    <div class="clearfix">
+        <div class="requestParams-panel-wr">
+            <div class="panel panel-default">
+                <div class="panel-heading">Request Data (formatted)</div>
+                <div class="panel-body" id="requestParams"></div>
+            </div>
+            <div class="panel panel-default">
+                <div class="panel-heading">Request Data</div>
+                <div class="panel-body" id="requestDataNonFormat"></div>
+            </div>
+        </div>
+        <div class="form-panel-wr">
+            <div class="panel panel-default form-panel">
+                <div class="panel-heading clearfix" style="background: #ccc;">
+                    <div class="pull-right" style="margin-left: 10px;">
+                        <label>METHOD</label>
+                        <select id="_METHOD_" class="form-control" style="width: 110px;">
+                            <option value="GET">GET</option>
+                            <option value="PUT">PUT</option>
+                            <option value="POST">POST</option>
+                            <option value="DELETE">DELETE</option>
+                            <option value="PATCH">PATCH</option>
+                        </select>
+                    </div>
+                    <div class="pull-right" style="margin-left: 10px;">
+                        <label>SEND FORMAT</label>
+                        <select id="_FORMAT_" class="form-control" style="width: 110px;">
+                            <option value="json">JSON</option>
+                            <option value="params">Params</option>
+                        </select>
+                    </div>
+                    <div style="overflow: hidden;">
+                        <label>URL</label>
+                        <input type="text" id="_URL_" value="" class="form-control"/>
+                    </div>
+                </div>
+                <div class="panel-body" id="formS" style="border: 3px solid #ccc; box-shadow: none;">
+                    <div class="form-in">
+                        <?php
 
-            $filePath = realpath("./".$uri.".html");
-            is_file($filePath) && include($filePath);
+                        $filePath = realpath("./".$uri.".html");
+                        is_file($filePath) && include($filePath);
 
-            ?>
-            <div style="padding-top: 20px;">
-                <input type="submit" class="btn btn-success" onclick="$(this).parent().parent().find('form').eq(0).submit()"/>
+                        ?>
+                    </div>
+                    <div class="form-submit">
+                        <div class="pull-right">
+                            <select id="_USER_SESSION_" class="form-control">
+                                <option value="">Empty SESSION</option>
+                                <option value="1">Test User</option>
+                            </select>
+                        </div>
+                        <input id="form-submit" type="submit" class="btn btn-success"/>
+                    </div>
+                </div>
+            </div>
+
+            <div id="errors"></div>
+            <div class="panel panel-default">
+                <div class="panel-heading">Respoonse JSON</div>
+                <div class="panel-body" id="responseJSON"></div>
+            </div>
+            <div class="panel panel-default">
+                <div class="panel-heading">Respoonse HTML</div>
+                <div class="panel-body" id="responseHTML"></div>
+            </div>
+            <div class="panel panel-default">
+                <div class="panel-heading">Respoonse (Without Format)</div>
+                <div class="panel-body" id="response"></div>
             </div>
         </div>
     </div>
-    <div style="margin: 10px 0 50px;">
-        <div class="panel panel-default" style="margin-bottom: 20px;">
-            <div class="panel-heading">Reqquest Params</div>
-            <div class="panel-body" id="jsonParamWr"></div>
-        </div>
-        <div id="errorWr" style="margin-bottom: 20px;"></div>
-        <div class="panel panel-default" style="margin-bottom: 20px;">
-            <div class="panel-heading">Respoonse JSON</div>
-            <div class="panel-body" id="jsonWr"></div>
-        </div>
-        <div class="panel panel-default">
-            <div class="panel-heading">Respoonse HTML</div>
-            <div class="panel-body" id="respHtml"></div>
-        </div>
-        <div class="panel panel-default">
-            <div class="panel-heading">Respoonse</div>
-            <div class="panel-body" id="jsonP"></div>
-        </div>
-    </div>
 </div>
-<script>
-    $(function(){
-        $(document.body).find("[name]:not([placeholder])").each(function(){
-            $(this).attr("placeholder", $(this).attr("name"))
-        });
-        $(document.body).on("submit", "form", function(){
-            var pararms = {
-                type: $(this).attr("method"),
-                url: $(this).attr("action"),
-                data: $(this).serializeArray()
-            };
-            $("#jsonParamWr").html("");
-            JSONFormatter.format(pararms, {
-                collapse: false, // Setting to 'true' this will format the JSON into a collapsable/expandable tree
-                appendTo: '#jsonParamWr', // A string of the id, class or element name to append the formatted json
-                list_id: 'jsonParam' // The name of the id at the root ul of the formatted JSON
-            });
-            $.ajax($.extend(pararms,{
-                data: $(this).serialize(),
-                success: function(response){
-                    $("#errorWr").hide();
-                    $("#jsonWr").html("");
-                    if($.isPlainObject(response)){
-                        JSONFormatter.format(response, {
-                            collapse: false, // Setting to 'true' this will format the JSON into a collapsable/expandable tree
-                            appendTo: '#jsonWr', // A string of the id, class or element name to append the formatted json
-                            list_id: 'json' // The name of the id at the root ul of the formatted JSON
-                        });
-                        $("#jsonP").text(JSON.stringify(response));
-                    }else{
-                        $("#jsonP").text(response);
-                        $("#respHtml").html(response);
-                    }
-                },
-                error: function(){
-                    $("#errorWr").show().html(
-                        '<div class="alert alert-danger">Ajax Error</div>'
-                    );
-                }
-            }));
-            return false;
-        });
-    });
-</script>
 </body>
 </html>
