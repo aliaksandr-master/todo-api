@@ -953,8 +953,9 @@ abstract class REST_Controller extends MY_Controller
 		else
 		{
 			parse_str(file_get_contents('php://input'), $this->_put_args);
+
             if(isset($this->_put_args["json"])){
-                $this->_put_args = json_decode($this->_put_args["json"]);
+                $this->_put_args = (array)json_decode($this->_put_args["json"]);
             }
 		}
 	}
@@ -1012,7 +1013,7 @@ abstract class REST_Controller extends MY_Controller
 		// Set up out DELETE variables (which shouldn't really exist, but sssh!)
 		parse_str(file_get_contents('php://input'), $this->_delete_args);
         if(isset($this->_delete_args["json"])){
-            $this->_delete_args = json_decode($this->_delete_args["json"]);
+            $this->_delete_args = (array)json_decode($this->_delete_args["json"]);
         }
 	}
 

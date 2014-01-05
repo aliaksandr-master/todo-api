@@ -1,6 +1,7 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
 require APPPATH.'/libraries/REST_Controller.php';
+require APPPATH.'/libraries/SmartyParams.php';
 
 class Todo extends REST_Controller {
 
@@ -11,7 +12,7 @@ class Todo extends REST_Controller {
         $this->loader()->library('data_transfer/Data_transfer');
     }
 
-    public function list_get($id = null){
+    public function index_get($id = null){
         $dataTransfer = new Data_Transfer();
         $todoObject = new Todo_model();
         $where = null;
@@ -19,23 +20,29 @@ class Todo extends REST_Controller {
             $where = array('id' => $id);
         }
         $todoArray = $todoObject->read($where);
-        $dataTransfer->data('list', $todoArray);
+        $dataTransfer->data($todoArray);
         $this->response($dataTransfer->getAllData());
     }
 
-    public function list_post(){
+    public function index_post(){
         $dataTransfer = new Data_Transfer();
-        if(empty($this->_post_args['name'])){
+
+        $inputData = new SmartyParams($this->_post_args);
+
+        if(empty($inputData['name'])){
             $dataTransfer->error()->field('name', 'required');
         } else {
             $data = array();
-            $data['name'] = trim($this->post('name'));
+            $data['name'] = trim($inputData['name']);
             $data['date_create'] = date("Y-m-d H:i:s", gettimeofday(true));
             $data['link'] = md5(gettimeofday(true).rand(1,1100)).gettimeofday(true);
 
             $todoObject = new Todo_model();
             $todoId = $todoObject->create($data);
-            $dataTransfer->data('todo_id', $todoId);
+
+            $this->index_get($todoId);
+            return;
+
         }
         $this->response($dataTransfer->getAllData());
     }
@@ -48,26 +55,108 @@ class Todo extends REST_Controller {
             $where['id'] = $id;
         }
         $todoItemArray = $todoItemObject->read($where);
-        $dataTransfer->data('item', $todoItemArray);
+        $dataTransfer->data($todoItemArray);
         $this->response($dataTransfer->getAllData());
     }
 
-    public function item_post(){
+    public function item_post($todoId = null){
+
+        $inputData = new SmartyParams($this->_post_args);
+
         $dataTransfer = new Data_Transfer();
-        if(empty($this->_post_args['name'])){
+        if(is_null($todoId)){
+            $dataTransfer->error()->field('todo_id', 'requared');
+        }
+        if(empty($inputData['name'])){
             $dataTransfer->error()->field('name', 'required');
-        } else {
+        }
+
+        if (!$dataTransfer->hasError()){
             $data = array();
-            $data['todo_id'] = trim($this->post('todo_id'));
-            $data['name'] = trim($this->post('name'));
+            $data['todo_id'] = trim($todoId);
+            $data['name'] = trim($inputData['name']);
             $data['date_create'] = date("Y-m-d H:i:s", gettimeofday(true));
 
             $todoItemObject = new TodoItem_model();
             $todoItemId = $todoItemObject->create($data);
-            $dataTransfer->data('item_id', $todoItemId);
+
+            $this->item_get($todoId, $todoItemId);
+            return;
+
         }
         $this->response($dataTransfer->getAllData());
     }
 
+    public function index_put($id = null){
+        $dataTransfer = new Data_Transfer();
+
+        $inputData = new SmartyParams($this->_args);
+
+        if(!empty($inputData['name'])){
+//            $dataTransfer->error()->field('name', 'required');
+//        } else {
+            $data = array();
+            $data['name'] = trim($inputData['name']);
+            $data['date_create'] = date("Y-m-d H:i:s", gettimeofday(true));
+            $data['link'] = md5(gettimeofday(true).rand(1,1100)).gettimeofday(true);
+
+            $todoObject = new Todo_model();
+            $todoId = $todoObject->update($data, array('id' => $id));
+
+            $this->index_get($todoId);
+            return;
+
+        }
+        $this->response($dataTransfer->getAllData());
+    }
+
+
+    public function item_put($todoId = null){
+
+        $inputData = new SmartyParams($this->_args);
+
+        $dataTransfer = new Data_Transfer();
+        if(is_null($todoId)){
+            $dataTransfer->error()->field('todo_id', 'required');
+        }
+        if(empty($inputData['name'])){
+            $dataTransfer->error()->field('name', 'required');
+        }
+
+        if (!$dataTransfer->hasError()){
+            $data = array();
+            $data['todo_id'] = trim($todoId);
+            $data['name'] = trim($inputData['name']);
+            $data['is_active'] = trim($inputData['is_active']);
+            $data['sort_order'] = trim($inputData['sort_order']);
+            $data['name'] = trim($inputData['name']);
+            $data['date_create'] = date("Y-m-d H:i:s", gettimeofday(true));
+
+            $todoItemObject = new TodoItem_model();
+            $todoItemId = $todoItemObject->update($data, array('id' => $todoId));
+
+            $this->item_get($todoId, $todoItemId);
+            return;
+
+        }
+        $this->response($dataTransfer->getAllData());
+    }
+
+
+    public function index_delete($id){
+        $dataTransfer = new Data_Transfer();
+        $todoObject = new Todo_model();
+        $todoResult = $todoObject->delete(array('id' => $id));
+        $dataTransfer->data('result', $todoResult);
+        $this->response($dataTransfer->getAllData());
+    }
+
+    public function item_delete($todoId, $id){
+        $dataTransfer = new Data_Transfer();
+        $todoObject = new TodoItem_model();
+        $todoResult = $todoObject->delete(array('id' => $id));
+        $dataTransfer->data('result', $todoResult);
+        $this->response($dataTransfer->getAllData());
+    }
 
 }

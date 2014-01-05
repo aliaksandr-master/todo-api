@@ -72,8 +72,22 @@ class Data_transfer{
         return $this;
     }
 
-    public function data($name,$value){
-        $this->_data->setValue($name,$value);
+    public function data($name, $value = null){
+        if(is_object($name)){
+            $name = (array) $name;
+        }else if(!is_array($name) && (is_string($name) || is_numeric($name))){
+            $arr = array();
+            $arr[$name] = $value;
+            $name = $arr;
+        }
+
+        if(!is_array($name)){
+            throw new Exception("invalid data format");
+        }
+
+        foreach($name as $n => $v){
+            $this->_data->setValue($n,$v);
+        }
         return $this;
     }
 
@@ -90,6 +104,10 @@ class Data_transfer{
     public function format($format){
         $this->_format->setValue($format);
         return $this;
+    }
+
+    public function hasError(){
+        return (bool)$this->error()->getResult();
     }
 
 

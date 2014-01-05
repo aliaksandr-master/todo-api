@@ -41,10 +41,10 @@
 $route['default_controller'] = "welcome";
 $route['404_override'] = '';
 
-$route['todo/list/(\d+)/item/(\d+)'] = 'todo/item/$1/$2';
-$route['todo/list/(\d+)/item'] = "todo/item/$1";
-$route['todo/list/(\d+)'] = "todo/list/$1";
-$route['todo/list'] = "todo/list";
+$route['todo/(\d+)/item/(\d+)'] = 'todo/item/$1/$2';
+$route['todo/(\d+)/item'] = "todo/item/$1";
+$route['todo/(\d+)'] = "todo/index/$1";
+$route['todo'] = "todo/index";
 
 /* End of file routes.php */
 /* Location: ./application/config/routes.php */

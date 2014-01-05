@@ -84,9 +84,31 @@ abstract class MY_Model extends CI_Model implements MY_CrudInterface {
     }
 
     public function update(array $data, array $where){
+
+        $tableFields = $this->getTableFields();
+
+        foreach ($data as $key => $value){
+            if(in_array($key, $tableFields)) {
+                $this->getDb()->set($key, $value);
+            } else {
+                throw new Exception('undefined key "'.$key.'" must be in array ['.implode(',', $tableFields).']');
+            }
+        }
+        $this->getDb()
+            ->from($this->getTableName())
+            ->where($where)
+            ->update();
+
+        return $this->getDb()->result_id;
     }
 
     public function delete(array $where){
+        $this->getDb()
+            ->from($this->getTableName())
+            ->where($where)
+            ->delete();
+        // TODO return boolean
+        return true;
     }
 
 }

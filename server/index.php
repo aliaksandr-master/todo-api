@@ -1,5 +1,23 @@
 <?php
 
+ini_set('xdebug.overload_var_dump', '0');
+
+//        ini_set('xdebug.remote_enable', '1');
+//        ini_set('xdebug.remote_handler', 'dbgp');
+//        ini_set('xdebug.remote_host', 'localhost');
+//        ini_set('xdebug.remote_port', '9000');
+//        ini_set('xdebug.idekey', 'PHPSTORM');
+
+ini_set('xdebug.auto_trace', 'On');
+//ini_set('xdebug.trace_output_dir', H::fsMakeDir(DIR.DS."debug".DS."xdebug"));
+
+ini_set('xdebug.show_local_vars', 'On');
+ini_set('xdebug.var_display_max_depth', '15');
+ini_set('xdebug.dump_globals', 'On');
+ini_set('xdebug.collect_params', '4');
+ini_set('xdebug.dump_once', 'Off');
+ini_set('xdebug.cli_color', 'Off');
+ini_set('xdebug.show_exception_trace', 'On');
 
 
 /*

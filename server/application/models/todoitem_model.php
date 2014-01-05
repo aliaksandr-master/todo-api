@@ -7,6 +7,6 @@ class TodoItem_model extends MY_Model {
     }
 
     public function getTableFields() {
-        return array('todo_id', 'name', 'is_active', 'date_create', 'sort_order');
+        return array('id', 'todo_id', 'name', 'is_active', 'date_create', 'sort_order');
     }
 }
