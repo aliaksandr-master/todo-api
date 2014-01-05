@@ -9,6 +9,7 @@ class User extends REST_Controller {
         $this->loader()->model('User_model');
         $this->loader()->library('data_transfer/Data_transfer');
         $this->loader()->library('email');
+        $this->loader()->helper('email');
         $this->loader()->helper('url');
     }
 
