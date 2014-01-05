@@ -1,6 +1,6 @@
 <?php
 
-class Task_model extends MY_Model {
+class Todo_model extends MY_Model {
 
     public function getTableName() {
         return array('task');
