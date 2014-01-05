@@ -12,8 +12,23 @@ define(function(require, exports, module){
 		},
 
 		server: mainServer,
+		syncName: null,
 
-		format: "json"
+		parse: function (response) {
+			if (this.syncName && this.server && this.server.adaptor[this.syncName] && this.server.adaptor[this.syncName].server2client) {
+				return this.server.adaptor[this.syncName].server2client(response);
+			} else {
+				return BaseModel.__super__.parse.apply(this, arguments);
+			}
+		},
+
+		toJSON: function () {
+			if (this.syncName && this.server && this.server.adaptor[this.syncName] && this.server.adaptor[this.syncName].client2server) {
+				return this.server.adaptor[this.syncName].client2server(this);
+			} else {
+				return BaseModel.__super__.toJSON.apply(this, arguments);
+			}
+		}
 
 	});
 

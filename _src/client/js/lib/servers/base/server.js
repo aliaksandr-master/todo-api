@@ -9,7 +9,7 @@ define(function(require, exports, module){
 
 	var noXhrPatch = typeof window !== 'undefined' && !!window.ActiveXObject && !(window.XMLHttpRequest && (new XMLHttpRequest()).dispatchEvent);
 
-	var BaseServer = utils.BackboneClass({
+	var BaseServer = utils.BackboneClass({}, {
 
 		ajax: function (options) {
 			return $.ajax(options);

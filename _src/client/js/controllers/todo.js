@@ -30,16 +30,16 @@ define(function(require, exports, module){
 		create: function(){
 			var newId = Date.now() + '-' + Math.round(Math.random() * 1000);
 
-			this.todoListsCollection.create({
+			var listModel = this.todoListsCollection.create({
 				title: "",
 				shared: false,
-				sortOrder: this.todoListsCollection.length,
-				link: location.host + "/todo/shared/"+newId,
-				listId: newId
+				sortOrder: this.todoListsCollection.length
 			});
 
-			this.redirectTo({
-				url: "/todo/" + newId + "/"
+			this.listenTo(listModel, "sync", function(){
+				this.redirectTo({
+					url: "/todo/" + listModel.get("listId") + "/"
+				});
 			});
 		},
 

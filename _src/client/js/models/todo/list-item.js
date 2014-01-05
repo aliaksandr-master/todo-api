@@ -5,11 +5,9 @@ define(function(require){
 
     return BaseModel.extend({
 
-		url: function(){
-			return "/" + this.get("itemId");
-		},
+		syncName: 'todo-list-item',
 
-        defaults: function() {
+		defaults: function() {
             return {
                 title: "",
                 description: "",

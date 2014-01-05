@@ -7,11 +7,9 @@ define(function(require, exports, module){
 
 	var ajax = Backbone.ajax;
 	Backbone.ajax = function(options){
-		var Server = options.server;
-		if(Server){
-			console.log(Server);
+		var server = options.server;
+		if(server){
 			delete options.server;
-			var server = new Server;
 			return server.ajax(options);
 		} else {
 			return ajax.apply(this, arguments);
