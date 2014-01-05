@@ -11,8 +11,11 @@ define(function(require, exports, module){
 		if(Server){
 			console.log(Server);
 			delete options.server;
+			var server = new Server;
+			return server.ajax(options);
+		} else {
+			return ajax.apply(this, arguments);
 		}
-		ajax.apply(this, arguments);
 	};
 
 	var sync = Backbone.sync;

@@ -3,6 +3,7 @@ define(function(require, exports, module){
 
     var utils		= require('lib/utils');
     var _			= require('underscore');
+    var $			= require('jquery');
     var Backbone	= require('backbone');
     var Chaplin		= require('chaplin');
 
@@ -10,20 +11,8 @@ define(function(require, exports, module){
 
 	var BaseServer = utils.BackboneClass({
 
-		methodMap: {
-			'read':		'GET',
-			'create':	'POST',
-			'update':	'PUT',
-			'delete':	'DELETE',
-			'patch':	'PATCH'
-		},
-
-		urlError: function() {
-			throw new Error('A "url" property or function must be specified');
-		},
-
-		sync: function (syncObject, method, model, options) {
-
+		ajax: function (options) {
+			return $.ajax(options);
 		}
 
 	});
