@@ -14,6 +14,7 @@
 			'jqueryui': '../vendor/jqueryui/jquery-ui-1.10.3.custom/js/jquery-ui-1.10.3.custom',
 			'underscore': '../vendor/underscore/underscore',
 			'backbone': '../vendor/backbone/backbone',
+			'backbone.shim': 'shim/backbone.shim',
 			'backbone.dualStorage': '../vendor/backbone.dualstorage/backbone.dualstorage.amd',
 			'backbone.stickit': '../vendor/backbone.stickit/backbone.stickit',
 			'handlebars': '../vendor/handlebars/handlebars',
@@ -53,6 +54,7 @@
 			chaplin: {
 				deps: [
 					'backbone',
+					'backbone.shim',
 					'backbone.dualStorage',
 					'backbone.stickit'
 				]

@@ -1,18 +1,28 @@
 define(function(require, exports, module){
-    "use strict";
+	"use strict";
 
-    var Chaplin = require('chaplin');
+	var Chaplin = require('chaplin');
+	var _ = require('underscore');
 
 	var preloader = require('lib/preloader');
+	var mainServer = require('lib/servers/main');
 
 	var BaseCollection = Chaplin.Collection.extend({
 
+		server: mainServer,
+
+		format: "json",
+
 		initialize: function(args){
-			this.propModel = (args || {}).propModel || {};
+			args = args || {};
+
+			this.propModel = args.propModel || {};
+			delete args.propModel;
+
 			BaseCollection.__super__.initialize.call(this, args);
 		},
 
-		remote: false, // DualStorage option
+		remote: true, // DualStorage option
 
 		local: true,   // DualStorage option
 
@@ -30,5 +40,5 @@ define(function(require, exports, module){
 
 	});
 
-    return BaseCollection;
+	return BaseCollection;
 });
