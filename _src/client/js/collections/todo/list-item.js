@@ -8,7 +8,6 @@ define(function(require){
 
 		initialize: function(){
 			ListItemCollection.__super__.initialize.apply(this, arguments);
-			console.log("propModel:", this.propModel);
 			this.listId = this.propModel.get("listId");
 		},
 

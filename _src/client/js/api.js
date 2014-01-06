@@ -52,11 +52,11 @@ define(function(require, exports, module){
 	};
 
 	var defaultServer2client = function(resp){
-			console.warn('defaultServer2client');
+//			console.warn('defaultServer2client');
 			return resp;
 		},
 		defaultClient2server = function(model){
-			console.warn('defaultClient2server');
+//			console.warn('defaultClient2server');
 			return model.attributes;
 		};
 
