@@ -11,13 +11,9 @@ define(function(require, exports, module){
 
     var TodoPaginatorItemView = BaseView.extend({
 
-		getTemplateData: function() {
-			var data = _.extend({
-				index: this.model.collection.indexOf(this.model) + 1
-			}, TodoPaginatorItemView.__super__.getTemplateData.apply(this, arguments));
-			return data;
+		bindings: {
+			".todo-paginator-li-link": "title"
 		},
-
 
 		autoRender: true,
 		template: template

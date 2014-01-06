@@ -9,6 +9,8 @@ define(function(require, exports, module){
 
 	var BaseCollection = Chaplin.Collection.extend({
 
+		isCollection: true,
+
 		server: mainServer,
 
 		format: "json",
@@ -16,8 +18,10 @@ define(function(require, exports, module){
 		initialize: function(args){
 			args = args || {};
 
-			this.propModel = args.propModel || {};
-			delete args.propModel;
+			if(args.propModel){
+				this.propModel = args.propModel;
+				delete args.propModel;
+			}
 
 			BaseCollection.__super__.initialize.call(this, args);
 		},

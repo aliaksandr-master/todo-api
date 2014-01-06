@@ -1,8 +1,8 @@
 <?php defined('BASEPATH') OR exit('No direct script access allowed');
 
-require_once('Data_transfer_simple_value_object.php');
-require_once('Data_transfer_multi_value_object.php');
-require_once('Data_transfer_error_object.php');
+require_once('DataTransferSimpleValueObject.php');
+require_once('DataTransferMultiValueObject.php');
+require_once('DataTransferErrorObject.php');
 
 ///**
 // * DataTransfer class

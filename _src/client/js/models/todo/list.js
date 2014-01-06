@@ -5,16 +5,16 @@ define(function(require){
 
     return BaseModel.extend({
 
-		syncName: "todo-list",
+		modelName: "todo-list",
 
         defaults: function(){
 
             return {
 				shared: false,
-				sortOrder: null,
+				createDate: "",
+				sortOrder: 0,
                 isActive: false,
-                title: "",
-                listId: null
+                title: ""
             };
 
         },

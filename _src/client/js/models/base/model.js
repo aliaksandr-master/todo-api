@@ -3,31 +3,18 @@ define(function(require, exports, module){
 
     var Chaplin = require('chaplin');
     var _ = require('underscore');
-	var mainServer = require('lib/servers/main');
+	var api = require("api");
 
 	var BaseModel = Chaplin.Model.extend({
 
-		initialize: function(){
-			BaseModel.__super__.initialize.apply(this, arguments);
-		},
-
-		server: mainServer,
-		syncName: null,
+		modelName: null,
 
 		parse: function (response) {
-			if (this.syncName && this.server && this.server.adaptor[this.syncName] && this.server.adaptor[this.syncName].server2client) {
-				return this.server.adaptor[this.syncName].server2client(response);
-			} else {
-				return BaseModel.__super__.parse.apply(this, arguments);
-			}
+			return api(this.modelName).server2client.call(this, response);
 		},
 
 		toJSON: function () {
-			if (this.syncName && this.server && this.server.adaptor[this.syncName] && this.server.adaptor[this.syncName].client2server) {
-				return this.server.adaptor[this.syncName].client2server(this);
-			} else {
-				return BaseModel.__super__.toJSON.apply(this, arguments);
-			}
+			return api(this.modelName).client2server.call(this, this);
 		}
 
 	});

@@ -18,10 +18,10 @@ define(function(require, exports, module){
 		},
 
 		saveModel: function(){
-			this.model.save();
-			console.log(this.model.attributes);
-			this.remove();
-			this.trigger("modelWasSaved");
+			this.model.save().then(function(){
+				this.remove();
+				this.trigger("modelWasSaved");
+			}.bind(this));
 		},
 
 		removeModel: function(){

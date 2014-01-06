@@ -1,8 +1,8 @@
 define(function(require){
 	"use strict";
 
-	var  ListModel = require('models/todo/list');
-	var  BaseCollection = require('collections/base/collection');
+	var ListModel = require('models/todo/list');
+	var BaseCollection = require('collections/base/collection');
 
 	var TodoListsCollection = BaseCollection.extend({
 

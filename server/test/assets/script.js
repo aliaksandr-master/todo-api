@@ -81,7 +81,7 @@
 
 			$("#requestDataNonFormat").text(resultParamsStr);
 
-			$.ajax($.extend({}, pararms,{
+			var options = $.extend({}, pararms,{
 				data: resultParamsStr,
 				success: function(response){
 					if($.isPlainObject(response)){
@@ -101,16 +101,18 @@
 					$("#errors").html(
 						'<div class="alert alert-danger">' +
 							'<h4>' +
-								'Ajax Error ' +
-								'<b>' + jqXHR.status + '</b> ' +
-								'(<i>' + status + '</i>)' +
+							'Ajax Error ' +
+							'<b>' + jqXHR.status + '</b> ' +
+							'(<i>' + status + '</i>)' +
 							'</h4>' +
 							'<p>' + jqXHR.statusText + '</p>' +
 							'<div style="mergin-top: 20px;">' + jqXHR.responseText + '</div>' +
-						'</div>'
+							'</div>'
 					);
 				}
-			}));
+			});
+			console.log(options);
+			$.ajax(options);
 			return false;
 		});
 	});

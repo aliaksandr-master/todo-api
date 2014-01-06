@@ -13,7 +13,7 @@ define(function(require, exports, module){
 
 		beforeAction: function(){
 			this.compose("site", SimpleLayoutView);
-			this.preloader.on();
+//			this.preloader.on();
 			BaseController.__super__.beforeAction.apply(this, arguments);
 		},
 

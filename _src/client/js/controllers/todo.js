@@ -22,43 +22,43 @@ define(function(require, exports, module){
 
 		initialize: function(){
 			TodoController.__super__.initialize.apply(this, arguments);
-			this.todoListsCollection = new TodoListsCollection();
-			this.todoListsCollection.fetch();
 			$(document).off('.mainSwipe');
 		},
 
 		create: function(){
-			var newId = Date.now() + '-' + Math.round(Math.random() * 1000);
+			this.todoListsCollection = new TodoListsCollection();
 
+			var newId = Date.now() + '-' + Math.round(Math.random() * 1000);
 			var listModel = this.todoListsCollection.create({
 				title: "",
 				shared: false,
-				sortOrder: this.todoListsCollection.length
+				sortOrder: 0
 			});
 
 			this.listenTo(listModel, "sync", function(){
 				this.redirectTo({
-					url: "/todo/" + listModel.get("listId") + "/"
+					url: "/todo/" + listModel.get("listId") + "/item/"
 				});
 			});
 		},
 
 		index: function(params){
+			this.todoListsCollection = new TodoListsCollection();
+			this.todoListsCollection.fetch().then(function(){
+				this.todoListsView = new TodoListsCollectionView({
+					collection: this.todoListsCollection,
+					region: "main"
+				});
 
-			this.todoListsView = new TodoListsCollectionView({
-				collection: this.todoListsCollection,
-				region: "main"
-			});
-
-			this.listenTo(this.todoListsCollection, "remove", function(model){
-				var listId = model.get("listId");
-				this.listItemColection = new TodoListItemCollection(listId);
-				this.listItemColection.fetch().then(function(){
-					this.listItemColection.clean();
-				}.bind(this));
-				this.listItemColection.sort();
-			}, this);
-
+				this.listenTo(this.todoListsCollection, "remove", function(model){
+					var listId = model.get("listId");
+					this.listItemColection = new TodoListItemCollection(listId);
+					this.listItemColection.fetch().then(function(){
+						this.listItemColection.clean();
+					}.bind(this));
+					this.listItemColection.sort();
+				}, this);
+			}.bind(this));
 		},
 
 		shared: function(params){
@@ -71,6 +71,8 @@ define(function(require, exports, module){
 		},
 
 		share: function(params){
+			this.todoListsCollection = new TodoListsCollection();
+			this.todoListsCollection.fetch();
 
 			this.listModel = this.todoListsCollection.get(params.listId);
 
@@ -90,88 +92,92 @@ define(function(require, exports, module){
 		},
 
 		item: function(params){
+			this.todoListsCollection = new TodoListsCollection();
+			this.todoListsCollection.fetch().then(function(){
+				this.listModel = this.todoListsCollection.get(params.listId);
+				if(!this.listModel){
+					this.redirectTo({url: "/todo/"});
+					return;
+				}
+				this.listItemColection = new TodoListItemCollection({
+					propModel: this.listModel
+				});
+				this.listItemColection.fetch().then(function(){
+					this.itemModel = this.listItemColection.get(params.itemId);
 
-			this.listModel = this.todoListsCollection.get(params.listId);
+					if(!this.itemModel){
+						this.redirectTo({url: "/todo/" + params.listId + "/item/"});
+						return;
+					}
 
-			if(!this.listModel){
-				this.redirectTo({url: "/todo/"});
-				return;
-			}
+					this.todoItemView = new TodoItemView({
+						model: this.itemModel,
+						region: 'main'
+					});
 
-			this.listItemColection = new TodoListItemCollection({
-				propModel: this.listModel
-			});
-			this.listItemColection.fetch();
+					this.listenTo(this.todoItemView, "modelWasRemoved", function(){
+						this.redirectTo({url: "/todo/" + params.listId + "/item/"});
+					}, this);
 
-			this.itemModel = this.listItemColection.get(params.itemId);
+					this.listenTo(this.todoItemView, "modelWasSaved", function(){
+						this.redirectTo({url: "/todo/" + params.listId + "/item/"});
+					}, this);
 
-			if(!this.itemModel){
-				this.redirectTo({url: "/todo/" + params.listId + "/"});
-				return;
-			}
-
-			this.todoItemView = new TodoItemView({
-				model: this.itemModel,
-				region: 'main'
-			});
-
-			this.listenTo(this.todoItemView, "modelWasRemoved", function(){
-				this.redirectTo({url: "/todo/" + params.listId + "/"});
-			}, this);
-
-			this.listenTo(this.todoItemView, "modelWasSaved", function(){
-				this.redirectTo({url: "/todo/" + params.listId + "/"});
-			}, this);
+				}.bind(this));
+			}.bind(this));
 		},
 
 		list: function(params){
+			this.todoListsCollection = new TodoListsCollection();
 
-			this.listModel = this.todoListsCollection.get(params.listId);
+			this.todoListsCollection.fetch().then(function(){
+				this.listModel = this.todoListsCollection.get(params.listId);
 
-			if(!this.listModel){
-				this.redirectTo({
-					url: "/todo/"
+				if(!this.listModel){
+					this.redirectTo({
+						url: "/todo/"
+					});
+					return;
+				}
+
+				this.listItemColection = new TodoListItemCollection({
+					propModel: this.listModel
 				});
-				return;
-			}
+				this.listItemColection.fetch();
 
-			this.listItemColection = new TodoListItemCollection({
-				propModel: this.listModel
-			});
-			this.listItemColection.fetch();
+				this.todoListView = new TodoListCollectionView({
+					collection: this.listItemColection,
+					collectionModel: this.listModel,
+					region: 'main'
+				});
 
-			this.todoListView = new TodoListCollectionView({
-				collection: this.listItemColection,
-				collectionModel: this.listModel,
-				region: 'main'
-			});
+				this.TodoPaginator = new TodoPaginatorView({
+					collection: this.todoListsCollection,
+					collectionModel: this.listModel,
+					region: "todo-list/paginator"
+				});
 
-			this.TodoPaginator = new TodoPaginatorView({
-				collection: this.todoListsCollection,
-				collectionModel: this.listModel,
-				region: "todo-list/paginator"
-			});
+				var that = this;
+				$(document)
+					.on('swipeleft.mainSwipe', _.throttle(function(e) {
+						var firstIndex = 0,
+							index = that.todoListsCollection.indexOf(that.listModel),
+							lastIndex = that.todoListsCollection.length - 1;
 
-			var that = this;
-			$(document)
-				.on('swipeleft.mainSwipe', _.throttle(function(e) {
-					var firstIndex = 0,
-						index = that.todoListsCollection.indexOf(that.listModel),
-						lastIndex = that.todoListsCollection.length - 1;
+						var prevListId = that.todoListsCollection.at(index > firstIndex ? index - 1 : lastIndex).get("listId");
+						$(this).off(".mainSwipe");
+						that.redirectTo({url: "/todo/" + prevListId + "/"});
+					}, 200))
+					.on('swiperight.mainSwipe', _.throttle(function(e) {
+						var firstIndex = 0,
+							index = that.todoListsCollection.indexOf(that.listModel),
+							lastIndex = that.todoListsCollection.length - 1;
 
-					var prevListId = that.todoListsCollection.at(index > firstIndex ? index - 1 : lastIndex).get("listId");
-					$(this).off(".mainSwipe");
-					that.redirectTo({url: "/todo/" + prevListId + "/"});
-				}, 200))
-				.on('swiperight.mainSwipe', _.throttle(function(e) {
-					var firstIndex = 0,
-						index = that.todoListsCollection.indexOf(that.listModel),
-						lastIndex = that.todoListsCollection.length - 1;
-
-					var nextListId = that.todoListsCollection.at(index < lastIndex ? index + 1 : firstIndex).get("listId");
-					$(this).off(".mainSwipe");
-					that.redirectTo({url: "/todo/" + nextListId + "/"});
-				}, 200));
+						var nextListId = that.todoListsCollection.at(index < lastIndex ? index + 1 : firstIndex).get("listId");
+						$(this).off(".mainSwipe");
+						that.redirectTo({url: "/todo/" + nextListId + "/"});
+					}, 200));
+			}.bind(this));
 		}
 
 	});

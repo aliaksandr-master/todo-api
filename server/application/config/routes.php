@@ -43,8 +43,8 @@ $route['404_override'] = '';
 
 $route['todo/(\d+)/item/(\d+)'] = 'todo/item/$1/$2';
 $route['todo/(\d+)/item'] = "todo/item/$1";
-$route['todo/(\d+)'] = "todo/index/$1";
-$route['todo'] = "todo/index";
+$route['todo/(\d+)'] = "todo/list/$1";
+$route['todo'] = "todo/list";
 
 /* End of file routes.php */
 /* Location: ./application/config/routes.php */

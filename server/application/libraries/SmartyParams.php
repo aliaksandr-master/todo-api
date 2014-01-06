@@ -11,23 +11,23 @@ class SmartyParams implements arrayaccess {
     }
 
     function defaults($name, $value=null){
-        $arr=$name;
+        $arr = $name;
         if(!is_array($name)){
-            $arr=array();
-            $arr[(string)$name]=$value;
+            $arr = array();
+            $arr[$name] = $value;
         }
         foreach($arr as $name => $value){
             $this->_params[$name]=$this->get($name,$value);
         }
     }
 
-    function test($name, $value, $strct=false){
+    function test($name, $value, $strict=false){
         if(!is_array($value)){
             $value=array($value);
         }
         if(isset($this->_params[$name])){
             $v = $this->_params[$name];
-            if($strct){
+            if($strict){
                 foreach($value as $val){
                     if($val === $v){
                         return true;
@@ -60,6 +60,11 @@ class SmartyParams implements arrayaccess {
             }
         }
         return $errorEmpty;
+    }
+
+    function map($func){
+        $this->_params = array_map($func, $this->_params);
+        return $this;
     }
 
     function get($name, $default = null){

@@ -181,6 +181,10 @@ abstract class REST_Controller extends MY_Controller
 
 	}
 
+    public function args(){
+        return $this->_args;
+    }
+
 	/**
 	 * Constructor function
 	 * @todo Document more please.
@@ -247,6 +251,12 @@ abstract class REST_Controller extends MY_Controller
 
 		// Merge both for one mega-args variable
 		$this->_args = array_merge($this->_get_args, $this->_options_args, $this->_patch_args, $this->_head_args , $this->_put_args, $this->_post_args, $this->_delete_args, $this->{'_'.$this->request->method.'_args'});
+
+
+        if(isset($this->_args["json"])){
+            $this->_args = (array)json_decode($this->_args["json"]);
+            $this->{'_'.$this->request->method.'_args'} = $this->_args;
+        }
 
 		// Which format should the data be returned in?
 		$this->response = new stdClass();
@@ -930,10 +940,7 @@ abstract class REST_Controller extends MY_Controller
 	 */
 	protected function _parse_post()
 	{
-        if(isset($_POST["json"])){
-            $_POST = (array) json_decode($_POST["json"]);
-        }
-		$this->_post_args = $_POST;
+        $this->_post_args = $_POST;
 
 		$this->request->format and $this->request->body = file_get_contents('php://input');
 	}
@@ -954,9 +961,6 @@ abstract class REST_Controller extends MY_Controller
 		{
 			parse_str(file_get_contents('php://input'), $this->_put_args);
 
-            if(isset($this->_put_args["json"])){
-                $this->_put_args = (array)json_decode($this->_put_args["json"]);
-            }
 		}
 	}
 
@@ -999,9 +1003,7 @@ abstract class REST_Controller extends MY_Controller
 		else
 		{
 			parse_str(file_get_contents('php://input'), $this->_patch_args);
-            if(isset($this->_patch_args["json"])){
-                $this->_patch_args = json_decode($this->_patch_args["json"]);
-            }
+
 		}
 	}
 
@@ -1012,9 +1014,7 @@ abstract class REST_Controller extends MY_Controller
 	{
 		// Set up out DELETE variables (which shouldn't really exist, but sssh!)
 		parse_str(file_get_contents('php://input'), $this->_delete_args);
-        if(isset($this->_delete_args["json"])){
-            $this->_delete_args = (array)json_decode($this->_delete_args["json"]);
-        }
+
 	}
 
 	// INPUT FUNCTION --------------------------------------------------------------

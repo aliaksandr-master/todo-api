@@ -17,8 +17,13 @@ define(function(require, exports, module){
 		listSelector: '.todo-list-l',
 		itemSelector: '.todo-list-li',
 		template: template,
-		autoRender: true,
+		autoRender: false,
 		itemView: ListItemView,
+
+		initialize: function(){
+			TodoLists.__super__.initialize.apply(this, arguments);
+			this.render();
+		},
 
 		regions: {
 			"todo-list/paginator": ".todo-list-line"
@@ -28,34 +33,14 @@ define(function(require, exports, module){
 			"click .todo-list-input-add-submit": "onAadBtnClick",
 			"change .todo-list-title": "saveTitle",
 			"keypress .todo-list-title": "toAddInput",
-			"keypress .todo-list-input-add": "createOnEnter",
-			'swipeleft .todo-list-li': 'onSwipeLeft',
-			'swiperight .todo-list-li': 'onSwipeRight'
-		},
-
-		initialize: function(options) {
-
-			this.collectionModel = options.collectionModel;
-
-			TodoLists.__super__.initialize.apply(this, arguments);
-
-		},
-
-		onSwipeLeft: function(e){
-			console.log("swipe left", e);
-			return false;
-		},
-
-		onSwipeRight: function(e){
-			console.log("swipe right", e);
-			return false;
+			"keypress .todo-list-input-add": "createOnEnter"
 		},
 
 		attach: function(){
 			ListItemView.__super__.attach.apply(this, arguments);
 			var that = this;
 
-			this.$('.todo-list-title').val(this.collectionModel.get("title"));
+			this.$('.todo-list-title').val(this.collection.propModel.get("title"));
 			this._initTitleInputStatus();
 
 			var $l = this.$(".todo-list-l");
@@ -84,7 +69,7 @@ define(function(require, exports, module){
 
 		//Создание элемента
 		onAadBtnClick: function(){
-			var $input = $(".todo-list-input-add");
+			var $input = this.$(".todo-list-input-add");
 			var title = ($input.val()||"").trim();
 
 			if(!title){
@@ -93,8 +78,7 @@ define(function(require, exports, module){
 
 			this.collection.create({
 				sortOrder: this.collection.length,
-				listId: this.collectionModel.get("listId"),
-				itemId: Date.now() + "-" + Math.round(Math.random()*1000),
+				listId: this.collection.propModel.get("listId"),
 				title: title
 			});
 
@@ -120,10 +104,10 @@ define(function(require, exports, module){
 			return val;
 		},
 
-		saveTitle: function(e){
-			var val = this._initTitleInputStatus();
-			this.collectionModel.set("title", val);
-			this.collectionModel.save();
+		saveTitle: function(){
+			this.collection.propModel.save({
+				title: this._initTitleInputStatus()
+			});
 		},
 
 		toAddInput: function(e){

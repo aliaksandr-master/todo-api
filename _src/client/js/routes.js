@@ -6,10 +6,10 @@ define(function(require, exports, module){
 		match('user/profile/', 'user#profile');
 		match('user/login/', 'user#login');
 		match('todo/', 'todo#index');
-		match('todo/share/:listId/', 'todo#share');
 		match('todo/create/', 'todo#create');
-		match('todo/:listId/', 'todo#list');
-		match('todo/:listId/:itemId/', 'todo#item');
+		match('todo/:listId/share/', 'todo#share');
+		match('todo/:listId/item/', 'todo#list');
+		match('todo/:listId/item/:itemId/', 'todo#item');
 		match('', 'static#home');
 		match('about/', 'static#about');
 	};

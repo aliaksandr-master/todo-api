@@ -1,4 +1,5 @@
 <?php
+error_reporting(E_ALL);
 
 ini_set('xdebug.overload_var_dump', '0');
 
@@ -47,7 +48,6 @@ ini_set('xdebug.show_exception_trace', 'On');
  * Different environments will require different levels of error reporting.
  * By default development will show errors but testing and live will hide them.
  */
-
 if (defined('ENVIRONMENT'))
 {
 	switch (ENVIRONMENT)
@@ -210,6 +210,27 @@ if (defined('ENVIRONMENT'))
 
 		define('APPPATH', BASEPATH.$application_folder.'/');
 	}
+
+
+/*
+ * -------------------------------------------------------------------
+ *  SESSION
+ * -------------------------------------------------------------------
+ */
+
+$user_inactive_time = 0;
+ini_set("session.gc_maxlifetime",  (string) 86400);
+ini_set("session.cookie_lifetime", (string) $user_inactive_time);
+ini_set('session.save_path', dirname(__FILE__)."/application/cache/session");
+session_start();
+if ($user_inactive_time) {
+    $time = time();
+    if (($time - (isset($_SESSION['session_time_idle']) ? $_SESSION['session_time_idle'] : 0)) > $user_inactive_time) {
+        session_destroy();
+        session_start();
+    }
+    $_SESSION['session_time_idle'] = $time;
+}
 
 /*
  * -------------------------------------------------------------------

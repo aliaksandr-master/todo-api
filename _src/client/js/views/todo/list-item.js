@@ -6,14 +6,20 @@ define(function(require){
 	var template = require('templates/todo/list-item');
 	require('css!styles/todo/list-item');
 
-    var C_LI             = "todo-li";
-    var C_LI_DONE        = "-done";
-    var C_LI_META_ACTIVE = "-active";
-
     var ListItemView = BaseView.extend({
 
-        //Шаблон элемента
+		initialize: function(){
+			ListItemView.__super__.initialize.apply(this, arguments);
+			this.listenTo(this.model, "sync", function(){
+				var listId = this.model.get("listId");
+				var itemId = this.model.get("itemId");
+				this.$(".todo-list-li-link").attr("href", '/todo/'+listId+'/item/'+itemId+'/');
+				this.$el.attr("data-itemId", itemId);
+			});
+		},
+
         template: template,
+
 		autoRender: true
 
     });
