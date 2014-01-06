@@ -14,26 +14,28 @@ require_once('Data_transfer_error_object.php');
 // *
 // */
 
-class Data_transfer{
+class DataTransfer{
 
-    private $_url;
+    private $_status;
     private $_code;
-    private $_format;
-    private $_method;
     private $_data;
-    private $_content;
     private $_error;
 
-    public function __construct(){
-        $ci = &get_instance();
-        $ci->load->helper('url');
-        $this->_url = new DataTransferSimpleValueObject('url', false, uri_string().'/');
-        $this->_code = new DataTransferSimpleValueObject('code', false, 200);
-        $this->_format = new DataTransferSimpleValueObject('format', false, 'json');
-        $this->_method = new DataTransferSimpleValueObject('method', false, 'post');
-        $this->_data = new DataTransferMultiValueObject('data', true, DataTransferMultiValueObject::TYPE_OBJECT);
-        $this->_content = new DataTransferSimpleValueObject('content', true, '');
-        $this->_error = new DataTransferErrorObject();
+    /**
+     * @var REST_Controller
+     */
+    private $_controller;
+
+    public function __construct(&$controller){
+        $this->_status = new DataTransferSimpleValueObject($this, 'status', false, true);
+        $this->_code = new DataTransferSimpleValueObject($this, 'code', false, 200);
+        $this->_data = new DataTransferMultiValueObject($this, 'data', false);
+        $this->_error = new DataTransferErrorObject($this);
+        $this->_controller = $controller;
+    }
+
+    public function sendRestControllerResponse(){
+        $this->_controller->response($this->getAllData(), $this->getCode());
     }
 
     public function toJSON(){
@@ -42,7 +44,7 @@ class Data_transfer{
 
     public function getAllData(){
         $allData = array();
-        $objects = array('url', 'code', 'format', 'method', 'data', 'content', 'error');
+        $objects = array('code', 'status', 'data', 'error');
         foreach ($objects as $name) {
             $object = '_'.$name;
             $data = $this->$object->getResult();
@@ -59,17 +61,8 @@ class Data_transfer{
     }
 
     public function error(){
+        $this->_status->setValue(false);
         return $this->_error;
-    }
-
-    public function content($content){
-        $this->_content->setValue($content);
-        return $this;
-    }
-
-    public function url($url){
-        $this->_url->setValue($url);
-        return $this;
     }
 
     public function data($name, $value = null){
@@ -96,20 +89,12 @@ class Data_transfer{
         return $this;
     }
 
-    public function method($method){
-        $this->_method->setValue($method);
-        return $this;
-    }
-
-    public function format($format){
-        $this->_format->setValue($format);
-        return $this;
+    public function getCode(){
+        return $this->_code->getValue();
     }
 
     public function hasError(){
         return (bool)$this->error()->getResult();
     }
-
-
 
 }

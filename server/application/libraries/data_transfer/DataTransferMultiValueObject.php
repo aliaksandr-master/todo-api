@@ -8,8 +8,8 @@ class DataTransferMultiValueObject extends DataTransferSimpleValueObject{
 
     private $_type;
 
-    public function __construct($name, $optional = false, $type = self::TYPE_ARRAY){
-        parent::__construct($name, $optional, array());
+    public function __construct($root, $name, $optional = false, $type = self::TYPE_ARRAY){
+        parent::__construct($root, $name, $optional, array());
         $this->_type = $type;
     }
 

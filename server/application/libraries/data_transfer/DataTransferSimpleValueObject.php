@@ -7,8 +7,14 @@ class DataTransferSimpleValueObject{
     private $_value;
     private $_optional;
 
-    public function __construct($name, $optional = false, $defaultValue = null){
+    /**
+     * @var Data_transfer
+     */
+    protected $_root;
+
+    public function __construct($root, $name, $optional = false, $defaultValue = null){
         $this->_name = $name;
+        $this->_root = $root;
         $this->_optional = (bool) $optional;
         $this->_value = $defaultValue;
     }
