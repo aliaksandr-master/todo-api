@@ -1,6 +1,3 @@
 {
-	"timestamp:number": "required",
-	"clientId:string": "required",
-	"clientVersion:string": "required",
-	"data:object": "required"
+	"json:object": "required"
 }

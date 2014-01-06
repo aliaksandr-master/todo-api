@@ -24,14 +24,14 @@ define(function(require, exports, module){
 
 		opt.success = function(resp){
 			var data = resp.data;
-			console.log(opt.type, "'"+modelName+"'", opt.url, sendData, " ===> data:", data, ", error:", resp.error);
+//			console.log(opt.type, "'"+modelName+"'", opt.url, sendData, " ===> data:", data, ", error:", resp.error);
 			if(success){
 				return success.call(this, data);
 			}
 		};
 
 		opt.error = function(){
-			console.error(opt.type, "'"+modelName+"'", opt.url, sendData);
+//			console.error(opt.type, "'"+modelName+"'", opt.url, sendData);
 			if(error){
 				return error.apply(this, arguments);
 			}

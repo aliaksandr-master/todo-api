@@ -28,12 +28,7 @@ define(function(require, exports, module){
 		create: function(){
 			this.todoListsCollection = new TodoListsCollection();
 
-			var newId = Date.now() + '-' + Math.round(Math.random() * 1000);
-			var listModel = this.todoListsCollection.create({
-				title: "",
-				shared: false,
-				sortOrder: 0
-			});
+			var listModel = this.todoListsCollection.create();
 
 			this.listenTo(listModel, "sync", function(){
 				this.redirectTo({
@@ -50,14 +45,6 @@ define(function(require, exports, module){
 					region: "main"
 				});
 
-				this.listenTo(this.todoListsCollection, "remove", function(model){
-					var listId = model.get("listId");
-					this.listItemColection = new TodoListItemCollection(listId);
-					this.listItemColection.fetch().then(function(){
-						this.listItemColection.clean();
-					}.bind(this));
-					this.listItemColection.sort();
-				}, this);
 			}.bind(this));
 		},
 
@@ -72,23 +59,29 @@ define(function(require, exports, module){
 
 		share: function(params){
 			this.todoListsCollection = new TodoListsCollection();
-			this.todoListsCollection.fetch();
+			this.todoListsCollection.fetch().then(function(){
 
-			this.listModel = this.todoListsCollection.get(params.listId);
+				this.listModel = this.todoListsCollection.get(params.listId);
 
-			if(!this.listModel){
-				this.redirectTo({url: "/todo/"});
-				return;
-			}
+				if(!this.listModel){
+					this.redirectTo({
+						url: "/todo/"
+					});
+					return;
+				}
 
-			this.listShareView = new TodoListShareView({
-				model: this.listModel,
-				region: "main"
-			});
+				this.listShareView = new TodoListShareView({
+					model: this.listModel,
+					region: "main"
+				});
 
-			this.listenTo(this.listShareView, "modelWasSaved", function(){
-				this.redirectTo({url: "/todo/"});
-			}, this);
+				this.listenTo(this.listShareView, "modelWasSaved", function(){
+					this.redirectTo({
+						url: "/todo/"
+					});
+				}, this);
+
+			}.bind(this));
 		},
 
 		item: function(params){

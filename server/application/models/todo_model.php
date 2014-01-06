@@ -7,6 +7,13 @@ class Todo_model extends MY_Model {
     }
 
     public function getTableFields() {
-        return array('id', 'name', 'date_create', 'sort_order', 'link');
+        return array(
+            'id',
+            'name',
+            "is_shared",
+            'date_create',
+            'sort_order',
+            'link'
+        );
     }
 }

@@ -5,20 +5,20 @@ define(function(require, exports, module){
 
 		"todo-list": {
 			server2client: function(response){
-				console.log("todo-list server2client");
 				var resp = {};
 				resp["createDate"] = response["date_create"];
-				resp["listId"] = response["id"];
+				resp["listId"] = +response["id"];
+				resp["shared"] = !!parseInt(response["is_shared"], 10);
 				resp["link"] = response["link"];
 				resp["title"] = response["name"];
-				resp["sortOrder"] = response["sort_order"];
+				resp["sortOrder"] = +response["sort_order"];
 				return resp;
 			},
 			client2server: function(model){
-				console.log("todo-list client2server");
 				var req = {};
 				req["date_create"] = model.get("createDate");
 				req["id"] = model.get("listId");
+				req["is_shared"] = model.get("shared") ? 1 : 0;
 				req["link"] = model.get("link");
 				req["name"] = model.get("title");
 				req["sort_order"] = model.get("sortOrder");
@@ -42,7 +42,7 @@ define(function(require, exports, module){
 				req["date_create"] = model.get("createDate");
 				req["todo_id"] = model.get("listId");
 				req["id"] = model.get("itemId");
-				req["is_active"] = !model.get("done") * 1;
+				req["is_active"] = !model.get("done") ? 1 : 0;
 				req["link"] = model.get("link");
 				req["name"] = model.get("title");
 				req["sort_order"] = model.get("sortOrder");

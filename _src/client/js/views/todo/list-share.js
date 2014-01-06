@@ -25,8 +25,9 @@ define(function(require, exports, module){
 		},
 
 		saveShared: function(){
-			this.model.save();
-			this.trigger("modelWasSaved");
+			this.model.save().then(function(){
+				this.trigger("modelWasSaved");
+			}.bind(this));
 		},
 
 		toggleShared: function(el){

@@ -61,6 +61,8 @@ class Todo extends REST_Controller {
 
         $data = array();
         $data['name']           = $inputData['name'];
+        $data['is_shared']      = $inputData['is_shared'];
+        $data['sort_order']     = $inputData['sort_order'];
         $data['date_create']    = date("Y-m-d H:i:s", gettimeofday(true));
         $data['link']           = md5(gettimeofday(true).rand(1,1100)).gettimeofday(true);
 
@@ -75,7 +77,9 @@ class Todo extends REST_Controller {
         $inputData->map("trim");
 
         $data = array();
-        $data['name'] = $inputData['name'];
+        $data['name']           = $inputData['name'];
+        $data['is_shared']      = $inputData['is_shared'];
+        $data['sort_order']      = $inputData['sort_order'];
 
         $todoModel = new Todo_model();
         $todoModel->update($data, array(

@@ -1,6 +1,5 @@
 {
 	"data:object": "required",
-	"timestamp:number": "required",
 	"code:number": "required",
 	"error:object": {
 		"field:object-array": "optional",
