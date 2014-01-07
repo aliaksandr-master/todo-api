@@ -20,6 +20,8 @@ class DataTransfer{
     private $_code;
     private $_data;
     private $_error;
+    private $_input;
+    private $_sourceInput;
 
     /**
      * @var REST_Controller
@@ -32,6 +34,27 @@ class DataTransfer{
         $this->_data = new DataTransferMultiValueObject($this, 'data', false);
         $this->_error = new DataTransferErrorObject($this);
         $this->_controller = $controller;
+
+        if(ENVIRONMENT == "development" && $this->_controller instanceof REST_Controller){
+
+            $this->_input = new DataTransferMultiValueObject($this, 'input', false, DataTransferMultiValueObject::TYPE_OBJECT);
+
+            $this->_input->setValue("url", $_SERVER['REQUEST_URI']);
+            $this->_input->setValue("method", $_SERVER['REQUEST_METHOD']);
+            $this->_input->setValue("sourceData", INPUT_DATA);
+
+            $exploded = explode('&', INPUT_DATA);
+
+            $_PUT = array();
+            foreach($exploded as $pair) {
+                $item = explode('=', $pair);
+                if(count($item) == 2) {
+                    $_PUT[urldecode($item[0])] = urldecode($item[1]);
+                }
+            }
+            $this->_input->setValue("parsedData", $_PUT);
+            $this->_input->setValue("argsData", $this->_controller->args());
+        }
     }
 
     public function sendRestControllerResponse(){
@@ -44,13 +67,15 @@ class DataTransfer{
 
     public function getAllData(){
         $allData = array();
-        $objects = array('code', 'status', 'data', 'error');
+        $objects = array('code', 'status', 'data', 'error', "input");
         foreach ($objects as $name) {
             $object = '_'.$name;
-            $data = $this->$object->getResult();
-            if (!is_null($data)){
-                $key = $this->$object->getName();
-                $allData[$key] = $data;
+            if(isset($this->$object)){
+                $data = $this->$object->getResult();
+                if (!is_null($data)){
+                    $key = $this->$object->getName();
+                    $allData[$key] = $data;
+                }
             }
         }
         return $allData;

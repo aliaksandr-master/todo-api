@@ -60,9 +60,9 @@ class Todo extends REST_Controller {
         $inputData->map("trim");
 
         $data = array();
-        $data['name']           = $inputData['name'];
-        $data['is_shared']      = $inputData['is_shared'];
-        $data['sort_order']     = $inputData['sort_order'];
+        $data['name']           = $inputData->get('name', 0);
+        $data['is_shared']      = $inputData->get('is_shared', 0);
+        $data['sort_order']     = $inputData->get('sort_order', 0);
         $data['date_create']    = date("Y-m-d H:i:s", gettimeofday(true));
         $data['link']           = md5(gettimeofday(true).rand(1,1100)).gettimeofday(true);
 
@@ -77,9 +77,9 @@ class Todo extends REST_Controller {
         $inputData->map("trim");
 
         $data = array();
-        $data['name']           = $inputData['name'];
-        $data['is_shared']      = $inputData['is_shared'];
-        $data['sort_order']      = $inputData['sort_order'];
+        $data['name']           = $inputData->get('name', "");
+        $data['is_shared']      = $inputData->get('is_shared', 0);
+        $data['sort_order']     = $inputData->get('sort_order', 0);
 
         $todoModel = new Todo_model();
         $todoModel->update($data, array(
@@ -183,9 +183,9 @@ class Todo extends REST_Controller {
         if (!$this->_dataTransfer->hasError()){
             $data = array();
 
-            $data['name']           = $inputData['name'];
-            $data['is_active']      = $inputData['is_active'];
-            $data['sort_order']     = $inputData['sort_order'];
+            $data['name']           = $inputData->get('name', "");
+            $data['is_active']      = $inputData->get('is_active', 0);
+            $data['sort_order']     = $inputData->get('sort_order', 0);
 
             $todoItemModel = new TodoItem_model();
             $todoItemModel->update($data, array(

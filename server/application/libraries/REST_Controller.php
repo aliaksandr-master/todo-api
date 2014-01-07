@@ -942,7 +942,7 @@ abstract class REST_Controller extends MY_Controller
 	{
         $this->_post_args = $_POST;
 
-		$this->request->format and $this->request->body = file_get_contents('php://input');
+		$this->request->format and $this->request->body = INPUT_DATA;
 	}
 
 	/**
@@ -953,14 +953,26 @@ abstract class REST_Controller extends MY_Controller
 		// It might be a HTTP body
 		if ($this->request->format)
 		{
-			$this->request->body = file_get_contents('php://input');
+			$this->request->body = INPUT_DATA;
 		}
 
 		// If no file type is provided, this is probably just arguments
 		else
 		{
-			parse_str(file_get_contents('php://input'), $this->_put_args);
+			parse_str(INPUT_DATA, $this->_put_args);
 
+            $exploded = explode('&', INPUT_DATA);
+
+            $_PUT = array();
+            foreach($exploded as $pair) {
+                $item = explode('=', $pair);
+                if(count($item) == 2) {
+                    $_PUT[urldecode($item[0])] = urldecode($item[1]);
+                }
+            }
+            if($_PUT){
+                $this->_put_args = $_PUT;
+            }
 		}
 	}
 
@@ -996,13 +1008,13 @@ abstract class REST_Controller extends MY_Controller
 		// It might be a HTTP body
 		if ($this->request->format)
 		{
-			$this->request->body = file_get_contents('php://input');
+			$this->request->body = INPUT_DATA;
 		}
 
 		// If no file type is provided, this is probably just arguments
 		else
 		{
-			parse_str(file_get_contents('php://input'), $this->_patch_args);
+			parse_str(INPUT_DATA, $this->_patch_args);
 
 		}
 	}
@@ -1013,7 +1025,7 @@ abstract class REST_Controller extends MY_Controller
 	protected function _parse_delete()
 	{
 		// Set up out DELETE variables (which shouldn't really exist, but sssh!)
-		parse_str(file_get_contents('php://input'), $this->_delete_args);
+		parse_str(INPUT_DATA, $this->_delete_args);
 
 	}
 

@@ -20,6 +20,17 @@ ini_set('xdebug.dump_once', 'Off');
 ini_set('xdebug.cli_color', 'Off');
 ini_set('xdebug.show_exception_trace', 'On');
 
+define("INPUT_DATA", file_get_contents("php://input"));
+
+$exploded = explode('&', INPUT_DATA);
+$_INPUT = array();
+foreach($exploded as $pair) {
+    $item = explode('=', $pair);
+    if(count($item) == 2) {
+        $_INPUT[urldecode($item[0])] = urldecode($item[1]);
+    }
+}
+$GLOBALS["_INPUT_"] = $_INPUT;
 
 /*
  *---------------------------------------------------------------

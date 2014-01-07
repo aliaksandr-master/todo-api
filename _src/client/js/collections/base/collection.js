@@ -5,13 +5,9 @@ define(function(require, exports, module){
 	var _ = require('underscore');
 
 	var preloader = require('lib/preloader');
-	var mainServer = require('lib/servers/main');
-
 	var BaseCollection = Chaplin.Collection.extend({
 
 		isCollection: true,
-
-		server: mainServer,
 
 		format: "json",
 
