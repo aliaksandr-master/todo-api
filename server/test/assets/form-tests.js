@@ -65,53 +65,42 @@
 				resultParamsStr = $.param({
 					json: JSON.stringify(resultParams)
 				});
-
 			}
 
-			$("#requestParams").html("");
-			$("#errors").html("");
-			$("#responseJSON").html("");
-			$("#responseHTML").html("");
-			$("#response").html("");
-
-			JSONFormatter.format(resultParams, {
-				appendTo: '#requestParams', // A string of the id, class or element name to append the formatted json
-				list_id: 'jsonParam' // The name of the id at the root ul of the formatted JSON
-			});
-
+			$("#requestParams").html(JSON.stringify(jsonParam, null, 4));
 			$("#requestDataNonFormat").text(resultParamsStr);
 
 			var options = $.extend({}, pararms,{
 				data: resultParamsStr,
-				success: function(response){
+				success: function(response, _$, jqXHR){
+					$("#responseHeadersNonFormat").html(jqXHR.getAllResponseHeaders());
+					$("#errors").html("");
 					if($.isPlainObject(response)){
-						JSONFormatter.format(response, {
-							collapse: false, // Setting to 'true' this will format the JSON into a collapsable/expandable tree
-							appendTo: '#responseJSON', // A string of the id, class or element name to append the formatted json
-							list_id: 'json' // The name of the id at the root ul of the formatted JSON
-						});
+						$("#responseHTML").html("");
+						$("#responseJSON").html(JSON.stringify(response, null, 4));
 						$("#response").text(JSON.stringify(response));
 					}else{
+						$("#responseJSON").html("");
 						$("#response").text(response);
 						$("#responseHTML").html(response);
 					}
 				},
 				error: function(jqXHR, status){
-					console.log(jqXHR);
+					var resp = jqXHR.responseText;
+
+					$("#responseHeadersNonFormat").html(jqXHR.getAllResponseHeaders());
+					$("#responseJSON").html("");
+					$("#responseHTML").html("");
 					$("#errors").html(
 						'<div class="alert alert-danger">' +
-							'<h4>' +
-							'Ajax Error ' +
-							'<b>' + jqXHR.status + '</b> ' +
-							'(<i>' + status + '</i>)' +
-							'</h4>' +
-							'<p>' + jqXHR.statusText + '</p>' +
-							'<div style="mergin-top: 20px;">' + jqXHR.responseText + '</div>' +
-							'</div>'
+							'<h4>Ajax Error <b>' + jqXHR.status + '</b> (<i>' + status + '</i>)</h4>' +
+							'<p>' + jqXHR.statusText + '</p><br>' +
+							'<div>' + resp + '</div>' +
+						'</div>'
 					);
+					$("#response").text(jqXHR.responseText);
 				}
 			});
-			console.log(options);
 			$.ajax(options);
 			return false;
 		});

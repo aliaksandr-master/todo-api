@@ -1,6 +1,3 @@
-.form {  }
-.form-submit {  }
-
 form > .form-control + .form-control {
 	margin-top: 10px;
 }
@@ -14,12 +11,12 @@ form {
 form:empty {
 	padding: 0;
 	margin: 0;
+	display: none;
 }
 
-.requestParams-panel-wr { float: right; width: 30%; }
-.form-panel-wr { float: left; width: 68%; }
-
-#json {
-	background: #fffae5;
-	padding: 10px;
+.panel-body:before {
+	content: "";
 }
+
+.requestParams-panel-wr { float: right; width: 38%; }
+.form-panel-wr { float: left; width: 61%; }
