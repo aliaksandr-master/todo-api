@@ -159,7 +159,7 @@ define(function(require, exports, module){
 
 						var prevListId = that.todoListsCollection.at(index > firstIndex ? index - 1 : lastIndex).get("listId");
 						$(this).off(".mainSwipe");
-						that.redirectTo({url: "/todo/" + prevListId + "/"});
+						that.redirectTo({url: "/todo/" + prevListId + "/item/"});
 					}, 200))
 					.on('swiperight.mainSwipe', _.throttle(function(e) {
 						var firstIndex = 0,
@@ -168,7 +168,7 @@ define(function(require, exports, module){
 
 						var nextListId = that.todoListsCollection.at(index < lastIndex ? index + 1 : firstIndex).get("listId");
 						$(this).off(".mainSwipe");
-						that.redirectTo({url: "/todo/" + nextListId + "/"});
+						that.redirectTo({url: "/todo/" + nextListId + "/item/"});
 					}, 200));
 			}.bind(this));
 		}

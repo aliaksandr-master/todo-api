@@ -57,7 +57,32 @@ class DataTransfer{
         }
     }
 
-    public function sendRestControllerResponse(){
+    public function sendRestControllerResponse($sendSmartHeaders = true){
+
+        if($sendSmartHeaders && !$this->hasError()){
+            if($_SERVER["REQUEST_METHOD"] == "POST"){
+                if($this->_data->getResult()){
+                    $this->code(201); // created new resource
+                }else{
+                    $this->code(500); // empty GET result
+                }
+            }else if($_SERVER["REQUEST_METHOD"] == "PUT"){
+                if($this->_data->getResult()){
+                    $this->code(200); // updated resource
+                }else{
+                    $this->code(500); // empty GET result
+                }
+            }else if($_SERVER["REQUEST_METHOD"] == "GET"){
+                // ONLY 200 or SOMETHING CUSTOM
+            }else if($_SERVER["REQUEST_METHOD"] == "DELETE"){
+                // ONLY 200 or SOMETHING CUSTOM
+                if($this->getCode() == 200){
+                    if(!$this->_data->getResult()){
+                        $this->code(500); // you must send Boolean response
+                    }
+                }
+            }
+        }
         $this->_controller->response($this->getAllData(), $this->getCode());
     }
 
