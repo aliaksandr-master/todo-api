@@ -1,161 +1,315 @@
 {
-	"#login": {
-
+	"POST user/login": {
+		"description": "to login in system",
 		"request": {
-			"url": "user/login",
-
-			"method": "post",
-
-			"format": "json",
-
-			"data": {
-				"username:string": "required",
-				"password:string": "required",
-				"remember:bool": "optional"
-			}
+			"username:string": ["required"],
+			"password:string": ["required"],
+			"remember:boolean":   ["optional"]
 		},
-
-		"response": {
-			"format": "json",
-
-			"data": {
-				"session_id:hash-string": "required"
+		"response": [
+			"status:boolean"
+		],
+		"transfer":{
+			"code": {
+				"200": "Pass Login",
+				"404": "User Or Password Is Incorrect"
 			},
-
-			"codes": {
-				"200": "Success",
-				"404": "NotFound"
-			},
-
-			"errors":{
-				"field": {
-					"username/required": "Username is required field",
-					"username/not_found": "User not found",
-					"password/required": "Password is required field",
-					"password/incorrect": "Password is incorrect",
-					"password/incorrect_format": "Password must have max 25 characters and min 4 characters"
-				}
-			}
-		},
-
-		"description": "to login in system"
-	},
-
-	"#logout": {
-
-		"request": {
-			"url": "user/logout",
-
-			"method": "post",
-
-			"format": "json",
-
-			"data": {
-				"session_id:hash-string": "required"
-			}
-		},
-
-		"response": {
-			"format": "json",
-
-			"data": {
-				"session_id:hash-string": "required"
-			},
-
-			"codes": {
-				"200": "Success"
-			},
-
-			"errors":{
-				"field": {
-				}
+			"error/field": {
+				"username/required": "Username is required field",
+				"password/required": "Password is required field",
+				"password/incorrect": "Password is incorrect"
 			}
 		}
 	},
-
-	"#profile": {
-
-		"request": {
-			"url": "user/profile",
-
-			"method": "post",
-
-			"format": "json",
-
-			"data": {
-				"session_id:hash-string": "required"
+	"ANY user/logout": {
+		"response": [
+			"status:boolean"
+		],
+		"transfer": {
+			"code": {
+				"200": "Success"
 			}
-		},
-
-		"response": {
-
-			"format": "json",
-
-			"data": {
-				"username:string": "required",
-				"email:string": "required"
-			},
-
-			"codes": {
+		}
+	},
+	"GET user": {
+		"response:array": [
+			"username:string",
+			"email:string"
+		],
+		"transfer": {
+			"code": {
 				"401": "Need Authorized",
 				"403": "Forbidden",
 				"200": "Success"
-			},
-
-			"errors": {
-				"field": {
-					"session_id/required": "Session Id is required",
-					"session_id/incorrect": "Session Id is incorrect"
-				}
 			}
 		}
-
-
 	},
-
-	"#register": {
-
-		"requests": {
-
-			"method": "post",
-
-			"format": "json",
-
-			"data": {
-				"username:string": "required",
-				"password:string": "required",
-				"email:string": "required",
-				"password_confirm:string": "required"
-			}
+	"GET user/$iserId": {
+		"request": {
+			"$userId:number": ["required"]
 		},
-
-		"response": {
-
-			"format": "json",
-
-			"data": {
-				"user_id:string": "required"
-			},
-
-			"codes": {
+		"response": [
+			"username:string",
+			"email:string"
+		],
+		"transfer": {
+			"code": {
+				"401": "Need Authorized",
+				"403": "Forbidden",
+				"200": "Success"
+			}
+		}
+	},
+	"DELETE user/$iserId": {
+		"request": {
+			"$userId:number": ["required"]
+		},
+		"response": [
+			"status:boolean"
+		],
+		"transfer": {
+			"code": {
+				"401": "Need Authorized",
+				"403": "Forbidden",
+				"200": "Success"
+			}
+		}
+	},
+	"PUT user/$userId": {
+		"request" : {
+			"username:string": ["required"],
+			"email:string": ["required"],
+			"password_old:string": ["optional"],
+			"password_new:string": ["optional"],
+			"password_new_confirm:string": ["optional"]
+		},
+		"response": [
+			"username:string",
+			"email:string"
+		],
+		"transfer": {
+			"code": {
+				"401": "Need Authorized",
+				"403": "Forbidden",
+				"200": "Success"
+			}
+		}
+	},
+	"POST user": {
+		"request": {
+			"username:string": ["required"],
+			"email:string": ["required"],
+			"password:string": ["required"],
+			"password_confirm:string": ["required"]
+		},
+		"response": [
+			"username:string",
+			"email:string"
+		],
+		"transfer": {
+			"code": {
 				"200": "Success"
 			},
-
-			"errors": {
-				"field": {
-					"username/required": "User Name is required field",
-					"username/exists": "User Name was already exists",
-					"email/exists": "Email was already exists",
-					"email/required": "Email is required field",
-					"email/incorrect_format": "Email has invalid characters",
-					"email/not_found": "Email is inactive email",
-					"password/required": "Password is required field",
-					"password_confirm/required": "Confirm Password is required field",
-					"password_confirm/not_equal": "Confirm Password must be equal Password"
-				}
+			"error/field": {
+				"username/required":  "User Name is required field",
+				"username/exists": "User Name was already exists",
+				"email/exists": "Email was already exists",
+				"email/required": "Email is required field",
+				"email/incorrect_format": "Email has invalid characters",
+				"email/not_found": "Email is inactive email",
+				"password/required": "Password is required field",
+				"password_confirm/required": "Confirm Password is required field",
+				"password_confirm/not_equal": "Confirm Password must be equal Password"
 			}
 		}
-
-
+	},
+	"GET todo": {
+		"response:array": [
+			"id:number",
+			"name:string"
+		],
+		"transfer": {
+			"code": {
+				"200": "Success"
+			}
+		}
+	},
+	"GET todo/$todoId": {
+		"response": [
+			"id:number",
+			"name:string",
+			"link:string",
+			"is_shared:boolean"
+		],
+		"transfer": {
+			"code": {
+				"200": "Success"
+			}
+		}
+	},
+	"GET todo/$todoId/item": {
+		"response:array": [
+			"id:number",
+			"name:string",
+			"is_active:boolean"
+		],
+		"transfer": {
+			"code": {
+				"200": "Success"
+			}
+		}
+	},
+	"GET todo/$todoId/item/$itemId": {
+		"response": [
+			"id:number",
+			"name:string",
+			"is_active:boolean"
+		],
+		"transfer": {
+			"code": {
+				"200": "Success"
+			}
+		}
+	},
+	"POST todo": {
+		"request": {
+			"name:string": ["optional"],
+			"is_active:boolean": ["optional"],
+			"shared:boolean": ["optional"],
+			"sort_order:boolean": ["optional"]
+		},
+		"response": [
+			"id:number",
+			"name:string",
+			"link:boolean",
+			"shared:boolean",
+			"sort_order:boolean"
+		],
+		"transfer": {
+			"code": {
+				"201": "Success",
+				"401": "Need Authorized",
+				"403": "Forbidden"
+			}
+		}
+	},
+	"POST todo/$todoId/item": {
+		"request": {
+			"$todoId:number": ["required"],
+			"name:string": ["optional"],
+			"is_active:boolean": ["optional"]
+		},
+		"response": [
+			"id:number",
+			"todo_id:number",
+			"name:string",
+			"is_active:boolean"
+		],
+		"transfer": {
+			"code": {
+				"201": "Success",
+				"404": "Not Found",
+				"401": "Need Authorized",
+				"403": "Forbidden"
+			},
+			"error/field": {
+				"$todoId/required": "Todo List Id Is Required",
+				"$todoId/not_found": "Todo List Is Not Found"
+			}
+		}
+	},
+	"PUT todo/$todoId": {
+		"request": {
+			"$todoId:number": ["required"],
+			"name:string": ["optional"],
+			"shared:boolean": ["optional"],
+			"sort_order:boolean": ["optional"]
+		},
+		"response": [
+			"id:number",
+			"link:boolean",
+			"name:string",
+			"shared:boolean",
+			"sort_order:boolean"
+		],
+		"transfer": {
+			"code": {
+				"200": "Success",
+				"401": "Need Authorized",
+				"403": "Forbidden"
+			},
+			"error/field": {
+				"$todoId/required": "Todo List Id Is Required",
+				"$todoId/not_found": "Todo List Is Not Found"
+			}
+		}
+	},
+	"PUT todo/$todoId/item/$itemId": {
+		"request": {
+			"$todoId:number": ["required"],
+			"$itemId:number": ["required"],
+			"name:string": ["optional"],
+			"is_active:boolean": ["optional"]
+		},
+		"response": [
+			"id:number",
+			"todo_id:number",
+			"name:string",
+			"is_active:boolean"
+		],
+		"transfer": {
+			"code": {
+				"200": "Success",
+				"401": "Need Authorized",
+				"403": "Forbidden"
+			},
+			"error/field": {
+				"$todoId/required": "Todo List Id Is Required",
+				"$todoId/not_found": "Todo List Is Not Found",
+				"$itemId/required": "Todo List Item Id Is Required",
+				"$itemId/not_found": "Todo List Item Is Not Found"
+			}
+		}
+	},
+	"DELETE todo/$todoId": {
+		"request": {
+			"$todoId:number": ["required"]
+		},
+		"response": [
+			"status:boolean"
+		],
+		"transfer": {
+			"code": {
+				"200": "Success",
+				"401": "Need Authorized",
+				"403": "Forbidden"
+			},
+			"error/field": {
+				"$todoId/required": "Todo List Id Is Required",
+				"$todoId/not_found": "Todo List Is Not Found"
+			}
+		}
+	},
+	"DELETE todo/$todoId/item/$itemId": {
+		"request": {
+			"$todoId:number": ["required"],
+			"$itemId:number": ["required"]
+		},
+		"response": [
+			"status:boolean"
+		],
+		"transfer": {
+			"code": {
+				"200": "Success",
+				"401": "Need Authorized",
+				"403": "Forbidden"
+			},
+			"error/field": {
+				"$todoId/required": "Todo List Id Is Required",
+				"$todoId/not_found": "Todo List Is Not Found",
+				"$itemId/required": "Todo List Item Id Is Required",
+				"$itemId/not_found": "Todo List Item Is Not Found"
+			}
+		}
 	}
 }

@@ -1,24 +1,12 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
-require(APPPATH.'/libraries/REST_Controller.php');
-require(APPPATH.'/libraries/SmartyParams.php');
-require(APPPATH.'/libraries/data_transfer/DataTransfer.php');
+require_once(APPPATH.'/libraries/SmartyParams.php');
+require_once(APPPATH.'/core/API_Controller.php');
 
-class Todo extends REST_Controller {
-
-    /**
-     * @var DataTransfer
-     */
-    private $_dataTransfer;
-    private $_userId;
+class Todo extends API_Controller {
 
     public function __construct() {
-
         parent::__construct();
-        $this->_dataTransfer = new DataTransfer($this);
-
-        $this->_userId = isset($_SESSION["user_id"]) ? $_SESSION["user_id"] : null;
-
         $this->loader()->model('Todo_model');
         $this->loader()->model('TodoItem_model');
     }
@@ -26,9 +14,7 @@ class Todo extends REST_Controller {
     private function _getAllLists(){
         $todoModel = new Todo_model();
         $todoArray = $todoModel->read();
-        $this->_dataTransfer->data($todoArray);
-
-        $this->_dataTransfer->sendRestControllerResponse();
+        $this->transfer($todoArray);
     }
 
     private function _getOneList($listId){
@@ -39,11 +25,11 @@ class Todo extends REST_Controller {
         ));
 
         if($todoArray){
-            $this->_dataTransfer->data($todoArray[0]);
+            $this->transfer($todoArray[0]);
         }else{
-            $this->_dataTransfer->code(404);
+            $this->transfer()->code(404);
         }
-        $this->_dataTransfer->sendRestControllerResponse();
+        $this->sendResponse();
     }
 
     public function list_get($id = null){
@@ -96,8 +82,7 @@ class Todo extends REST_Controller {
             'id' => $id
         ));
 
-        $this->_dataTransfer->data('result', $todoResult);
-        $this->_dataTransfer->sendRestControllerResponse();
+        $this->transfer('result', $todoResult);
     }
 
     // ITEMS
@@ -111,11 +96,10 @@ class Todo extends REST_Controller {
         ));
 
         if($todoItemArray){
-            $this->_dataTransfer->data($todoItemArray[0]);
+            $this->transfer($todoItemArray[0]);
         }else{
-            $this->_dataTransfer->code(404);
+            $this->transfer()->code(404);
         }
-        $this->_dataTransfer->sendRestControllerResponse();
 
     }
 
@@ -126,8 +110,7 @@ class Todo extends REST_Controller {
             "todo_id" => $listId
         ));
 
-        $this->_dataTransfer->data($todoItemArray);
-        $this->_dataTransfer->sendRestControllerResponse();
+        $this->transfer($todoItemArray);
     }
 
     public function item_get($todoId, $id = null){
@@ -146,11 +129,11 @@ class Todo extends REST_Controller {
 
         // VALIDATION
         if(empty($todoId)){
-            $this->_dataTransfer->error()->field('todo_id', 'required');
+            $this->transfer()->error()->field('todo_id', 'required');
         }
 
         // CREATE ITEM
-        if (!$this->_dataTransfer->hasError()){
+        if (!$this->transfer()->hasError()){
 
             $data = array(
                 "todo_id" => $inputData["todo_id"],
@@ -164,7 +147,6 @@ class Todo extends REST_Controller {
             $this->_getOneTodoListItem($todoId, $itemId);
             return;
         }
-        $this->_dataTransfer->sendRestControllerResponse();
     }
 
     public function item_put($todoId, $id){
@@ -173,14 +155,14 @@ class Todo extends REST_Controller {
         $inputData->map("trim");
 
         if(empty($todoId)){
-            $this->_dataTransfer->error()->field('todo_id', 'required');
+            $this->transfer()->error()->field('todo_id', 'required');
         }
 
         if(empty($id)){
-            $this->_dataTransfer->error()->field('id', 'required');
+            $this->transfer()->error()->field('id', 'required');
         }
 
-        if (!$this->_dataTransfer->hasError()){
+        if (!$this->transfer()->hasError()){
             $data = array();
 
             $data['name']           = $inputData->get('name', "");
@@ -193,12 +175,8 @@ class Todo extends REST_Controller {
             ));
 
             $this->_getOneTodoListItem($todoId, $id);
-            return;
         }
-        $this->_dataTransfer->sendRestControllerResponse();
     }
-
-
 
     public function item_delete($todoId, $id){
         $todoModel = new TodoItem_model();
@@ -206,8 +184,7 @@ class Todo extends REST_Controller {
             'id' => $id,
             "todo_id" => $todoId
         ));
-        $this->_dataTransfer->data('result', $todoResult);
-        $this->_dataTransfer->sendRestControllerResponse();
+        $this->transfer('result', $todoResult);
     }
 
 }

@@ -41,6 +41,12 @@
 $route['default_controller'] = "welcome";
 $route['404_override'] = '';
 
+//USER
+$route['user'] = 'user/index';
+$route['login'] = 'user/login';
+$route['logout'] = 'user/logout';
+
+//TO DO
 $route['todo/(\d+)/item/(\d+)'] = 'todo/item/$1/$2';
 $route['todo/(\d+)/item'] = "todo/item/$1";
 $route['todo/(\d+)'] = "todo/list/$1";
