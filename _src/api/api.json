@@ -11,6 +11,7 @@
 		],
 		"transfer":{
 			"code": {
+				"400": "Bad Request",
 				"200": "Pass Login",
 				"404": "User Or Password Is Incorrect"
 			},
@@ -54,6 +55,7 @@
 		],
 		"transfer": {
 			"code": {
+				"400": "Bad Request",
 				"401": "Need Authorized",
 				"403": "Forbidden",
 				"200": "Success"
@@ -69,6 +71,7 @@
 		],
 		"transfer": {
 			"code": {
+				"400": "Bad Request",
 				"401": "Need Authorized",
 				"403": "Forbidden",
 				"200": "Success"
@@ -89,6 +92,7 @@
 		],
 		"transfer": {
 			"code": {
+				"400": "Bad Request",
 				"401": "Need Authorized",
 				"403": "Forbidden",
 				"200": "Success"
@@ -108,6 +112,8 @@
 		],
 		"transfer": {
 			"code": {
+				"400": "Bad Request",
+				"403": "Forbidden",
 				"200": "Success"
 			},
 			"error/field": {
@@ -130,11 +136,16 @@
 		],
 		"transfer": {
 			"code": {
+				"401": "Need Authorized",
+				"403": "Forbidden",
 				"200": "Success"
 			}
 		}
 	},
 	"GET todo/$todoId": {
+		"request": {
+			"$todoId:number": ["required"]
+		},
 		"response": [
 			"id:number",
 			"name:string",
@@ -143,11 +154,17 @@
 		],
 		"transfer": {
 			"code": {
+				"400": "Bad Request",
+				"401": "Need Authorized",
+				"403": "Forbidden",
 				"200": "Success"
 			}
 		}
 	},
 	"GET todo/$todoId/item": {
+		"request": {
+			"$todoId:number": ["required"]
+		},
 		"response:array": [
 			"id:number",
 			"name:string",
@@ -155,11 +172,18 @@
 		],
 		"transfer": {
 			"code": {
+				"400": "Bad Request",
+				"401": "Need Authorized",
+				"403": "Forbidden",
 				"200": "Success"
 			}
 		}
 	},
 	"GET todo/$todoId/item/$itemId": {
+		"request": {
+			"$todoId:number": ["required"],
+			"$itemId:number": ["required"]
+		},
 		"response": [
 			"id:number",
 			"name:string",
@@ -167,6 +191,7 @@
 		],
 		"transfer": {
 			"code": {
+				"400": "Bad Request",
 				"200": "Success"
 			}
 		}
@@ -188,6 +213,7 @@
 		"transfer": {
 			"code": {
 				"201": "Success",
+				"400": "Bad Request",
 				"401": "Need Authorized",
 				"403": "Forbidden"
 			}
@@ -208,6 +234,7 @@
 		"transfer": {
 			"code": {
 				"201": "Success",
+				"400": "Bad Request",
 				"404": "Not Found",
 				"401": "Need Authorized",
 				"403": "Forbidden"
@@ -235,6 +262,7 @@
 		"transfer": {
 			"code": {
 				"200": "Success",
+				"400": "Bad Request",
 				"401": "Need Authorized",
 				"403": "Forbidden"
 			},
@@ -260,6 +288,7 @@
 		"transfer": {
 			"code": {
 				"200": "Success",
+				"400": "Bad Request",
 				"401": "Need Authorized",
 				"403": "Forbidden"
 			},
@@ -281,6 +310,7 @@
 		"transfer": {
 			"code": {
 				"200": "Success",
+				"400": "Bad Request",
 				"401": "Need Authorized",
 				"403": "Forbidden"
 			},
@@ -301,6 +331,7 @@
 		"transfer": {
 			"code": {
 				"200": "Success",
+				"400": "Bad Request",
 				"401": "Need Authorized",
 				"403": "Forbidden"
 			},
