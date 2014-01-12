@@ -20,7 +20,7 @@ class DataTransferMultiValueObject extends DataTransferSimpleValueObject{
         } else {
             $data[$name] = $value;
         }
-        parent::setValue($data);
+        return parent::setValue($data);
     }
 
     public function getValue($name, $default = null){

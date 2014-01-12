@@ -19,13 +19,11 @@ abstract class API_Controller extends REST_Controller {
         $apiJson = $this->_parseApiJsonFormat();
 
         $apiName = $this->_getApiNameByCurrentRequest($apiJson, $arguments);
-
         if($apiName){
             $this->_apiCheckInputParams($apiJson[$apiName], $arguments);
         }else{
             $this->transfer()->code(405);
         }
-
         if (!$this->_apiCheckHandlerAccess($METHOD, $callPath)) {
             if(!$this->transfer()->hasError()){
                 $this->transfer()->code(403);
@@ -49,7 +47,8 @@ abstract class API_Controller extends REST_Controller {
 
     private function _parseApiJsonFormat(){
         $JSON_FILE_PATH = SERVER_DIR."/api/api.json";
-        if(isset($_SESSION["api/parsedJsonApi"])){
+        $checkSessionCache = false;
+        if($checkSessionCache && isset($_SESSION["api/parsedJsonApi"])){
             if(isset($_SESSION["api/parsedJsonApi/version"]) && $_SESSION["api/parsedJsonApi/version"] >= filemtime($JSON_FILE_PATH)){
                 return $_SESSION["api/parsedJsonApi"];
             }
@@ -95,6 +94,7 @@ abstract class API_Controller extends REST_Controller {
             }
 
             $urlParams = array();
+            $_requestParams = array();
             foreach($requestParams as $optionName => $option){
                 $opt = preg_split('/\s*\:\s*/', $optionName);
                 $opt[1] = isset($opt[1]) ? $opt[1] : "string";
@@ -112,15 +112,15 @@ abstract class API_Controller extends REST_Controller {
                         'type' => $opt[1],
                         'validation' => $option
                     );
-                    unset($requestParams[$optionName]);
                 } else {
-                    $requestParams[$optionName][] = array(
+                    $_requestParams[] = array(
                         "name" => $opt[0],
                         "type" => $opt[1],
                         'validation' => $option
                     );
                 }
             }
+            $requestParams = $_requestParams;
 
             $_urlParams = array();
             foreach($urlParams as $_param){
@@ -149,38 +149,26 @@ abstract class API_Controller extends REST_Controller {
         $METHOD = strtoupper($_SERVER["REQUEST_METHOD"]);
 
         $apiName = null;
-
-        $compatibleApiNames = array();
-        foreach($apiJson as $_apiName => $_handlerName){
-            preg_match_all('/\$(?:[^\/]+)/', $_apiName, $m);
-            if(preg_match('/^(?:'.$METHOD.'|ANY)/', $_apiName)){
-                if(count($arguments)){
-                    if(!empty($m[0]) && count($m[0]) == count($arguments)){
-                        $compatibleApiNames[] = $_apiName;
-                    }
-                } else {
-                    $compatibleApiNames[] = $_apiName;
-                }
-            }
-        }
         $uri = $_SERVER["REQUEST_URI"];
         $uri = str_replace('/server/', '', $uri); // TODO: remove valid base URI
-        $uri = preg_replace('/\/+$/', '', $uri);
+        $uri = preg_replace('/\?(.+)$/', '', $uri);
+        $uri = preg_replace('#(/+)$#', '', $uri);
         $uri = str_replace('\\', '/', $uri);
         $maskUri = $METHOD.' '.$uri;
         $maskUriAny = 'ANY '.$uri;
-        foreach($compatibleApiNames as $_name){
-            $maskExp = $_name;
-            $maskExp = str_replace('\\', '/', $maskExp);
-            $maskExp = preg_replace('/(?:\$[^\/\\\]+)/', '[^\/]+', $maskExp);
-            $maskExp = '@^'.$maskExp.'$@';
-            if(preg_match($maskExp, $maskUri)){
-                $apiName = $_name;
-                break;
-            }else if(preg_match($maskExp, $maskUriAny)){
-                $apiName = $_name;
-                break;
+        foreach($apiJson as $_apiName => $_){
+            preg_match_all('/\$(?:[^\/]+)/', $_apiName, $m);
+            if(preg_match('/^(?:'.$METHOD.'|ANY)/', $_apiName) && count($m[0]) == count($arguments)){
+                $maskExp = $_apiName;
+                $maskExp = str_replace('\\', '/', $maskExp);
+                $maskExp = preg_replace('/(?:\$[^\/\\\]+)/', '[^\/]+', $maskExp);
+                $maskExp = '#^'.$maskExp.'$#';
+                if(preg_match($maskExp, $maskUri) || preg_match($maskExp, $maskUriAny)){
+                    $apiName = $_apiName;
+                    break;
+                }
             }
+
         }
         return $apiName;
     }
@@ -243,9 +231,11 @@ abstract class API_Controller extends REST_Controller {
             }
         }
 
-        foreach($apiJsonByCurrentApiName["request"] as $param){
-            $name = $param["name"];
-            $args[$name] = $this->_apiGetFieldValueByValidation($inputParams, $name, $param);
+        if(isset($apiJsonByCurrentApiName["request"])){
+            foreach($apiJsonByCurrentApiName["request"] as $param){
+                $args[$param["name"]] = $this->_apiGetFieldValueByValidation($inputParams, $param["name"], $param);
+
+            }
         }
 
         return $args;
@@ -255,13 +245,14 @@ abstract class API_Controller extends REST_Controller {
         $rules = isset($param["validation"]) ? $param["validation"] : array();
         $value = null;
         if(!isset($params[$name])){
-            if(in_array("required", $rules) || in_array(true, $rules)){
+            if(in_array("required", $rules)){
                 $this->transfer()->error()->field($name, "required");
             }
         }else{
             $value = $params[$name];
         }
-        return $this->_toType($value, $param["type"]);
+        $arg = $this->_toType($value, $param["type"]);
+        return $arg;
     }
 
     private function _toType($var, $type){
@@ -278,7 +269,10 @@ abstract class API_Controller extends REST_Controller {
         return trim((string) $var); // default type = string
     }
 
-    protected function _input($name, $default = null){
+    protected function _input($name = null, $default = null){
+        if(is_null($name)){
+            return $this->_args;
+        }
         if(is_null($this->_args[$name])){
             return $default;
         }

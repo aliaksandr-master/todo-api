@@ -4,14 +4,13 @@
 class DataTransferErrorObject extends DataTransferMultiValueObject{
 
 
-    public function __construct($root, $optional = false){
+    public function __construct(DataTransfer $root, $optional = false){
         parent::__construct($root, 'error', $optional, self::TYPE_OBJECT);
     }
 
     public function field($name, $message){
         if(!$this->_root->hasError()){
             $this->_root->code(400);
-            $this->_root->status(false);
         }
         $data = $this->getValue('field', new DataTransferMultiValueObject('field', true, self::TYPE_ARRAY));
         if($data instanceof DataTransferMultiValueObject){

@@ -48,7 +48,7 @@ class Todo extends API_Controller {
 
     public function list_post(){
 
-        $inputData = new SmartyParams($this->args());
+        $inputData = new SmartyParams($this->_input());
         $inputData->map("trim");
 
         $data = array();
@@ -65,7 +65,7 @@ class Todo extends API_Controller {
     }
 
     public function list_put($listId){
-        $inputData = new SmartyParams($this->args());
+        $inputData = new SmartyParams($this->_input());
         $inputData->map("trim");
 
         $data = array();
@@ -129,7 +129,7 @@ class Todo extends API_Controller {
 
     public function item_post($todoId){
 
-        $inputData = new SmartyParams($this->args());
+        $inputData = new SmartyParams($this->_input());
         $inputData->set("todo_id", $todoId);
         $inputData->map("trim");
 
@@ -157,7 +157,7 @@ class Todo extends API_Controller {
 
     public function item_put($todoId, $id){
 
-        $inputData = new SmartyParams($this->args());
+        $inputData = new SmartyParams($this->_input());
         $inputData->map("trim");
 
         if(empty($todoId)){

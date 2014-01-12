@@ -106,7 +106,8 @@ class DataTransfer{
             }
 
             if(!is_array($name)){
-                throw new Exception("invalid data format");
+                trigger_error("invalid data format", E_USER_WARNING);
+                die('');
             }
 
             foreach($name as $n => $v){
@@ -117,8 +118,9 @@ class DataTransfer{
     }
 
     public function code($code = null){
-        if(!is_null($code)){
+        if(!is_null($code) && $this->_code->getValue() < 400){
             $this->_code->setValue($code);
+            $this->status($this->_code->getValue() < 400);
         }
         return $this->_code;
     }
@@ -134,7 +136,7 @@ class DataTransfer{
         if($this->getCode()>=400){
             return true;
         }
-        return $this->_status->getValue();
+        return !$this->_status->getValue();
     }
 
 }

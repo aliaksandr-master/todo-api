@@ -21,7 +21,6 @@ class DataTransferSimpleValueObject{
 
     public function setValue($value){
         $this->_value = $value;
-        $this->_root->status($value < 400);
         return $this;
     }
 
