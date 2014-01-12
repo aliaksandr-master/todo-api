@@ -11,7 +11,7 @@ module.exports = function(grunt){
 				ieCompat: true,
 				sourceMap: false,
 				relativeUrls: false,
-				report: 'gzip',
+//				report: 'gzip',
 				strictUnits: true,
 				strictImports: true,
 				optimization: null,

@@ -593,7 +593,7 @@ FileETag None
         Header set Cache-Control "max-age=604800, public"
     </filesMatch>
 
-    <filesMatch ".(hbs|php)$">
+    <filesMatch ".(hbs|php|json)$">
         Header set Cache-Control "max-age=604800, private, must-revalidate"
     </filesMatch>
 

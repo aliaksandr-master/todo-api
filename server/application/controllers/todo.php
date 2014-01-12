@@ -17,8 +17,8 @@ class Todo extends API_Controller {
 
     public function __construct() {
         parent::__construct();
-        $this->loader()->model('Todo_model', "todoList");
-        $this->loader()->model('TodoItem_model', "todoItem");
+        $this->load->model('Todo_model', "todoList");
+        $this->load->model('TodoItem_model', "todoItem");
     }
 
     private function _getAllLists(){

@@ -34,17 +34,6 @@ class DataTransfer{
         $this->_data = new DataTransferMultiValueObject($this, 'data', false);
         $this->_error = new DataTransferErrorObject($this);
         $this->_controller = $controller;
-
-        if(ENVIRONMENT == "development" && $this->_controller instanceof REST_Controller){
-
-            $this->_input = new DataTransferMultiValueObject($this, 'input', false, DataTransferMultiValueObject::TYPE_OBJECT);
-
-            $this->_input->setValue("url", $_SERVER['REQUEST_URI']);
-            $this->_input->setValue("method", $_SERVER['REQUEST_METHOD']);
-            $this->_input->setValue("source", INPUT_DATA);
-            $this->_input->setValue("arguments", $this->_controller->inputArguments());
-        }
-
     }
 
     public function toJSON(){
@@ -72,6 +61,7 @@ class DataTransfer{
     }
 
     public function error($code = null){
+
         if(!is_null($code)){
             $this->code($code);
         }

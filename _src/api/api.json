@@ -1,39 +1,32 @@
 {
 	"POST user/login": {
-		"handler":"user/login",
-		"description": "to login in system",
 		"request": {
-			"username:string": ["required"],
-			"password:string": ["required"],
-			"remember:boolean":   ["optional"]
+			"username:string": "required",
+			"password:string": "required",
+			"remember:boolean": "optional"
 		},
 		"response": [
 			"username:string",
 			"email:string"
 		],
 		"errors": {
-			"username/required": "Username is required field",
-			"password/required": "Password is required field",
-			"password/incorrect": "Password is incorrect"
+			"password": "incorrect"
 		}
 	},
-	"ANY user/logout": {
-		"handler":"user/logout",
+	"GET user/logout": {
 		"response": [
 			"status:boolean"
 		]
 	},
 	"GET user": {
-		"handler":"user/index",
 		"response:array": [
 			"username:string",
 			"email:string"
 		]
 	},
 	"GET user/$iserId": {
-		"handler":"user/index",
 		"request": {
-			"$userId:number": ["required"]
+			"$userId:number": "required"
 		},
 		"response": [
 			"username:string",
@@ -41,22 +34,20 @@
 		]
 	},
 	"DELETE user/$iserId": {
-		"handler":"user/index",
 		"request": {
-			"$userId:number": ["required"]
+			"$userId:number": "required"
 		},
 		"response": [
 			"status:boolean"
 		]
 	},
 	"PUT user/$userId": {
-		"handler":"user/index",
 		"request" : {
-			"username:string": ["required"],
-			"email:string": ["required"],
-			"password_old:string": ["optional"],
-			"password_new:string": ["optional"],
-			"password_new_confirm:string": ["optional"]
+			"username:string": "required",
+			"email:string": "required",
+			"password_old:string": "optional",
+			"password_new:string": "optional",
+			"password_new_confirm:string": "optional"
 		},
 		"response": [
 			"username:string",
@@ -64,56 +55,57 @@
 		]
 	},
 	"POST user": {
-		"handler":"user/index",
 		"request": {
-			"username:string": ["required"],
-			"email:string": ["required"],
-			"password:string": ["required"],
-			"confirm_password:string": ["required"]
+			"username:string": "required",
+			"email:string": "required",
+			"password:string": "required",
+			"confirm_password:string": "required"
 		},
 		"response": [
 			"username:string",
 			"email:string"
 		],
 		"errors": {
-			"username/required":  "User Name is required field",
-			"username/exists": "User Name was already exists",
-			"email/exists": "Email was already exists",
-			"email/required": "Email is required field",
-			"email/incorrect_format": "Email has invalid characters",
-			"email/not_found": "Email is inactive email",
-			"password/required": "Password is required field",
-			"password_confirm/required": "Confirm Password is required field",
-			"password_confirm/not_equal": "Confirm Password must be equal Password"
+			"username": "exists",
+			"email": [
+				"exists",
+				"not_found",
+				"incorrect_format"
+			],
+			"password_confirm": "not_equal"
 		}
 	},
+
+
+
+
+
+
+
 	"GET todo": {
-		"handler":"todo/list",
 		"response:array": [
 			"id:integer",
 			"link:string",
 			"name:string",
-			"shared:boolean",
+			"is_shared:boolean",
 			"sort_order:integer"
 		]
 	},
 	"GET todo/$todoId": {
-		"handler":"todo/list",
 		"request": {
-			"$todoId:number": ["required"]
+			"$todoId:number": "required"
 		},
 		"response": [
 			"id:integer",
 			"link:string",
 			"name:string",
-			"shared:boolean",
+			"is_shared:boolean",
 			"sort_order:integer"
 		]
 	},
 	"GET todo/$todoId/item": {
-		"handler":"todo/item",
 		"request": {
-			"$todoId:number": ["required"]
+			"$todoId:number": "required"
 		},
 		"response:array": [
 			"id:integer",
@@ -125,10 +117,9 @@
 		]
 	},
 	"GET todo/$todoId/item/$itemId": {
-		"handler":"todo/item",
 		"request": {
-			"$todoId:number": ["required"],
-			"$itemId:number": ["required"]
+			"$todoId:number": "required",
+			"$itemId:number": "required"
 		},
 		"response": [
 			"id:number",
@@ -139,26 +130,24 @@
 		]
 	},
 	"POST todo": {
-		"handler":"todo/list",
 		"request": {
-			"name:string": ["optional"],
-			"shared:boolean": ["optional"],
-			"sort_order:integer": ["optional"]
+			"name:string": "optional",
+			"is_shared:boolean": "optional",
+			"sort_order:integer": "optional"
 		},
 		"response": [
 			"id:integer",
 			"link:string",
 			"name:string",
-			"shared:boolean",
+			"is_shared:boolean",
 			"sort_order:integer"
 		]
 	},
 	"POST todo/$todoId/item": {
-		"handler":"todo/item",
 		"request": {
-			"$todoId:integer": ["required"],
-			"name:string": ["optional"],
-			"is_active:boolean": ["optional"]
+			"$todoId:integer": "required",
+			"name:string": "optional",
+			"is_active:boolean": "optional"
 		},
 		"response": [
 			"id:integer",
@@ -169,37 +158,33 @@
 			"is_active:boolean"
 		],
 		"errors": {
-			"$todoId/required": "Todo List Id Is Required",
-			"$todoId/not_found": "Todo List Is Not Found"
+			"$todoId": "not_found"
 		}
 	},
 	"PUT todo/$todoId": {
-		"handler":"todo/list",
 		"request": {
-			"$todoId:integer": ["required"],
-			"name:string": ["optional"],
-			"shared:boolean": ["optional"],
-			"sort_order:integer": ["optional"]
+			"$todoId:integer": "required",
+			"name:string": "optional",
+			"is_shared:boolean": "optional",
+			"sort_order:integer": "optional"
 		},
 		"response": [
 			"id:integer",
 			"link:string",
 			"name:string",
-			"shared:boolean",
+			"is_shared:boolean",
 			"sort_order:integer"
 		],
 		"errors": {
-			"$todoId/required": "Todo List Id Is Required",
-			"$todoId/not_found": "Todo List Is Not Found"
+			"$todoId": "not_found"
 		}
 	},
 	"PUT todo/$todoId/item/$itemId": {
-		"handler":"todo/item",
 		"request": {
-			"$todoId:integer": ["required"],
-			"$itemId:integer": ["required"],
-			"name:string": ["optional"],
-			"is_active:boolean": ["optional"]
+			"$todoId:integer": "required",
+			"$itemId:integer": "required",
+			"name:string": "optional",
+			"is_active:boolean": "optional"
 		},
 		"response": [
 			"id:integer",
@@ -210,39 +195,32 @@
 			"is_active:boolean"
 		],
 		"errors": {
-			"$todoId/required": "Todo List Id Is Required",
-			"$todoId/not_found": "Todo List Is Not Found",
-			"$itemId/required": "Todo List Item Id Is Required",
-			"$itemId/not_found": "Todo List Item Is Not Found"
+			"$todoId": "not_found",
+			"$itemId": "not_found"
 		}
 	},
 	"DELETE todo/$todoId": {
-		"handler":"todo/list",
 		"request": {
-			"$todoId:integer": ["required"]
+			"$todoId:integer": "required"
 		},
 		"response": [
 			"status:boolean"
 		],
 		"errors": {
-			"$todoId/required": "Todo List Id Is Required",
-			"$todoId/not_found": "Todo List Is Not Found"
+			"$todoId": "not_found"
 		}
 	},
 	"DELETE todo/$todoId/item/$itemId": {
-		"handler":"todo/item",
 		"request": {
-			"$todoId:integer": ["required"],
-			"$itemId:integer": ["required"]
+			"$todoId:integer": "required",
+			"$itemId:integer": "required"
 		},
 		"response": [
 			"status:boolean"
 		],
 		"errors": {
-			"$todoId/required": "Todo List Id Is Required",
-			"$todoId/not_found": "Todo List Is Not Found",
-			"$itemId/required": "Todo List Item Id Is Required",
-			"$itemId/not_found": "Todo List Item Is Not Found"
+			"$todoId": "not_found",
+			"$itemId": "not_found"
 		}
 	}
 }
