@@ -139,8 +139,11 @@
 	"GET todo": {
 		"handler":"todo/list",
 		"response:array": [
-			"id:number",
-			"name:string"
+			"id:integer",
+			"link:string",
+			"name:string",
+			"shared:boolean",
+			"sort_order:integer"
 		],
 		"transfer": {
 			"code": {
@@ -156,10 +159,11 @@
 			"$todoId:number": ["required"]
 		},
 		"response": [
-			"id:number",
-			"name:string",
+			"id:integer",
 			"link:string",
-			"is_shared:boolean"
+			"name:string",
+			"shared:boolean",
+			"sort_order:integer"
 		],
 		"transfer": {
 			"code": {
@@ -176,8 +180,11 @@
 			"$todoId:number": ["required"]
 		},
 		"response:array": [
-			"id:number",
+			"id:integer",
+			"todo_id:integer",
+			"sort_order:integer",
 			"name:string",
+			"date_create:string",
 			"is_active:boolean"
 		],
 		"transfer": {
@@ -198,6 +205,8 @@
 		"response": [
 			"id:number",
 			"name:string",
+			"date_create:string",
+			"sort_order:integer",
 			"is_active:boolean"
 		],
 		"transfer": {
@@ -211,16 +220,15 @@
 		"handler":"todo/list",
 		"request": {
 			"name:string": ["optional"],
-			"is_active:boolean": ["optional"],
 			"shared:boolean": ["optional"],
-			"sort_order:boolean": ["optional"]
+			"sort_order:integer": ["optional"]
 		},
 		"response": [
-			"id:number",
+			"id:integer",
+			"link:string",
 			"name:string",
-			"link:boolean",
 			"shared:boolean",
-			"sort_order:boolean"
+			"sort_order:integer"
 		],
 		"transfer": {
 			"code": {
@@ -234,14 +242,16 @@
 	"POST todo/$todoId/item": {
 		"handler":"todo/item",
 		"request": {
-			"$todoId:number": ["required"],
+			"$todoId:integer": ["required"],
 			"name:string": ["optional"],
 			"is_active:boolean": ["optional"]
 		},
 		"response": [
-			"id:number",
-			"todo_id:number",
+			"id:integer",
+			"todo_id:integer",
+			"sort_order:integer",
 			"name:string",
+			"date_create:string",
 			"is_active:boolean"
 		],
 		"transfer": {
@@ -261,17 +271,17 @@
 	"PUT todo/$todoId": {
 		"handler":"todo/list",
 		"request": {
-			"$todoId:number": ["required"],
+			"$todoId:integer": ["required"],
 			"name:string": ["optional"],
 			"shared:boolean": ["optional"],
-			"sort_order:boolean": ["optional"]
+			"sort_order:integer": ["optional"]
 		},
 		"response": [
-			"id:number",
-			"link:boolean",
+			"id:integer",
+			"link:string",
 			"name:string",
 			"shared:boolean",
-			"sort_order:boolean"
+			"sort_order:integer"
 		],
 		"transfer": {
 			"code": {
@@ -289,15 +299,17 @@
 	"PUT todo/$todoId/item/$itemId": {
 		"handler":"todo/item",
 		"request": {
-			"$todoId:number": ["required"],
-			"$itemId:number": ["required"],
+			"$todoId:integer": ["required"],
+			"$itemId:integer": ["required"],
 			"name:string": ["optional"],
 			"is_active:boolean": ["optional"]
 		},
 		"response": [
-			"id:number",
-			"todo_id:number",
+			"id:integer",
+			"todo_id:integer",
+			"sort_order:integer",
 			"name:string",
+			"date_create:string",
 			"is_active:boolean"
 		],
 		"transfer": {
@@ -318,7 +330,7 @@
 	"DELETE todo/$todoId": {
 		"handler":"todo/list",
 		"request": {
-			"$todoId:number": ["required"]
+			"$todoId:integer": ["required"]
 		},
 		"response": [
 			"status:boolean"
@@ -339,8 +351,8 @@
 	"DELETE todo/$todoId/item/$itemId": {
 		"handler":"todo/item",
 		"request": {
-			"$todoId:number": ["required"],
-			"$itemId:number": ["required"]
+			"$todoId:integer": ["required"],
+			"$itemId:integer": ["required"]
 		},
 		"response": [
 			"status:boolean"

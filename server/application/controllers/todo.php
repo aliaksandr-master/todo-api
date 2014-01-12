@@ -30,12 +30,7 @@ class Todo extends API_Controller {
         $todoArray = $this->todoList->read(array(
             'id' => $listId
         ));
-
-        if($todoArray){
-            $this->transfer($todoArray[0]);
-        }else{
-            $this->transfer()->code(404);
-        }
+        $this->transfer($todoArray);
     }
 
     public function list_get($id = null){
@@ -57,10 +52,7 @@ class Todo extends API_Controller {
         $data['sort_order']     = $inputData->get('sort_order', 0);
         $data['date_create']    = date("Y-m-d H:i:s", gettimeofday(true));
         $data['link']           = md5(gettimeofday(true).rand(1,1100)).gettimeofday(true);
-
-        $todoModel = new Todo_model();
-        $listId = $todoModel->create($data);
-
+        $listId = $this->todoList->create($data);
         $this->_getOneList($listId);
     }
 
@@ -73,8 +65,7 @@ class Todo extends API_Controller {
         $data['is_shared']      = $inputData->get('is_shared', 0);
         $data['sort_order']     = $inputData->get('sort_order', 0);
 
-        $todoModel = new Todo_model();
-        $todoModel->update($data, array(
+        $this->todoList->update($data, array(
             'id' => $listId
         ));
 
@@ -82,40 +73,27 @@ class Todo extends API_Controller {
     }
 
     public function list_delete($id){
-        $todoObject = new Todo_model();
-
-        $todoResult = $todoObject->delete(array(
+        $todoResult = $this->todoList->delete(array(
             'id' => $id
         ));
 
-        $this->transfer('result', $todoResult);
+        $this->transfer('status', $todoResult);
     }
 
     // ITEMS
 
     private function _getOneTodoListItem($listId, $itemId){
-        $todoItemModel = new TodoItem_model();
-
-        $todoItemArray = $todoItemModel->read(array(
+        $todoItemArray = $this->todoItem->read(array(
             "id" => $itemId,
             "todo_id" => $listId
         ));
-
-        if($todoItemArray){
-            $this->transfer($todoItemArray[0]);
-        }else{
-            $this->transfer()->code(404);
-        }
-
+        $this->transfer($todoItemArray);
     }
 
     private function _getAllTodoListItem($listId){
-        $todoItemModel = new TodoItem_model();
-
-        $todoItemArray = $todoItemModel->read(array(
+        $todoItemArray = $this->todoItem->read(array(
             "todo_id" => $listId
         ));
-
         $this->transfer($todoItemArray);
     }
 
@@ -128,30 +106,18 @@ class Todo extends API_Controller {
     }
 
     public function item_post($todoId){
-
         $inputData = new SmartyParams($this->_input());
         $inputData->set("todo_id", $todoId);
-        $inputData->map("trim");
-
-        // VALIDATION
-        if(empty($todoId)){
-            $this->transfer()->error()->field('todo_id', 'required');
-        }
 
         // CREATE ITEM
         if (!$this->transfer()->hasError()){
-
             $data = array(
                 "todo_id" => $inputData["todo_id"],
                 "name" => $inputData->get('name', ""),
                 "date_create" => date("Y-m-d H:i:s", gettimeofday(true))
             );
-
-            $todoItemModel = new TodoItem_model();
-            $itemId = $todoItemModel->create($data);
-
+            $itemId = $this->todoItem->create($data);
             $this->_getOneTodoListItem($todoId, $itemId);
-            return;
         }
     }
 
@@ -174,9 +140,7 @@ class Todo extends API_Controller {
             $data['name']           = $inputData->get('name', "");
             $data['is_active']      = $inputData->get('is_active', 0);
             $data['sort_order']     = $inputData->get('sort_order', 0);
-
-            $todoItemModel = new TodoItem_model();
-            $todoItemModel->update($data, array(
+            $this->todoItem->update($data, array(
                 'id' => $id
             ));
 
@@ -185,12 +149,11 @@ class Todo extends API_Controller {
     }
 
     public function item_delete($todoId, $id){
-        $todoModel = new TodoItem_model();
-        $todoResult = $todoModel->delete(array(
+        $todoResult = $this->todoItem->delete(array(
             'id' => $id,
             "todo_id" => $todoId
         ));
-        $this->transfer('result', $todoResult);
+        $this->transfer('status', $todoResult);
     }
 
 }

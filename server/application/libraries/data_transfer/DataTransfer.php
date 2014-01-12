@@ -41,19 +41,8 @@ class DataTransfer{
 
             $this->_input->setValue("url", $_SERVER['REQUEST_URI']);
             $this->_input->setValue("method", $_SERVER['REQUEST_METHOD']);
-            $this->_input->setValue("sourceData", INPUT_DATA);
-
-            $exploded = explode('&', INPUT_DATA);
-
-            $_PUT = array();
-            foreach($exploded as $pair) {
-                $item = explode('=', $pair);
-                if(count($item) == 2) {
-                    $_PUT[urldecode($item[0])] = urldecode($item[1]);
-                }
-            }
-            $this->_input->setValue("parsedData", $_PUT);
-            $this->_input->setValue("argsData", $this->_controller->inputArguments());
+            $this->_input->setValue("source", INPUT_DATA);
+            $this->_input->setValue("arguments", $this->_controller->inputArguments());
         }
 
     }

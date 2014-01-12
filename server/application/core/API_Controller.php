@@ -35,7 +35,11 @@ abstract class API_Controller extends REST_Controller {
         $this->_apiSendSmartyStatusCodes();
 
         // SEND RESPONSE
-        $this->response($this->transfer()->getAllData(), $this->transfer()->getCode());
+        $response = $this->transfer()->getAllData();
+        if(isset($response["data"])){
+            $response["data"] = $this->_apiPrepareResponseData($apiJson[$apiName], $response["data"]);
+        }
+        $this->response($response, $this->transfer()->getCode());
         exit("");
     }
 
@@ -168,7 +172,6 @@ abstract class API_Controller extends REST_Controller {
                     break;
                 }
             }
-
         }
         return $apiName;
     }
@@ -220,6 +223,38 @@ abstract class API_Controller extends REST_Controller {
             return false;
         }
         return true;
+    }
+
+    private function _apiPrepareResponseData($apiJsonByCurrentApiName, $data){
+        $_data = array();
+        $type = $apiJsonByCurrentApiName["response_type"];
+
+        if($type == "item"){
+            if (isset($data[0]) && is_array($data[0])) {
+                $data = $data[0];
+            }
+            if (empty($data)) {
+                $this->transfer()->code(404);
+            } else {
+                foreach($apiJsonByCurrentApiName["response"] as $param){
+                    $var = isset($data[$param["name"]]) ? $data[$param["name"]] : null;
+                    $_data[$param["name"]] = $this->_toType($var, $param["type"]);
+                }
+            }
+        } else if ($type == "array") {
+            if(!empty($data) && (!isset($data[0]) || !is_array($data[0]))){
+                $data = array($data);
+            }
+            foreach($data as $k=>$_d){
+                foreach($apiJsonByCurrentApiName["response"] as $param){
+                    if(isset($_d[$param["name"]])){
+                        $_data[$k][$param["name"]] = $this->_toType($_d[$param["name"]], $param["type"]);
+                    }
+                }
+            }
+        }
+
+        return $_data;
     }
 
     private function _apiPrepareInputParams($inputParams, $apiJsonByCurrentApiName, $arguments){
