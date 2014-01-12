@@ -38,15 +38,15 @@ class User extends API_Controller {
             $data['password']   = $this->_input('password');
 
             if($this->_input('confirm_password') != $data['password']) {
-                $this->transfer()->error()->field('confirm_password', 'not_equal');
+                $this->transfer()->error(400)->field('confirm_password', 'not_equal');
             }
 
             if($this->user->checkOnExistField('username', $data['username'])) {
-                $this->transfer()->error()->field('username', 'exists');
+                $this->transfer()->error(400)->field('username', 'exists');
             }
 
             if($this->user->checkOnExistField('email', $data['email'])) {
-                $this->transfer()->error()->field('email', 'exists');
+                $this->transfer()->error(400)->field('email', 'exists');
             }
 
             if(!$this->transfer()->hasError()){

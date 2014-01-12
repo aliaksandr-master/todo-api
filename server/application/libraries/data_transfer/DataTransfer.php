@@ -71,7 +71,10 @@ class DataTransfer{
         exit($this->toJSON());
     }
 
-    public function error(){
+    public function error($code = null){
+        if(!is_null($code)){
+            $this->code($code);
+        }
         return $this->_error;
     }
 
