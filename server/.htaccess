@@ -8,5 +8,3 @@ RewriteRule ^(.*)$ index.php [L,QSA]
 
 # custom 404 page
 ErrorDocument 404 /404.html
-
-ServerSignature Off

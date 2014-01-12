@@ -6,6 +6,7 @@
 			"remember:boolean": "optional"
 		},
 		"response": [
+			"id:integer",
 			"username:string",
 			"email:string"
 		],
@@ -20,6 +21,7 @@
 	},
 	"GET user": {
 		"response:array": [
+			"id:integer",
 			"username:string",
 			"email:string"
 		]
@@ -29,6 +31,7 @@
 			"$userId:number": "required"
 		},
 		"response": [
+			"id:integer",
 			"username:string",
 			"email:string"
 		]
@@ -50,6 +53,7 @@
 			"password_new_confirm:string": "optional"
 		},
 		"response": [
+			"id:integer",
 			"username:string",
 			"email:string"
 		]
@@ -62,6 +66,7 @@
 			"confirm_password:string": "required"
 		},
 		"response": [
+			"id:integer",
 			"username:string",
 			"email:string"
 		],
