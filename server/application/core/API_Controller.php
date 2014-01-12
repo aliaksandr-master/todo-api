@@ -74,7 +74,10 @@ abstract class API_Controller extends REST_Controller {
             }
         }
         if (!$this->transfer()->hasError()) {
-            parent::_fire_method($call, $arguments);
+            $result = call_user_func_array($call, $arguments);
+            if(!is_null($result)){
+                $this->transfer($result);
+            }
         }
 
         $this->_sendStatus();

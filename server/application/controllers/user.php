@@ -12,16 +12,15 @@ class User extends API_Controller {
 
     public function __construct(){
         parent::__construct();
-        $this->loader()->model('User_model', "user");
 
-        $this->loader()->library('email');
-        $this->loader()->helper('email');
-        $this->loader()->helper('url');
+        $this->load->model('User_model', "user");
+        $this->load->library('email');
+        $this->load->helper('email');
+        $this->load->helper('url');
     }
 
     public function index_get($userId = null){
-        // GET
-
+        return $this->user->read($userId);
     }
 
     public function index_post(){

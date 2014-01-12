@@ -23,25 +23,22 @@ class Todo extends API_Controller {
 
     // READ ALL LISTS
     private function _getAllLists(){
-        $todoArray = $this->todoList->read();
-        $this->transfer($todoArray);
+        return $this->todoList->read();
     }
 
 
     // READ ONE LIST
     private function _getOneList($listId){
-        $todoArray = $this->todoList->read($listId);
-        $this->transfer($todoArray);
+        return $this->todoList->read($listId);
     }
 
 
     // READ LIST
     public function list_get($id = null){
         if (is_null($id)) {
-            $this->_getAllLists();
-        } else {
-            $this->_getOneList($id);
+            return $this->_getAllLists();
         }
+        return $this->_getOneList($id);
     }
 
 
@@ -53,7 +50,7 @@ class Todo extends API_Controller {
         $data['date_create']    = date("Y-m-d H:i:s", gettimeofday(true));
         $data['link']           = md5(gettimeofday(true).rand(1, 1100)).gettimeofday(true);
         $listId = $this->todoList->create($data);
-        $this->_getOneList($listId);
+        return $this->_getOneList($listId);
     }
 
 
@@ -63,14 +60,14 @@ class Todo extends API_Controller {
         $data['is_shared']      = $this->api()->input('is_shared', 0);
         $data['sort_order']     = $this->api()->input('sort_order', 0);
         $this->todoList->update($data, $listId);
-        $this->_getOneList($listId);
+        return $this->_getOneList($listId);
     }
 
 
     // DELETE LIST
     public function list_delete($id){
         $todoResult = $this->todoList->delete($id);
-        $this->transfer('status', $todoResult);
+        return array("status" => $todoResult);
     }
 
 
@@ -81,26 +78,24 @@ class Todo extends API_Controller {
 
     // GET ONE ITEM
     private function _getOneTodoListItem($listId, $itemId){
-        $todoItemArray = $this->todoItem->read($itemId);
-        $this->transfer($todoItemArray);
+        return $this->todoItem->read($itemId);
     }
 
 
     // GET ALL ITEMS
     private function _getAllTodoListItem($listId){
-        $todoItemArray = $this->todoItem->read(array(
+        return $this->todoItem->read(array(
             "todo_id" => $listId
         ));
-        $this->transfer($todoItemArray);
     }
 
 
     // READ ITEM
     public function item_get($todoId, $id = null){
         if (is_null($id)) {
-            $this->_getAllTodoListItem($todoId);
+            return $this->_getAllTodoListItem($todoId);
         }else{
-            $this->_getOneTodoListItem($todoId, $id);
+            return $this->_getOneTodoListItem($todoId, $id);
         }
     }
 
@@ -113,7 +108,7 @@ class Todo extends API_Controller {
             "date_create" => date("Y-m-d H:i:s", gettimeofday(true))
         );
         $itemId = $this->todoItem->create($data);
-        $this->_getOneTodoListItem($todoId, $itemId);
+        return $this->_getOneTodoListItem($todoId, $itemId);
     }
 
 
@@ -124,14 +119,14 @@ class Todo extends API_Controller {
         $data['sort_order'] = $this->api()->input('sort_order', 0);
         $this->todoItem->update($data, $id);
 
-        $this->_getOneTodoListItem($todoId, $id);
+        return $this->_getOneTodoListItem($todoId, $id);
     }
 
 
     // DELETE ITEM
     public function item_delete($todoId, $id){
-        $todoResult = $this->todoItem->delete($id);
-        $this->transfer('status', $todoResult);
+        $result = $this->todoItem->delete($id);
+        return array("status" => $result);
     }
 
 }
