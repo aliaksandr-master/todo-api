@@ -5,10 +5,15 @@ require_once(APPPATH.'/core/API_Controller.php');
 
 class User extends API_Controller {
 
+    /**
+     * @var User_model
+     */
+    public $user;
+
     public function __construct(){
         parent::__construct();
-        $this->loader()->model('User_model');
-        $this->loader()->library('data_transfer/Data_transfer');
+        $this->loader()->model('User_model', "user");
+
         $this->loader()->library('email');
         $this->loader()->helper('email');
         $this->loader()->helper('url');
@@ -20,89 +25,83 @@ class User extends API_Controller {
     }
 
     public function index_post(){
-        $post = $this->_post_args;
 
-        foreach($post as $name => $value){
-            if(empty($value)){
-                $this->transfer()->error()->field($name, 'required');
-            }
+        if(!valid_email($this->_input('email'))){
+            $this->transfer()->error()->field('email', 'incorrect');
         }
 
-        if(!valid_email($this->post('email'))){
-            $this->transfer()->error()->field('email', 'incorrect_format');
-        }
-
-        $checkErrors = $this->transfer()->error()->getResult();
-        if(!$checkErrors){
+        if(!$this->transfer()->hasError()){
             $data = array();
-            $data['username'] = trim($this->post('username'));
-            $data['email'] = strtolower(trim($this->post('email')));
-            $data['password'] = trim($this->post('password'));
-            if($this->checkTableField('username', $data['username'])) {
-                $this->transfer()->error()->field('username', 'exists');
-            }
-            if($this->checkTableField('email', $data['email'])) {
-                $this->transfer()->error()->field('email', 'exists');
-            }
-            if(trim($this->post('confirm_password')) != $data['password']) {
+
+            $data['username']   = $this->_input('username');
+            $data['email']      = $this->_input('email');
+            $data['password']   = $this->_input('password');
+
+            if($this->_input('confirm_password') != $data['password']) {
                 $this->transfer()->error()->field('confirm_password', 'not_equal');
             }
 
-            $checkErrors = $this->transfer()->error()->getResult();
-            if(!$checkErrors){
+            if($this->user->checkOnExistField('username', $data['username'])) {
+                $this->transfer()->error()->field('username', 'exists');
+            }
+
+            if($this->user->checkOnExistField('email', $data['email'])) {
+                $this->transfer()->error()->field('email', 'exists');
+            }
+
+            if(!$this->transfer()->hasError()){
+
                 $data['password'] = md5($data['password']);
+
                 $data['date_register'] = date("Y-m-d H:i:s", gettimeofday(true));
+
                 $activationCode = sha1(md5(microtime()));
+
                 $data['activation_code'] = $activationCode;
 
-                $emailObject = $this->email;
-                if($emailObject instanceof CI_Email) {
-                    $emailObject->from('admin@dev.listslider.kreantis.com', 'Administrator');
-                    $emailObject->to('alex@google.com');
-                    $emailObject->subject('Account activation');
-                    // http://listslider/server/user/confirm/...
-                    $href = base_url().$this->uri->segment(1).'/confirm/'.sha1(md5(microtime()));
-                    $message = 'To confirm your registration go to the link below <br><a href="'.$href.'">Confirm</a>';
-                    $emailObject->message($message);
-                    $emailObject->send();
-                }
+//                $emailObject = $this->email;
+//                /*
+//                 * @var CI_Email $emailObject
+//                 */
+//                $emailObject->from('admin@dev.listslider.kreantis.com', 'Administrator');
+//                $emailObject->to('alex@google.com');
+//                $emailObject->subject('Account activation');
+//                $href = base_url().$this->uri->segment(1).'/confirm/'.sha1(md5(microtime()));
+//                $message = 'To confirm your registration go to the link below <br><a href="'.$href.'">Confirm</a>';
+//                $emailObject->message($message);
+//                $emailObject->send();
 
-                $user = new User_model();
-                $userId = $user->create($data);
-                $this->transfer()->data('user_id', $userId);
+                $userId = $this->user->create($data);
+
+                $data = $this->user->read(array("id" => $userId));
+
+                $this->transfer($data);
             }
         }
-        $this->sendResponse();
     }
 
     // TODO method must be named as 'login_put'
     public function login_post(){
+        $userName = $this->_input("username");
+        $password = $this->_input("password");
 
-        foreach($this->_post_args as $name => $value){
-            if(empty($value)) {
-                $this->transfer()->error()->field($name, 'required');
-            }
+        $userObject = new User_model();
+        $userArray = $userObject->read(array('username' => $userName));
+
+        if(empty($userArray)){
+            $userArray = $userObject->read(array('email' => $userName));
         }
 
-        $checkErrors = $this->transfer()->error()->getResult();
-        if(!$checkErrors) {
-            $putUsername = strtolower(trim($this->post('username')));
-            $putPassword = trim($this->post('password'));
-            $userObject = new User_model();
-            $userArray = $userObject->read(array('username' => $putUsername));
-            $user = current($userArray);
-            if(!empty($user)){
-                if(md5($putPassword) == $user['password']){
-                    // TODO hash string
-                    $this->transfer()->data('session_id', 'hash string');
-                }else{
-                    $this->transfer()->error()->field('password', 'incorrect');
-                }
+        if(empty($userArray[0])){
+            $this->transfer()->code(404);
+            $this->transfer()->error()->field('username', 'incorrect');
+        }else{
+            if(md5($password) == $userArray[0]['password']){
+                $this->transfer($userArray);
             }else{
-                $this->transfer()->error()->field('username', 'not_found');
+                $this->transfer()->error()->field('password', 'incorrect');
             }
         }
-        $this->response($this->transfer()->getAllData());
     }
 
     public function confirm_get(){
@@ -112,12 +111,6 @@ class User extends API_Controller {
 //            $user = new User_model();
         }
 
-    }
-
-    protected function checkTableField($name, $value){
-        $userObject = new User_model();
-        $user = $userObject->read(array($name => $value));
-        return (!empty($user)) ? true : false;
     }
 
 }

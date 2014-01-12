@@ -86,16 +86,27 @@
 					}
 				},
 				error: function(jqXHR, status){
-					var resp = jqXHR.responseText;
+					var resp, isJSON;
 
 					$("#responseHeadersNonFormat").html(jqXHR.getAllResponseHeaders());
-					$("#responseJSON").html("");
+
+					try{
+						resp = JSON.stringify(JSON.parse(jqXHR.responseText, true), null, 4);
+						isJSON = true;
+
+					}catch(e){
+						resp = jqXHR.responseText;
+						isJSON = false;
+					}
+
 					$("#responseHTML").html("");
+					$("#responseJSON").html(isJSON ? resp : "");
+
 					$("#errors").html(
 						'<div class="alert alert-danger">' +
 							'<h4>Ajax Error <b>' + jqXHR.status + '</b> (<i>' + status + '</i>)</h4>' +
 							'<p>' + jqXHR.statusText + '</p><br>' +
-							'<div>' + resp + '</div>' +
+							(isJSON ? '' : '<div>' + resp + '</div>') +
 						'</div>'
 					);
 					$("#response").text(jqXHR.responseText);

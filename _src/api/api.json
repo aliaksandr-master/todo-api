@@ -8,45 +8,27 @@
 			"remember:boolean":   ["optional"]
 		},
 		"response": [
-			"status:boolean"
+			"username:string",
+			"email:string"
 		],
-		"transfer":{
-			"code": {
-				"400": "Bad Request",
-				"200": "Pass Login",
-				"404": "User Or Password Is Incorrect"
-			},
-			"error/field": {
-				"username/required": "Username is required field",
-				"password/required": "Password is required field",
-				"password/incorrect": "Password is incorrect"
-			}
+		"errors": {
+			"username/required": "Username is required field",
+			"password/required": "Password is required field",
+			"password/incorrect": "Password is incorrect"
 		}
 	},
 	"ANY user/logout": {
 		"handler":"user/logout",
 		"response": [
 			"status:boolean"
-		],
-		"transfer": {
-			"code": {
-				"200": "Success"
-			}
-		}
+		]
 	},
 	"GET user": {
 		"handler":"user/index",
 		"response:array": [
 			"username:string",
 			"email:string"
-		],
-		"transfer": {
-			"code": {
-				"401": "Need Authorized",
-				"403": "Forbidden",
-				"200": "Success"
-			}
-		}
+		]
 	},
 	"GET user/$iserId": {
 		"handler":"user/index",
@@ -56,15 +38,7 @@
 		"response": [
 			"username:string",
 			"email:string"
-		],
-		"transfer": {
-			"code": {
-				"400": "Bad Request",
-				"401": "Need Authorized",
-				"403": "Forbidden",
-				"200": "Success"
-			}
-		}
+		]
 	},
 	"DELETE user/$iserId": {
 		"handler":"user/index",
@@ -73,15 +47,7 @@
 		},
 		"response": [
 			"status:boolean"
-		],
-		"transfer": {
-			"code": {
-				"400": "Bad Request",
-				"401": "Need Authorized",
-				"403": "Forbidden",
-				"200": "Success"
-			}
-		}
+		]
 	},
 	"PUT user/$userId": {
 		"handler":"user/index",
@@ -95,15 +61,7 @@
 		"response": [
 			"username:string",
 			"email:string"
-		],
-		"transfer": {
-			"code": {
-				"400": "Bad Request",
-				"401": "Need Authorized",
-				"403": "Forbidden",
-				"200": "Success"
-			}
-		}
+		]
 	},
 	"POST user": {
 		"handler":"user/index",
@@ -111,29 +69,22 @@
 			"username:string": ["required"],
 			"email:string": ["required"],
 			"password:string": ["required"],
-			"password_confirm:string": ["required"]
+			"confirm_password:string": ["required"]
 		},
 		"response": [
 			"username:string",
 			"email:string"
 		],
-		"transfer": {
-			"code": {
-				"400": "Bad Request",
-				"403": "Forbidden",
-				"200": "Success"
-			},
-			"error/field": {
-				"username/required":  "User Name is required field",
-				"username/exists": "User Name was already exists",
-				"email/exists": "Email was already exists",
-				"email/required": "Email is required field",
-				"email/incorrect_format": "Email has invalid characters",
-				"email/not_found": "Email is inactive email",
-				"password/required": "Password is required field",
-				"password_confirm/required": "Confirm Password is required field",
-				"password_confirm/not_equal": "Confirm Password must be equal Password"
-			}
+		"errors": {
+			"username/required":  "User Name is required field",
+			"username/exists": "User Name was already exists",
+			"email/exists": "Email was already exists",
+			"email/required": "Email is required field",
+			"email/incorrect_format": "Email has invalid characters",
+			"email/not_found": "Email is inactive email",
+			"password/required": "Password is required field",
+			"password_confirm/required": "Confirm Password is required field",
+			"password_confirm/not_equal": "Confirm Password must be equal Password"
 		}
 	},
 	"GET todo": {
@@ -144,14 +95,7 @@
 			"name:string",
 			"shared:boolean",
 			"sort_order:integer"
-		],
-		"transfer": {
-			"code": {
-				"401": "Need Authorized",
-				"403": "Forbidden",
-				"200": "Success"
-			}
-		}
+		]
 	},
 	"GET todo/$todoId": {
 		"handler":"todo/list",
@@ -164,15 +108,7 @@
 			"name:string",
 			"shared:boolean",
 			"sort_order:integer"
-		],
-		"transfer": {
-			"code": {
-				"400": "Bad Request",
-				"401": "Need Authorized",
-				"403": "Forbidden",
-				"200": "Success"
-			}
-		}
+		]
 	},
 	"GET todo/$todoId/item": {
 		"handler":"todo/item",
@@ -186,15 +122,7 @@
 			"name:string",
 			"date_create:string",
 			"is_active:boolean"
-		],
-		"transfer": {
-			"code": {
-				"400": "Bad Request",
-				"401": "Need Authorized",
-				"403": "Forbidden",
-				"200": "Success"
-			}
-		}
+		]
 	},
 	"GET todo/$todoId/item/$itemId": {
 		"handler":"todo/item",
@@ -208,13 +136,7 @@
 			"date_create:string",
 			"sort_order:integer",
 			"is_active:boolean"
-		],
-		"transfer": {
-			"code": {
-				"400": "Bad Request",
-				"200": "Success"
-			}
-		}
+		]
 	},
 	"POST todo": {
 		"handler":"todo/list",
@@ -229,15 +151,7 @@
 			"name:string",
 			"shared:boolean",
 			"sort_order:integer"
-		],
-		"transfer": {
-			"code": {
-				"201": "Success",
-				"400": "Bad Request",
-				"401": "Need Authorized",
-				"403": "Forbidden"
-			}
-		}
+		]
 	},
 	"POST todo/$todoId/item": {
 		"handler":"todo/item",
@@ -254,18 +168,9 @@
 			"date_create:string",
 			"is_active:boolean"
 		],
-		"transfer": {
-			"code": {
-				"201": "Success",
-				"400": "Bad Request",
-				"404": "Not Found",
-				"401": "Need Authorized",
-				"403": "Forbidden"
-			},
-			"error/field": {
-				"$todoId/required": "Todo List Id Is Required",
-				"$todoId/not_found": "Todo List Is Not Found"
-			}
+		"errors": {
+			"$todoId/required": "Todo List Id Is Required",
+			"$todoId/not_found": "Todo List Is Not Found"
 		}
 	},
 	"PUT todo/$todoId": {
@@ -283,17 +188,9 @@
 			"shared:boolean",
 			"sort_order:integer"
 		],
-		"transfer": {
-			"code": {
-				"200": "Success",
-				"400": "Bad Request",
-				"401": "Need Authorized",
-				"403": "Forbidden"
-			},
-			"error/field": {
-				"$todoId/required": "Todo List Id Is Required",
-				"$todoId/not_found": "Todo List Is Not Found"
-			}
+		"errors": {
+			"$todoId/required": "Todo List Id Is Required",
+			"$todoId/not_found": "Todo List Is Not Found"
 		}
 	},
 	"PUT todo/$todoId/item/$itemId": {
@@ -312,19 +209,11 @@
 			"date_create:string",
 			"is_active:boolean"
 		],
-		"transfer": {
-			"code": {
-				"200": "Success",
-				"400": "Bad Request",
-				"401": "Need Authorized",
-				"403": "Forbidden"
-			},
-			"error/field": {
-				"$todoId/required": "Todo List Id Is Required",
-				"$todoId/not_found": "Todo List Is Not Found",
-				"$itemId/required": "Todo List Item Id Is Required",
-				"$itemId/not_found": "Todo List Item Is Not Found"
-			}
+		"errors": {
+			"$todoId/required": "Todo List Id Is Required",
+			"$todoId/not_found": "Todo List Is Not Found",
+			"$itemId/required": "Todo List Item Id Is Required",
+			"$itemId/not_found": "Todo List Item Is Not Found"
 		}
 	},
 	"DELETE todo/$todoId": {
@@ -335,17 +224,9 @@
 		"response": [
 			"status:boolean"
 		],
-		"transfer": {
-			"code": {
-				"200": "Success",
-				"400": "Bad Request",
-				"401": "Need Authorized",
-				"403": "Forbidden"
-			},
-			"error/field": {
-				"$todoId/required": "Todo List Id Is Required",
-				"$todoId/not_found": "Todo List Is Not Found"
-			}
+		"errors": {
+			"$todoId/required": "Todo List Id Is Required",
+			"$todoId/not_found": "Todo List Is Not Found"
 		}
 	},
 	"DELETE todo/$todoId/item/$itemId": {
@@ -357,19 +238,11 @@
 		"response": [
 			"status:boolean"
 		],
-		"transfer": {
-			"code": {
-				"200": "Success",
-				"400": "Bad Request",
-				"401": "Need Authorized",
-				"403": "Forbidden"
-			},
-			"error/field": {
-				"$todoId/required": "Todo List Id Is Required",
-				"$todoId/not_found": "Todo List Is Not Found",
-				"$itemId/required": "Todo List Item Id Is Required",
-				"$itemId/not_found": "Todo List Item Is Not Found"
-			}
+		"errors": {
+			"$todoId/required": "Todo List Id Is Required",
+			"$todoId/not_found": "Todo List Is Not Found",
+			"$itemId/required": "Todo List Item Id Is Required",
+			"$itemId/not_found": "Todo List Item Is Not Found"
 		}
 	}
 }

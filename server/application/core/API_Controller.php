@@ -279,7 +279,7 @@ abstract class API_Controller extends REST_Controller {
     private function _apiGetFieldValueByValidation($params, $name, $param){
         $rules = isset($param["validation"]) ? $param["validation"] : array();
         $value = null;
-        if(!isset($params[$name])){
+        if(!isset($params[$name]) || (empty($params[$name]) && $params[$name] != 0 && $params[$name] !== false)){
             if(in_array("required", $rules)){
                 $this->transfer()->error()->field($name, "required");
             }

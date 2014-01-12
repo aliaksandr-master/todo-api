@@ -76,7 +76,6 @@ class Todo extends API_Controller {
         $todoResult = $this->todoList->delete(array(
             'id' => $id
         ));
-
         $this->transfer('status', $todoResult);
     }
 

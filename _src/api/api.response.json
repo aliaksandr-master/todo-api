@@ -1,9 +1,10 @@
 {
 	"data:object": "required",
 	"code:number": "required",
+	"status:boolean": "required",
 	"error:object": {
 		"field:object-array": "optional",
 		"access:object-array": "optional"
 	},
-	"debugger:object": "optional"
+	"input:object": "optional"
 }

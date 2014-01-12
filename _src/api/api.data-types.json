@@ -1,10 +1,13 @@
 [
 	"object",
 	"number",
+	"integer",
+	"float",
 	"bool",
 	"string",
 	"html-string",
 	"hash-string",
+	"date-string",
 	"md-string",
 	"array",
 	"object-array",
