@@ -181,10 +181,6 @@ abstract class REST_Controller extends MY_Controller
 
 	}
 
-    public function args(){
-        return $this->_args;
-    }
-
 	/**
 	 * Constructor function
 	 * @todo Document more please.

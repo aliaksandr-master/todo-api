@@ -5,22 +5,29 @@ require_once(APPPATH.'/core/API_Controller.php');
 
 class Todo extends API_Controller {
 
+    /**
+     * @var Todo_model
+     */
+    public $todoList;
+
+    /**
+     * @var TodoItem_model
+     */
+    public $todoItem;
+
     public function __construct() {
         parent::__construct();
-        $this->loader()->model('Todo_model');
-        $this->loader()->model('TodoItem_model');
+        $this->loader()->model('Todo_model', "todoList");
+        $this->loader()->model('TodoItem_model', "todoItem");
     }
 
     private function _getAllLists(){
-        $todoModel = new Todo_model();
-        $todoArray = $todoModel->read();
+        $todoArray = $this->todoList->read();
         $this->transfer($todoArray);
     }
 
     private function _getOneList($listId){
-        $todoObject = new Todo_model();
-
-        $todoArray = $todoObject->read(array(
+        $todoArray = $this->todoList->read(array(
             'id' => $listId
         ));
 
@@ -29,7 +36,6 @@ class Todo extends API_Controller {
         }else{
             $this->transfer()->code(404);
         }
-        $this->sendResponse();
     }
 
     public function list_get($id = null){

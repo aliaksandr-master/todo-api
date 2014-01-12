@@ -38,29 +38,43 @@ abstract class MY_Model extends CI_Model implements MY_CrudInterface {
 
     public function read(array $where = null, $resultAs = self::RESULT_ARRAY, $select = null){
 
-        if(!is_null($select)){
-            throw new Exception("incorrect selected format, must be array!");
+        if(is_null($select)){
+            $select = $this->getTableFields();
+        }else{
+            if(!is_array($select)){
+                $select = array($select);
+            }
+            $tableFields = $this->getTableFields();
+            foreach($select as $field){
+                if(!in_array($field, $tableFields)){
+                    trigger_error('CRUD: SELECT has invalid field of "'.$this->getTableName().'" ['.implode(",", $select).'] ', E_USER_WARNING);
+                    die();
+                }
+            }
         }
 
-        $this->getDb()
-            ->select($this->getTableFields(), true)
-            ->from($this->getTableName());
-
-        if($where){
-            $this->getDb()
-                ->where($where);
+        if(is_null($where)){
+            $where = array();
         }
+
+        if(!is_array($where)){
+            trigger_error("CRUD: WHERE is invalid (must be array!)", E_USER_WARNING);
+            die();
+        }
+
+        $this->getDb()->select($select, true)->where($where)->from($this->getTableName());
 
         if($resultAs == self::RESULT_ACTIVE_RECORD){
             return $this->getDb();
-        }elseif($resultAs == self::RESULT_OBJECT){
-            return $this->getDb()
-                ->get();
         }
 
-        return $this->getDb()
-            ->get()
-            ->result_array();
+        $result = $this->getDb()->get();
+
+        if($resultAs == self::RESULT_OBJECT){
+            return $result;
+        }
+
+        return $result->result_array();
     }
 
     public function create(array $data){
@@ -71,7 +85,8 @@ abstract class MY_Model extends CI_Model implements MY_CrudInterface {
             if(in_array($key, $tableFields)) {
                 $this->getDb()->set($key, $value);
             } else {
-                throw new Exception('undefined key "'.$key.'" must be in array ['.implode(',', $tableFields).']');
+                trigger_error('undefined key "'.$key.'" must be in array ['.implode(',', $tableFields).']', E_USER_WARNING);
+                die();
             }
         }
         $this->getDb()
@@ -91,7 +106,8 @@ abstract class MY_Model extends CI_Model implements MY_CrudInterface {
             if(in_array($key, $tableFields)) {
                 $this->getDb()->set($key, $value);
             } else {
-                throw new Exception('undefined key "'.$key.'" must be in array ['.implode(',', $tableFields).']');
+                trigger_error('undefined key "'.$key.'" must be in array ['.implode(',', $tableFields).']', E_USER_WARNING);
+                die();
             }
         }
         $this->getDb()

@@ -1,4 +1,8 @@
 <?php
+
+define("SERVER_DIR", __DIR__);
+define("CACHE_DIR", __DIR__."/application/cache");
+
 error_reporting(E_ALL);
 
 ini_set('xdebug.overload_var_dump', '0');
@@ -232,7 +236,7 @@ if (defined('ENVIRONMENT'))
 $user_inactive_time = 0;
 ini_set("session.gc_maxlifetime",  (string) 86400);
 ini_set("session.cookie_lifetime", (string) $user_inactive_time);
-ini_set('session.save_path', dirname(__FILE__)."/application/cache/session");
+ini_set('session.save_path', CACHE_DIR."/session");
 session_start();
 if ($user_inactive_time) {
     $time = time();

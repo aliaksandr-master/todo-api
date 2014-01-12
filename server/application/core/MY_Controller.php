@@ -25,8 +25,7 @@ class MY_Controller extends CI_Controller {
      */
     public function transfer($dataName = null, $dataValue = null){
         if(is_null($this->_dataTransfer)){
-            require_once(APPPATH.'/libraries/data_transfer/DataTransfer.php');
-
+            require_once(SERVER_DIR."/".APPPATH.'/libraries/data_transfer/DataTransfer.php');
             $this->_dataTransfer = new DataTransfer($this);
         }
         if(!is_null($dataName)){
@@ -37,25 +36,6 @@ class MY_Controller extends CI_Controller {
             }
         }
         return $this->_dataTransfer;
-    }
-
-    public function sendResponse(){
-        $this->transfer()->sendRestControllerResponse();
-        exit();
-    }
-
-
-    /**
-     * @return CI_Output
-     */
-    protected function output(){
-        return $this->output;
-    }
-
-    protected function checkTableField($name, $value){
-        $userObject = new User_model();
-        $user = $userObject->read(array($name => $value));
-        return (!empty($user)) ? true : false;
     }
 }
 

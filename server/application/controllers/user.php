@@ -114,4 +114,10 @@ class User extends API_Controller {
 
     }
 
+    protected function checkTableField($name, $value){
+        $userObject = new User_model();
+        $user = $userObject->read(array($name => $value));
+        return (!empty($user)) ? true : false;
+    }
+
 }

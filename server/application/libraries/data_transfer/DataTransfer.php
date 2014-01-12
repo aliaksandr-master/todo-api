@@ -21,14 +21,14 @@ class DataTransfer{
     private $_data;
     private $_error;
     private $_input;
-    private $_sourceInput;
 
     /**
-     * @var REST_Controller
+     * @var API_Controller
      */
     private $_controller;
 
     public function __construct(&$controller){
+
         $this->_status = new DataTransferSimpleValueObject($this, 'status', false, true);
         $this->_code = new DataTransferSimpleValueObject($this, 'code', false, 200);
         $this->_data = new DataTransferMultiValueObject($this, 'data', false);
@@ -53,37 +53,9 @@ class DataTransfer{
                 }
             }
             $this->_input->setValue("parsedData", $_PUT);
-            $this->_input->setValue("argsData", $this->_controller->args());
+            $this->_input->setValue("argsData", $this->_controller->inputArguments());
         }
-    }
 
-    public function sendRestControllerResponse($sendSmartHeaders = true){
-
-        if($sendSmartHeaders && !$this->hasError()){
-            if($_SERVER["REQUEST_METHOD"] == "POST"){
-                if($this->_data->getResult()){
-                    $this->code(201); // created new resource
-                }else{
-                    $this->code(500); // empty GET result
-                }
-            }else if($_SERVER["REQUEST_METHOD"] == "PUT"){
-                if($this->_data->getResult()){
-                    $this->code(200); // updated resource
-                }else{
-                    $this->code(500); // empty GET result
-                }
-            }else if($_SERVER["REQUEST_METHOD"] == "GET"){
-                // ONLY 200 or SOMETHING CUSTOM
-            }else if($_SERVER["REQUEST_METHOD"] == "DELETE"){
-                // ONLY 200 or SOMETHING CUSTOM
-                if($this->getCode() == 200){
-                    if(!$this->_data->getResult()){
-                        $this->code(500); // you must send Boolean response
-                    }
-                }
-            }
-        }
-        $this->_controller->response($this->getAllData(), $this->getCode());
     }
 
     public function toJSON(){
@@ -111,32 +83,44 @@ class DataTransfer{
     }
 
     public function error(){
-        $this->_status->setValue(false);
         return $this->_error;
     }
 
-    public function data($name, $value = null){
-        if(is_object($name)){
-            $name = (array) $name;
-        }else if(!is_array($name) && (is_string($name) || is_numeric($name))){
-            $arr = array();
-            $arr[$name] = $value;
-            $name = $arr;
+    public function status($value = null){
+        if(!is_null($value)){
+            if($this->_status->getValue()){
+                $this->_status->setValue($value);
+            }
         }
-
-        if(!is_array($name)){
-            throw new Exception("invalid data format");
-        }
-
-        foreach($name as $n => $v){
-            $this->_data->setValue($n,$v);
-        }
-        return $this;
+        return $this->_status;
     }
 
-    public function code($code){
-        $this->_code->setValue($code);
-        return $this;
+    public function data($name = null, $value = null){
+        if(!is_null($name)){
+            if(is_object($name)){
+                $name = (array) $name;
+            }else if(!is_array($name) && (is_string($name) || is_numeric($name))){
+                $arr = array();
+                $arr[$name] = $value;
+                $name = $arr;
+            }
+
+            if(!is_array($name)){
+                throw new Exception("invalid data format");
+            }
+
+            foreach($name as $n => $v){
+                $this->_data->setValue($n,$v);
+            }
+        }
+        return $this->_data;
+    }
+
+    public function code($code = null){
+        if(!is_null($code)){
+            $this->_code->setValue($code);
+        }
+        return $this->_code;
     }
 
     public function getCode(){
@@ -144,7 +128,13 @@ class DataTransfer{
     }
 
     public function hasError(){
-        return (bool)$this->error()->getResult();
+        if((bool)$this->error()->getResult()){
+            return true;
+        }
+        if($this->getCode()>=400){
+            return true;
+        }
+        return $this->_status->getValue();
     }
 
 }

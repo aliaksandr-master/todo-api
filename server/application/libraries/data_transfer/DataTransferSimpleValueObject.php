@@ -8,7 +8,7 @@ class DataTransferSimpleValueObject{
     private $_optional;
 
     /**
-     * @var Data_transfer
+     * @var DataTransfer
      */
     protected $_root;
 
@@ -21,6 +21,7 @@ class DataTransferSimpleValueObject{
 
     public function setValue($value){
         $this->_value = $value;
+        $this->_root->status($value < 400);
         return $this;
     }
 
