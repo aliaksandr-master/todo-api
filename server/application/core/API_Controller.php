@@ -102,9 +102,10 @@ abstract class API_Controller extends REST_Controller {
             $input = array();
             $input["url"] = $_SERVER['REQUEST_URI'];
             $input["method"] = $_SERVER['REQUEST_METHOD'];
+            $input["time"] = (round((gettimeofday(true) - START_TIME)*100000)/100000);
             $input["input"] = array();
             if($this->api()){
-                $input["api_name"] = $this->api()->getName();
+                $input["api"] = $this->api()->getName();
                 $input["data"] = array(
                     "source" => INPUT_DATA,
                     "params"    => $this->api()->param(),

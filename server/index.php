@@ -1,5 +1,7 @@
 <?php
 
+
+define("START_TIME", gettimeofday(true));
 define("SERVER_DIR", __DIR__);
 define("CACHE_DIR", __DIR__."/application/cache");
 
