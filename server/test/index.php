@@ -16,7 +16,7 @@ $uriParts = explode("/", $uri);
     <script src="/server/test/assets/form-tests.js"></script>
 </head>
 <body>
-<div style="margin: 10px;">
+<div style="margin: 10px;" id="headMenus">
     <?php
         $testGroups = array();
         $activeGroupName = "";
@@ -69,7 +69,7 @@ $uriParts = explode("/", $uri);
             </ul>
         </div>
     <?php } ?>
-    <h1><?php
+    <h1 id="mainHeader"><?php
         $header = str_replace("form-tests/", "", $uri);
         $header = preg_replace("/\//", ":&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ", $header);
         $header = preg_replace("/[-\.]+/", " ", $header);

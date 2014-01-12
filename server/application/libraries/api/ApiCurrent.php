@@ -11,7 +11,6 @@ class ApiCurrent {
     }
 
     private $_input = array();
-
     private $_inputArguments = array();
     private $_inputParams = array();
     private $_inputFilters = array();

@@ -7,6 +7,10 @@ require_once(SERVER_DIR."/".APPPATH.'/libraries/data_transfer/DataTransfer.php')
 abstract class API_Controller extends REST_Controller {
 
     /**
+     * @var DataTransfer
+     */
+    private $_transfer = null;
+    /**
      * @var Api
      */
     private $_api = null;
@@ -28,11 +32,6 @@ abstract class API_Controller extends REST_Controller {
     public function api(){
         return $this->_currentApi;
     }
-
-    /**
-     * @var DataTransfer
-     */
-    private $_transfer = null;
 
     /**
      * @var array|string $dataName [optional]

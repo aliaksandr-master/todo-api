@@ -8,7 +8,8 @@
 		$("form [name]:not([placeholder])").each(function(){
 			$(this).attr("placeholder", $(this).attr("name"));
 		});
-		$("form input[name]").addClass("form-control");
+		$("form input[name]:not(:radio):not(:checkbox)").addClass("form-control");
+		$(":radio,:checkbox").after("&nbsp;").before("&nbsp;");
 		$("form textarea[name]").addClass("form-control");
 
 		$("form").on("keyup", "textarea,input", function(e){

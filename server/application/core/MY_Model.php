@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * Interface MY_CrudInterface
+ */
 interface MY_CrudInterface {
 
     const RESULT_ARRAY = "array";
@@ -15,29 +18,22 @@ interface MY_CrudInterface {
     function delete ($whereOrId);
 }
 
+/**
+ * Class MY_Model
+ * @var CI_DB_active_record db
+ * @var CI_Loader load
+ *
+ */
 abstract class MY_Model extends CI_Model implements MY_CrudInterface {
 
     function __construct(){
         parent::__construct();
-        $this->loader()->database();
-    }
-
-    /**
-     * @return CI_Loader
-     */
-    protected function loader(){
-        return $this->load;
-    }
-
-    /**
-     * @return CI_DB_active_record
-     */
-    protected function getDb(){
-        return $this->db;
+        $this->load->database();
     }
 
     public function read($whereOrId = null, $resultAs = self::RESULT_ARRAY, $select = null){
 
+        // CHECK SELECT DATA
         if(is_null($select)){
             $select = $this->getTableFields();
         }else{
@@ -53,6 +49,7 @@ abstract class MY_Model extends CI_Model implements MY_CrudInterface {
             }
         }
 
+        // CHECK WHERE
         if(is_null($whereOrId)){
             $whereOrId = array();
         } else if(!is_array($whereOrId)){
@@ -60,19 +57,23 @@ abstract class MY_Model extends CI_Model implements MY_CrudInterface {
                 $this->idAttribute() => $whereOrId
             );
         }
-
         if(!is_array($whereOrId)){
             trigger_error("CRUD: WHERE is invalid (must be array!)", E_USER_ERROR);
             die();
         }
 
-        $this->getDb()->select($select, true)->where($whereOrId)->from($this->getTableName());
+
+        // EXECUTE
+        $this->db
+            ->select($select, true)
+            ->where($whereOrId)
+            ->from($this->getTableName());
 
         if($resultAs == self::RESULT_ACTIVE_RECORD){
-            return $this->getDb();
+            return $this->db;
         }
 
-        $result = $this->getDb()->get();
+        $result = $this->db->get();
 
         if($resultAs == self::RESULT_OBJECT){
             return $result;
@@ -87,17 +88,17 @@ abstract class MY_Model extends CI_Model implements MY_CrudInterface {
 
         foreach ($data as $key => $value){
             if(in_array($key, $tableFields)) {
-                $this->getDb()->set($key, $value);
+                $this->db->set($key, $value);
             } else {
                 trigger_error('undefined key "'.$key.'" must be in array ['.implode(',', $tableFields).']', E_USER_WARNING);
                 die();
             }
         }
-        $this->getDb()
+        $this->db
             ->from($this->getTableName())
             ->insert();
 
-        return $this->getDb()->insert_id();
+        return $this->db->insert_id();
 
 
     }
@@ -107,7 +108,7 @@ abstract class MY_Model extends CI_Model implements MY_CrudInterface {
     }
 
     public function update(array $data, $whereOrId){
-
+        dump(1);
         if(!is_array($whereOrId)){
             $whereOrId = array(
                 $this->idAttribute() => $whereOrId
@@ -118,18 +119,18 @@ abstract class MY_Model extends CI_Model implements MY_CrudInterface {
 
         foreach ($data as $key => $value){
             if(in_array($key, $tableFields)) {
-                $this->getDb()->set($key, $value);
+                $this->db->set($key, $value);
             } else {
                 trigger_error('undefined key "'.$key.'" must be in array ['.implode(',', $tableFields).']', E_USER_WARNING);
                 die();
             }
         }
-        $this->getDb()
+        $this->db
             ->from($this->getTableName())
             ->where($whereOrId)
             ->update();
 
-        return $this->getDb()->result_id;
+        return $this->db->result_id;
     }
 
     public function delete($whereOrId){
@@ -140,10 +141,11 @@ abstract class MY_Model extends CI_Model implements MY_CrudInterface {
             );
         }
 
-        $this->getDb()
+        $this->db
             ->from($this->getTableName())
             ->where($whereOrId)
             ->delete();
+
         // TODO return boolean
         return true;
     }

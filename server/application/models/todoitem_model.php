@@ -3,7 +3,7 @@
 class TodoItem_model extends MY_Model {
 
     public function getTableName() {
-        return array('todo_item');
+        return 'todo_item';
     }
 
     public function getTableFields() {
