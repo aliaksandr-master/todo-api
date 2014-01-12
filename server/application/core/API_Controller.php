@@ -64,8 +64,7 @@ abstract class API_Controller extends REST_Controller {
         $method = strtoupper($_SERVER["REQUEST_METHOD"]);
         $controllerName = get_class($call[0]);
         $methodName = $call[1];
-        $callPath = strtolower($controllerName)."/".preg_replace('/_'.$method.'$/i', '', strtolower($methodName));
-        if (!$this->_checkHandlerAccess($method, $callPath)) {
+        if (!$this->_checkHandlerAccess($method, $controllerName, $methodName)) {
             $this->transfer()->error(403);
         }
         if (!$this->transfer()->hasError()) {
@@ -156,9 +155,13 @@ abstract class API_Controller extends REST_Controller {
         }
     }
 
-    protected function _checkHandlerAccess($method, $callPath){
-        $callName = $method." ".$callPath;
-        $callNameAny = "ANY ".$callPath;
+    protected function _checkHandlerAccess($method, $controllerName, $actionName){
+        $actionName = preg_replace('/_(put|get|delete|option|post|head)$/i', '', $actionName);
+        $controllerName = strtolower($controllerName);
+        $actionName = strtolower($actionName);
+        $method = strtolower($method);
+        $callName = $method.":".$controllerName."/".$actionName;
+        $callNameAny = "ANY:".$controllerName."/".$actionName;
 
         // TODO: must use ACCESS MODEL and USER MODEL to create Access-array
         $accesses = array();
