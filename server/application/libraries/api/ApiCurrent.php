@@ -19,6 +19,9 @@ class ApiCurrent {
     private function _initInputValue(&$errors, &$arr, $data, $param, $dataName = "name", $checkValidation = true){
         $error = array();
         $hasError = false;
+
+        $value = null;
+
         if(isset($param["validation"]) && $checkValidation){
 
             $optional = true;
@@ -33,10 +36,9 @@ class ApiCurrent {
                     $rules[] = $rule;
                 }
             }
-            $value = null;
 
             if($optional){
-                $value = isset($data[$dataName]) ? $data[$dataName] : $value;
+                $value = isset($data[$param[$dataName]]) ? $data[$dataName] : $value;
             }else{
                 if(isset($data[$dataName])){
                     $value = $data[$dataName];
@@ -54,16 +56,18 @@ class ApiCurrent {
                             $error[] = array($param["name"], $rule["name"]);
                         }
                     }else{
-                        trigger_error($this->_errorPref, E_USER_WARNING);
+                        trigger_error($this->_errorPref.'invalid validation-rule-method "'.$rule['method'].'"', E_USER_WARNING);
                         $hasError = true;
                     }
                 }
             }
+        } else {
+            $value = isset($data[$dataName]) ? $data[$dataName] : $value;
         }
         if($error){
             $errors[] = $error;
-        }else if(!$hasError){
-            $arr[$param["name"]] = $this->_toType($data[$dataName], $param["type"]);
+        }else if(!$hasError && !is_null($value)){
+            $arr[$param["name"]] = $this->_toType($value, $param["type"]);
         }
     }
 

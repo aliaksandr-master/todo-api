@@ -12,7 +12,7 @@ class Api {
     const CACHE_TYPE        = ''; // file, session, null
 
     const API_NAME          = 'api_name';
-    const CELL_NAME         = 'cell_name';
+    const CELL_NAME         = 'id';
     const URL               = 'url';
     const URL_PARAMS        = 'params';
     const ARGUMENTS_COUNT   = 'params_count';
@@ -114,9 +114,10 @@ class Api {
         $uriCall = str_replace('\\', '/', $uriCall);
         $uriCall = preg_replace('#(/+)$#', '', $uriCall);
 
-        $cellName = $this->makeCellName($method, $uriCall, count($arguments));
+        $uriR = $uriCall;
+        $uriR = preg_replace('#(^|/)('.implode('|', $arguments).')(/|$)#', '$1$arg$3', $uriR);
 
-
+        $cellName = $this->makeCellName($method, $uriR, count($arguments));
 
         if(!empty(self::$_currentSingletonApi[$cellName])){
             return self::$_currentSingletonApi[$cellName];
@@ -139,6 +140,7 @@ class Api {
                 }
             }
         }
+
 
         if ($apiName) {
             self::$_currentSingletonApi[$cellName] = new ApiCurrent(self::$_apiParsed[$apiName]);
@@ -258,8 +260,8 @@ class Api {
         self::$_apiParsed = $api;
     }
 
-    function makeCellName($method, $url, $argsCount){
-        $url = preg_replace('/$[^\/]+/', '#', $url);
+    function makeCellName($method, $url1, $argsCount){
+        $url = preg_replace('#\$[^\/]+#', '%1', $url1);
         return $method." ".$url." (".$argsCount.")";
     }
 
@@ -267,18 +269,17 @@ class Api {
         if (is_string($option)) {
             $option = preg_split('/(\s*\|\s*)+/', $option);
         }
-        $opt['validation'] = array();
+        $opt = array();
         foreach($option as $rule){
-            $ruleName   = preg_replace("/^([a-z0-9_]+)(.+)$/i", "$1", $rule);
-            $_paramsJson = preg_replace("/^([a-z0-9_]+)(.+)$/i", "$2", $rule);
+            $ruleName   = preg_replace("/^([a-z0-9_]+)(.*)$/i", "$1", $rule);
+            $_paramsJson = preg_replace("/^([a-z0-9_]+)(.*)$/i", "$2", $rule);
             $params = $_paramsJson ? json_decode($_paramsJson, true) : array();
-            if($ruleName){
-                $opt['validation'][$ruleName] = array(
-                    "name" => trim($ruleName),
-                    "method" => "rule_".trim($ruleName),
-                    "params" => $params
-                );
-            }
+            $opt[$ruleName] = array(
+                'source' => $rule,
+                "name" => trim($ruleName),
+                "method" => "rule_".trim($ruleName),
+                "params" => $params
+            );
         }
         return $opt;
     }

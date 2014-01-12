@@ -9,10 +9,10 @@ interface MY_CrudInterface {
     function getTableName();
     function getTableFields();
 
-    function read (array $where, $resultAs = self::RESULT_ARRAY, $select);
+    function read ($whereOrId, $resultAs = self::RESULT_ARRAY, $select);
     function create (array $data);
-    function update (array $data, array $where);
-    function delete (array $where);
+    function update (array $data, $whereOrId);
+    function delete ($whereOrId);
 }
 
 abstract class MY_Model extends CI_Model implements MY_CrudInterface {
@@ -36,7 +36,7 @@ abstract class MY_Model extends CI_Model implements MY_CrudInterface {
         return $this->db;
     }
 
-    public function read(array $where = null, $resultAs = self::RESULT_ARRAY, $select = null){
+    public function read($whereOrId = null, $resultAs = self::RESULT_ARRAY, $select = null){
 
         if(is_null($select)){
             $select = $this->getTableFields();
@@ -53,16 +53,20 @@ abstract class MY_Model extends CI_Model implements MY_CrudInterface {
             }
         }
 
-        if(is_null($where)){
-            $where = array();
+        if(is_null($whereOrId)){
+            $whereOrId = array();
+        } else if(!is_array($whereOrId)){
+            $whereOrId = array(
+                $this->idAttribute() => $whereOrId
+            );
         }
 
-        if(!is_array($where)){
-            trigger_error("CRUD: WHERE is invalid (must be array!)", E_USER_WARNING);
+        if(!is_array($whereOrId)){
+            trigger_error("CRUD: WHERE is invalid (must be array!)", E_USER_ERROR);
             die();
         }
 
-        $this->getDb()->select($select, true)->where($where)->from($this->getTableName());
+        $this->getDb()->select($select, true)->where($whereOrId)->from($this->getTableName());
 
         if($resultAs == self::RESULT_ACTIVE_RECORD){
             return $this->getDb();
@@ -98,7 +102,17 @@ abstract class MY_Model extends CI_Model implements MY_CrudInterface {
 
     }
 
-    public function update(array $data, array $where){
+    public function idAttribute(){
+        return "id";
+    }
+
+    public function update(array $data, $whereOrId){
+
+        if(!is_array($whereOrId)){
+            $whereOrId = array(
+                $this->idAttribute() => $whereOrId
+            );
+        }
 
         $tableFields = $this->getTableFields();
 
@@ -112,16 +126,23 @@ abstract class MY_Model extends CI_Model implements MY_CrudInterface {
         }
         $this->getDb()
             ->from($this->getTableName())
-            ->where($where)
+            ->where($whereOrId)
             ->update();
 
         return $this->getDb()->result_id;
     }
 
-    public function delete(array $where){
+    public function delete($whereOrId){
+
+        if(!is_array($whereOrId)){
+            $whereOrId = array(
+                $this->idAttribute() => $whereOrId
+            );
+        }
+
         $this->getDb()
             ->from($this->getTableName())
-            ->where($where)
+            ->where($whereOrId)
             ->delete();
         // TODO return boolean
         return true;

@@ -89,7 +89,7 @@ abstract class API_Controller extends REST_Controller {
                 $data = $this->api()->prepareResponseData($response["data"]);
                 if(is_null($data)){
                     $response["data"] = array();
-                    $this->transfer()->code(404);
+                    $this->transfer()->error(404);
                 } else {
                     $response["data"] = $data;
                 }
@@ -103,17 +103,17 @@ abstract class API_Controller extends REST_Controller {
             $input = array();
             $input["url"] = $_SERVER['REQUEST_URI'];
             $input["method"] = $_SERVER['REQUEST_METHOD'];
-            $input["source"] = INPUT_DATA;
-            $input["data"] = array();
+            $input["input"] = array();
             if($this->api()){
                 $input["api_name"] = $this->api()->getName();
                 $input["data"] = array(
+                    "source" => INPUT_DATA,
                     "params"    => $this->api()->param(),
                     "arguments" => $this->api()->argument(),
                     "filters"   => $this->api()->filter()
                 );
             }
-            $response["input"] = $input;
+            $response["debug"] = $input;
         }
 
         $this->response($response, $this->transfer()->getCode());
@@ -168,26 +168,5 @@ abstract class API_Controller extends REST_Controller {
         }
         return true;
     }
-
-    protected function _input($name = null, $default = null){
-        if(is_null($name)){
-            return $this->_args;
-        }
-        if(is_null($this->_args[$name])){
-            return $default;
-        }
-        if(!isset($this->_args[$name])){
-            trigger_error("Ivalid _input offset '".$name."'", E_USER_WARNING);
-            die();
-        }
-        return $this->_args[$name];
-    }
-
-    private function _apiCheckInputParams($apiJsonByCurrentApiName, $arguments){
-        $this->_args = $this->_apiPrepareInputParams($this->_args, $apiJsonByCurrentApiName, $arguments);
-        return !$this->transfer()->hasError();
-    }
-
-
 
 }
