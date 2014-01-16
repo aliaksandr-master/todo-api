@@ -1,7 +1,6 @@
 module.exports = [
 
-	'clean:serverApi',
-	'copy:serverApi',
+	'compile_api',
 	'compile_pictures',
 	'compile_styles',
 	'compile_html',

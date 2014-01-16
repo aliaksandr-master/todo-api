@@ -14,23 +14,18 @@ abstract class API_Controller extends REST_Controller {
      * @var Api
      */
     private $_api = null;
-    /**
-     * @var ApiCurrent
-     */
-    private $_currentApi = null;
 
     public function __construct(){
         parent::__construct();
         if(is_null($this->_transfer)){
             $this->_transfer = new DataTransfer($this);
         }
-        $this->_api = new Api();
     }
 
     protected $_inputData = array();
 
     public function api(){
-        return $this->_currentApi;
+        return $this->_api;
     }
 
     /**
@@ -46,12 +41,12 @@ abstract class API_Controller extends REST_Controller {
     }
 
     protected function _initCurrentApi($method, $url, $args){
-        $currApi = $this->_api->getCurrentApi($method, $url, $args);
+        $currApi = Api::instanceBy($method, $url, $args);
         if(empty($currApi)){
             $this->transfer()->error(405);
             return null;
         }
-        $this->_currentApi = $currApi;
+        $this->_api = $currApi;
         return $currApi;
     }
 
@@ -68,8 +63,13 @@ abstract class API_Controller extends REST_Controller {
             $this->transfer()->error(403);
         }
         if (!$this->transfer()->hasError()) {
-            if ($this->api()->checkInputFieldErrors($this->_args, $arguments, $_GET)) {
+            $fieldErrors = $this->api()->checkInputFieldErrors($this->_args, $arguments, $_GET);
+            if ($fieldErrors) {
                 $this->transfer()->error(400);
+                foreach($fieldErrors as $error){
+                    $this->transfer()->error()->field($error["name"], $error["message"]);
+                }
+
             }
         }
         if (!$this->transfer()->hasError()) {

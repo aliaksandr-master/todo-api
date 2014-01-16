@@ -1,0 +1,22 @@
+{
+	"POST user/login": {
+		"request": {
+			"username:string": "required",
+			"password:string": "required",
+			"remember:boolean": "optional"
+		},
+		"response": [
+			"id:integer",
+			"username:string",
+			"email:string"
+		],
+		"errors": {
+			"password": "incorrect"
+		}
+	},
+	"GET user/logout": {
+		"response": [
+			"status:boolean"
+		]
+	}
+}

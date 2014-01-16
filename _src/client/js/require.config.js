@@ -2,6 +2,9 @@
 	'use strict';
 
 	require.config({
+
+		enforceDefine: true,
+
 		baseUrl: '/client${config:cacheKey}/js/',
 
 		paths: {

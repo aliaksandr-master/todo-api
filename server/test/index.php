@@ -54,6 +54,17 @@ $uriParts = explode("/", $uri);
             asort($testGroups[$groupName]);
         }
     ?>
+    <div class="btn-group">
+        <?php if(!$activeFileUrl) {?>
+            <button id="generatedBtn" type="button" class="btn btn-default <?php if(!$activeFileUrl) echo(' btn-primary ')?> dropdown-toggle" data-toggle="dropdown">
+                <b>Generated</b>
+                <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu" role="menu"></ul>
+        <?php } else {?>
+            <a href="/server/test/" class="btn btn-default"><b>Generated</b></a>
+        <?php } ?>
+    </div>
     <?php foreach($testGroups as $groupName => $files){ ?>
         <div class="btn-group">
             <button type="button" class="btn btn-default dropdown-toggle <?php if($groupName == $activeGroupName) echo("btn-primary")?>" data-toggle="dropdown">
@@ -126,7 +137,86 @@ $uriParts = explode("/", $uri);
                         if(is_file(realpath("./".$uri.".html"))) {
                             include(realpath("./".$uri.".html"));
                         } else {
-                            echo('<div class="alert alert-danger"><h2>404 undefined FORM</h2></div>');
+                        ?>
+                            <form id="genForm" action="/server/"></form>
+                            <script type="text/javascript">
+                                (function($){
+                                    var JSON = {};
+                                    $.ajax({
+                                        url: "/server/api/api.json",
+                                        async: false,
+                                        dataType: 'json',
+                                        success:function(resp){
+                                            JSON = resp;
+                                        }
+                                    });
+                                    var $form = $("#genForm");
+                                    var $btn = $('#generatedBtn').eq(0);
+                                    var $btnMenu = $btn.next("ul");
+                                    var nameMap = {};
+                                    var currName = null;
+                                    var currLocation = (window.location.href + "").replace(/^[^\#]+\#?(.*)$/, "$1");
+                                    $.each(JSON, function(k, v){
+                                        var name = k.replace(/\s/, '');
+                                        nameMap[name] = k;
+                                        var li = $('<li>').append($('<a>').attr("data-name", name).attr('href', '#'+name).text(k));
+                                        $btnMenu.append(li);
+                                        if((currLocation && currLocation == name) || (!currLocation && !currName)){
+                                            currName = name;
+                                            $btnMenu.find('.active').removeClass('active');
+                                            $btnMenu.find('[data-name="'+name+'"]').parent().addClass('active');
+                                        }
+                                    });
+                                    $btnMenu.on('click', 'a', function(){
+                                        window.location.href = $(this).attr("href");
+                                        window.location.reload();
+                                        return false;
+                                    });
+
+                                    // BUILD FORM
+                                    if(JSON[nameMap[currName]]){
+                                        (function(){
+
+                                            var URL_ROOT = '/server/';
+                                            var curr = nameMap[currName];
+
+                                            $("#mainHeader").html(curr);
+                                            var data = JSON[nameMap[currName]];
+                                            var method = curr.replace(/([a-z]+)\s+(.+)/i, '$1');
+                                            var url = curr.replace(/([a-z]+)\s+(.+)/i, '$2');
+
+                                            var counter = 1;
+                                            url = url.replace(/\$[^\/]+/g, function($0){
+                                                if(/id/i.test($0)){
+                                                    return counter++;
+                                                }
+                                                return $0;
+                                            });
+                                            $form.attr('action', URL_ROOT+url+"/");
+                                            $form.attr('method', method);
+
+                                            if(data["request"]){
+                                                var formElement = '';
+                                                $.each(data['request'], function(k, v){
+                                                    if(!/^\$/.test(k)){
+                                                        console.log(k, v);
+                                                        var name = k.replace(/^([\w\d]+)\:?(.+)$/, '$1');
+                                                        var type = k.replace(/^([\w\d]+)\:?(.+)$/, '$2');
+                                                        if(/bool/.test(type)){
+                                                            formElement += '<div><label>'+name+' (true)<input type="radio" name="'+name+'" value="1"></label></div>';
+                                                            formElement += '<div><label>'+name+' (false)<input type="radio" name="'+name+'" value="0"></label></div>';
+                                                        }else{
+                                                            formElement += '<input type="text" name="'+name+'">';
+                                                        }
+                                                    }
+                                                });
+                                                $form.html(formElement);
+                                            }
+                                        })();
+                                    }
+                                })(jQuery);
+                            </script>
+                        <?php
                         }
                         ?>
                     </div>

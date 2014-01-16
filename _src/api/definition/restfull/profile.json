@@ -1,0 +1,64 @@
+{
+	"GET user": {
+		"response:array": [
+			"id:integer",
+			"username:string",
+			"email:string"
+		]
+	},
+	"GET user/$id": {
+		"request": {
+			"$id:integer": "required"
+		},
+		"response": [
+			"id:integer",
+			"username:string",
+			"email:string"
+		]
+	},
+	"DELETE user/$id": {
+		"request": {
+			"$id:integer": "required"
+		},
+		"response": [
+			"status:boolean"
+		]
+	},
+	"PUT user/$id": {
+		"request" : {
+			"$id:integer": "required",
+			"username:string": "required",
+			"email:string": "required|valid_email",
+			"password_old:string": "optional",
+			"password_new:string": "optional",
+			"password_new_confirm:string": "optional"
+		},
+		"response": [
+			"id:integer",
+			"username:string",
+			"email:string"
+		]
+	},
+	"POST user": {
+		"request": {
+			"username:string": "required",
+			"email:string": "required|valid_email",
+			"password:string": "required",
+			"confirm_password:string": "required"
+		},
+		"response": [
+			"id:integer",
+			"username:string",
+			"email:string"
+		],
+		"errors": {
+			"username": "exists",
+			"email": [
+				"exists",
+				"not_found",
+				"incorrect_format"
+			],
+			"password_confirm": "not_equal"
+		}
+	}
+}

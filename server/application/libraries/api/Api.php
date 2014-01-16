@@ -1,7 +1,7 @@
 <?php
 
-define('API_FILE', SERVER_DIR."/api/api.json");
-require_once('ApiCurrent.php');
+define('SOURCE_API_FILE', SERVER_DIR."/api/api.json");
+define('PARSED_API_FILE', SERVER_DIR."/api/parsed.api.json");
 
 class Api {
 
@@ -9,7 +9,7 @@ class Api {
 
     const CACHE_ROOT        = CACHE_DIR;
     const CACHE_PATH        = "/api/api.txt";
-    const CACHE_TYPE        = ''; // file, session, null
+    const SESSION_CACHE     = false;
 
     const API_NAME          = 'api_name';
     const CELL_NAME         = 'id';
@@ -36,65 +36,13 @@ class Api {
     const TYPE_BOOLEAN      = 'boolean';
     const TYPE_BOOL         = 'bool';
 
-    private static $_apiSource  = array();
     private static $_apiParsed  = array();
-    private static $_apiInit    = false;
-    private static $_version    = null;
-
+    private static $_sessionVersion = null;
     private static $_currentSingletonApi = array();
 
-    function __construct(){
-        if(self::CACHE_TYPE){
-            if(self::CACHE_TYPE == 'file'){
-                $this->_loadFromFileCache();
-                $this->cleanSession();
-            }else if(self::CACHE_TYPE == 'session'){
-                $this->_loadFromSessionCache();
-            }
-        }else{
-            $this->cleanSession();
-            $this->_initApiFile();
-        }
-    }
-
-    private function _loadFromFileCache(){
-        // TODO: create global-loading form file
-    }
-
-    private function cleanSession(){
-        $sessionName = self::CACHE_ROOT.self::CACHE_PATH;
-        unset($_SESSION[$sessionName]);
-    }
-
-    private function _loadFromSessionCache(){
-        $sessionName = self::CACHE_ROOT.self::CACHE_PATH;
-
-        if(empty(self::$_version)){
-            self::$_version = filemtime(API_FILE);
-        }
-
-        if(empty($_SESSION[$sessionName]) || $_SESSION[$sessionName]['version'] < self::$_version){
-            $this->_initApiFile();
-            $_SESSION[$sessionName]['source'] = self::$_apiSource;
-            $_SESSION[$sessionName]['parsed'] = self::$_apiSource;
-            $_SESSION[$sessionName]['version'] = self::$_version;
-        }else{
-            self::$_apiSource = $_SESSION[$sessionName]['source'];
-            self::$_apiParsed = $_SESSION[$sessionName]['parsed'];
-            self::$_apiInit = true;
-        }
-    }
-
-    private function _parseOptionWithType ($option) {
-        $opt = preg_split('/\s*:\s*/', $option);
-        $opt[1] = isset($opt[1]) ? $opt[1] : self::TYPE_STRING;
-        if (preg_match('/^('.self::TYPES.')$/',$opt[1])) {
-            return array (
-                "name" => $opt[0],
-                "type" => $opt[1]
-            );
-        }
-        return null;
+    static function makeCellName($method, $url1, $argsCount){
+        $url = preg_replace('#\$[^\/]+#', '%1', $url1);
+        return $method." ".$url." (".$argsCount.")";
     }
 
     /**
@@ -102,9 +50,28 @@ class Api {
      * @param array $arguments
      * @param null $uriCall
      *
-     * @return ApiCurrent|null
+     * @return Api|null
      */
-    public function getCurrentApi ($method, $uriCall, $arguments) {
+    static function instanceBy ($method, $uriCall, $arguments) {
+
+        if(empty(self::$_apiParsed)){
+            $sessionName = self::CACHE_ROOT.self::CACHE_PATH;
+            if(self::SESSION_CACHE){
+                if(empty(self::$_sessionVersion)){
+                    self::$_sessionVersion = filemtime(SOURCE_API_FILE);
+                }
+                if(isset($_SESSION[$sessionName]) && $_SESSION[$sessionName]['version'] > self::$_sessionVersion){
+                    self::$_apiParsed = $_SESSION[$sessionName]['parsed'];
+                }
+            }
+            self::$_apiParsed = json_decode(file_get_contents(PARSED_API_FILE), true);
+            if(self::SESSION_CACHE){
+                unset($_SESSION[$sessionName]);
+                $_SESSION[$sessionName]['version'] = self::$_sessionVersion;
+                self::$_apiParsed = $_SESSION[$sessionName]['parsed'];
+            }
+        }
+
         $method = strtoupper($method);
         if (is_null($uriCall)) {
             $uriCall = $_SERVER["REQUEST_URI"];
@@ -117,7 +84,7 @@ class Api {
         $uriR = $uriCall;
         $uriR = preg_replace('#(^|/)('.implode('|', $arguments).')(/|$)#', '$1$arg$3', $uriR);
 
-        $cellName = $this->makeCellName($method, $uriR, count($arguments));
+        $cellName = self::makeCellName($method, $uriR, count($arguments));
 
         if(!empty(self::$_currentSingletonApi[$cellName])){
             return self::$_currentSingletonApi[$cellName];
@@ -128,161 +95,296 @@ class Api {
 
         $maskUri = $method.' '.$uriCall;
 
-        foreach (self::$_apiParsed as $_apiName => $_apiData) {
-            if ($cellName == $_apiData[self::CELL_NAME]) {
-                $maskExp = $_apiName;
-                $maskExp = str_replace('\\', '/', $maskExp);
-                $maskExp = preg_replace('/(?:\$[^\/\\\]+)/', '[^\/]+', $maskExp);
-                $maskExp = '#^'.$maskExp.'$#';
-                if(preg_match($maskExp, $maskUri)){
-                    $apiName = $_apiName;
-                    break;
-                }
+        if(isset(self::$_apiParsed[$cellName])){
+            $_apiName = self::$_apiParsed[$cellName][self::API_NAME];
+            $maskExp = $_apiName;
+            $maskExp = str_replace('\\', '/', $maskExp);
+            $maskExp = preg_replace('/(?:\$[^\/\\\]+)/', '[^\/]+', $maskExp);
+            $maskExp = '#^'.$maskExp.'$#';
+            if(preg_match($maskExp, $maskUri)){
+                $apiName = $_apiName;
+                self::$_currentSingletonApi[$cellName] = new Api(self::$_apiParsed[$cellName]);
             }
-        }
-
-
-        if ($apiName) {
-            self::$_currentSingletonApi[$cellName] = new ApiCurrent(self::$_apiParsed[$apiName]);
         }
 
         return self::$_currentSingletonApi[$cellName];
     }
 
-    private function _initApiFile(){
-        if(self::$_apiInit){
-            return;
-        }
-        self::$_apiInit = true;
+    private $_apiData = array();
+    private $_errorPref = '';
 
-        self::$_apiSource = json_decode(file_get_contents(API_FILE), true);
+    function __construct(array $apiData){
+        $this->_apiData = $apiData;
+        $this->_errorPref = 'Api '.$apiData[self::API_NAME].': ';
+    }
 
-        $api = array();
-        foreach (self::$_apiSource as $apiName => $apiData) {
-            $errorPref = 'Api ["'.$apiName.'"]: ';
-            $_urlParams = array();
-            $requestParams = array();
-            $responseParams = array();
-            $filterParams = array();
-            $responseType = self::RESPONSE_TYPE_ONE;
+    private $_input = array();
+    private $_inputArguments = array();
+    private $_inputParams = array();
+    private $_inputFilters = array();
 
-            foreach ($apiData as $directive => $options) {
-                preg_match_all('/^('.self::REQUEST.'|'.self::RESPONSE.'|'.self::FILTERS.')\:?(.*)$/', $directive, $m);
-                if (!empty($m[1][0])) {
+    private function _initInputValue(&$errors, &$arr, $data, $param, $dataName = "name", $checkValidation = true){
+        $error = array();
+        $hasError = false;
 
-                    // PARSE REQUEST and URL
-                    if ($m[1][0] == self::REQUEST) {
-                        foreach ($options as $optionName => $option) {
+        $value = null;
 
-                            $opt = $this->_parseOptionWithType($optionName);
+        if(isset($param["validation"]) && $checkValidation){
 
-                            if (is_null($opt)) {
-                                trigger_error($errorPref.'"Invalid type of param "'.$optionName.'", available: '.self::TYPES, E_USER_WARNING);
-                            } else {
+            $optional = true;
 
-                                $opt['validation'] = $this->_parseValidation($option);
-
-                                if(preg_match('/^\$/', $opt['name'])){
-                                    $opt['param'] = $opt['name'];
-                                    $opt['name']  = preg_replace('/^\$/', '', $opt['param']);
-                                    $index = strpos($apiName, "$".$opt["name"]);
-                                    $_urlParams[$index] = $opt;
-                                } else {
-                                    $requestParams[] = $opt;
-                                }
-                                $_requestParams[] = $opt;
-                            }
-                        }
-
-                    // PARSE RESPONSE
-                    } else if ($m[1][0] == self::RESPONSE) {
-                        if (empty($m[2][0])) {
-                            $responseType = self::RESPONSE_TYPE_ONE;
-                        } else if (preg_match('/^('.self::RESPONSE_TYPES.')$/', $m[2][0])) {
-                            $responseType = $m[2][0];
-                        } else {
-                            trigger_error($errorPref."invalid format of response type in '".$apiName."'");
-                            continue;
-                        }
-                        foreach($options as $optionName => $option){
-                            $opt = $this->_parseOptionWithType($option);
-                            if (is_null($opt)) {
-                                trigger_error($errorPref.'"Invalid type of param "'.$option.'", available: '.self::TYPES, E_USER_WARNING);
-                            } else {
-                                $responseParams[$optionName] = $opt;
-                            }
-                        }
-                    } else if ($m[1][0] == self::FILTERS){
-                        // FILTERS
-                        foreach($options as $optionName => $option){
-                            $opt = $this->_parseOptionWithType($option);
-                            if (is_null($opt)) {
-                                trigger_error($errorPref.'"Invalid type of param "'.$option.'", available: '.self::TYPES, E_USER_WARNING);
-                            } else {
-                                $filterParams[$optionName] = $opt;
-                            }
-                        }
-
-                    }
+            $rules = array();
+            foreach($param["validation"] as $key => $rule){
+                if($rule["name"] == "optional"){
+                    $optional = true;
+                }else if($rule['name'] == "required"){
+                    $optional = false;
+                }else{
+                    $rules[] = $rule;
                 }
             }
 
-
-            // VALID URL PARAMS SEQUENCE
-            ksort($_urlParams, SORT_NUMERIC);
-            $urlParams = array();
-            foreach($_urlParams as $opt){
-                $opt["index"] = count($urlParams);
-                $urlParams[] = $opt;
+            if($optional){
+                $value = isset($data[$param[$dataName]]) ? $data[$dataName] : $value;
+            }else{
+                if(isset($data[$param[$dataName]])){
+                    $value = $data[$param[$dataName]];
+                }else{
+                    $error[] = array(
+                        "name" => $param["name"],
+                        "message" => "required"
+                    );
+                }
             }
 
-            // METHOD
-            $method = preg_replace('/^([A-Z]+)\s+(.+)$/', "$1", $apiName);
-
-            // REQUEST_URI
-            $url = preg_replace('/^([A-Z]+)\s+(.+)$/', "$2", $apiName);
-
-
-            // RESULT
-            $api[$apiName] = array(
-                self::URL => $url,
-                self::ARGUMENTS_COUNT => count($urlParams),
-                self::REQUEST_METHOD => $method,
-                self::API_NAME => $apiName,
-                self::URL_PARAMS => $urlParams,
-                self::FILTERS => $filterParams,
-                self::REQUEST => $requestParams,
-                self::RESPONSE_TYPE => $responseType,
-                self::RESPONSE => $responseParams,
-                self::CELL_NAME => $this->makeCellName($method, $url, count($urlParams))
-            );
+            if((!$optional || !is_null($value)) && !$error){
+                foreach($rules as $rule){
+                    if(method_exists($this, $rule["method"])){
+                        $call = array($this, $rule["method"]);
+                        $args = array_merge(array($value), $rule["params"]);
+                        if(!call_user_func_array($call, $args)){
+                            $error[] = array(
+                                "name" => $param["name"],
+                                "message" => $rule["name"]
+                            );
+                        }
+                    }else{
+                        trigger_error($this->_errorPref.'invalid validation-rule-method "'.$rule['method'].'"', E_USER_WARNING);
+                        $hasError = true;
+                    }
+                }
+            }
+        } else {
+            $value = isset($data[$dataName]) ? $data[$dataName] : $value;
         }
-        self::$_apiParsed = $api;
+        if($error){
+            $errors = array_merge($errors, $error);
+        }else if(!$hasError && !is_null($value)){
+            $arr[$param["name"]] = $this->_toType($value, $param["type"]);
+        }
     }
 
-    function makeCellName($method, $url1, $argsCount){
-        $url = preg_replace('#\$[^\/]+#', '%1', $url1);
-        return $method." ".$url." (".$argsCount.")";
+    function getName(){
+        return $this->_apiData[self::API_NAME];
     }
 
-    function _parseValidation($option){
-        if (is_string($option)) {
-            $option = preg_split('/(\s*\|\s*)+/', $option);
+    function checkInputFieldErrors($arguments, $urlParams, $inputFilters){
+        $errors = array();
+        foreach($this->_apiData[self::URL_PARAMS] as $param){
+            $this->_initInputValue($errors, $this->_inputParams, $urlParams, $param, $param["index"]);
         }
-        $opt = array();
-        foreach($option as $rule){
-            $ruleName   = preg_replace("/^([a-z0-9_]+)(.*)$/i", "$1", $rule);
-            $_paramsJson = preg_replace("/^([a-z0-9_]+)(.*)$/i", "$2", $rule);
-            $params = $_paramsJson ? json_decode($_paramsJson, true) : array();
-            $opt[$ruleName] = array(
-                'source' => $rule,
-                "name" => trim($ruleName),
-                "method" => "rule_".trim($ruleName),
-                "params" => $params
-            );
+        foreach($this->_apiData[self::REQUEST] as $param){
+            $this->_initInputValue($errors, $this->_inputArguments, $arguments, $param);
         }
-        return $opt;
+        foreach($this->_apiData[self::FILTERS] as $param){
+            $this->_initInputValue($errors, $this->_inputFilters, $inputFilters, $param);
+        }
+
+        $this->_input = array_merge($this->_input, $this->_inputFilters, $this->_inputParams, $this->_inputArguments);
+
+        return $errors;
     }
 
+    private function _toType($var, $type){
+        switch($type){
+            case self::TYPE_NUMBER:
+            case self::TYPE_INTEGER:
+                return intval(trim((string) $var));
+            case self::TYPE_FLOAT:
+                return floatval(trim((string) $var));
+            case self::TYPE_BOOL:
+            case self::TYPE_BOOLEAN:
+                return (bool) $var;
+        }
+        return trim((string) $var); // default type = string
+    }
+
+    private function _prepareData(&$_data, $data, $param, $strict = true){
+        $name = $param["name"];
+        if(isset($data[$name])){
+            $_data[$name] = $this->_toType($data[$name], $param["type"]);
+        } else if ($strict) {
+            trigger_error("Api '".$this->_apiData[self::API_NAME]."': invalid response. '".$name."' is undefined!");
+        }
+    }
+
+    function prepareResponseData($data){
+        $_data = array();
+        $type = $this->_apiData[self::RESPONSE_TYPE];
+
+        if($type == self::RESPONSE_TYPE_ONE){
+            if (isset($data[0]) && is_array($data[0])) {
+                $data = $data[0];
+            }
+            if (empty($data)) {
+                return null;
+            } else {
+                foreach($this->_apiData[self::RESPONSE] as $param){
+                    $this->_prepareData($_data, $data, $param, true);
+                }
+            }
+        } else if ($type == self::RESPONSE_TYPE_ALL) {
+            if(!empty($data) && (!isset($data[0]) || !is_array($data[0]))){
+                $data = array($data);
+            }
+            foreach($data as $k=>$_d){
+                $_data[$k] = array();
+                foreach($this->_apiData[self::RESPONSE] as $param){
+                    $this->_prepareData($_data[$k], $_d, $param, true);
+                }
+            }
+        }
+
+        return $_data;
+    }
+
+    function argument ($name = null, $default = null) {
+        if (is_null($name)) {
+            return $this->_inputArguments;
+        }
+        if (isset($this->_inputArguments[$name])) {
+            return $this->_inputArguments[$name];
+        }
+        return $default;
+    }
+
+    function param ($name = null, $default = null) {
+        if (is_null($name)) {
+            return $this->_inputParams;
+        }
+        if (isset($this->_inputParams[$name])) {
+            return $this->_inputParams[$name];
+        }
+        return $default;
+    }
+
+    function filter ($name = null, $default = null) {
+        if (is_null($name)) {
+            return $this->_inputFilters;
+        }
+        if (isset($this->_inputFilters[$name])) {
+            return $this->_inputFilters[$name];
+        }
+        return $default;
+    }
+
+    function input($name = null, $default = null){
+        if (is_null($name)) {
+            return $this->_input;
+        }
+        if (isset($this->_input[$name])) {
+            return $this->_input[$name];
+        }
+        return $default;
+    }
+
+    /*---------------------------------------------- VALIDATION RULES ----------------------------*/
+
+    final function rule_matches($value, $fieldName){
+        $some = md5("1000".rand(0,1000)).md5(microtime()).md5(self::CACHE_PATH).rand(0, 1000);
+        return (bool) ($value === $this->input($fieldName, $some));
+    }
+
+    final function rule_min_length($value, $length){
+        if(preg_match("/[^0-9]/", $length)){
+            return false;
+        }
+        if(function_exists('mb_strlen')){
+            return !(mb_strlen($value) < $length);
+        }
+        return !(strlen($value) < $length);
+    }
+
+    final function rule_max_length($value, $length){
+        if (preg_match("/[^0-9]/", $length)){
+            return false;
+        }
+        if (function_exists('mb_strlen')){
+            return !(mb_strlen($value) > $length);
+        }
+        return !(strlen($value) > $length);
+    }
+
+    final function rule_exact_length($value, $length){
+        if (preg_match("/[^0-9]/", $length)){
+            return false;
+        }
+        if (function_exists('mb_strlen')){
+            return (bool) (mb_strlen($value) == $length);
+        }
+        return (bool) (strlen($value) == $length);
+    }
+
+    final function rule_valid_email($value){
+        return (bool) preg_match("/^([a-z0-9\+_\-]+)(\.[a-z0-9\+_\-]+)*@([a-z0-9\-]+\.)+[a-z]{2,6}$/ix", $value);
+    }
+
+    final function rule_alpha($value){
+        return (bool) preg_match("/^([a-z])+$/i", $value);
+    }
+
+    final function rule_alpha_numeric($value){
+        return (bool) preg_match("/^([a-z0-9])+$/i", $value);
+    }
+
+    final function rule_alpha_dash($value){
+        return (bool) preg_match("/^([-a-z0-9_-])+$/i", $value);
+    }
+
+    final function rule_numeric($value){
+        return (bool) preg_match( '/^[\-+]?[0-9]*\.?[0-9]+$/', $value);
+    }
+
+    final function rule_integer($value){
+        return (bool) preg_match('/^[\-+]?[0-9]+$/', $value);
+    }
+
+    final function rule_decimal($value){
+        return (bool) preg_match('/^[\-+]?[0-9]+\.[0-9]+$/', $value);
+    }
+
+    final function rule_is_natural($value){
+        return (bool) preg_match( '/^[0-9]+$/', $value);
+    }
+
+    final function rule_is_natural_no_zero($value){
+        return (bool) (preg_match( '/^[0-9]+$/', $value) && $value != 0);
+    }
+
+    final function rule_valid_base64($value){
+        return (bool) ! preg_match('/[^a-zA-Z0-9\/\+=]/', $value);
+    }
+
+    function rule_valid_url($value){
+        return filter_var($value, FILTER_VALIDATE_URL);
+    }
+
+    final function rule_valid_date($value){
+        $stamp = strtotime( $value );
+        if (is_numeric($stamp)){
+            return (bool) checkdate(date( 'm', $stamp ), date( 'd', $stamp ), date( 'Y', $stamp ));
+        }
+        return false;
+    }
 
 }

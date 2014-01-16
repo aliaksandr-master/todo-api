@@ -3,49 +3,62 @@
 
 class DataTransferErrorObject extends DataTransferMultiValueObject{
 
+    private $_field = array();
+    private $_access = array();
 
     public function __construct(DataTransfer $root, $optional = false){
         parent::__construct($root, 'error', $optional, self::TYPE_OBJECT);
     }
 
-    public function field($name, $message){
+    public function isEmpty(){
+        return empty($this->_field) && empty($this->_access);
+    }
+
+    public function field($name, $message = null){
+        $arr = $name;
+        if(!is_array($name)){
+            $arr = array(
+                $name => $message
+            );
+        }
         if(!$this->_root->hasError()){
             $this->_root->code(400);
         }
-        $data = $this->getValue('field', new DataTransferMultiValueObject('field', true, self::TYPE_ARRAY));
-        if($data instanceof DataTransferMultiValueObject){
-            $data->setValue(null, array(
+        foreach($arr as $name => $value){
+            $this->_field[] = array(
                 'name' => $name,
-                'message' => $message
-            ));
+                'message' => $value
+            );
         }
-
-        $this->setValue('field', $data);
         return $this;
     }
 
-    public function access($type, $message){
+    public function access($name, $message = null){
+        $arr = $name;
+        if(!is_array($name)){
+            $arr = array(
+                $name => $message
+            );
+        }
         if(!$this->_root->hasError()){
-            $this->_root->code(401);
-            $this->_root->status(false);
+            $this->_root->code(403);
         }
-        $data = $this->getValue('access', new DataTransferMultiValueObject('access', true, self::TYPE_ARRAY));
-        if($data instanceof DataTransferMultiValueObject){
-            $data->setValue(null, array(
-                'type' => $type,
-                'message' => $message
-            ));
+        foreach($arr as $name => $value){
+            $this->_access[] = array(
+                'name' => $name,
+                'message' => $value
+            );
         }
-
-        $this->setValue('access', $data);
         return $this;
     }
 
     public function getResult(){
-        $data = $this->getAll();
         $dataArray = array();
-        foreach ($data as $obj){
-            $dataArray[$obj->getName()] = $obj->getResult();
+        if(!empty($this->_field)){
+            $dataArray['field'] = $this->_field;
+        }
+        if(!empty($this->_access)){
+            $dataArray['access'] = $this->_access;
         }
         return $dataArray;
     }

@@ -3,7 +3,14 @@ module.exports = function(grunt){
 
 	return {
 		options: grunt.file.readJSON('.jshintrc'),
-
+		api: {
+			src: [
+				'_src/api/**/*.js',
+				'_src/api/*.js',
+				'_src/api/**/*.json',
+				'_src/api/*.json'
+			]
+		},
 		check : {
 			src: [
 				'_src/client/js/**/*.js',

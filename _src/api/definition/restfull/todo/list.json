@@ -1,0 +1,69 @@
+{
+	"GET todo": {
+		"response:array": [
+			"id:integer",
+			"link:string",
+			"name:string",
+			"is_shared:boolean",
+			"sort_order:integer"
+		]
+	},
+	"GET todo/$id": {
+		"request": {
+			"$id:number": "required"
+		},
+		"response": [
+			"id:integer",
+			"link:string",
+			"name:string",
+			"is_shared:boolean",
+			"sort_order:integer"
+		]
+	},
+
+	"POST todo": {
+		"request": {
+			"name:string": "optional",
+			"is_shared:boolean": "optional",
+			"sort_order:integer": "optional"
+		},
+		"response": [
+			"id:integer",
+			"link:string",
+			"name:string",
+			"is_shared:boolean",
+			"sort_order:integer"
+		]
+	},
+
+	"PUT todo/$id": {
+		"request": {
+			"$id:integer": "required",
+			"name:string": "optional",
+			"is_shared:boolean": "optional",
+			"sort_order:integer": "optional"
+		},
+		"response": [
+			"id:integer",
+			"link:string",
+			"name:string",
+			"is_shared:boolean",
+			"sort_order:integer"
+		],
+		"errors": {
+			"$id": "not_found"
+		}
+	},
+
+	"DELETE todo/$todo_id": {
+		"request": {
+			"$todo_id:integer": "required"
+		},
+		"response": [
+			"status:boolean"
+		],
+		"errors": {
+			"$todo_id": "not_found"
+		}
+	}
+}

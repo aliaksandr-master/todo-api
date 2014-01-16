@@ -1,0 +1,79 @@
+{
+	"GET todo/$todo_id/item": {
+		"request": {
+			"$todo_id:number": "required"
+		},
+		"response:array": [
+			"id:integer",
+			"todo_id:integer",
+			"sort_order:integer",
+			"name:string",
+			"date_create:string",
+			"is_active:boolean"
+		]
+	},
+	"GET todo/$todo_id/item/$id": {
+		"request": {
+			"$todo_id:number": "required",
+			"$id:number": "required"
+		},
+		"response": [
+			"id:number",
+			"name:string",
+			"date_create:string",
+			"sort_order:integer",
+			"is_active:boolean"
+		]
+	},
+	"POST todo/$todo_id/item": {
+		"request": {
+			"$todo_id:integer": "required",
+			"name:string": "optional",
+			"is_active:boolean": "optional"
+		},
+		"response": [
+			"id:integer",
+			"todo_id:integer",
+			"sort_order:integer",
+			"name:string",
+			"date_create:string",
+			"is_active:boolean"
+		],
+		"errors": {
+			"$todo_id": "not_found"
+		}
+	},
+	"PUT todo/$todo_id/item/$id": {
+		"request": {
+			"$todo_id:integer": "required",
+			"$id:integer": "required",
+			"name:string": "optional",
+			"is_active:boolean": "optional"
+		},
+		"response": [
+			"id:integer",
+			"todo_id:integer",
+			"sort_order:integer",
+			"name:string",
+			"date_create:string",
+			"is_active:boolean"
+		],
+		"errors": {
+			"$todo_id": "not_found",
+			"$id": "not_found"
+		}
+	},
+	"DELETE todo/$todo_id/item/$id": {
+		"request": {
+			"$todo_id:integer": "required",
+			"$id:integer": "required"
+		},
+		"response": [
+			"status:boolean"
+		],
+		"errors": {
+			"$todo_id": "not_found",
+			"$id": "not_found"
+		}
+	}
+}

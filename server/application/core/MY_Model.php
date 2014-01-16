@@ -11,6 +11,7 @@ interface MY_CrudInterface {
 
     function getTableName();
     function getTableFields();
+    function idAttribute();
 
     function read ($whereOrId, $resultAs = self::RESULT_ARRAY, $select);
     function create (array $data);
@@ -62,7 +63,6 @@ abstract class MY_Model extends CI_Model implements MY_CrudInterface {
             die();
         }
 
-
         // EXECUTE
         $this->db
             ->select($select, true)
@@ -99,8 +99,6 @@ abstract class MY_Model extends CI_Model implements MY_CrudInterface {
             ->insert();
 
         return $this->db->insert_id();
-
-
     }
 
     public function idAttribute(){
@@ -108,7 +106,6 @@ abstract class MY_Model extends CI_Model implements MY_CrudInterface {
     }
 
     public function update(array $data, $whereOrId){
-        dump(1);
         if(!is_array($whereOrId)){
             $whereOrId = array(
                 $this->idAttribute() => $whereOrId
