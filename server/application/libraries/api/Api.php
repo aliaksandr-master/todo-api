@@ -236,6 +236,25 @@ class Api {
         return $default;
     }
 
+    function get (array $names, array $nameMap = array()) {
+        $values = array();
+        foreach ($this->_input as $name => $val) {
+            if(isset($nameMap[$name])){
+                $name = $nameMap[$name];
+            }
+            $values[$name] = $val;
+        }
+        $data = array();
+        foreach ($names as $f => $s) {
+            if (is_numeric($f)) {
+                $data[$s] = isset($values[$s]) ? $values[$s] : null;
+            } else {
+                $data[$f] = isset($values[$f]) ? $values[$f] : $s;
+            }
+        }
+        return $data;
+    }
+
     /*---------------------------------------------- VALIDATION RULES ----------------------------*/
 
     final function rule_matches ($value, $fieldName) {

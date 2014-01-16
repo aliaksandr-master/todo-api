@@ -28,7 +28,10 @@ abstract class API_Controller extends REST_Controller {
 
     protected $_inputData = array();
 
-    public function api(){
+    public function api($names = null,  $namesMap = array()){
+        if (!is_null($names)) {
+            return $this->_api->get($names, $namesMap);
+        }
         return $this->_api;
     }
 

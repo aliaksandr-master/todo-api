@@ -50,18 +50,12 @@ class User extends API_Controller {
     }
 
     public function index_put(){
-        $data = array();
-        $data['username']   = $this->api()->input('username');
-        $data['email']      = $this->api()->input('email');
-        $data['password']   = $this->api()->input('password');
+        $data = $this->api($this->user->fieldsMap());
 
     }
 
     public function index_post(){
-        $data = array();
-        $data['username']   = $this->api()->input('username');
-        $data['email']      = $this->api()->input('email');
-        $data['password']   = $this->api()->input('password');
+        $data = $this->api($this->user->fieldsMap());
 
         if($this->api()->input('confirm_password') != $data['password']) {
             $this->transfer()->error(400)->field('confirm_password', 'not_equal');

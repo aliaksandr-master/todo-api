@@ -27,9 +27,29 @@ interface MY_CrudInterface {
  */
 abstract class MY_Model extends CI_Model implements MY_CrudInterface {
 
-    function __construct(){
+    function __construct () {
         parent::__construct();
         $this->load->database();
+    }
+
+    function defaults(){
+        return array();
+    }
+
+    function fieldsMap ($omit = array()) {
+        $fieldData = array();
+        $fields = $this->getTableFields();
+        $defaults = $this->defaults();
+        foreach ($fields as $f) {
+            if(empty($omit[$f])){
+                if(isset($defaults[$f])){
+                    $fieldData[$f] = $defaults[$f];
+                }else{
+                    $fieldData[] = $f;
+                }
+            }
+        }
+        return $fieldData;
     }
 
     public function read($whereOrId = null, $resultAs = self::RESULT_ARRAY, $select = null){
