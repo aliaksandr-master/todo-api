@@ -22,6 +22,10 @@ abstract class API_Controller extends REST_Controller {
         }
     }
 
+    public function validationMap(){
+        return array();
+    }
+
     protected $_inputData = array();
 
     public function api(){
@@ -40,91 +44,21 @@ abstract class API_Controller extends REST_Controller {
         return $this->_transfer;
     }
 
-    protected function _initCurrentApi($method, $url, $args){
-        $currApi = Api::instanceBy($method, $url, $args);
+    public function _remap($call, $arguments){
+        $currApi = Api::instanceBy($_SERVER["REQUEST_METHOD"], $_SERVER["REQUEST_URI"], $arguments);
         if(empty($currApi)){
             $this->transfer()->error(405);
-            return null;
+            $this->_send();
+            return;
         }
         $this->_api = $currApi;
-        return $currApi;
-    }
-
-    public function _remap($call, $arguments){
-        $this->_initCurrentApi($_SERVER["REQUEST_METHOD"], $_SERVER["REQUEST_URI"], $arguments);
+        $this->_api->context($this);
         parent::_remap($call, $arguments);
     }
 
-    protected function _fire_method($call, $arguments){
-        $method = strtoupper($_SERVER["REQUEST_METHOD"]);
-        $controllerName = get_class($call[0]);
-        $methodName = $call[1];
-        if (!$this->_checkHandlerAccess($method, $controllerName, $methodName)) {
-            $this->transfer()->error(403);
-        }
-        if (!$this->transfer()->hasError()) {
-            $fieldErrors = $this->api()->checkInputFieldErrors($this->_args, $arguments, $_GET);
-            if ($fieldErrors) {
-                $this->transfer()->error(400);
-                foreach($fieldErrors as $error){
-                    $this->transfer()->error()->field($error["name"], $error["message"]);
-                }
-
-            }
-        }
-        if (!$this->transfer()->hasError()) {
-            $result = call_user_func_array($call, $arguments);
-            if(!is_null($result)){
-                $this->transfer($result);
-            }
-        }
-
-        $this->_sendStatus();
-
-        // SEND RESPONSE
-        $response = $this->transfer()->getAllData();
-        if($this->transfer()->hasError()){
-            $response["data"] = array();
-        }else{
-            if(isset($response["data"])){
-                $data = $this->api()->prepareResponseData($response["data"]);
-                if(is_null($data)){
-                    $response["data"] = array();
-                    $this->transfer()->error(404);
-                } else {
-                    $response["data"] = $data;
-                }
-            } else {
-                $this->transfer()->error(500);
-            }
-        }
-
-        // DEBUG DATA (only for development or testing mode
-        if(ENVIRONMENT == "development" || ENVIRONMENT == "testing"){
-            $input = array();
-            $input["url"] = $_SERVER['REQUEST_URI'];
-            $input["method"] = $_SERVER['REQUEST_METHOD'];
-            $input["time"] = (round((gettimeofday(true) - START_TIME)*100000)/100000);
-            $input["input"] = array();
-            if($this->api()){
-                $input["api"] = $this->api()->getName();
-                $input["data"] = array(
-                    "source" => INPUT_DATA,
-                    "params"    => $this->api()->param(),
-                    "arguments" => $this->api()->argument(),
-                    "filters"   => $this->api()->filter()
-                );
-            }
-            $response["debug"] = $input;
-        }
-
-        $this->response($response, $this->transfer()->getCode());
-        exit("");
-    }
-
-    protected function _sendStatus(){
-        $method  = strtoupper($_SERVER["REQUEST_METHOD"]);
+    private function _send(){
         // SMART STATUS CODES
+        $method  = strtoupper($_SERVER["REQUEST_METHOD"]);
         if (!$this->transfer()->hasError()) {
             if ($method == "POST") {
                 if ($this->transfer()->data()->getResult()) {
@@ -153,6 +87,71 @@ abstract class API_Controller extends REST_Controller {
                 }
             }
         }
+        $this->_sendStatus();
+        // SEND RESPONSE
+        $response = $this->transfer()->getAllData();
+        if($this->transfer()->hasError()){
+            $response["data"] = array();
+        }else{
+            if(isset($response["data"])){
+                $data = $this->api()->prepareResponseData($response["data"]);
+                if(is_null($data)){
+                    $response["data"] = array();
+                    $this->transfer()->error(404);
+                } else {
+                    $response["data"] = $data;
+                }
+            } else {
+                $this->transfer()->error(500);
+            }
+        }
+        // DEBUG DATA (only for development or testing mode
+        if(ENVIRONMENT == "development" || ENVIRONMENT == "testing"){
+            $input = array();
+            $input["url"] = $_SERVER['REQUEST_URI'];
+            $input["method"] = $method;
+            $input["time"] = (round((gettimeofday(true) - START_TIME)*100000)/100000);
+            $input["input"] = array();
+            if($this->api()){
+                $input["api"] = $this->api()->getName();
+                $input["data"] = array(
+                    "source" => INPUT_DATA,
+                    "params"    => $this->api()->param(),
+                    "arguments" => $this->api()->argument(),
+                    "filters"   => $this->api()->filter()
+                );
+            }
+            $response["debug"] = $input;
+        }
+
+        $this->response($response, $this->transfer()->getCode());
+        exit("");
+    }
+
+    protected function _fire_method ($call, $arguments) {
+        $method = strtoupper($_SERVER["REQUEST_METHOD"]);
+        $controllerName = get_class($call[0]);
+        $methodName = $call[1];
+        if (!$this->_checkHandlerAccess($method, $controllerName, $methodName)) {
+            $this->transfer()->error(403);
+        }
+        if (!$this->transfer()->hasError()) {
+            $fieldErrors = $this->api()->checkInputFieldErrors($this->_args, $arguments, $_GET);
+            if ($fieldErrors) {
+                $this->transfer()->error(400);
+                foreach ($fieldErrors as $error) {
+                    $this->transfer()->error()->field($error["name"], $error["message"]);
+                }
+            }
+        }
+        // parent::_fire_method
+        if (!$this->transfer()->hasError()) {
+            $result = call_user_func_array($call, $arguments);
+            if (!is_null($result)) {
+                $this->transfer($result);
+            }
+        }
+        $this->_send();
     }
 
     protected function _checkHandlerAccess($method, $controllerName, $actionName){

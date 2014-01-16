@@ -61,7 +61,6 @@ class DataTransfer{
     }
 
     public function error($code = null){
-
         if(!is_null($code)){
             $this->code($code);
         }

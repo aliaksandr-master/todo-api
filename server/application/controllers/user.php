@@ -32,7 +32,7 @@ class User extends API_Controller {
             if(md5($this->api()->input("password")) == $userArray[0]['password']){
                 $this->transfer($userArray);
             }else{
-                $this->transfer()->error()->field('password', 'incorrect');
+                $this->transfer()->error(404)->field('password', 'incorrect');
             }
         }
     }
