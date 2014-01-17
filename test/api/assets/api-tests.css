@@ -18,5 +18,16 @@ form:empty {
 	content: "";
 }
 
-.requestParams-panel-wr { float: right; width: 38%; }
-.form-panel-wr { float: left; width: 61%; }
+.requestParams-panel-wr {
+	float: right;
+	width: 38%;
+	margin-left: 20px;
+}
+.form-panel-wr { overflow: hidden; }
+
+#left-menu {
+	display: block;
+	float: left;
+	width: 200px;
+	margin-right: 20px;
+}

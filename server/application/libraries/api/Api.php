@@ -349,7 +349,7 @@ class Api {
      */
     static function instanceBy ($method, $uriCall, $arguments) {
 
-        $parsedFile = SERVER_DIR."/api/parsed.api.json";
+        $parsedFile = GENERATED_DIR."/api.parsed.json";
 
         if (empty(self::$_apiParsed)) {
             $sessionName = self::CACHE_ROOT.self::CACHE_PATH;
