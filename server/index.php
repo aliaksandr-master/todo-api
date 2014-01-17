@@ -1,23 +1,26 @@
 <?php
-
-
+/*
+ * -------------------------------------------------------------------
+ *   DEFINE MAIN
+ * -------------------------------------------------------------------
+ */
 define("START_TIME", gettimeofday(true));
 define("SERVER_DIR", __DIR__);
-define("CACHE_DIR", __DIR__."/application/cache");
+define('GENERATED_DIR', SERVER_DIR.'/_generated_');
+define("CACHE_DIR", SERVER_DIR."/application/cache");
+define('DS', '/');
 
-error_reporting(E_ALL);
 
+
+
+
+/*
+ * -------------------------------------------------------------------
+ *   X-DEBUG SETTINGS
+ * -------------------------------------------------------------------
+ */
 ini_set('xdebug.overload_var_dump', '0');
-
-//        ini_set('xdebug.remote_enable', '1');
-//        ini_set('xdebug.remote_handler', 'dbgp');
-//        ini_set('xdebug.remote_host', 'localhost');
-//        ini_set('xdebug.remote_port', '9000');
-//        ini_set('xdebug.idekey', 'PHPSTORM');
-
 ini_set('xdebug.auto_trace', 'On');
-//ini_set('xdebug.trace_output_dir', H::fsMakeDir(DIR.DS."debug".DS."xdebug"));
-
 ini_set('xdebug.show_local_vars', 'On');
 ini_set('xdebug.var_display_max_depth', '15');
 ini_set('xdebug.dump_globals', 'On');
@@ -26,8 +29,33 @@ ini_set('xdebug.dump_once', 'Off');
 ini_set('xdebug.cli_color', 'Off');
 ini_set('xdebug.show_exception_trace', 'On');
 
-define("INPUT_DATA", file_get_contents("php://input"));
 
+
+
+
+/*
+ * -------------------------------------------------------------------
+ *   CLASS AUTO-LOADER
+ * -------------------------------------------------------------------
+ */
+$_CLASS_MAP = json_decode(file_get_contents(GENERATED_DIR.'/class-map.json'), true);
+spl_autoload_register(function ($className) {
+    global $_CLASS_MAP;
+    if (isset($_CLASS_MAP[$className])) {
+        require_once(SERVER_DIR.DS.$_CLASS_MAP[$className]);
+    }
+});
+
+
+
+
+
+/*
+ * -------------------------------------------------------------------
+ *   PUT-INPUT ARGS DATA
+ * -------------------------------------------------------------------
+ */
+define("INPUT_DATA", file_get_contents("php://input"));
 $exploded = explode('&', INPUT_DATA);
 $_INPUT = array();
 foreach($exploded as $pair) {
@@ -37,6 +65,28 @@ foreach($exploded as $pair) {
     }
 }
 $GLOBALS["_INPUT_"] = $_INPUT;
+
+
+
+
+/*
+ * -------------------------------------------------------------------
+ *  SESSION
+ * -------------------------------------------------------------------
+ */
+$user_inactive_time = 0;
+ini_set("session.gc_maxlifetime",  (string) 86400);
+ini_set("session.cookie_lifetime", (string) $user_inactive_time);
+ini_set('session.save_path', CACHE_DIR."/session");
+session_start();
+if ($user_inactive_time) {
+    $time = time();
+    if (($time - (isset($_SESSION['session_time_idle']) ? $_SESSION['session_time_idle'] : 0)) > $user_inactive_time) {
+        session_destroy();
+        session_start();
+    }
+    $_SESSION['session_time_idle'] = $time;
+}
 
 /*
  *---------------------------------------------------------------
@@ -214,60 +264,19 @@ if (defined('ENVIRONMENT'))
 
 
 	// The path to the "application" folder
-	if (is_dir($application_folder))
-	{
+	if (is_dir($application_folder)) {
 		define('APPPATH', $application_folder.'/');
-	}
-	else
-	{
-		if ( ! is_dir(BASEPATH.$application_folder.'/'))
-		{
+	} else {
+		if ( ! is_dir(BASEPATH.$application_folder.'/')) {
 			exit("Your application folder path does not appear to be set correctly. Please open the following file and correct this: ".SELF);
 		}
-
 		define('APPPATH', BASEPATH.$application_folder.'/');
 	}
-
-
-/*
- * -------------------------------------------------------------------
- *  SESSION
- * -------------------------------------------------------------------
- */
-
-$user_inactive_time = 0;
-ini_set("session.gc_maxlifetime",  (string) 86400);
-ini_set("session.cookie_lifetime", (string) $user_inactive_time);
-ini_set('session.save_path', CACHE_DIR."/session");
-session_start();
-if ($user_inactive_time) {
-    $time = time();
-    if (($time - (isset($_SESSION['session_time_idle']) ? $_SESSION['session_time_idle'] : 0)) > $user_inactive_time) {
-        session_destroy();
-        session_start();
-    }
-    $_SESSION['session_time_idle'] = $time;
-}
-
-/*
- * -------------------------------------------------------------------
- *  Load the abstract model
- * -------------------------------------------------------------------
- */
-require_once BASEPATH.'core/Model'.EXT;
-require_once APPPATH.'core/MY_Model'.EXT;
 
 /*
  * --------------------------------------------------------------------
  * LOAD THE BOOTSTRAP FILE
  * --------------------------------------------------------------------
- *
- * And away we go...
- *
  */
 
-require_once BASEPATH.'core/CodeIgniter.php';
-
-
-/* End of file index.php */
-/* Location: ./index.php */
+require_once(BASEPATH.'core/CodeIgniter.php');

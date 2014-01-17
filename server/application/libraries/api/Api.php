@@ -57,69 +57,56 @@ class Api {
         $this->_contextValidation = $this->_context->validationMap();
     }
 
-    private function _initInputValue (&$errors, &$arr, $data, $param, $dataName = "name", $checkValidation = true) {
+    private function _initInputValue (&$errors, &$arr, $param, $value) {
         $error = array();
-        $hasError = false;
-        $value = null;
-
-        if (isset($param["validation"]) && $checkValidation) {
-
-            $optional = true;
-
-            $rules = array();
-            foreach ($param["validation"] as $rule) {
-                if ($rule["name"] == "optional") {
-                    $optional = true;
-                } else if ($rule['name'] == "required") {
-                    $optional = false;
-                } else {
-                    $rules[] = $rule;
-                }
-            }
-
-            if ($optional) {
-                $value = isset($data[$param[$dataName]]) ? $data[$dataName] : null;
-            } else {
-                if (isset($data[$param[$dataName]])) {
-                    $value = $data[$param[$dataName]];
-                } else {
-                    $error[] = array(
-                        "name" => $param["name"],
-                        "message" => "required"
-                    );
-                }
-            }
-
-            if ((!$optional || !is_null($value)) && !$error) {
-                foreach ($rules as $rule) {
-                    $context = $this;
-                    if (isset($this->_contextValidation[$rule["name"]])) {
-                        $rule["method"] = $this->_contextValidation[$rule["name"]];
-                        $context = $this->_context;
-                    }
-                    if (method_exists($context, $rule["method"])) {
-                        $call = array($context, $rule["method"]);
-                        $args = array_merge(array($value), $rule["params"]);
-                        if(!call_user_func_array($call, $args)){
-                            $error[] = array(
-                                "name" => $param["name"],
-                                "message" => $rule["name"]
-                            );
-                        }
-                    } else {
-                        trigger_error($this->_errorPref.'invalid validation-rule-method "'.$rule['method'].'"', E_USER_WARNING);
-                        $hasError = true;
-                    }
-                }
-            }
-        } else {
-            $value = isset($data[$dataName]) ? $data[$dataName] : $value;
+        if (!empty($param['validation'])) {
+            $error = $this->validate($value, $param['validation'], $param["name"]);
         }
-        if ($error) {
-            $errors = array_merge($errors, $error);
-        } else if (!$hasError && !is_null($value)) {
+        if (!empty($error)) {
+            if (is_array($error)) {
+                $errors = array_merge($errors, $error);
+            }
+        } else if (!is_null($value)) {
             $arr[$param["name"]] = $this->_toType($value, $param["type"]);
         }
+    }
+
+    function validate($value, $rules, $fieldName){
+        $hasError = false;
+        $error = array();
+
+        unset($rules["optional"]);
+        unset($rules["required"]);
+
+        if (!empty($validation["required"]) && is_null($value)) {
+            $error[] = array(
+                "name" => $fieldName,
+                "message" => "required"
+            );
+        }
+        if (!is_null($value) && !$error) {
+            foreach ($rules as $rule) {
+                $context = $this;
+                if (isset($this->_contextValidation[$rule["name"]])) {
+                    $rule["method"] = $this->_contextValidation[$rule["name"]];
+                    $context = $this->_context;
+                }
+                if (method_exists($context, $rule["method"])) {
+                    $call = array($context, $rule["method"]);
+                    $args = array_merge(array($value), $rule["params"]);
+                    if(!call_user_func_array($call, $args)){
+                        $error[] = array(
+                            "name" => $fieldName,
+                            "message" => $rule["name"]
+                        );
+                    }
+                } else {
+                    trigger_error($this->_errorPref.'invalid validation-rule-method "'.$rule['method'].'"', E_USER_WARNING);
+                    $hasError = true;
+                }
+            }
+        }
+        return $error ? $error : ($hasError ? true : false);
     }
 
     function getName () {
@@ -129,13 +116,16 @@ class Api {
     function checkInputFieldErrors ($arguments, $urlParams, $inputFilters) {
         $errors = array();
         foreach ($this->_apiData[self::URL_PARAMS] as $param) {
-            $this->_initInputValue($errors, $this->_inputParams, $urlParams, $param, $param["index"]);
+            $value = isset($urlParams[$param['index']]) ? $urlParams[$param['index']] : null;
+            $this->_initInputValue($errors, $this->_inputParams, $param, $value);
         }
         foreach ($this->_apiData[self::REQUEST] as $param) {
-            $this->_initInputValue($errors, $this->_inputArguments, $arguments, $param);
+            $value = isset($arguments[$param['name']]) ? $arguments[$param['name']] : null;
+            $this->_initInputValue($errors, $this->_inputArguments, $param, $value);
         }
         foreach ($this->_apiData[self::FILTERS] as $param) {
-            $this->_initInputValue($errors, $this->_inputFilters, $inputFilters, $param);
+            $value = isset($inputFilters[$param['name']]) ? $inputFilters[$param['name']] : null;
+            $this->_initInputValue($errors, $this->_inputFilters, $param, $value);
         }
 
         $this->_input = array_merge($this->_input, $this->_inputFilters, $this->_inputParams, $this->_inputArguments);

@@ -14,6 +14,10 @@ module.exports = function(grunt){
 			'server/api/'
 		],
 
+		cleanPhp: [
+			'server/_generated_/class-map.json'
+		],
+
 		scripts: [
 			'client/js'
 		],

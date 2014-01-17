@@ -90,7 +90,6 @@ abstract class API_Controller extends REST_Controller {
                 }
             }
         }
-        $this->_sendStatus();
         // SEND RESPONSE
         $response = $this->transfer()->getAllData();
         if($this->transfer()->hasError()){

@@ -26,6 +26,7 @@
 /build_development/
 /build_testing/
 /server/api/
+/server/_generated_/
 
 
 #build files

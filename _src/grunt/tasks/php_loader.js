@@ -45,12 +45,12 @@ module.exports = function(grunt){
 		_.each(fs, function(filePath){
 			var fileName = filePath.split(/[\\\/]+/).pop();
 			var _className = fileName.replace(/\.[a-zA_Z0-9_]+$/, "");
-			if (/^[A-Z]/.test(fileName)) {
+			if (/^[A-Z]/.test(fileName)) /*{
 				add(_className, filePath);
-			} else {
+			} else */{
 				var content = grunt.file.read(options.cwd+filePath);
-				if(/\s(class|interface)\s/.test(content)){
-					content.replace(/\n\s*(class|interface)\s+([a-z0-9A-Z_]+)\s*/g, function($0, $1, $2){
+				if(/\s+(class|interface)\s*/.test(content)){
+					content.replace(/\n\s*(?:abstract|final)?\s*(class|interface)\s+([a-z0-9A-Z_]+)\s*/g, function($0, $1, $2){
 						add($2, filePath);
 						return $0;
 					});
