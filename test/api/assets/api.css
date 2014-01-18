@@ -55,13 +55,38 @@ form > .form-control + .form-control {
 #responseHeadersNonFormat {
 	white-space: pre;
 	overflow-x: auto;
-	font-size: 12px;
-	line-height: 16px;
+	font-size: 11px;
+	line-height: 14px;
 	font-family: monospace;
 }
 #response {
 	word-break: keep-all;
 	white-space: pre-wrap;
+}
+b.index {
+	color: #86001a;
+}
+b.bool {
+	color: blue;
+	font-weight: normal;
+}
+b.number {
+	color: red;
+	font-weight: normal;
+}
+b.string {
+	color: #009500;
+	font-weight: normal;
+}
+i.coma {
+	color: black;
+	font-style: normal;
+	font-weight: bold;
+}
+i.braked {
+	color: black;
+	font-style: normal;
+	font-weight: normal;
 }
 
 #form {

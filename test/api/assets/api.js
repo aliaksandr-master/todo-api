@@ -212,7 +212,7 @@
 					});
 				}
 
-				$("#requestParams").html(JSON.stringify(jsonParam, null, SPACES));
+				$("#requestParams").html(jsonFormat(jsonParam));
 				$("#requestDataNonFormat").text(resultParamsStr);
 
 				var time = Date.now();
@@ -223,16 +223,16 @@
 						$("#errors").html("");
 						if($.isPlainObject(response)){
 							$("#responseHTML").html("");
-							$("#responseJSON").html(JSON.stringify(response, null, SPACES));
+							$("#responseJSON").html(jsonFormat(response));
 							$("#response").text(JSON.stringify(response));
 						}else{
 							$("#responseJSON").html("");
 							$("#response").text(response);
 							$("#responseHTML").html(response);
 						}
-						$('#sendInfo').html(JSON.stringify({
+						$('#sendInfo').html(jsonFormat({
 							time: (Date.now() - time)/1000
-						}, null, SPACES));
+						}));
 					},
 					error: function(jqXHR, status){
 						var resp, isJSON;
@@ -240,7 +240,7 @@
 						$("#responseHeadersNonFormat").html(jqXHR.getAllResponseHeaders());
 
 						try{
-							resp = JSON.stringify(JSON.parse(jqXHR.responseText, true), null, SPACES);
+							resp = jsonFormat(JSON.parse(jqXHR.responseText, true));
 							isJSON = true;
 
 						}catch(e){
@@ -259,9 +259,9 @@
 								'</div>'
 						);
 						$("#response").text(jqXHR.responseText);
-						$('#sendInfo').html(JSON.stringify({
+						$('#sendInfo').html(jsonFormat({
 							time: (Date.now() - time)/1000
-						}, null, SPACES));
+						}));
 					}
 				});
 				$.ajax(options);
