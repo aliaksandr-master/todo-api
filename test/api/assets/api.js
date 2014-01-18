@@ -24,19 +24,19 @@
 			var $requestPanels = $('#request-bar');
 
 			$responsePanels.append(tplPanel({
-				label: "Respoonse API",
+				label: "Respoonse <b>API</b>",
 				type: 'success',
 				id: 'responseJSON',
 				content: ''
 			}));
 			$responsePanels.append(tplPanel({
-				label: "Respoonse HTML",
+				label: "Respoonse <b>HTML</b>",
 				type: 'success',
 				id: 'responseHTML',
 				content: ''
 			}));
 			$requestPanels.append(tplPanel({
-				label: "Send Info",
+				label: "Send <b>Info</b>",
 				type: 'primary',
 				id: 'sendInfo',
 				content: ''
@@ -48,19 +48,19 @@
 				content: ''
 			}));
 			$requestPanels.append(tplPanel({
-				label: "Request Data (formatted)",
+				label: "Request <b>Data</b> (formatted)",
 				type: 'info',
 				id: 'requestParams',
 				content: ''
 			}));
 			$requestPanels.append(tplPanel({
-				label: "Response Headers",
+				label: "Response <b>Headers</b>",
 				type: 'success',
 				id: 'responseHeadersNonFormat',
 				content: ''
 			}));
 			$requestPanels.append(tplPanel({
-				label: "Request Data",
+				label: "Request <b>Data</b>",
 				type: 'info',
 				id: 'requestDataNonFormat',
 				content: ''
