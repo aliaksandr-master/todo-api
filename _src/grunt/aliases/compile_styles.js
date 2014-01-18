@@ -5,6 +5,7 @@ module.exports = [
 	'less:compile',
 	'sass:compile',
 	'copy:fonts',
-	'replace:fonts'
+	'replace:fonts',
+	'autoprefixer'
 
 ];

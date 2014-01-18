@@ -26,12 +26,12 @@
 	},
 	"PUT user/$id": {
 		"request" : {
-			"$id:integer": "required",
-			"username:string": "required",
-			"email:string": "required|valid_email",
-			"password_old:string": "optional",
-			"password_new:string": "optional",
-			"password_new_confirm:string": "optional"
+			"$id:integer": "optional|exists['user']",
+			"username:string": "optional|unique|need['password_old']",
+			"email:string": "required|valid_email|unique|need['password_old']",
+			"password_old:string": "optional|valid_password",
+			"password_new:string": "optional|matches['password_new_confirm']|need['password_old']",
+			"password_new_confirm:string": "optional|matches['password_new']|need['password_old']"
 		},
 		"response": [
 			"id:integer",
@@ -41,10 +41,10 @@
 	},
 	"POST user": {
 		"request": {
-			"username:string": "required",
-			"email:string": "required|valid_email",
-			"password:string": "required",
-			"confirm_password:string": "required"
+			"username:string": "required|unique",
+			"email:string": "required|valid_email|unique",
+			"password:string": "required|matches['confirm_password']",
+			"confirm_password:string": "required|matches['password']"
 		},
 		"response": [
 			"id:integer",

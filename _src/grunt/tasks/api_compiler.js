@@ -53,11 +53,20 @@ module.exports = function(grunt){
 	};
 
 	var makeCellName = function(method, url1, argsCount){
-		var url = url1.replace(/\$[^\/]+/, '%1');
+		var url = url1.replace(/\$[^\/]+/g, '%1');
 		return method + " " + url + " (" + argsCount + ")";
 	};
 
 	var VALIDATION_PARAM_EXP = /^([a-z0-9_]+)(.*)$/i;
+	var validationRule = function (source, ruleName, _paramsJson) {
+		_paramsJson = (_paramsJson || "").replace(/'/g, '"');
+		return {
+			source: source,
+			name: ruleName.trim(),
+			method: '_rule__' + ruleName.trim(),
+			params: _paramsJson ? JSON.parse(_paramsJson, true) : {}
+		};
+	};
 	var parseValidation = function (option){
 		if (typeof option === 'string') {
 			option = option.split(/\s*\|\s*/);
@@ -66,12 +75,10 @@ module.exports = function(grunt){
 		_.each(option, function(rule){
 			var ruleName    = rule.replace(VALIDATION_PARAM_EXP, '$1');
 			var _paramsJson = rule.replace(VALIDATION_PARAM_EXP, '$2');
-			opt[ruleName] = {
-				source: rule,
-				name: ruleName.trim(),
-				method: 'rule_' + ruleName.trim(),
-				params: _paramsJson ? JSON.parse(_paramsJson, true) : {}
-			};
+			if(_paramsJson){
+				console.log(_paramsJson);
+			}
+			opt[ruleName] = validationRule(rule, ruleName, _paramsJson);
 		});
 		return opt;
 	};
@@ -100,6 +107,14 @@ module.exports = function(grunt){
 								return;
 							}
 							opt['validation'] = parseValidation(option);
+							if(opt['validation']['required']){
+								delete opt['validation']['optional'];
+							}else if(!opt['validation']['optional']){
+								opt['validation']['required'] = validationRule('required', 'required', '');
+							}
+							if(/integer|number/.test(opt['type'])){
+								opt['validation']['decimal'] = validationRule('decimal', 'decimal', '');
+							}
 							if (/^\$/.test(opt.name)) {
 								opt.param = opt.name;
 								opt.name  = opt.param.replace(/^\$/, '');
@@ -188,7 +203,7 @@ module.exports = function(grunt){
 		parsed[OPTIONS][API_ROOT] = options.apiRoot;
 
 		grunt.file.write(options.destSourceJsonFile, JSON.stringify(source, null, options.jsonSpaces));
-		grunt.file.write(options.destParsedJsonFile, JSON.stringify(parsed, null, 0));
+		grunt.file.write(options.destParsedJsonFile, JSON.stringify(parsed, null, options.jsonSpaces));
 
 		grunt.log.ok('file ' + options.destSourceJsonFile,' was created');
 		grunt.log.ok('file ' + options.destParsedJsonFile,' was created');

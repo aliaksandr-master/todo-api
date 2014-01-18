@@ -1,9 +1,6 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
-require_once(APPPATH.'/libraries/SmartyParams.php');
-require_once(APPPATH.'/core/API_Controller.php');
-
-class User extends API_Controller {
+class User extends ApiController {
 
     /**
      * @var User_model
@@ -19,22 +16,30 @@ class User extends API_Controller {
         $this->load->helper('url');
     }
 
+    public function logout_get(){
+        return array('status'=>true);
+    }
+
     public function login_post(){
-        $userArray = $this->user->read(array('username' => $this->api()->input("username")));
-
-        if(empty($userArray)){
-            $userArray = $this->user->read(array('email' => $this->api()->input("username")));
+        $password = $this->user->cryptPassword($this->input('password'));
+        $user = $this->user->read(array(
+            'username' => $this->input("username"),
+            'password' => $password
+        ));
+        if(empty($user)){
+            $user = $this->user->read(array(
+                'email' => $this->input("username"),
+                'password' => $password
+            ));
         }
-
-        if(empty($userArray[0])){
+        if(empty($user)){
             $this->transfer()->error(404)->field('username', 'incorrect');
+            $this->transfer()->error(404)->field('password', 'incorrect');
+            return null;
         }else{
-            if(md5($this->api()->input("password")) == $userArray[0]['password']){
-                $this->transfer($userArray);
-            }else{
-                $this->transfer()->error(404)->field('password', 'incorrect');
-            }
+            $this->transfer()->code(200);
         }
+        return $user;
     }
 
     public function getOne($userId){
@@ -49,28 +54,35 @@ class User extends API_Controller {
         return is_null($userId) ? $this->getAll() : $this->getOne($userId);
     }
 
-    public function index_put(){
-        $data = $this->api($this->user->fieldsMap());
+    public function index_put($id){
+        $data = $this->api($this->user->safeFieldsMap());
+        if($this->input('password_new')){
+            $data['password'] = $this->input('password_new');
+        }
+        $this->user->update($data, $id);
+        return $this->getOne($id);
+    }
 
+    public function index_delete($id){
+        $user = $this->user->read($id);
+        if(empty($user)){
+            $this->transfer()->error(404);
+        }else{
+            $result = $this->user->delete($id);
+        }
+        return array(
+            "status" => !empty($user)
+        );
     }
 
     public function index_post(){
-        $data = $this->api($this->user->fieldsMap());
-
-        if($this->api()->input('confirm_password') != $data['password']) {
-            $this->transfer()->error(400)->field('confirm_password', 'not_equal');
-        }
-
-        if($this->user->checkOnExistField('username', $data['username'])) {
-            $this->transfer()->error(400)->field('username', 'exists');
-        }
-
-        if(!$this->transfer()->hasError()){
-            $data['password'] = md5($data['password']);
-            $data['date_register'] = date("Y-m-d H:i:s", gettimeofday(true));
-
-            $activationCode = sha1(md5(microtime()));
-            $data['activation_code'] = $activationCode;
+        $data = $this->api($this->user->safeFieldsMap());
+        $data['password'] = $this->user->cryptPassword($data['password']);
+        $data['date_register'] = date("Y-m-d H:i:s", gettimeofday(true));
+        $activationCode = sha1(md5(microtime()));
+        $data['activation_code'] = $activationCode;
+        $userId = $this->user->create($data);
+        return $this->getOne($userId);
 //          $emailObject = $this->email;
 //          /*
 //          * @var CI_Email $emailObject
@@ -82,17 +94,46 @@ class User extends API_Controller {
 //          $message = 'To confirm your registration go to the link below <br><a href="'.$href.'">Confirm</a>';
 //          $emailObject->message($message);
 //          $emailObject->send();
-            $userId = $this->user->create($data);
-            $this->transfer($this->getOne($userId));
-        }
     }
 
-    public function confirm_get(){
+//    public function confirm_get(){
+//
+//        if(!empty($this->_get_args)){
+//            //            $user = new User_model();
+//        }
+//
+//    }
 
-        if(!empty($this->_get_args)){
-            //            $user = new User_model();
+    public function _rule__valid_password ($value, $fieldName) {
+        $id = $this->input("id");
+        $data = $this->user->read(array(
+            'password' => $this->user->cryptPassword($value),
+            'id' => $id
+        ));
+        return !empty($data);
+    }
+    public function _rule__exists($value, $fieldName){
+        $data = $this->user->read(array(
+            $fieldName => $value
+        ));
+        return !empty($data);
+    }
+
+    public function _rule__unique($value, $fieldName){
+        $data = $this->user->read(array(
+            $fieldName => $value
+        ));
+        if(empty($data)){
+            return true;
         }
-
+        $id = $this->input("id");
+        if (!$id) {
+            return false;
+        }
+        if(count($data) == 1 && $data[0]['id'] == $id){
+            return true;
+        }
+        return false;
     }
 
 }

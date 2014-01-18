@@ -38,11 +38,12 @@
 |
 */
 
-$route['default_controller'] = "welcome";
-$route['404_override'] = '';
+//$route['default_controller'] = "";
+//$route['404_override'] = '';
 
 //USER
-
+$route['user'] = 'user/index';
+$route['user/(\d+)'] = 'user/index/$1';
 $route['login'] = 'user/login';
 $route['logout'] = 'user/logout';
 

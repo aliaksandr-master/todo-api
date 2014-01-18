@@ -1,9 +1,13 @@
 <?php
 
-class User_model extends MY_Model {
+class User_model extends BaseCrudModel {
 
     public function getTableName(){
         return "user";
+    }
+
+    public function cryptPassword($value){
+        return md5($value);
     }
 
     public function getTableFields(){
@@ -18,11 +22,5 @@ class User_model extends MY_Model {
         );
     }
 
-    public function checkOnExistField ($name, $value){
-        $user = $this->read(array(
-            $name => $value
-        ));
-        return !empty($user);
-    }
 
 }

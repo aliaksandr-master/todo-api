@@ -25,10 +25,7 @@ class DataTransferErrorObject extends DataTransferMultiValueObject{
             $this->_root->code(400);
         }
         foreach($arr as $name => $value){
-            $this->_field[] = array(
-                'name' => $name,
-                'message' => $value
-            );
+            $this->_field[$name][] = $value;
         }
         return $this;
     }
@@ -55,7 +52,7 @@ class DataTransferErrorObject extends DataTransferMultiValueObject{
     public function getResult(){
         $dataArray = array();
         if(!empty($this->_field)){
-            $dataArray['field'] = $this->_field;
+            $dataArray['input'] = $this->_field;
         }
         if(!empty($this->_access)){
             $dataArray['access'] = $this->_access;

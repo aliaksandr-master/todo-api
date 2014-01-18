@@ -1,23 +1,5 @@
-<?php
+<?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
-/**
- * Interface MY_CrudInterface
- */
-interface MY_CrudInterface {
-
-    const RESULT_ARRAY = "array";
-    const RESULT_OBJECT = "object";
-    const RESULT_ACTIVE_RECORD = "active record";
-
-    function getTableName();
-    function getTableFields();
-    function idAttribute();
-
-    function read ($whereOrId, $resultAs = self::RESULT_ARRAY, $select);
-    function create (array $data);
-    function update (array $data, $whereOrId);
-    function delete ($whereOrId);
-}
 
 /**
  * Class MY_Model
@@ -25,7 +7,7 @@ interface MY_CrudInterface {
  * @var CI_Loader load
  *
  */
-abstract class MY_Model extends CI_Model implements MY_CrudInterface {
+abstract class BaseCrudModel extends CI_Model implements ICrudMoldel {
 
     function __construct () {
         parent::__construct();
@@ -36,16 +18,27 @@ abstract class MY_Model extends CI_Model implements MY_CrudInterface {
         return array();
     }
 
-    function fieldsMap ($omit = array()) {
+    function safeFieldsMap($withoutKeys = array()){
+        if (!$withoutKeys) {
+            $withoutKeys = array();
+        }
+        $withoutKeys = array_merge($withoutKeys, array($this->idAttribute()), $this->getPrimaryKeys());
+        return $this->fieldsMap($withoutKeys);
+    }
+
+    function fieldsMap ($withoutKeys = array()) {
+        if (!$withoutKeys) {
+            $withoutKeys = array();
+        }
         $fieldData = array();
         $fields = $this->getTableFields();
         $defaults = $this->defaults();
         foreach ($fields as $f) {
-            if(empty($omit[$f])){
-                if(isset($defaults[$f])){
+            if (empty($withoutKeys[$f])) {
+                if (isset($defaults[$f])) {
                     $fieldData[$f] = $defaults[$f];
-                }else{
-                    $fieldData[] = $f;
+                } else {
+                    $fieldData[$f] = null;
                 }
             }
         }
@@ -125,6 +118,10 @@ abstract class MY_Model extends CI_Model implements MY_CrudInterface {
         return "id";
     }
 
+    public function getPrimaryKeys(){
+        return array();
+    }
+
     public function update(array $data, $whereOrId){
         if(!is_array($whereOrId)){
             $whereOrId = array(
@@ -166,5 +163,6 @@ abstract class MY_Model extends CI_Model implements MY_CrudInterface {
         // TODO return boolean
         return true;
     }
+
 
 }

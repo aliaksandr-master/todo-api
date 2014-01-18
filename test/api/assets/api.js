@@ -1,8 +1,6 @@
 "use strict";
 (function(window, $, Handlebars, _, undefined){
 
-	var SPACES = 2;
-
 	var API     = window.api();
 	var tplMenu  = window.tpl('menu.hbs');
 	var tplMain  = window.tpl('main.hbs');
@@ -142,6 +140,63 @@
 				$form.attr('method', method);
 
 				if(data["request"]){
+					var setRandValue = function($elem, type, v, isValidData, isPrev, value){
+						if (!isPrev) {
+							if (/email/.test(v)) {
+								if(isValidData){
+									value = window.randomString(10) + '@' + window.randomString(5) + '.' + window.randomString(3)
+								} else {
+									value = window.randomString(10);
+								}
+							} else if (/number|numeric|float|integer/.test(type)) {
+								if (isValidData) {
+									value = window.randomInteger(0, 1000);
+								} else {
+									value = window.randomString(10, false);
+								}
+							} else if (/string/.test(type)){
+								if (isValidData) {
+									value = window.randomString(10, true);
+								} else {
+									value = window.randomInteger(0, 1000);
+								}
+							}
+						}
+						$elem.val(value);
+					};
+
+					$('.putData').on('click', function () {
+						var isValidData = $(this).hasClass('-valid');
+						var isPrevData = $(this).hasClass('-prev');
+						var prevData = window.loadSendDataToStore();
+						$.each(data['request'], function (k, v) {
+							if (!/^\$/.test(k)) {
+								var name = k.replace(/^([\w\d]+)\:?(.+)$/, '$1');
+								var type = k.replace(/^([\w\d]+)\:?(.+)$/, '$2');
+								var $elem = $form.find('[name="'+name+'"]');
+								if (/bool/.test(type)) {
+									$elem.filter('[value="'+(window.randomBoolean() * 1)+'"]').click();
+								} else {
+									if (_.isArray(v)) {
+										v = v.join('|');
+									}
+									if (isPrevData) {
+										var findName = false;
+										_.each(prevData, function(v){
+											if(v.name === name){
+												findName = true;
+												setRandValue($elem, type, v, isValidData, true, v.value);
+												return false;
+											}
+										});
+									} else {
+										setRandValue($elem, type, v, isValidData, false, '');
+									}
+								}
+							}
+						});
+					});
+
 					var formElement = '';
 					$.each(data['request'], function(k, v){
 						if(!/^\$/.test(k)){
@@ -169,6 +224,11 @@
 						}
 					});
 					$formContent.html(formElement);
+					if(!formElement){
+						$('.putData').remove();
+					}
+				} else {
+					$('.putData').remove();
 				}
 			})();
 
@@ -187,6 +247,9 @@
 
 			$form.on("submit", function(){
 				var param = $(this).serializeArray();
+
+				window.saveSendDataToStore(param);
+
 				var pararms = {
 					type: $method.val(),
 					url: $url.val(),

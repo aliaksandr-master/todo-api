@@ -1,8 +1,6 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
-require_once(APPPATH.'/core/API_Controller.php');
-
-class Todo extends API_Controller {
+class Todo extends ApiController {
 
     /**
      * @var Todo_model

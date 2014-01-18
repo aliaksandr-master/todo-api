@@ -1,6 +1,6 @@
 <?php
 
-class TodoItem_model extends MY_Model {
+class TodoItem_model extends BaseCrudModel {
 
     public function getTableName() {
         return 'todo_item';

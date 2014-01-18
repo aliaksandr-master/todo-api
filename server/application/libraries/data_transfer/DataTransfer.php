@@ -1,8 +1,5 @@
 <?php defined('BASEPATH') OR exit('No direct script access allowed');
 
-require_once('DataTransferSimpleValueObject.php');
-require_once('DataTransferMultiValueObject.php');
-require_once('DataTransferErrorObject.php');
 
 ///**
 // * DataTransfer class
@@ -23,7 +20,7 @@ class DataTransfer{
     private $_input;
 
     /**
-     * @var API_Controller
+     * @var ApiController
      */
     private $_controller;
 
