@@ -31,20 +31,14 @@
 			}));
 			$responsePanels.append(tplPanel({
 				label: "Respoonse <b>HTML</b>",
-				type: 'success',
+				type: 'default',
 				id: 'responseHTML',
 				content: ''
 			}));
 			$requestPanels.append(tplPanel({
 				label: "Send <b>Info</b>",
-				type: 'primary',
+				type: 'default',
 				id: 'sendInfo',
-				content: ''
-			}));
-			$responsePanels.append(tplPanel({
-				label: "Respoonse",
-				type: 'success',
-				id: 'response',
 				content: ''
 			}));
 			$requestPanels.append(tplPanel({
@@ -61,8 +55,14 @@
 			}));
 			$requestPanels.append(tplPanel({
 				label: "Request <b>Data</b>",
-				type: 'info',
+				type: 'default',
 				id: 'requestDataNonFormat',
+				content: ''
+			}));
+			$requestPanels.append(tplPanel({
+				label: "Response <b>Data</b>",
+				type: 'default',
+				id: 'response',
 				content: ''
 			}));
 		}
@@ -212,7 +212,7 @@
 					});
 				}
 
-				$("#requestParams").html(jsonFormat(jsonParam));
+				$("#requestParams").html(window.jsonFormat(jsonParam));
 				$("#requestDataNonFormat").text(resultParamsStr);
 
 				var time = Date.now();
@@ -223,43 +223,48 @@
 						$("#errors").html("");
 						if($.isPlainObject(response)){
 							$("#responseHTML").html("");
-							$("#responseJSON").html(jsonFormat(response));
+							$("#responseJSON").html(window.jsonFormat(response));
 							$("#response").text(JSON.stringify(response));
 						}else{
 							$("#responseJSON").html("");
 							$("#response").text(response);
 							$("#responseHTML").html(response);
 						}
-						$('#sendInfo').html(jsonFormat({
+						$('#sendInfo').html(window.jsonFormat({
 							time: (Date.now() - time)/1000
 						}));
 					},
 					error: function(jqXHR, status){
-						var resp, isJSON;
+						var resp = jqXHR.responseText,
+							isJSON = false;
+
+						var respHtml = jqXHR.responseText.replace(/[<]!DOCTYPE(?:[^>]*)[>]/g, '');
+						respHtml = respHtml.replace(/<\/?html[^>]+>/g, '');
 
 						$("#responseHeadersNonFormat").html(jqXHR.getAllResponseHeaders());
 
-						try{
-							resp = jsonFormat(JSON.parse(jqXHR.responseText, true));
+						try {
+							resp = window.jsonFormat(JSON.parse(jqXHR.responseText, true));
 							isJSON = true;
-
-						}catch(e){
-							resp = jqXHR.responseText;
+						} catch (e) {
+							resp = respHtml;
 							isJSON = false;
 						}
 
+
+
+
 						$("#responseHTML").html("");
 						$("#responseJSON").html(isJSON ? resp : "");
-
 						$("#errors").html(
 							'<div class="alert alert-danger">' +
 								'<h4>Ajax Error <b>' + jqXHR.status + '</b> (<i>' + status + '</i>)</h4>' +
 								'<p>' + jqXHR.statusText + '</p><br>' +
 								(isJSON ? '' : '<div>' + resp + '</div>') +
-								'</div>'
+							'</div>'
 						);
 						$("#response").text(jqXHR.responseText);
-						$('#sendInfo').html(jsonFormat({
+						$('#sendInfo').html(window.jsonFormat({
 							time: (Date.now() - time)/1000
 						}));
 					}
