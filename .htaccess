@@ -211,6 +211,7 @@ AddDefaultCharset utf-8
 
 <ifModule mod_rewrite.c>
     RewriteRule ^server(.*) - [L]
+    RewriteRule ^test(.*) - [L]
 </ifModule>
 
 # ------------------------------------------------------------------------------

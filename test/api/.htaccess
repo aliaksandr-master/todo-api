@@ -2,10 +2,6 @@ RewriteEngine On
 Options +FollowSymlinks
 RewriteBase /test/api/
 
-RewriteCond %{REQUEST_FILENAME} !-d
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteRule ^(.*)$ index.php [L,QSA]
-
 # custom 404 page
 ErrorDocument 404 /404.html
 ServerSignature Off

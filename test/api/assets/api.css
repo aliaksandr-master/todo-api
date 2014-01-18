@@ -1,0 +1,132 @@
+form > .form-control + .form-control {
+	margin-top: 10px;
+}
+
+.panel-body:before {
+	content: "";
+}
+
+.requestParams-panel-wr {
+}
+.form-panel-wr { overflow: hidden; }
+#request-bar {
+	float: right;
+	width: 38%;
+	margin-left: 20px;
+}
+#response-bar {
+	overflow: hidden;
+}
+#menu-bar {
+	display: block;
+	float: left;
+	width: 200px;
+	margin-right: 20px;
+}
+#menu-bar .panel-title a {
+	display: block;
+	font-weight: bold;
+}
+.panel-heading {
+	padding: 5px;
+	background: #eee;
+}
+
+#menu-bar .nav > li > a {
+	padding: 5px;
+}
+
+.panel-body {
+	padding: 5px;
+}
+
+.panel-body:after {
+	display: none;
+}
+.request-param {
+	padding-bottom: 20px;
+}
+#sendInfo,
+#responseJSON,
+#response,
+#responseHTML,
+#requestParams,
+#requestDataNonFormat,
+#responseHeadersNonFormat {
+	white-space: pre;
+	overflow-x: auto;
+	font-size: 12px;
+	line-height: 16px;
+	font-family: monospace;
+}
+#response {
+	word-break: keep-all;
+	white-space: pre-wrap;
+}
+
+#form {
+	display: table;
+	width: 450px;
+	padding: 10px;
+	border: 2px solid #eee;
+	margin-bottom: 20px;
+	border-radius: 10px;
+}
+#form:before {
+	content: "Form:";
+	font-weight: bold;
+	font-size: 20px;
+	line-height: 20px;
+	display: block;
+	padding-bottom: 10px;
+	border-bottom: 1px solid #ccc;
+	margin-bottom: 10px;
+}
+.form-submit {
+	border-top: 1px solid #ccc;
+	padding: 10px 0 0;
+	margin: 10px 0 0;
+}
+.form-cover {
+	overflow: hidden;
+	display: table-row;
+}
+.form-cover.-boolean .btn,
+.form-cover.-bool .btn {
+	padding: 0 0 0 20px;
+	min-width: 1px;
+}
+.form-cover.-boolean .btn:after,
+.form-cover.-bool .btn:after {
+	content:"";
+}
+.form-cover.-boolean .btn + .btn,
+.form-cover.-bool .btn + .btn {
+	margin-left: 10px;
+}
+.form-cover.-boolean .btn input,
+.form-cover.-bool .btn input {
+	display: block;
+	float: right;
+	margin-left: 10px;
+}
+.form-cover label {
+	font-weight: normal;
+	padding: 0;
+	margin: 0;
+	display: table-cell;
+	text-align: right;
+	white-space: nowrap;
+	vertical-align: middle;
+	line-height: 32px;
+	min-width: 150px;
+}
+.form-cover label:after {
+	content: ":";
+}
+.form-cover .form-control-wr {
+	padding: 4px;
+	width: 100%;
+	display: table-cell;
+	overflow: hidden;
+}

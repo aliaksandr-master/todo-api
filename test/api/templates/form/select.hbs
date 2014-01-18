@@ -1,0 +1,8 @@
+<label for="form-{{name}}">{{label}}</label>
+<div class="form-control-wr">
+    <select class="form-control" name="{{name}}" id="form-{{name}}">
+        {{#each}}
+            <option value="{{value}}">{{text}}</option>
+        {{/each}}
+    </select>
+</div>
