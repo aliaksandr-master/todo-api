@@ -36,7 +36,7 @@ define(function(require, exports, module){
 			}
 			console.log('error:',jqXHR);
 			if(jqXHR.status === 401){
-				Chaplin.utils.redirectTo({url:'/user/login/'});
+				Chaplin.helpers.redirectTo({url:'/user/login/'});
 			}
 		};
 		opt.data = /POST|PUT/.test(opt.type) ? $.param([{name: "json",value: sendData}]) : undefined;

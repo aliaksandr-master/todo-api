@@ -2,23 +2,18 @@
 
 class User extends ApiController {
 
-    /**
-     * @var User_model
-     */
-    public $user;
-
     public function __construct(){
         parent::__construct();
 
-        $this->load->model('User_model', "user");
         $this->load->library('email');
         $this->load->helper('email');
         $this->load->helper('url');
     }
 
     public function logout_get(){
+        $id = $this->user->current('id');
         $this->user->logout();
-        return array('status'=>true);
+        return array('status' => !!$id);
     }
 
     public function login_post(){

@@ -4,7 +4,7 @@ function dump($var, $showFullData = false, $escapeTags = false, $cover = true){
     if($cover){
         print '<div class="_dump_">';
         print '<span class="_dump_close_" title="Hide this DUMP" onclick="_dump_close_click(this);">&times;</span>';
-        print '<span class="_dump_pin_" title="Pin this DUMP" onclick="_dump_pin_click(this);">&copy;</span>';
+        print('<span class="_dump_pin_" title="Pin this DUMP" onclick="_dump_pin_click(this);">&copy;</span>'."\n");
     }
     if($escapeTags){
         ob_start();
@@ -27,7 +27,7 @@ function dump($var, $showFullData = false, $escapeTags = false, $cover = true){
         }
     }
     if($cover){
-        print "</div>";
+        print "\n</div>";
         if(!defined("DUMP_STYLE_EXISTS")){
             define("DUMP_STYLE_EXISTS",1);
             print '

@@ -10,6 +10,7 @@ class Todo_model extends BaseCrudModel {
         return array(
             'id',
             'name',
+            'user_id',
             "is_shared",
             'date_create',
             'sort_order',

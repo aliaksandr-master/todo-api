@@ -3,6 +3,11 @@
 abstract class ApiController extends REST_Controller {
 
     /**
+     * @var User_model
+     */
+    public $user;
+
+    /**
      * @var DataTransfer
      */
     private $_transfer = null;
@@ -13,12 +18,18 @@ abstract class ApiController extends REST_Controller {
 
     public function __construct(){
         parent::__construct();
+        $this->load->model('User_model', "user");
         if(is_null($this->_transfer)){
             $this->_transfer = new DataTransfer($this);
         }
     }
 
     protected $_inputData = array();
+
+    public function stop($code){
+        $this->transfer()->code($code);
+        $this->_send();
+    }
 
     public function api($names = null,  $namesMap = array(), $withoutEmpty = true){
         if(!$namesMap){

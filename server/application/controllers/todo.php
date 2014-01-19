@@ -21,7 +21,9 @@ class Todo extends ApiController {
 
     // READ ALL LISTS
     private function _getAllLists(){
-        return $this->todoList->read();
+        return $this->todoList->read(array(
+            "user_id" => $this->user->current("id")
+        ));
     }
 
 
@@ -42,6 +44,7 @@ class Todo extends ApiController {
 
     // CREATE LIST
     public function list_post(){
+        $data['user_id']        = $this->user->current("id");
         $data['name']           = $this->api()->input('name', "");
         $data['is_shared']      = $this->api()->input('is_shared', 0);
         $data['sort_order']     = $this->api()->input('sort_order', 0);
@@ -57,14 +60,20 @@ class Todo extends ApiController {
         $data['name']           = $this->api()->input('name', "");
         $data['is_shared']      = $this->api()->input('is_shared', 0);
         $data['sort_order']     = $this->api()->input('sort_order', 0);
-        $this->todoList->update($data, $listId);
+        $this->todoList->update($data, array(
+            "id" => $listId,
+            'user_id' => $this->user->current("id")
+        ));
         return $this->_getOneList($listId);
     }
 
 
     // DELETE LIST
     public function list_delete($id){
-        $todoResult = $this->todoList->delete($id);
+        $todoResult = $this->todoList->delete(array(
+            "id" => $id,
+            'user_id'=> $this->user->current("id")
+        ));
         return array("status" => $todoResult);
     }
 
@@ -92,7 +101,7 @@ class Todo extends ApiController {
     public function item_get($todoId, $id = null){
         if (is_null($id)) {
             return $this->_getAllTodoListItem($todoId);
-        }else{
+        } else {
             return $this->_getOneTodoListItem($todoId, $id);
         }
     }
