@@ -1,5 +1,9 @@
 {
 	"GET todo": {
+		"access": {
+			"need_login": true,
+			"only_owner": true
+		},
 		"response:array": [
 			"id:integer",
 			"link:string",
@@ -22,6 +26,10 @@
 	},
 
 	"POST todo": {
+		"access": {
+			"need_login": true,
+			"only_owner": true
+		},
 		"request": {
 			"name:string": "optional",
 			"is_shared:boolean": "optional",
@@ -37,6 +45,10 @@
 	},
 
 	"PUT todo/$id": {
+		"access": {
+			"need_login": true,
+			"only_owner": true
+		},
 		"request": {
 			"$id:integer": "required",
 			"name:string": "optional",
@@ -49,21 +61,19 @@
 			"name:string",
 			"is_shared:boolean",
 			"sort_order:integer"
-		],
-		"errors": {
-			"$id": "not_found"
-		}
+		]
 	},
 
 	"DELETE todo/$todo_id": {
+		"access": {
+			"need_login": true,
+			"only_owner": true
+		},
 		"request": {
 			"$todo_id:integer": "required"
 		},
 		"response": [
 			"status:boolean"
-		],
-		"errors": {
-			"$todo_id": "not_found"
-		}
+		]
 	}
 }

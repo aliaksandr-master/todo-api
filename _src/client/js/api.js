@@ -3,6 +3,15 @@ define(function(require, exports, module){
 
 	var models = {
 
+		'user': {
+			server2client: function(response){
+				return response;
+			},
+			client2server: function(model){
+				return model.attributes;
+			}
+		},
+
 		"todo-list": {
 			server2client: function(response){
 				var resp = {};

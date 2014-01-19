@@ -3,7 +3,52 @@ define(function(require, exports, module){
 
     var Handlebars = require('handlebars');
     var Chaplin = require('chaplin');
+    var $ = require('jquery');
+    var _ = require('underscore');
     var utils = require('lib/utils');
+
+	var defaultMessage = Handlebars.compile('{{name}} incorrect');
+	var messageMap = {
+		required: 'Field "{{name}}" is required!',
+		unique: '{{name}} "{{value}}" already exists',
+		valid_email: '{{name}} incorrect!'
+	};
+
+	var fieldNameMap = {
+		username: 'Username',
+		email: 'Email',
+		password: 'Password',
+		confirm_password: 'Confirm Password'
+	};
+
+	var messageFuncMap = {};
+	_.each(messageMap, function(v, n){
+		messageFuncMap[n] = Handlebars.compile(v);
+	});
+	$.fn.showError = function (fieldName, value, ruleName, params) {
+		var messageFunc = _.isFunction(messageFuncMap[ruleName]) ? messageFuncMap[ruleName] : defaultMessage;
+		if(!_.isFunction(messageFuncMap[ruleName])){
+			console.error('undefined message function on rule "', ruleName,'"');
+		}
+		if(!$(this).next('.form-error').length){
+			$(this).closest('.form-group').addClass('has-error');
+			$(this).after('<div class="form-error">' + messageFunc({
+				value: value,
+				name: fieldNameMap[fieldName] || fieldName,
+				params: params
+			}) + '</div>');
+		}
+	};
+
+	$.fn.hideError = function () {
+		$(this).next('.form-error').remove();
+		$(this).closest('.form-group').removeClass('has-error');
+	};
+
+	$.fn.hideErrorAll = function () {
+		$(this).find('.form-error').remove();
+		$(this).find('.has-error').removeClass('has-error');
+	};
 
 	Handlebars.registerHelper('url', function() {
 		var options, params, routeName, _i;

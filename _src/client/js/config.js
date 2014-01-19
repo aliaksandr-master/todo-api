@@ -53,10 +53,7 @@ require.config({
 		},
 		chaplin: {
 			deps: [
-				'backbone',
-				'backbone.shim',
-				'backbone.dualStorage',
-				'backbone.stickit'
+				'backbone'
 			]
 		},
 		handlebars: {

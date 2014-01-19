@@ -1,8 +1,9 @@
 define(function(require, exports, module){
     "use strict";
 
-	require('css!styles/layouts/simple');
 	var $ = require('jquery');
+	require('css!styles/index');
+	require('css!styles/layouts/simple');
 
 	var template = require('templates/layouts/simple');
 	var BaseView = require('views/base/view');
@@ -10,8 +11,8 @@ define(function(require, exports, module){
     var LayoutView = BaseView.extend({
 
 		events: {
-			'click .main-menu-head-btn': 'menuClick',
-			'click .main-menu-li-a': 'closeMenu'
+//			'click .main-menu-head-btn': 'menuClick',
+//			'click .main-menu-li-a': 'closeMenu'
 		},
 
 		container: 'body',

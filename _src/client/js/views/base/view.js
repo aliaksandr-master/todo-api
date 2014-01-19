@@ -8,23 +8,12 @@ define(function(require, exports, module){
 	var preloader = require('lib/preloader');
 
 	require('lib/view-helper');
-	require('css!styles/index');
 
 	var BaseView = Chaplin.View.extend({
 
 		preloader: preloader,
 
 		noWrap: true,
-
-		dispose: function(){
-			var r = BaseView.__super__.dispose.apply(this, arguments);
-			return r;
-		},
-
-		remove: function(){
-			var r = BaseView.__super__.remove.apply(this, arguments);
-			return r;
-		},
 
 		attach: function(){
 			var r = BaseView.__super__.attach.apply(this, arguments);
@@ -47,21 +36,45 @@ define(function(require, exports, module){
 			},opt);
 
 			this.$el.on('submit','form',function(){
-				var $t = $(this);
-				var method = ($t.attr('method')||'post').toLowerCase();
-				var action = $t.attr('action');
+				var $form = $(this);
+				var method = ($form.attr('method') || 'post').toUpperCase();
+				var action = $form.attr('action');
 
 				if(!action){
 					throw new Error('undefined action for ajax form submit');
 				}
 
+				var vals = {};
+
+				var data = $(this).serializeArray();
+
+				_.each(data, function(v){
+					vals[v.name] = v.value;
+				});
+
 				$.ajax({
 					type: method,
 					url: action,
-					dataType: "JSON",
-					data: opt.pipe($(this).serializeArray()),
-					success: opt.onSuccess,
-					error: opt.onError
+					dataType: "json",
+					data: $.param([{
+						name: 'json',
+						value: JSON.stringify(opt.pipe(vals))
+					}]),
+					success: function(resp){
+						$form.hideErrorAll();
+						opt.onSuccess(resp.data);
+					},
+					error: function(jqXHR){
+						$form.hideErrorAll();
+						if(jqXHR.responseJSON && jqXHR.responseJSON.error){
+							_.each(jqXHR.responseJSON.error.input, function(error, fieldName){
+								_.each(error, function(params, ruleName){
+									$('[name="' + fieldName + '"]', $form).showError(fieldName, vals[fieldName], ruleName, params);
+								});
+							});
+						}
+						opt.onError();
+					}
 				});
 
 				return false;

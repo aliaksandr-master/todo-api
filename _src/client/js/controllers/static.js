@@ -1,6 +1,7 @@
 define(function(require, exports, module){
     "use strict";
 
+	var Session = require('lib/session');
     var BaseController = require('controllers/base/controller');
     var PageHomeView = require('views/static/home');
     var PageAboutView = require('views/static/about');
@@ -8,10 +9,14 @@ define(function(require, exports, module){
 	var StaticController = BaseController.extend({
 
 		home: function(){
-			this.view = new PageHomeView({
-				region: "main"
-			});
-			this.preloader.off();
+			if(Session.logged()){
+				this.redirectTo({url: '/todo/'});
+			}else{
+				this.view = new PageHomeView({
+					region: "main"
+				});
+				this.preloader.off();
+			}
 		},
 
 		about: function(){

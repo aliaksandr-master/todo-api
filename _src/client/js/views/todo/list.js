@@ -5,7 +5,6 @@ define(function(require, exports, module){
 	var $ = require("jquery");
 	require("jqueryui");
 	require('jquery.swipe');
-
 	require('css!styles/todo/list');
 	var BaseCollectionView = require('views/base/collection-view');
 

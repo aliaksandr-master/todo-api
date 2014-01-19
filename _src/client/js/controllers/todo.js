@@ -3,21 +3,17 @@ define(function(require, exports, module){
 
     var BaseController = require('controllers/base/controller');
 
-	var _ = require("underscore");
-	var $ = require("jquery");
+	var _ = require("underscore"),
+		$ = require("jquery");
 	require('jquery.swipe');
 
 	var TodoListCollectionView = require('views/todo/list');
 	var TodoListItemCollection = require('collections/todo/list-item');
-
 	var TodoListsCollectionView = require('views/todo/lists');
 	var TodoPaginatorView = require('views/todo/paginator');
 	var TodoListsCollection = require('collections/todo/lists');
-
 	var TodoItemView = require('views/todo/item');
-
 	var TodoListShareView = require('views/todo/list-share');
-
 	var TodoController = BaseController.extend({
 
 		initialize: function(){

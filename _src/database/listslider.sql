@@ -1,13 +1,13 @@
 -- phpMyAdmin SQL Dump
--- version 3.4.11.1deb2
+-- version 4.1.4
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Jan 05, 2014 at 07:03 PM
--- Server version: 5.5.31
--- PHP Version: 5.4.4-14+deb7u5
+-- Generation Time: Jan 19, 2014 at 02:45 PM
+-- Server version: 5.5.33-1
+-- PHP Version: 5.5.8-2
 
-SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
 
 
@@ -72,21 +72,23 @@ CREATE TABLE IF NOT EXISTS `rel__user__access` (
 
 CREATE TABLE IF NOT EXISTS `todo` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL,
   `name` varchar(255) NOT NULL,
   `date_create` datetime NOT NULL,
   `link` varchar(255) NOT NULL,
   `is_shared` tinyint(4) NOT NULL DEFAULT '0',
   `sort_order` int(11) DEFAULT '0',
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  KEY `todo_FK_1` (`user_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=22 ;
 
 --
 -- Dumping data for table `todo`
 --
 
-INSERT INTO `todo` (`id`, `name`, `date_create`, `link`, `is_shared`, `sort_order`) VALUES
-(1, 'Test todo list 1', '2014-01-05 16:39:27', '', 0, 0),
-(2, 'Test todo list 2', '2014-01-05 16:00:00', '', 0, 0);
+INSERT INTO `todo` (`id`, `user_id`, `name`, `date_create`, `link`, `is_shared`, `sort_order`) VALUES
+(1, 1, 'Test todo list 1', '2014-01-05 16:39:27', '', 0, 0),
+(2, 1, 'Test todo list 2', '2014-01-05 16:00:00', '', 0, 0);
 
 -- --------------------------------------------------------
 
@@ -163,11 +165,17 @@ CREATE TABLE IF NOT EXISTS `user_group` (
 --
 
 --
+-- Constraints for table `todo`
+--
+ALTER TABLE `todo`
+  ADD CONSTRAINT `todo_FK_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
 -- Constraints for table `todo_item`
 --
 ALTER TABLE `todo_item`
   ADD CONSTRAINT `todo_item_FK_1` FOREIGN KEY (`todo_id`) REFERENCES `todo` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
-
+  
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;

@@ -55,6 +55,21 @@ module.exports = function(grunt){
 				'_src/client/*.{less,scss,sass,css}'
 			],
 			tasks: 'compile_styles'
+		},
+
+//		php: {
+//			files: [
+//				'server/**/*.{php,inc}'
+//			],
+//			tasks: 'compile_php'
+//		},
+
+		api: {
+			files: [
+				'_src/api/**/*.{json,js}',
+				'_src/api/*.{json,js}'
+			],
+			tasks: 'compile_php'
 		}
 
 	};

@@ -4,6 +4,7 @@ define(function(require, exports, module){
     var Backbone = require("backbone");
     var $ = require("jquery");
     var _ = require("underscore");
+    var Chaplin = require("chaplin");
 	var ajax = Backbone.ajax;
 
 	var myAjax = function (opt) {
@@ -28,10 +29,14 @@ define(function(require, exports, module){
 			}
 		};
 
-		opt.error = function(){
+		opt.error = function(jqXHR){
 //			console.error(opt.type, "'"+modelName+"'", opt.url, sendData);
 			if(error){
-				return error.apply(this, arguments);
+				error.apply(this, arguments);
+			}
+			console.log('error:',jqXHR);
+			if(jqXHR.status === 401){
+				Chaplin.utils.redirectTo({url:'/user/login/'});
 			}
 		};
 		opt.data = /POST|PUT/.test(opt.type) ? $.param([{name: "json",value: sendData}]) : undefined;

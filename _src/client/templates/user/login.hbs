@@ -1,17 +1,21 @@
 <div class="user-login">
-    User Login
+
     <form action="/server/user/login/" method="POST">
         <br>
-        <div class="input-group">
-            <span class="input-group-addon">login</span>
-            <input type="text" name="username" class="form-control" placeholder="Username">
-        </div>
+        <h1>Sign In</h1>
         <br>
-        <div class="input-group">
-            <span class="input-group-addon">password</span>
-            <input type="password" name="password" class="form-control" placeholder="Password">
-        </div>
         <br>
-        <button type="submit" class="login-submit btn btn-success">Submit</button>
+        <div class="form-group">
+            <label>Login</label>
+            <input type="text" name="username" class="form-control input-lg">
+        </div>
+        <div class="form-group">
+            <label>Password</label>
+            <input type="password" name="password" class="form-control input-lg">
+        </div>
+        <div class="form-group text-right">
+            <a href="/user/register/" style="margin-right: 30px" class="btn btn-link">Create Profile</a>
+            <button type="submit" class="login-submit btn-lg btn btn-warning">Enter</button>
+        </div>
     </form>
 </div>

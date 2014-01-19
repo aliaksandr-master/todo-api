@@ -26,6 +26,10 @@
 		]
 	},
 	"POST todo/$todo_id/item": {
+		"access": {
+			"need_login": true,
+			"only_owner": true
+		},
 		"request": {
 			"$todo_id:integer": "required",
 			"name:string": "optional",
@@ -38,12 +42,13 @@
 			"name:string",
 			"date_create:string",
 			"is_active:boolean"
-		],
-		"errors": {
-			"$todo_id": "not_found"
-		}
+		]
 	},
 	"PUT todo/$todo_id/item/$id": {
+		"access": {
+			"need_login": true,
+			"only_owner": true
+		},
 		"request": {
 			"$todo_id:integer": "required",
 			"$id:integer": "required",
@@ -57,23 +62,19 @@
 			"name:string",
 			"date_create:string",
 			"is_active:boolean"
-		],
-		"errors": {
-			"$todo_id": "not_found",
-			"$id": "not_found"
-		}
+		]
 	},
 	"DELETE todo/$todo_id/item/$id": {
+		"access": {
+			"need_login": true,
+			"only_owner": true
+		},
 		"request": {
 			"$todo_id:integer": "required",
 			"$id:integer": "required"
 		},
 		"response": [
 			"status:boolean"
-		],
-		"errors": {
-			"$todo_id": "not_found",
-			"$id": "not_found"
-		}
+		]
 	}
 }

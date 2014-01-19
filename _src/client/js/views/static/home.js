@@ -4,6 +4,9 @@ define(function(require, exports, module){
     var BaseView = require('views/base/view');
     var template = require('templates/static/home');
 
+	require('css!styles/static/home');
+
+
 	var HomePageView = BaseView.extend({
 
 		autoRender: true,

@@ -58,15 +58,6 @@
 			"id:integer",
 			"username:string",
 			"email:string"
-		],
-		"errors": {
-			"username": "exists",
-			"email": [
-				"exists",
-				"not_found",
-				"incorrect_format"
-			],
-			"password_confirm": "not_equal"
-		}
+		]
 	}
 }
