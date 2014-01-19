@@ -17,6 +17,7 @@ class User extends ApiController {
     }
 
     public function logout_get(){
+        $this->user->logout();
         return array('status'=>true);
     }
 
@@ -26,18 +27,19 @@ class User extends ApiController {
             'username' => $this->input("username"),
             'password' => $password
         ));
-        if(empty($user)){
+        if(empty($user[0])){
             $user = $this->user->read(array(
                 'email' => $this->input("username"),
                 'password' => $password
             ));
         }
-        if(empty($user)){
+        if(empty($user[0])){
             $this->transfer()->error(404)->field('username', 'incorrect');
             $this->transfer()->error(404)->field('password', 'incorrect');
             return null;
         }else{
             $this->transfer()->code(200);
+            $this->user->login($user[0]);
         }
         return $user;
     }

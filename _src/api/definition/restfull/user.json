@@ -17,6 +17,10 @@
 		]
 	},
 	"DELETE user/$id": {
+		"access": {
+			"need_login": true,
+			"only_owner": true
+		},
 		"request": {
 			"$id:integer": "required"
 		},
@@ -25,8 +29,12 @@
 		]
 	},
 	"PUT user/$id": {
+		"access": {
+			"need_login": true,
+			"only_owner": true
+		},
 		"request" : {
-			"$id:integer": "optional|exists['user']",
+			"$id:integer": "optional|exists",
 			"username:string": "optional|unique|need['password_old']",
 			"email:string": "required|valid_email|unique|need['password_old']",
 			"password_old:string": "optional|valid_password",

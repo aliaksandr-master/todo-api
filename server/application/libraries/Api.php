@@ -17,6 +17,7 @@ class Api {
     const RESPONSE_TYPE     = "response_type";
     const REQUEST           = 'request';
     const REQUEST_METHOD    = "method";
+    const ACCESS            = "access";
 
     const RESPONSE_TYPES    = 'item|array';
     const RESPONSE_TYPE_ONE = 'item';
@@ -38,6 +39,10 @@ class Api {
 
     private $_apiData = array();
     private $_errorPref = '';
+
+    /**
+     * @var ApiController
+     */
     private $_context = null;
 
     private $_input = array();
@@ -73,6 +78,14 @@ class Api {
         }
     }
 
+    function hasOnlyOwner(){
+        return !empty($this->_apiData[self::ACCESS]['only_owner']);
+    }
+
+    function hasNeedLogin(){
+        return !empty($this->_apiData[self::ACCESS]['need_login']);
+    }
+
     function validate($value, $rules, $fieldName, $origInput = array()){
         $hasError = false;
         $error = array();
@@ -81,7 +94,7 @@ class Api {
         if($required && !$this->_context->_rule__required($value, $fieldName)){
             $error[] = array(
                 $fieldName => array(
-                    "rule"=>"required"
+                    "required" => array()
                 )
             );
         }
@@ -89,7 +102,7 @@ class Api {
         unset($rules["optional"]);
         unset($rules["required"]);
 
-        if (!$error) {
+        if (!$error && $this->_context->_rule__required($value, $fieldName)) {
             foreach ($rules as $rule) {
                 if (method_exists($this->_context, $rule["method"])) {
                     $call = array($this->_context, $rule["method"]);
@@ -97,8 +110,7 @@ class Api {
                     if(!call_user_func_array($call, $args)){
                         $error[] = array(
                             $fieldName => array(
-                                "rule" => $rule["name"],
-                                "params" => $rule['params']
+                                $rule["name"] => $rule['params']
                             )
                         );
                         break;

@@ -13,8 +13,7 @@
 
 class DataTransfer{
 
-    private $_status;
-    private $_code;
+    private $_code = null;
     private $_data;
     private $_error;
     private $_input;
@@ -25,12 +24,11 @@ class DataTransfer{
     private $_controller;
 
     public function __construct(&$controller){
+        $this->_controller = $controller;
 
-        $this->_status = new DataTransferSimpleValueObject($this, 'status', false, true);
-        $this->_code = new DataTransferSimpleValueObject($this, 'code', false, 200);
+        $this->_code = null;
         $this->_data = new DataTransferMultiValueObject($this, 'data', false);
         $this->_error = new DataTransferErrorObject($this);
-        $this->_controller = $controller;
     }
 
     public function toJSON(){
@@ -39,7 +37,8 @@ class DataTransfer{
 
     public function getAllData(){
         $allData = array();
-        $objects = array('code', 'status', 'data', 'error', "input");
+        $objects = array('data', 'error', "input");
+        $allData['code'] = $this->getCode();
         foreach ($objects as $name) {
             $object = '_'.$name;
             if(isset($this->$object)){
@@ -62,15 +61,6 @@ class DataTransfer{
             $this->code($code);
         }
         return $this->_error;
-    }
-
-    public function status($value = null){
-        if(!is_null($value)){
-            if($this->_status->getValue()){
-                $this->_status->setValue($value);
-            }
-        }
-        return $this->_status;
     }
 
     public function data($name = null, $value = null){
@@ -96,25 +86,34 @@ class DataTransfer{
     }
 
     public function code($code = null){
-        if(!is_null($code) && $this->_code->getValue() < 400){
-            $this->_code->setValue($code);
-            $this->status($this->_code->getValue() < 400);
+        if(!is_null($code)){
+            if($this->codeWasSet()){
+                if($this->_code < 400){
+                    $this->_code = $code;
+                }
+            } else {
+                $this->_code = $code;
+            }
         }
-        return $this->_code;
+        return $this;
+    }
+
+    public function codeWasSet(){
+        return isset($this->_code);
     }
 
     public function getCode(){
-        return $this->_code->getValue();
+        return isset($this->_code) ? $this->_code : 200;
     }
 
     public function hasError(){
         if((bool)$this->error()->getResult()){
             return true;
         }
-        if($this->getCode()>=400){
+        if($this->_code>=400){
             return true;
         }
-        return !$this->_status->getValue();
+        return false;
     }
 
 }

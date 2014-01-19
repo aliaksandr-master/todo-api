@@ -20,7 +20,7 @@ module.exports = function(grunt){
 		API_NAME           = 'api_name',
 		API_ROOT           = 'api_root',
 
-		DIRECTIVES_EXP     = /^(response|filters|request)[:]?(.+)?$/,
+		DIRECTIVES_EXP     = /^(response|filters|request|access)[:]?(.+)?$/,
 		CELL_NAME          = 'id',
 		URL                = 'url',
 		URL_PARAMS         = 'params',
@@ -28,6 +28,7 @@ module.exports = function(grunt){
 		FILTERS            = 'filters',
 		RESPONSE           = 'response',
 		RESPONSE_TYPE      = "response_type",
+		ACCESS             = 'access',
 		REQUEST            = 'request',
 		REQUEST_METHOD     = "method",
 
@@ -75,9 +76,6 @@ module.exports = function(grunt){
 		_.each(option, function(rule){
 			var ruleName    = rule.replace(VALIDATION_PARAM_EXP, '$1');
 			var _paramsJson = rule.replace(VALIDATION_PARAM_EXP, '$2');
-			if(_paramsJson){
-				console.log(_paramsJson);
-			}
 			opt[ruleName] = validationRule(rule, ruleName, _paramsJson);
 		});
 		return opt;
@@ -90,6 +88,11 @@ module.exports = function(grunt){
 			var _urlParams = {};
 			var filterParams = {};
 			var requestParams = {};
+			var accessParams = {
+				need_login: false,
+				only_owner: false,
+				access_name: false
+			};
 			var responseParams = {};
 			var responseType = RESPONSE_TYPE_MANY;
 
@@ -98,6 +101,12 @@ module.exports = function(grunt){
 				var type = directive.replace(DIRECTIVES_EXP, '$2');
 
 				if(name){
+
+					// ACCESS
+					if(name === ACCESS){
+						_.extend(accessParams, options);
+					}
+
 					// REQUEST
 					if(name === REQUEST){
 						_.each(options, function (option, optionName) {
@@ -180,6 +189,7 @@ module.exports = function(grunt){
 			api[REQUEST] = requestParams;
 			api[RESPONSE_TYPE] = responseType;
 			api[RESPONSE] = responseParams;
+			api[ACCESS] = accessParams;
 			api[API_NAME] = apiName;
 			api[CELL_NAME] = makeCellName(method, url, urlParams.length);
 

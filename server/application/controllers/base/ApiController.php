@@ -53,6 +53,14 @@ abstract class ApiController extends REST_Controller {
             $this->_send();
             return;
         }
+        if($currApi->hasNeedLogin()){
+            $user = new User_model();
+            if(!$user->isLogged()){
+                $this->transfer()->error(401);
+                $this->_send();
+                return;
+            }
+        }
         $this->_api = $currApi;
         $this->_api->context($this);
         parent::_remap($call, $arguments);
