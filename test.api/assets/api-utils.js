@@ -19,7 +19,7 @@
 	window.tpl = function(path, isRemote){
 		if(!isRemote){
 			return function(params){
-				if(!tplMemo.hasOwnProperty(id)){
+				if(!tplMemo.hasOwnProperty(path)){
 					tplMemo[path] = Handlebars.compile($('#template-' + path).html());
 				}
 				return tplMemo[path](params);
