@@ -4,8 +4,8 @@ module.exports = function(grunt){
 	return {
 		compile: {
 			options: {
-				compress: false,
-				cleancss: false,
+				compress: true,
+				cleancss: true,
 				syncImport: true,
 				dumpLineNumbers: false,
 				ieCompat: true,

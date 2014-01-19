@@ -3,7 +3,7 @@
 error_reporting(E_ALL);
 
 define('ROOT', __DIR__);
-define('MY_ROOT_URL', "/test/api/");
+define('MY_ROOT_URL', "/test.api/");
 define('API_ROOT_URL', "/server/");
 define('API_SOURCE_JSON_FILE', "/server/_generated_/api.source.json");
 ?>
@@ -24,6 +24,14 @@ define('API_SOURCE_JSON_FILE', "/server/_generated_/api.source.json");
 
     <script src="assets/api-utils.js"></script>
     <script src="assets/api.js"></script>
+    <script type="text/plain" id="template-main"><?php include('templates/main.hbs'); ?></script>
+    <script type="text/plain" id="template-menu"><?php include('templates/menu.hbs'); ?></script>
+    <script type="text/plain" id="template-panel"><?php include('templates/panel.hbs'); ?></script>
+    <script type="text/plain" id="template-form-cover"><?php include('templates/form/cover.hbs'); ?></script>
+    <script type="text/plain" id="template-form-field"><?php include('templates/form/field.hbs'); ?></script>
+    <script type="text/plain" id="template-form-select"><?php include('templates/form/select.hbs'); ?></script>
+    <script type="text/plain" id="template-form-text"><?php include('templates/form/text.hbs'); ?></script>
+    <script type="text/plain" id="template-form-toggle"><?php include('templates/form/toggle.hbs'); ?></script>
 </head>
 <body>
 

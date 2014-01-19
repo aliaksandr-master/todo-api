@@ -4,7 +4,7 @@ module.exports = function(){
 
 	return {
 		_: require('underscore'),
-		cacheKey: Date.now(),
+		cacheKey: "-"+Date.now(),
 		pkg: pkg,
 		liveReload: {
 			port: 35729,

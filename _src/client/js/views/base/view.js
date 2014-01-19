@@ -8,6 +8,7 @@ define(function(require, exports, module){
 	var preloader = require('lib/preloader');
 
 	require('lib/view-helper');
+	require('css!styles/index');
 
 	var BaseView = Chaplin.View.extend({
 

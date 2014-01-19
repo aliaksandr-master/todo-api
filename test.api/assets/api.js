@@ -2,14 +2,14 @@
 (function(window, $, Handlebars, _, undefined){
 
 	var API     = window.api();
-	var tplMenu  = window.tpl('menu.hbs');
-	var tplMain  = window.tpl('main.hbs');
-	var tplPanel = window.tpl('panel.hbs');
-	var tplFormField  = window.tpl('form/field.hbs');
-	var tplFormText   = window.tpl('form/text.hbs');
-	var tplCover      = window.tpl('form/cover.hbs');
-	var tplFormToggle = window.tpl('form/toggle.hbs');
-	var tplFormSelect = window.tpl('form/select.hbs');
+	var tplMenu  = window.tpl('menu');
+	var tplMain  = window.tpl('main');
+	var tplPanel = window.tpl('panel');
+	var tplFormField  = window.tpl('form-field');
+	var tplFormText   = window.tpl('form-text');
+	var tplCover      = window.tpl('form-cover');
+	var tplFormToggle = window.tpl('form-toggle');
+	var tplFormSelect = window.tpl('form-select');
 
 	function Form(){
 

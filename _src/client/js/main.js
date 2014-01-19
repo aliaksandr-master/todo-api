@@ -1,6 +1,13 @@
-require(["chaplin", "routes"],function(Chaplin, routes){
-	'use strict';
+'use strict';
+define(function(require){
 
+	var BackboneShim = require('backbone.shim');
+	var BackboneDualStorage = require('backbone.dualStorage');
+	var BackboneStickIt = require('backbone.stickit');
+	var routes = require("routes");
+	var Chaplin = require('chaplin');
+	
+	
 	var Application = Chaplin.Application.extend({});
 
 	if(window.localStorage && localStorage.getItem("build") !== window.build){
@@ -14,5 +21,4 @@ require(["chaplin", "routes"],function(Chaplin, routes){
 		controllerSuffix: ''
 
 	});
-
 });

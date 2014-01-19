@@ -15,7 +15,16 @@
 	};
 
 	var tplMemo = {};
-	window.tpl = function(path){
+	// FROM REMOTE
+	window.tpl = function(path, isRemote){
+		if(!isRemote){
+			return function(params){
+				if(!tplMemo.hasOwnProperty(id)){
+					tplMemo[path] = Handlebars.compile($('#template-' + path).html());
+				}
+				return tplMemo[path](params);
+			};
+		}
 		var result = function(){
 			return "";
 		};
@@ -34,6 +43,7 @@
 			return tplMemo[path](params);
 		};
 	};
+
 	window.jsonFormat = function(obj){
 		var json = JSON.stringify(obj, null, 2);
 		json = json.replace(/^(\s*"[^:]*"\s*\:\s*)?['"](.*)['"]([^\w\d]*)?$/gm, '$1<b class=\'string\'>"$2"</b>$3');

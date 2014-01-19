@@ -210,8 +210,8 @@ AddDefaultCharset utf-8
 # ------------------------------------------------------------------------------
 
 <ifModule mod_rewrite.c>
-    RewriteRule ^server(.*) - [L]
-    RewriteRule ^test(.*) - [L]
+    RewriteRule ^/?server(.*) - [L]
+    RewriteRule ^/?test(.*) - [L]
 </ifModule>
 
 # ------------------------------------------------------------------------------
@@ -593,7 +593,7 @@ FileETag None
         Header set Cache-Control "max-age=604800, public"
     </filesMatch>
 
-    <filesMatch ".(hbs|php|json)$">
+    <filesMatch ".(php|json)$">
         Header set Cache-Control "max-age=604800, private, must-revalidate"
     </filesMatch>
 

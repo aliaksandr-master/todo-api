@@ -7,16 +7,16 @@ module.exports = function(grunt){
 			excludeEmpty: true
 		},
 
-		serverApi: {
+		build_to_client: {
 			files: [
 				{
 					expand: true,
-					cwd: "_src/api/",
+					cwd: "build/client/",
 					src: [
 						'**/*',
 						'*'
 					],
-					dest: "server/api/"
+					dest: "client/"
 				}
 			]
 		},
