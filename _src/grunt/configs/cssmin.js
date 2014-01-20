@@ -27,6 +27,19 @@ module.exports = function(grunt){
 			}
 		},
 
+		test_build: {
+			files: [
+				{
+					expand: true,
+					overwrite: true,
+					src: [
+						'client/**/*.css',
+						'!client/**/*.min.css',
+					]
+				}
+			]
+		},
+
 		env_production: {
 			files: [
 				{

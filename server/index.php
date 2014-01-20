@@ -106,7 +106,12 @@ if ($user_inactive_time) {
  * NOTE: If you change these, also change the error_reporting() code below
  *
  */
-	define('ENVIRONMENT', 'development');
+if(is_file(SERVER_DIR."/environment.php")){
+    $env = include(SERVER_DIR."/environment.php");
+    define('ENVIRONMENT', $env ? $env : 'production');
+} else {
+    define('ENVIRONMENT', 'production');
+}
 /*
  *---------------------------------------------------------------
  * ERROR REPORTING

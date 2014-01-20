@@ -4,6 +4,7 @@ define(function(require, exports, module){
     var BaseController = require('controllers/base/controller');
 
 	var _ = require("underscore"),
+		Session = require("lib/session"),
 		$ = require("jquery");
 	require('jquery.swipe');
 
@@ -19,6 +20,9 @@ define(function(require, exports, module){
 		initialize: function(){
 			TodoController.__super__.initialize.apply(this, arguments);
 			$(document).off('.mainSwipe');
+			if(!Session.logged()){
+				this.redirectTo({url: '/user/login/'});
+			}
 		},
 
 		create: function(){

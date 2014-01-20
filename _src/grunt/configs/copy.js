@@ -4,7 +4,7 @@ module.exports = function(grunt){
 	return {
 
 		options: {
-			excludeEmpty: true
+//			excludeEmpty: true
 		},
 
 		build_to_client: {
@@ -31,6 +31,16 @@ module.exports = function(grunt){
 						'*'
 					],
 					dest: "build_production/client/"
+				},
+				{
+					expand: true,
+					cwd: "server/",
+					src: [
+						'**/*',
+						'*',
+						'!application/cache/session/*'
+					],
+					dest: "build_production/server/"
 				},
 				{
 					expand: true,

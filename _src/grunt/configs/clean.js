@@ -5,9 +5,14 @@ module.exports = function(grunt){
 
 		all: [
 			'client/',
+			'build/',
 			'build_production/',
 			'build_testing/',
 			'build_development/'
+		],
+
+		build: [
+			'build/'
 		],
 
 		client: [

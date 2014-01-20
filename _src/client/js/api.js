@@ -1,6 +1,8 @@
 define(function(require, exports, module){
     "use strict";
 
+	var _ = require('underscore');
+
 	var models = {
 
 		'user': {
@@ -43,7 +45,7 @@ define(function(require, exports, module){
 				resp["itemId"] = +response["id"];
 				resp["title"] = response["name"];
 				resp["sortOrder"] = +response["sort_order"];
-				resp["done"] = !parseInt(response["is_active"],10);
+				resp["done"] = _.isString(response["is_active"]) ? !parseInt(response["is_active"],10) : !response["is_active"];
 				return resp;
 			},
 			client2server: function(model){

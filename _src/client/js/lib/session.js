@@ -4,20 +4,20 @@ define(function(require, exports, module){
     var _ = require('underscore'),
 		User = require('models/user');
 
-	var session = window.localStorage.getItem('session') || '{}';
+	var session = /*window.localStorage.getItem('session') ||*/ '{}';
 	session = JSON.parse(session);
 	if(session.model){
 		session.model = new User(session.model);
 	}
 
 	var saveToStore = function(){
-		if(session.model){
-			window.localStorage.setItem('session',JSON.stringify({model: session.model.attributes}));
-		}
+//		if(session.model){
+//			window.localStorage.setItem('session',JSON.stringify({model: session.model.attributes}));
+//		}
 	};
 
 	var clearStore = function(){
-		window.localStorage.setItem('session',null);
+//		window.localStorage.setItem('session',null);
 	};
 
 	var Session = {
