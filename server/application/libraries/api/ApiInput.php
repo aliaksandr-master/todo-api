@@ -101,19 +101,19 @@ class ApiInput {
         foreach ($this->_shuttle->api->get(Api::URL_PARAMS) as $param) {
             $value = isset($urlParams[$param['index']]) ? $urlParams[$param['index']] : null;
             if (!is_null($value)) {
-                $this->_inputParams[$param["name"]] = $this->_shuttle->utils->toType($value, $param["type"]);
+                $this->_inputParams[$param["name"]] = $this->_shuttle->toType($value, $param["type"]);
             }
         }
         foreach ($this->_shuttle->api->get(Api::REQUEST) as $param) {
             $value = isset($arguments[$param['name']]) ? $arguments[$param['name']] : null;
             if (!is_null($value)) {
-                $this->_inputArguments[$param["name"]] = $this->_shuttle->utils->toType($value, $param["type"]);
+                $this->_inputArguments[$param["name"]] = $this->_shuttle->toType($value, $param["type"]);
             }
         }
         foreach ($this->_shuttle->api->get(Api::FILTERS) as $param) {
             $value = isset($inputFilters[$param['name']]) ? $inputFilters[$param['name']] : null;
             if (!is_null($value)) {
-                $this->_inputFilters[$param["name"]] = $this->_shuttle->utils->toType($value, $param["type"]);
+                $this->_inputFilters[$param["name"]] = $this->_shuttle->toType($value, $param["type"]);
             }
         }
         $this->_input = array_merge($this->_input, $this->_inputFilters, $this->_inputParams, $this->_inputArguments);

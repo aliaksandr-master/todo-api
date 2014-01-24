@@ -49,6 +49,11 @@ class Api {
     public $output;
 
     /**
+     * @var ApiAccess
+     */
+    public $access;
+
+    /**
      * @var ApiShuttle
      */
     private $_shuttle;
@@ -57,12 +62,12 @@ class Api {
         $this->_apiData = $apiData;
         $this->_shuttle = new ApiShuttle($this, $context);
 
-        $this->input = $this->_shuttle->input;
+        $this->input  = $this->_shuttle->input;
         $this->output = $this->_shuttle->output;
+        $this->access = $this->_shuttle->access;
     }
 
     function check($actionName, $args, $urlParams, $filters){
-
         $this->_shuttle->access->checkApi($this->_apiData);
         $this->_shuttle->access->checkNeedLogin();
         $this->_shuttle->access->checkContextToCall($actionName);

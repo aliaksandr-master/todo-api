@@ -183,7 +183,7 @@ class ApiOutput {
     private function _prepareData (&$_data, $data, $param, $strict = true) {
         $name = $param["name"];
         if (isset($data[$name])) {
-            $_data[$name] = $this->_shuttle->utils->toType($data[$name], $param["type"]);
+            $_data[$name] = $this->_shuttle->toType($data[$name], $param["type"]);
         } else if ($strict) {
             trigger_error("Api '".$this->_shuttle->api->get(Api::API_NAME)."': invalid response. '".$name."' is undefined!");
         }

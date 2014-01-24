@@ -22,11 +22,6 @@ class ApiShuttle {
     public $access;
 
     /**
-     * @var ApiUtils
-     */
-    public $utils;
-
-    /**
      * @var Api
      */
     public $api;
@@ -40,7 +35,6 @@ class ApiShuttle {
         $this->input   = new ApiInput($this);
         $this->output  = new ApiOutput($this);
         $this->access  = new ApiAccess($this);
-        $this->utils   = new ApiUtils($this);
 
         $this->errorPref .= $this->api->get(Api::API_NAME).': ';
     }
@@ -54,6 +48,20 @@ class ApiShuttle {
 
     function errors(){
         return $this->_errors;
+    }
+
+    public function toType ($var, $type) {
+        switch ($type) {
+            case Api::TYPE_NUMBER:
+            case Api::TYPE_INTEGER:
+                return intval(trim((string) $var));
+            case Api::TYPE_FLOAT:
+                return floatval(trim((string) $var));
+            case Api::TYPE_BOOL:
+            case Api::TYPE_BOOLEAN:
+                return (bool) $var;
+        }
+        return trim((string) $var); // default type = string
     }
 
 }
