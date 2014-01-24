@@ -1,7 +1,7 @@
 "use strict";
 module.exports = function(grunt){
 
-	var _ = this._;
+	var _ = require('underscore');
 
 	var options = {
 		cwd: '_src/api/definition/',

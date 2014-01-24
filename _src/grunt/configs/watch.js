@@ -1,12 +1,10 @@
 "use strict";
-module.exports = function(grunt){
-
-	var opt = this;
+module.exports = function(grunt, options){
 
 	return {
 
 		options: {
-			livereload: opt.liveReload.port
+			livereload: options.liveReload.port
 		},
 
 		scripts: {

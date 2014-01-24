@@ -20,7 +20,8 @@ module.exports = function(grunt){
 				'_src/grunt/*.js',
 				'_src/environment/**/*.js',
 				'_src/environment/*.js',
-				'Gruntfile.js'
+				'Gruntfile.js',
+				'!_src/grunt/utils.js'
 			]
 		}
 

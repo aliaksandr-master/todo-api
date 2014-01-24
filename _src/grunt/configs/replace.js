@@ -1,9 +1,8 @@
 "use strict";
-module.exports = function(grunt){
+module.exports = function(grunt, options){
 
-	var options = this;
-	var _ = options._;
-	var pkg = options.pkg;
+	var _ = require('underscore');
+	var pkg = options.package;
 	var cfg = options;
 
 	var CACHE_KEY = options.cacheKey;
