@@ -4,7 +4,6 @@ class User extends ApiController {
 
     public function __construct(){
         parent::__construct();
-
         $this->load->library('email');
         $this->load->helper('email');
         $this->load->helper('url');
@@ -13,7 +12,9 @@ class User extends ApiController {
     public function logout_get(){
         $id = $this->user->current('id');
         $this->user->logout();
-        return array('status' => !!$id);
+        return array(
+            'status' => (bool)$id
+        );
     }
 
     public function login_post(){
@@ -29,14 +30,17 @@ class User extends ApiController {
             ));
         }
         if(empty($user[0])){
-            $this->transfer()->error(404)->field('username', 'incorrect');
-            $this->transfer()->error(404)->field('password', 'incorrect');
+            $this->api->input->error('username', 'incorrect');
+            $this->api->input->error('password', 'incorrect');
             return null;
         }else{
-            $this->transfer()->code(200);
             $this->user->login($user[0]);
         }
-        return $user;
+        return $user[0];
+    }
+
+    public function current_get(){
+        return $this->user->current();
     }
 
     public function getOne($userId){
@@ -52,7 +56,7 @@ class User extends ApiController {
     }
 
     public function index_put($id){
-        $data = $this->api($this->user->safeFieldsMap());
+        $data = $this->api->input->pipe($this->user->safeFieldsMap());
         if($this->input('password_new')){
             $data['password'] = $this->input('password_new');
         }
@@ -63,9 +67,9 @@ class User extends ApiController {
     public function index_delete($id){
         $user = $this->user->read($id);
         if(empty($user)){
-            $this->transfer()->error(404);
+            $this->api->output->error(404);
         }else{
-            $result = $this->user->delete($id);
+            $this->user->delete($id);
         }
         return array(
             "status" => !empty($user)
@@ -73,7 +77,7 @@ class User extends ApiController {
     }
 
     public function index_post(){
-        $data = $this->api($this->user->safeFieldsMap());
+        $data = $this->api->input->pipe($this->user->safeFieldsMap());
         $data['password'] = $this->user->cryptPassword($data['password']);
         $data['date_register'] = date("Y-m-d H:i:s", gettimeofday(true));
         $activationCode = sha1(md5(microtime()));

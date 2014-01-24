@@ -5,13 +5,15 @@
  * -------------------------------------------------------------------
  */
 define("START_TIME", gettimeofday(true));
-define("SERVER_DIR", __DIR__);
+
+define('DS', '/');
+define('SD', '\\');
+
+define("SERVER_DIR", str_replace(SD, DS, __DIR__));
 define('GENERATED_DIR', SERVER_DIR.'/_generated_');
 define("CACHE_DIR", SERVER_DIR."/application/cache");
-define('DS', '/');
 
-
-
+define('API_ROOT_PATH', pathinfo(str_replace(SD, DS, $_SERVER['SCRIPT_NAME']), PATHINFO_DIRNAME));
 
 
 /*

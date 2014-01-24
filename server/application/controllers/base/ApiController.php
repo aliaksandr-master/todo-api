@@ -6,175 +6,36 @@ abstract class ApiController extends REST_Controller {
      * @var User_model
      */
     public $user;
-
-    /**
-     * @var DataTransfer
-     */
-    private $_transfer = null;
     /**
      * @var Api
      */
-    private $_api = null;
+    protected $api = null;
 
     public function __construct(){
         parent::__construct();
         $this->load->model('User_model', "user");
-        if(is_null($this->_transfer)){
-            $this->_transfer = new DataTransfer($this);
-        }
     }
 
-    protected $_inputData = array();
-
-    public function stop($code){
-        $this->transfer()->code($code);
-        $this->_send();
-    }
-
-    public function api($names = null,  $namesMap = array(), $withoutEmpty = true){
-        if(!$namesMap){
-            $namesMap = array();
-        }
-        if (!is_null($names)) {
-            return $this->_api->get($names, $namesMap, $withoutEmpty);
-        }
-        return $this->_api;
-    }
-
-    public function input($name = null, $default = null){
-        return $this->_api->input($name, $default);
-    }
-
-    /**
-     * @var array|string $dataName [optional]
-     * @var mixed $dataValue [optional]
-     * @return DataTransfer
-     */
-    public function transfer($dataName = null, $dataValue = null){
-        if(!is_null($dataName)){
-            $this->_transfer->data($dataName, $dataValue);
-        }
-        return $this->_transfer;
-    }
-
-    public function _remap($call, $arguments){
-        $currApi = Api::instanceBy($_SERVER["REQUEST_METHOD"], $_SERVER["REQUEST_URI"], $arguments);
-        if(empty($currApi)){
-            $this->transfer()->error(405);
-            $this->_send();
-            return;
-        }
-        if($currApi->hasNeedLogin()){
-            $user = new User_model();
-            if(!$user->isLogged()){
-                $this->transfer()->error(401);
-                $this->_send();
-                return;
-            }
-        }
-        $this->_api = $currApi;
-        $this->_api->context($this);
-        parent::_remap($call, $arguments);
-    }
-
-    private function _send(){
-        // SMART STATUS CODES
-        $method  = strtoupper($_SERVER["REQUEST_METHOD"]);
-        if (!$this->transfer()->hasError()) {
-            if ($method == "POST") {
-                if ($this->transfer()->data()->getResult()) {
-                    $this->transfer()->code(201); // created new resource
-                } else {
-                    if(!$this->transfer()->hasError()){
-                        $this->transfer()->error(400); // empty GET result
-                    }
-                }
-            }else if($method == "PUT"){
-                if($this->transfer()->data()->getResult()){
-                    $this->transfer()->code(200); // updated resource
-                }else{
-                    if(!$this->transfer()->hasError()){
-                        $this->transfer()->error(400); // empty GET result
-                    }
-                }
-            }else if($method == "GET"){
-                // ONLY 200 or SOMETHING CUSTOM
-            }else if($method == "DELETE"){
-                // ONLY 200 or SOMETHING CUSTOM
-                if(!$this->transfer()->hasError()){
-                    if(!$this->transfer()->data()->getResult()){
-                        $this->transfer()->error(500); // you must send Boolean response
-                    }
-                }
-            }
-        }
-        // SEND RESPONSE
-        $response = $this->transfer()->getAllData();
-        if($this->transfer()->hasError()){
-            $response["data"] = array();
-        }else{
-            if(isset($response["data"])){
-                $data = $this->api()->prepareResponseData($response["data"]);
-                if(is_null($data)){
-                    $response["data"] = array();
-                    $this->transfer()->error(404);
-                } else {
-                    $response["data"] = $data;
-                }
-            } else {
-                $this->transfer()->error(500);
-            }
-        }
-        // DEBUG DATA (only for development or testing mode
-        if(ENVIRONMENT == "development" || ENVIRONMENT == "testing"){
-            $input = array();
-            $input["url"] = $_SERVER['REQUEST_URI'];
-            $input["method"] = $method;
-            $input["time"] = (round((gettimeofday(true) - START_TIME)*100000)/100000);
-            $input["input"] = array();
-            if($this->api()){
-                $input["api"] = $this->api()->getName();
-                $input["data"] = array(
-                    "source" => INPUT_DATA,
-                    "params"    => $this->api()->param(),
-                    "arguments" => $this->api()->argument(),
-                    "filters"   => $this->api()->filter()
-                );
-            }
-            $response["debug"] = $input;
-        }
-
-        $this->response($response, $this->transfer()->getCode());
-        exit("");
+    function input($name = null, $default = null){
+        return $this->api->input->get($name, $default);
     }
 
     protected function _fire_method ($call, $arguments) {
-        $method = strtoupper($_SERVER["REQUEST_METHOD"]);
-        $controllerName = get_class($call[0]);
-        $methodName = $call[1];
-        if (!$this->_checkHandlerAccess($method, $controllerName, $methodName)) {
-            $this->transfer()->error(403);
-        }
-        if (!$this->transfer()->hasError()) {
-            $fieldErrors = $this->api()->checkInputFieldErrors($this->_args, $arguments, $_GET);
-            if ($fieldErrors) {
-                $this->transfer()->error(400);
-                foreach ($fieldErrors as $error) {
-                    $this->transfer()->error()->field($error);
-                }
-            }
-        }
+        $this->api = Api::instanceBy($this, $_SERVER["REQUEST_METHOD"], $_SERVER["REQUEST_URI"], $arguments);
+
+        $actionName = $call[1];
+
+        $this->api->check($actionName, $this->_args, $arguments, $_GET);
+
         // parent::_fire_method
-        if (!$this->transfer()->hasError()) {
-            $result = call_user_func_array($call, $arguments);
-            if (!is_null($result)) {
-                $this->transfer($result);
-            }
+        $result = call_user_func_array($call, $arguments);
+        if (isset($result)) {
+            $this->api->output->data($result);
         }
-        $this->_send();
+        $this->api->output->send();
     }
 
-    protected function _checkHandlerAccess($method, $controllerName, $actionName){
+    public function hasAccess($method, $controllerName, $actionName){
         $actionName = preg_replace('/_(put|get|delete|option|post|head)$/i', '', $actionName);
         $controllerName = strtolower($controllerName);
         $actionName = strtolower($actionName);
@@ -196,7 +57,7 @@ abstract class ApiController extends REST_Controller {
 
     /*---------------------------------------------- VALIDATION RULES ----------------------------*/
 
-    function _rule__required($value, $fieldName){
+    function _rule__required($value){
         return isset($value) && strlen((string) $value);
     }
 
