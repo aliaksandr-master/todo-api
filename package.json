@@ -4,7 +4,6 @@
 	"dependencies": {
 		"xml2json": "latest",
 		"shelljs": "latest",
-		"json2php": "latest",
 
 		"grunt": "~0.4",
 		"load-grunt-tasks": "latest",

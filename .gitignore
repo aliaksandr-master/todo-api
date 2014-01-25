@@ -41,6 +41,7 @@
 # server ignore
 
 /server/application/logs/
+/server/application/config/database.php
 !/server/application/logs/index.html
 !/server/application/logs/.htaccess
 /server/application/cache/
