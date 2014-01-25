@@ -12,7 +12,7 @@ module.exports = function(grunt){
 
             files: [
                 {
-                    cwd: "_src/local/",
+                    cwd: "_src/environment/local/",
                     src: [
                         "*.json",
                         "**/*.json"

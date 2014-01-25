@@ -6,7 +6,7 @@ module.exports = function(grunt){
         lang_en: {
 
             options: {
-			    excludeEmpty: true
+                excludeEmpty: true
             },
 
             files: [

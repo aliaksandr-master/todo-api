@@ -13,7 +13,7 @@ module.exports = function(grunt){
                     grunt.file.copy(data.src, data.dest);
                     grunt.log.ok('File ' + data.src + ' was successfully copied to ' + data.dest);
                 }
-            })
+            });
         });
     };
 };

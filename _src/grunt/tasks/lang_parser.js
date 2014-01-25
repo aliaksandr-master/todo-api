@@ -40,7 +40,7 @@ module.exports = function(grunt){
             var file = options.dest + 'lang.' + lang + '.json';
             grunt.file.write(file, JSON.stringify(data, null, 4));
             grunt.log.ok('file: "' + file + '" was created');
-        })
+        });
     };
 
 
