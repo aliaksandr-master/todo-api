@@ -1,7 +1,7 @@
 {
-    "default": "en",
-    "langs": {
+    "lang": {
         "en":"english",
         "ru":"russian"
-    }
+    },
+    "default": "en"
 }

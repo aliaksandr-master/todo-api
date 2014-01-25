@@ -20,7 +20,7 @@
 
 
 # temp compile files
-
+/_local/
 /temp/
 /_temp_/
 /build/

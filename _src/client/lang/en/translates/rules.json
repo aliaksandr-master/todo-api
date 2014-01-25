@@ -17,5 +17,5 @@
 	"valid_base64" : "Field \"{{name}}\" must be a valid base64",
 	"valid_url" : "Field \"{{name}}\" must be a valid url",
 	"valid_date" : "Field \"{{name}}\" must be a valid date",
-	"unique" : "{{name}} \"{{value}}\" already exists",
+	"unique" : "{{name}} \"{{value}}\" already exists"
 }
