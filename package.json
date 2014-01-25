@@ -2,8 +2,9 @@
 	"name": "listslider",
 	"version": "0.2.1",
 	"dependencies": {
-		"mysql": "~2.0.1",
-		"activerecord": "~0.2.1",
+		"xml2json": "latest",
+		"shelljs": "latest",
+		"json2php": "latest",
 
 		"grunt": "~0.4",
 		"load-grunt-tasks": "latest",
@@ -13,6 +14,7 @@
 		"time-grunt": "latest",
 
 		"grunt-typescript": "latest",
+		"grunt-git-authors": "latest",
 		"grunt-contrib-less": "~0.8.3",
 		"grunt-contrib-sass": "latest",
 		"grunt-contrib-coffee": "latest",

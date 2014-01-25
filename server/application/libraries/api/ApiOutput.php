@@ -37,7 +37,7 @@ class ApiOutput {
                     $this->status(201); // created new resource
                 } else {
                     if(!$this->_shuttle->api->hasError()){
-                        $this->status(400); // empty GET result
+                        $this->status(500); // empty GET result
                     }
                 }
             }else if($method == "PUT"){

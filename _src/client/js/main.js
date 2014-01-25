@@ -1,4 +1,5 @@
 'use strict';
+
 define(function(require){
 
 	var BackboneShim = require('backbone.shim');

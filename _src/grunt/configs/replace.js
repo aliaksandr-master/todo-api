@@ -56,8 +56,6 @@ module.exports = function(grunt, options){
 						console.error('Configuration variable "' + name + '" is not defined in config files!');
 						grunt.fail();
 					}
-
-					console.log(word,value);
 					return value;
 				}
 			}]

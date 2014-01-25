@@ -112,7 +112,7 @@ module.exports = {
 				name = fpath.split(/[\\\/]+/).pop().replace(/\.js$/, '');
 
 			if (name !== fpath && !/^_/.test(name)) {
-				callback(name, task, module);
+				callback(name, task);
 			}
 		});
 	}

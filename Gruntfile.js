@@ -18,7 +18,5 @@ module.exports = function (grunt) {
 		config = _.deepExtend(config, taskObject);
 	}, options);
 
-	console.log(config);
-
 	grunt.initConfig(config);
 };
