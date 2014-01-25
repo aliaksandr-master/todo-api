@@ -1,0 +1,7 @@
+{
+    "default": "en",
+    "langs": {
+        "en":"english",
+        "ru":"russian"
+    }
+}
