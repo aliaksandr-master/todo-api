@@ -24,7 +24,7 @@ define(function(require, exports, module){
 				opt = {};
 			}
 
-			if (_.isString(opt)){
+			if (_.isString(opt)) {
 				opt = {
 					dataType: opt
 				};
@@ -34,22 +34,27 @@ define(function(require, exports, module){
 			if (_.isObject(provider)) {
 				opt = provider;
 				provider = opt.provider;
-				delete opt.provider;
-			} else if (_.isBoolean(provider)){
+			} else if (_.isBoolean(provider)) {
 				isSync = provider;
 				provider = null;
 			}
+
+			opt = _.clone(opt);
+
+			provider = provider || opt.provider;
+			delete opt.provider;
 
 			opt.url = url;
 
 			opt.async = !isSync;
 
-			console.log(provider, opt);
 			var deferred = provider ? providers[provider].ajax(opt) : $.ajax(opt);
+
 			utils.showPreloader();
 			deferred.always(function () {
 				utils.hidePreloader();
 			});
+
 			return deferred;
 		}
 

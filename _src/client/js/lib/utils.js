@@ -18,6 +18,10 @@ define(function(require, exports, module){
 			preloader.off();
 		},
 
+		showServerError: function(){
+			window.console && console.error('ERROR!');
+		},
+
 		concatPaths: function(one, two, sep){
 			return (one||'').replace(/[\\\/]$/, '') + (sep || '/') + (two||'').replace(/^[\\\/]/, '');
 		},

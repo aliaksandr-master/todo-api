@@ -1,0 +1,13 @@
+{
+	"login": {
+		"username_or_email": "User Name Or Email",
+		"password": "Password"
+	},
+
+	"register": {
+		"username": "Username",
+		"email": "Email",
+		"password": "Password",
+		"confirm_password": "Confirm Password"
+	}
+}

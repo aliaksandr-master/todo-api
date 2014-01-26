@@ -248,12 +248,6 @@ abstract class REST_Controller extends BaseController
 		// Merge both for one mega-args variable
 		$this->_args = array_merge($this->_get_args, $this->_options_args, $this->_patch_args, $this->_head_args , $this->_put_args, $this->_post_args, $this->_delete_args, $this->{'_'.$this->request->method.'_args'});
 
-
-        if(isset($this->_args["json"])){
-            $this->_args = (array)json_decode($this->_args["json"]);
-            $this->{'_'.$this->request->method.'_args'} = $this->_args;
-        }
-
 		// Which format should the data be returned in?
 		$this->response = new stdClass();
 		$this->response->format = $this->_detect_output_format();
@@ -938,6 +932,12 @@ abstract class REST_Controller extends BaseController
 	{
         $this->_post_args = $_POST;
 
+        $inputJson = json_decode(INPUT_DATA, true);
+
+        if ($inputJson){
+            $this->_post_args = $inputJson;
+        }
+
 		$this->request->format and $this->request->body = INPUT_DATA;
 	}
 
@@ -957,15 +957,22 @@ abstract class REST_Controller extends BaseController
 		{
 			parse_str(INPUT_DATA, $this->_put_args);
 
-            $exploded = explode('&', INPUT_DATA);
+            $inputJson =json_decode(INPUT_DATA, true);
 
-            $_PUT = array();
-            foreach($exploded as $pair) {
-                $item = explode('=', $pair);
-                if(count($item) == 2) {
-                    $_PUT[urldecode($item[0])] = urldecode($item[1]);
+            if ($inputJson){
+                $_PUT = $inputJson;
+            } else {
+                $exploded = explode('&', INPUT_DATA);
+
+                $_PUT = array();
+                foreach($exploded as $pair) {
+                    $item = explode('=', $pair);
+                    if(count($item) == 2) {
+                        $_PUT[urldecode($item[0])] = urldecode($item[1]);
+                    }
                 }
             }
+
             if($_PUT){
                 $this->_put_args = $_PUT;
             }
@@ -1010,7 +1017,27 @@ abstract class REST_Controller extends BaseController
 		// If no file type is provided, this is probably just arguments
 		else
 		{
-			parse_str(INPUT_DATA, $this->_patch_args);
+            parse_str(INPUT_DATA, $this->_patch_args);
+
+            $inputJson =json_decode(INPUT_DATA, true);
+
+            if ($inputJson){
+                $_PATCH = $inputJson;
+            } else {
+                $exploded = explode('&', INPUT_DATA);
+
+                $_PATCH = array();
+                foreach($exploded as $pair) {
+                    $item = explode('=', $pair);
+                    if(count($item) == 2) {
+                        $_PATCH[urldecode($item[0])] = urldecode($item[1]);
+                    }
+                }
+            }
+
+            if($_PATCH){
+                $this->_patch_args = $_PATCH;
+            }
 
 		}
 	}
@@ -1022,6 +1049,26 @@ abstract class REST_Controller extends BaseController
 	{
 		// Set up out DELETE variables (which shouldn't really exist, but sssh!)
 		parse_str(INPUT_DATA, $this->_delete_args);
+
+        $inputJson =json_decode(INPUT_DATA, true);
+
+        if ($inputJson){
+            $_DELETE = $inputJson;
+        } else {
+            $exploded = explode('&', INPUT_DATA);
+
+            $_DELETE = array();
+            foreach($exploded as $pair) {
+                $item = explode('=', $pair);
+                if(count($item) == 2) {
+                    $_DELETE[urldecode($item[0])] = urldecode($item[1]);
+                }
+            }
+        }
+
+        if($_DELETE){
+            $this->_delete_args = $_DELETE;
+        }
 
 	}
 

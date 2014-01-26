@@ -7,40 +7,135 @@ define(function(require, exports, module){
     var _ = require('underscore');
     var utils = require('lib/utils');
     var request = require('lib/request');
+	var errorMessage = require('templates/elements/form-error');
 
-	request.load('/_generated_/api.source.json', 'api', true).then(function (jqHXR) {
-		console.log('>>>',jqHXR);
-	});
+	var lang = require('lib/lang');
 
-	var defaultMessage = Handlebars.compile('{{name}} incorrect');
-	var messageMap = {};
+	var forms = {
+		defaults: {
+			provider: "api",
+			method: "POST",
+			dataType: 'json'
+		},
+		options: {
+			prepareData: function($form, data){
+				var vals = {};
+				_.each(data, function(v){
+					vals[v.name] = v.value;
+				});
+				return vals;
+			},
+			always: function () {
+			}
+		},
+		register: {
 
-	var fieldNameMap = {
-		username: 'Username',
-		email: 'Email',
-		password: 'Password',
-		confirm_password: 'Confirm Password'
+		}
 	};
 
-	var messageFuncMap = {};
-	_.each(messageMap, function(v, n){
-		messageFuncMap[n] = Handlebars.compile(v);
-	});
+	$.fn.smartForm = function (opt) {
+		var $el = $(this);
+		opt = $.extend({}, forms.options, opt);
+		var _success = opt.success;
+		var _error   = opt.error;
+		delete opt.success;
+		delete opt.error;
 
-	$.fn.showError = function (fieldName, value, ruleName, params) {
-		console.log(arguments);
-		var messageFunc = _.isFunction(messageFuncMap[ruleName]) ? messageFuncMap[ruleName] : defaultMessage;
-		if(!_.isFunction(messageFuncMap[ruleName])){
-			console.error('undefined message function on rule "', ruleName,'"');
+		$el.on('submit', 'form', function(){
+			opt = _.clone(opt);
+			var $form = $(this);
+
+			var provider = $form.attr('data-provider') || forms.defaults.provider;
+			var method = $form.attr('method') || forms.defaults.method;
+
+			var url = $form.attr('action');
+			var name = $form.attr('data-name');
+
+			if (!name) {
+				window.console && console.error('undefined FORM NAME (attr "data-name")');
+				return false;
+			}
+
+			if (!url) {
+				window.console && console.error('undefined action for ajax form submit in form');
+				return false;
+			}
+
+			opt.type = method.toUpperCase();
+
+			var vals = opt.prepareData($form, $form.serializeArray());
+			opt.data = vals;
+
+			opt.success = function(){
+				$form.hideErrorAll();
+				if (_success) {
+					_success.apply(this, arguments);
+				}
+			};
+
+			opt.error = function(jqXHR){
+				var response = jqXHR.responseJSON;
+				if(response && response.errors){
+					_.each(vals, function(val, fieldName){
+						var $el = $('[name="' + fieldName + '"]', $form);
+						if (response.errors.input[fieldName]) {
+							var rule = _.pairs(response.errors.input[fieldName]);
+							$el.showError($form, fieldName, vals[fieldName], rule[0][0], rule[0][1]);
+						} else {
+							$el.hideError();
+						}
+					});
+				} else if(_.isNull(response)){
+					utils.shooptwServerError();
+				}
+				if(_error){
+					_error.apply(this, arguments);
+				}
+			};
+
+			request.load(url, provider, opt).always(opt.always);
+
+			return false;
+		});
+	};
+
+	var defaultMessage = lang.rules['default'] || '';
+	var messageMap = {};
+
+	var message = function (ruleName, fieldName, value, params) {
+		if(!messageMap.hasOwnProperty(ruleName)){
+			var _message = '';
+			if (lang.rules && lang.rules[ruleName]) {
+				_message = lang.rules[ruleName];
+			} else if (lang.rules && lang.rules['default']) {
+				_message = defaultMessage;
+				window.console && console.error('undefined message for rule "' + ruleName + '"');
+			} else {
+				window.console && console.error('undefined message for rule "default"');
+			}
+			messageMap[ruleName] = Handlebars.compile(_message);
 		}
-		if(!$(this).next('.form-error').length){
-			$(this).closest('.form-group').addClass('has-error');
-			$(this).after('<div class="form-error">' + messageFunc({
-				value: value,
-				name: fieldNameMap[fieldName] || fieldName,
-				params: params
-			}) + '</div>');
+		return messageMap[ruleName]({
+			value: value,
+			fieldName: fieldName,
+			params: params
+		});
+	};
+
+	$.fn.showError = function ($form, fieldName, value, ruleName, params) {
+		var $formGroup = $(this).closest('.form-group');
+		var $error = $formGroup.find('.form-error').eq(0);
+
+		if(!$error.length){
+			$formGroup.append(errorMessage());
+			$error = $formGroup.find('.form-error').eq(0);
 		}
+
+		$formGroup.addClass('has-error');
+		var name = $form.attr('data-name');
+		var names = lang.forms[name] || {};
+
+		$error.html(message(ruleName, names[fieldName] || fieldName, value, params));
 	};
 
 	$.fn.hideError = function () {

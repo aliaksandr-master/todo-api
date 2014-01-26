@@ -1,5 +1,6 @@
 module.exports = [
 
+	'compile_langs',
 	'compile_api',
 	'compile_php',
 	'compile_pictures',

@@ -46,48 +46,43 @@ define(function(require, exports, module){
 		ajax: function (opt) {
 			var that = this;
 
-			opt = _.extend({
-				async: true
-			}, opt);
+			opt = _.clone(opt);
 
-			var _success  = opt.success,
-				_error    = opt.error;
+			var _success  = opt.success || function(){},
+				_error    = opt.error || function(){};
 
 			opt.url = utils.makePath(utils.concatPaths(this.rootUrl, opt.url));
 
 			opt.dataType = opt.dataType || this.dataType;
 
-			opt.success = function (resp) {
+			if (opt.dataType === 'json' && _.isObject(opt.data)) {
+				opt.data = JSON.stringify(opt.data);
+			}
+
+			opt.success = function (resp, jqHXR) {
 				resp = that._prepareResponse(resp);
 				if (resp !== null) {
-					if (_success) {
-						_success.call(this, resp);
-					}
+					_success.call(this, resp);
+					_success = null;
 				} else {
-					if (_error) {
-						_error.call(this, resp);
-					}
+					_error.call(this, jqHXR);
+					_error = null;
 				}
 			};
 
 			opt.error = function(jqXHR, textStatus, errorThrown){
 				var resp = that._prepareResponse(jqXHR.responseText);
 				if (resp !== null) {
-					if (_error) {
-						_error.call(this, jqXHR, textStatus, errorThrown);
-					}
+					_error.call(this, jqXHR, textStatus, errorThrown);
 					if (jqXHR.status === 401 && !opt.silentErrorHandler) {
 						Chaplin.utils.redirectTo({url: '/user/login/'});
 					}
 				} else {
-					if (_error) {
-						jqXHR.responseText = null;
-						_error.call(this, jqXHR, textStatus, errorThrown);
-					}
+					jqXHR.responseText = null;
+					_error.call(this, jqXHR, textStatus, errorThrown);
 				}
 			};
 
-			console.log(opt);
 			return $.ajax(opt);
 		}
 

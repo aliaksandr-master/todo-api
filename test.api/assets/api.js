@@ -270,9 +270,7 @@
 
 				if($format.val() === "json" && pararms.type != "GET"){
 					resultParams = jsonParam;
-					resultParamsStr = $.param({
-						json: JSON.stringify(resultParams)
-					});
+					resultParamsStr = JSON.stringify(resultParams);
 				}
 
 				$("#requestParams").html(window.jsonFormat(jsonParam));

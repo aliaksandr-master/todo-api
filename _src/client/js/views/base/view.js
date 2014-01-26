@@ -26,59 +26,7 @@ define(function(require, exports, module){
 		},
 
 		formSubmit: function(opt){
-
-			opt = $.extend({
-				onSuccess: function(){},
-				onError: function(){},
-				pipe: function(a){
-					return a;
-				}
-			},opt);
-
-			this.$el.on('submit','form',function(){
-				var $form = $(this);
-				var method = ($form.attr('method') || 'post').toUpperCase();
-				var action = $form.attr('action');
-
-				if(!action){
-					throw new Error('undefined action for ajax form submit');
-				}
-
-				var vals = {};
-
-				var data = $(this).serializeArray();
-
-				_.each(data, function(v){
-					vals[v.name] = v.value;
-				});
-
-				$.ajax({
-					type: method,
-					url: action,
-					dataType: "json",
-					data: $.param([{
-						name: 'json',
-						value: JSON.stringify(opt.pipe(vals))
-					}]),
-					success: function(resp){
-						$form.hideErrorAll();
-						opt.onSuccess(resp.data);
-					},
-					error: function(jqXHR){
-						$form.hideErrorAll();
-						if(jqXHR.responseJSON && jqXHR.responseJSON.error){
-							_.each(jqXHR.responseJSON.error.input, function(error, fieldName){
-								_.each(error, function(params, ruleName){
-									$('[name="' + fieldName + '"]', $form).showError(fieldName, vals[fieldName], ruleName, params);
-								});
-							});
-						}
-						opt.onError();
-					}
-				});
-
-				return false;
-			});
+			this.$el.smartForm(opt);
 		},
 
 		template: function(){},

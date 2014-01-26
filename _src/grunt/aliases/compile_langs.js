@@ -1,3 +1,3 @@
 module.exports = [
-    'lang_en'
+	'lang_parser'
 ];

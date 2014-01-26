@@ -30,7 +30,7 @@ module.exports = function(grunt){
                 var content = grunt.file.read(data.src);
                 var php_array = json2php(json);
 
-                content = content.replace("/*{{PLACE HERE}}*/", "$config=" + php_array + ";");
+                content = content.replace("/*{{PLACE HERE}}*/", "$db=" + php_array + ";");
 
                 grunt.file.write(data.dest, content);
 
