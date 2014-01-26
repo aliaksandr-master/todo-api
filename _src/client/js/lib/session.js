@@ -8,7 +8,6 @@ define(function(require, exports, module){
     var session = {};
     request.load('/user/current', 'api', true).then(function (data) {
         session.model = new User(data.data, {parse: true});
-        console.log(data.data);
     });
 
     return {
