@@ -75,7 +75,7 @@ define(function(require, exports, module){
 				if (resp !== null) {
 					_error.call(this, jqXHR, textStatus, errorThrown);
 					if (jqXHR.status === 401 && !opt.silentErrorHandler) {
-						Chaplin.utils.redirectTo({url: '/user/login/'});
+						Chaplin.utils.redirectTo({url: 'user/login/'});
 					}
 				} else {
 					jqXHR.responseText = null;
