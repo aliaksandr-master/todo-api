@@ -12,7 +12,7 @@ define(function(require){
 		},
 
 		url: function(){
-			return "/server/todo/" + this.listId + "/item/";
+			return "/todo/" + this.listId + "/item/";
 		},
 
         model: TodoListItemModel,

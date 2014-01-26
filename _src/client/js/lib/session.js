@@ -5,37 +5,24 @@ define(function(require, exports, module){
 		request = require('lib/request'),
 		User = require('models/user');
 
-	var session = /*window.localStorage.getItem('session') ||*/ '{}';
-	session = JSON.parse(session);
-	if(session.model){
-		session.model = new User(session.model);
-	}
+    var session = {};
+    request.load('/user/current', 'api', true).then(function (data) {
+        session.model = new User(data.data, {parse: true});
+        console.log(data.data);
+    });
 
-	var saveToStore = function(){
-//		if(session.model){
-//			window.localStorage.setItem('session',JSON.stringify({model: session.model.attributes}));
-//		}
-	};
-
-	var clearStore = function(){
-//		window.localStorage.setItem('session',null);
-	};
-
-	var Session = {
-		logged: function(){
-			return!!session.model;
-		},
-		login: function(model){
-			if(model.isValid()){
-				session.model = model;
-				saveToStore();
-			}
-		},
-		logout: function(){
-			session = {};
-			clearStore();
-		}
-	};
-
-    return Session;
+    return {
+        logged: function(){
+            return!!session.model;
+        },
+        login: function(model){
+            if(model.isValid()){
+                session.model = model;
+            }
+        },
+        logout: function(){
+            session = {};
+            request.load('/user/logout', 'api');
+        }
+    };
 });

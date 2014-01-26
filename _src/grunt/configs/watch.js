@@ -67,7 +67,7 @@ module.exports = function(grunt, options){
 				'_src/api/**/*.{json,js}',
 				'_src/api/*.{json,js}'
 			],
-			tasks: 'compile_php'
+			tasks: 'compile_api'
 		}
 
 	};

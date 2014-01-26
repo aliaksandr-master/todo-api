@@ -59,5 +59,15 @@
 			"username:string",
 			"email:string"
 		]
-	}
+	},
+    "GET user/current": {
+        "access": {
+            "need_login": true
+        },
+        "response": [
+            "id:integer",
+            "username:string",
+            "email:string"
+        ]
+    }
 }

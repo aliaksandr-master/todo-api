@@ -7,7 +7,7 @@ define(function(require){
 	var TodoListsCollection = BaseCollection.extend({
 
 		url: function(){
-			return "/server/todo/";
+			return "/todo/";
 		},
 
 		model: ListModel,
