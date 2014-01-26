@@ -44,7 +44,11 @@
 		"grunt-exec": "latest",
 		"grunt-bower-task": "latest",
 
-		"grunt-template": "latest"
+		"grunt-template": "latest",
+
+        "markdown": "latest",
+
+        "handlebars": "latest"
     },
 	"scripts": {
 		"install": "grunt install default"

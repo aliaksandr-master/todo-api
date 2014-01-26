@@ -6,6 +6,7 @@ module.exports = [
 	'compile_styles',
 	'compile_html',
 	'compile_scripts',
-	'compile_templates'
+	'compile_templates',
+    'compile_content'
 
 ];
