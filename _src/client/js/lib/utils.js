@@ -4,10 +4,27 @@ define(function(require, exports, module){
 	var _ = require('underscore');
 	var Chaplin = require('chaplin');
 	var Backbone = require('backbone');
+	var preloader = require('lib/preloader');
 
 	var utils = {};
 
 	_.extend(utils, Chaplin.utils.beget(Chaplin.utils), {
+
+		showPreloader: function(){
+			preloader.on();
+		},
+
+		hidePreloader: function(){
+			preloader.off();
+		},
+
+		concatPaths: function(one, two, sep){
+			return (one||'').replace(/[\\\/]$/, '') + (sep || '/') + (two||'').replace(/^[\\\/]/, '');
+		},
+
+		makePath: function(path, sep){
+			return ('/' + path).replace(/[\\\/]+/g, sep || '/').replace(/[\/]+$/g, '');
+		},
 
 		BackboneClass: function(proto, stat){
 

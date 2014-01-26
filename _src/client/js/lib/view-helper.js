@@ -6,13 +6,14 @@ define(function(require, exports, module){
     var $ = require('jquery');
     var _ = require('underscore');
     var utils = require('lib/utils');
+    var request = require('lib/request');
+
+	request.load('/_generated_/api.source.json', 'api', true).then(function (jqHXR) {
+		console.log('>>>',jqHXR);
+	});
 
 	var defaultMessage = Handlebars.compile('{{name}} incorrect');
-	var messageMap = {
-		required: 'Field "{{name}}" is required!',
-		unique: '{{name}} "{{value}}" already exists',
-		valid_email: '{{name}} incorrect!'
-	};
+	var messageMap = {};
 
 	var fieldNameMap = {
 		username: 'Username',
@@ -25,7 +26,9 @@ define(function(require, exports, module){
 	_.each(messageMap, function(v, n){
 		messageFuncMap[n] = Handlebars.compile(v);
 	});
+
 	$.fn.showError = function (fieldName, value, ruleName, params) {
+		console.log(arguments);
 		var messageFunc = _.isFunction(messageFuncMap[ruleName]) ? messageFuncMap[ruleName] : defaultMessage;
 		if(!_.isFunction(messageFuncMap[ruleName])){
 			console.error('undefined message function on rule "', ruleName,'"');

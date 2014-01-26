@@ -2,6 +2,7 @@ define(function(require, exports, module){
     "use strict";
 
     var _ = require('underscore'),
+		request = require('lib/request'),
 		User = require('models/user');
 
 	var session = /*window.localStorage.getItem('session') ||*/ '{}';

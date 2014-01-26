@@ -3,14 +3,22 @@ define(function(require, exports, module){
 
     var $ = require('jquery');
 
+	var count = 1;
+
     return {
 
-		on: function(){
-			$(document.body).removeClass("-preloader-inactive");
+		on: function () {
+			if (!count) {
+				$(document.body).removeClass("-preloader-inactive");
+			}
+			count++;
 		},
 
-		off: function(){
-			$(document.body).addClass("-preloader-inactive");
+		off: function (forse) {
+			if (forse || --count <= 0) {
+				count = 0;
+				$(document.body).addClass("-preloader-inactive");
+			}
 		}
 
 	};
