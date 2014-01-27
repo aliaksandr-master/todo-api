@@ -1,0 +1,90 @@
+@import url('../vendor/bootstrap/custom/css/bootstrap.css');
+/*set font, font size, line height, color*/
+/*Mouse Text Selection*/
+/*disabled text seclection for element*/
+/*placeholder for FORM elements*/
+/*One Line Text Overflow*/
+/* LINK STYLES */
+/*BLOCK SIZE*/
+/*for box justify*/
+/*TRIANGLE*/
+/*BOTTOM*/
+/*TOP*/
+/*LEFT*/
+/*RIGHT*/
+/*RIGHT TOP*/
+/*RIGHT BOTTOM*/
+/*LEFT TOP*/
+/*LEFT BOTTOM*/
+/* CUSTOM INPUT */
+input.-click2edit {
+  border-color: transparent;
+  box-shadow: none;
+}
+input.-click2edit.-empty {
+  border-color: #ccc;
+}
+.-txt-center {
+  text-align: center;
+}
+/* CUSTOM CHECK */
+input.chk {
+  display: none;
+}
+input.chk + .btn {
+  padding-left: 22px;
+  position: relative;
+}
+input.chk + .btn:before {
+  display: block;
+  content: "\e013";
+  font-family: 'Glyphicons Halflings';
+  -webkit-font-smoothing: antialiased;
+  font-style: normal;
+  font-weight: normal;
+  line-height: 1;
+  -moz-osx-font-smoothing: grayscale;
+  font-size: 0;
+  height: 12px;
+  width: 12px;
+  border: 2px solid #bbb;
+  position: absolute;
+  background: #ededed;
+  top: 50%;
+  left: 6px;
+  margin-top: -6px;
+}
+input.chk:checked + .btn:before {
+  font-size: 12px;
+}
+input.chk + .btn:after {
+  content: attr(data-chk-off);
+}
+input.chk:checked + .btn:after {
+  content: attr(data-chk-on);
+}
+.btn {
+  font-family: 'Raleway', "Helvetica Neue", Arial, Helvetica, sans-serif !important;
+  font-weight: normal;
+}
+.form-group {
+  position: relative;
+}
+.form-group label {
+  color: #371f05;
+  font-weight: normal;
+}
+.form-group .form-error {
+  position: absolute;
+  color: #b81900;
+  right: 6px;
+}
+.form-group + .form-group {
+  margin-top: 20px;
+}
+.form-group.form-submits {
+  margin-top: 35px;
+}
+input[type="password"].form-control.input-lg {
+  font-size: 30px;
+}

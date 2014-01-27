@@ -1,0 +1,73 @@
+/*set font, font size, line height, color*/
+/*Mouse Text Selection*/
+/*disabled text seclection for element*/
+/*placeholder for FORM elements*/
+/*One Line Text Overflow*/
+/* LINK STYLES */
+/*BLOCK SIZE*/
+/*for box justify*/
+/*TRIANGLE*/
+/*BOTTOM*/
+/*TOP*/
+/*LEFT*/
+/*RIGHT*/
+/*RIGHT TOP*/
+/*RIGHT BOTTOM*/
+/*LEFT TOP*/
+/*LEFT BOTTOM*/
+.todo-lists-li {
+  display: block;
+  border: 1px solid #ccc;
+}
+.todo-lists-li:before,
+.todo-lists-li:after {
+  content: " ";
+  display: table;
+}
+.todo-lists-li:after {
+  clear: both;
+}
+.todo-lists-li + .todo-lists-li {
+  border-top-width: 0;
+}
+.todo-lists-li-placeholder {
+  height: 42px;
+  display: block;
+}
+.todo-lists-li-move {
+  float: left;
+  display: block;
+  text-align: center;
+  width: 20px;
+  height: 36px;
+  line-height: 42px;
+  cursor: pointer;
+}
+.todo-lists-li-move:hover {
+  background: orange;
+}
+.todo-lists-li-link {
+  overflow: hidden;
+  -o-text-overflow: ellipsis;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 90%;
+  display: block;
+  font-size: 16px;
+  line-height: 16px;
+  padding: 10px;
+}
+.todo-lists-li-share {
+  float: right;
+  border-color: transparent;
+}
+.todo-lists-li-remove {
+  float: right;
+  border-color: transparent;
+}
+.todo-lists-li.-shared .todo-lists-li-share {
+  color: red;
+}
+.todo-lists-li.-active {
+  background: #fff;
+}

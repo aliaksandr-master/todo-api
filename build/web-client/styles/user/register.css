@@ -1,0 +1,27 @@
+/*set font, font size, line height, color*/
+/*Mouse Text Selection*/
+/*disabled text seclection for element*/
+/*placeholder for FORM elements*/
+/*One Line Text Overflow*/
+/* LINK STYLES */
+/*BLOCK SIZE*/
+/*for box justify*/
+/*TRIANGLE*/
+/*BOTTOM*/
+/*TOP*/
+/*LEFT*/
+/*RIGHT*/
+/*RIGHT TOP*/
+/*RIGHT BOTTOM*/
+/*LEFT TOP*/
+/*LEFT BOTTOM*/
+.user-register {
+  padding: 0 30px;
+}
+.user-register form {
+  max-width: 400px;
+  margin: 0 auto;
+}
+.user-register h1 {
+  padding: 20px 0 40px;
+}

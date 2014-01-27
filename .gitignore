@@ -1,49 +1,32 @@
 # ide and os files
-
 /.idea/
+*.idea/
 /npm-debug.log
 *.DS_Store
-/robots.txt
 *.desktop
+*.thumb
 */.~*
 */~*
 */*~
 *.sublime*
 
 
-
-# temp local files
-
+# compile files
 /node_modules/
 /bower_components/
-
-
-
-# temp compile files
 /_local/
-/temp/
-/_temp_/
-/build/
-/build_production/
-/build_development/
-/build_testing/
-/server/api/
-/server/_generated_/
-
-
-#build files
-
 /build/client/
-/client/
 
 
-
-# server ignore
-
-/server/application/logs/
-/server/application/config/database.php
-!/server/application/logs/index.html
-!/server/application/logs/.htaccess
-/server/application/cache/
-!/server/application/cache/index.html
-!/server/application/cache/.htaccess
+# api ignore
+/build/api/logs/
+/build/api/cache/
+/build/api/var/
+/build/api/session/
+!/build/api/session/index.html
+!/build/api/var/index.html
+!/build/api/logs/.htaccess
+!/build/api/cache/.htaccess
+!/build/api/logs/index.html
+!/build/api/cache/index.html
+/build/api/config/database.php

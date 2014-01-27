@@ -1,0 +1,45 @@
+/*set font, font size, line height, color*/
+/*Mouse Text Selection*/
+/*disabled text seclection for element*/
+/*placeholder for FORM elements*/
+/*One Line Text Overflow*/
+/* LINK STYLES */
+/*BLOCK SIZE*/
+/*for box justify*/
+/*TRIANGLE*/
+/*BOTTOM*/
+/*TOP*/
+/*LEFT*/
+/*RIGHT*/
+/*RIGHT TOP*/
+/*RIGHT BOTTOM*/
+/*LEFT TOP*/
+/*LEFT BOTTOM*/
+.todo-list-share {
+  margin: 20px;
+}
+.todo-list-share-body {
+  margin-top: 20px;
+}
+.todo-list-share-body:before,
+.todo-list-share-body:after {
+  content: " ";
+  display: table;
+}
+.todo-list-share-body:after {
+  clear: both;
+}
+.todo-list-share-head:before,
+.todo-list-share-head:after {
+  content: " ";
+  display: table;
+}
+.todo-list-share-head:after {
+  clear: both;
+}
+.todo-list-share-link-wr {
+  display: none;
+}
+.todo-list-share-link-wr.-active {
+  display: block;
+}

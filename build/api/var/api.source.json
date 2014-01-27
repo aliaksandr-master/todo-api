@@ -1,0 +1,245 @@
+{
+    "GET todo/$todo_id/item": {
+        "request": {
+            "$todo_id:number": "required"
+        },
+        "response:array": [
+            "id:integer",
+            "todo_id:integer",
+            "sort_order:integer",
+            "name:string",
+            "date_create:string",
+            "is_active:boolean"
+        ]
+    },
+    "GET todo/$todo_id/item/$id": {
+        "request": {
+            "$todo_id:number": "required",
+            "$id:number": "required"
+        },
+        "response": [
+            "id:number",
+            "name:string",
+            "date_create:string",
+            "sort_order:integer",
+            "is_active:boolean"
+        ]
+    },
+    "POST todo/$todo_id/item": {
+        "access": {
+            "need_login": true,
+            "only_owner": true
+        },
+        "request": {
+            "$todo_id:integer": "required",
+            "name:string": "optional",
+            "is_active:boolean": "optional"
+        },
+        "response": [
+            "id:integer",
+            "todo_id:integer",
+            "sort_order:integer",
+            "name:string",
+            "date_create:string",
+            "is_active:boolean"
+        ]
+    },
+    "PUT todo/$todo_id/item/$id": {
+        "access": {
+            "need_login": true,
+            "only_owner": true
+        },
+        "request": {
+            "$todo_id:integer": "required",
+            "$id:integer": "required",
+            "name:string": "optional",
+            "is_active:boolean": "optional"
+        },
+        "response": [
+            "id:integer",
+            "todo_id:integer",
+            "sort_order:integer",
+            "name:string",
+            "date_create:string",
+            "is_active:boolean"
+        ]
+    },
+    "DELETE todo/$todo_id/item/$id": {
+        "access": {
+            "need_login": true,
+            "only_owner": true
+        },
+        "request": {
+            "$todo_id:integer": "required",
+            "$id:integer": "required"
+        },
+        "response": [
+            "status:boolean"
+        ]
+    },
+    "GET todo": {
+        "access": {
+            "need_login": true,
+            "only_owner": true
+        },
+        "response:array": [
+            "id:integer",
+            "link:string",
+            "name:string",
+            "is_shared:boolean",
+            "sort_order:integer"
+        ]
+    },
+    "GET todo/$id": {
+        "request": {
+            "$id:number": "required"
+        },
+        "response": [
+            "id:integer",
+            "link:string",
+            "name:string",
+            "is_shared:boolean",
+            "sort_order:integer"
+        ]
+    },
+    "POST todo": {
+        "access": {
+            "need_login": true,
+            "only_owner": true
+        },
+        "request": {
+            "name:string": "optional",
+            "is_shared:boolean": "optional",
+            "sort_order:integer": "optional"
+        },
+        "response": [
+            "id:integer",
+            "link:string",
+            "name:string",
+            "is_shared:boolean",
+            "sort_order:integer"
+        ]
+    },
+    "PUT todo/$id": {
+        "access": {
+            "need_login": true,
+            "only_owner": true
+        },
+        "request": {
+            "$id:integer": "required",
+            "name:string": "optional",
+            "is_shared:boolean": "optional",
+            "sort_order:integer": "optional"
+        },
+        "response": [
+            "id:integer",
+            "link:string",
+            "name:string",
+            "is_shared:boolean",
+            "sort_order:integer"
+        ]
+    },
+    "DELETE todo/$todo_id": {
+        "access": {
+            "need_login": true,
+            "only_owner": true
+        },
+        "request": {
+            "$todo_id:integer": "required"
+        },
+        "response": [
+            "status:boolean"
+        ]
+    },
+    "GET user": {
+        "response:array": [
+            "id:integer",
+            "username:string",
+            "email:string"
+        ]
+    },
+    "GET user/$id": {
+        "request": {
+            "$id:integer": "required"
+        },
+        "response": [
+            "id:integer",
+            "username:string",
+            "email:string"
+        ]
+    },
+    "DELETE user/$id": {
+        "access": {
+            "need_login": true,
+            "only_owner": true
+        },
+        "request": {
+            "$id:integer": "required"
+        },
+        "response": [
+            "status:boolean"
+        ]
+    },
+    "PUT user/$id": {
+        "access": {
+            "need_login": true,
+            "only_owner": true
+        },
+        "request": {
+            "$id:integer": "optional|exists",
+            "username:string": "optional|unique|need['password_old']",
+            "email:string": "required|valid_email|unique|need['password_old']",
+            "password_old:string": "optional|valid_password",
+            "password_new:string": "optional|matches['password_new_confirm']|need['password_old']",
+            "password_new_confirm:string": "optional|matches['password_new']|need['password_old']"
+        },
+        "response": [
+            "id:integer",
+            "username:string",
+            "email:string"
+        ]
+    },
+    "POST user": {
+        "request": {
+            "username:string": "required|unique",
+            "email:string": "required|valid_email|unique",
+            "password:string": "required|matches['confirm_password']",
+            "confirm_password:string": "required|matches['password']"
+        },
+        "response": [
+            "id:integer",
+            "username:string",
+            "email:string"
+        ]
+    },
+    "GET user/current": {
+        "access": {
+            "need_login": true
+        },
+        "response": [
+            "id:integer",
+            "username:string",
+            "email:string"
+        ]
+    },
+    "POST user/login": {
+        "request": {
+            "username:string": "required",
+            "password:string": "required",
+            "remember:boolean": "optional"
+        },
+        "response": [
+            "id:integer",
+            "username:string",
+            "email:string"
+        ],
+        "errors": {
+            "password": "incorrect"
+        }
+    },
+    "GET user/logout": {
+        "response": [
+            "status:boolean"
+        ]
+    }
+}
