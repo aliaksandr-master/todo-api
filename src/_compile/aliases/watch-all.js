@@ -1,6 +1,6 @@
 module.exports = [
 
-	'build',
+	'build-all',
 	'replace:livereload',
 	'watch'
 ];

@@ -12,7 +12,7 @@ module.exports = function(grunt){
             files: [
                 {
                     expand: true,
-                    cwd: "src/_opt/codeigniter",
+                    cwd: "src/opt/codeigniter",
                     src: [
                         "*",
                         "**/*"
