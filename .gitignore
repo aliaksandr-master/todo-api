@@ -20,14 +20,20 @@
 
 # api ignore
 /build/api/logs/
-/build/api/cache/
-/build/api/var/
-/build/api/session/
-/build/opt/codeigniter
-!/build/api/session/index.html
-!/build/api/var/index.html
 !/build/api/logs/.htaccess
-!/build/api/cache/.htaccess
 !/build/api/logs/index.html
+
+/build/api/cache/
+!/build/api/cache/.htaccess
 !/build/api/cache/index.html
+
+/build/api/session/
+!/build/api/session/index.html
+!/build/api/session/.htaccess
+
+/build/opt/codeigniter
 /build/api/config/database.php
+
+/build/api/var/
+!/build/api/var/index.html
+!/build/api/var/.htaccess

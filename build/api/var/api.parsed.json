@@ -1270,6 +1270,6 @@
         "id": "GET user/logout (0)"
     },
     "options": {
-        "api_root": "/server"
+        "api_root": "/api"
     }
 }
