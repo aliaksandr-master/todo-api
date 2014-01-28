@@ -23,6 +23,7 @@
 /build/api/cache/
 /build/api/var/
 /build/api/session/
+/build/opt/codeigniter
 !/build/api/session/index.html
 !/build/api/var/index.html
 !/build/api/logs/.htaccess

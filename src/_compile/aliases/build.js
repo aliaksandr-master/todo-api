@@ -8,6 +8,7 @@ module.exports = [
 	'compile_html',
 	'compile_scripts',
 	'compile_templates',
-    'compile_content'
+    'compile_content',
+    'build_opt'
 
 ];
