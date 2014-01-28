@@ -16,7 +16,7 @@ module.exports = function(grunt){
 						'**/*',
 						'*'
 					],
-					dest: "client/"
+					dest: "build/client/"
 				}
 			]
 		},
@@ -96,11 +96,11 @@ module.exports = function(grunt){
 						'**/*.{png,jpg,jpeg,gif,ico}',
 						'*.{png,jpg,jpeg,gif,ico}'
 					],
-					dest: "client/images/"
+					dest: "build/client/images/"
 				},
 				{
 					src: 'src/client/favicon.ico',
-					dest: 'client/favicon.ico'
+					dest: 'build/client/favicon.ico'
 				}
 			]
 		},
@@ -114,7 +114,7 @@ module.exports = function(grunt){
 						'**/*.{css}',
 						'*.{css}'
 					],
-					dest: "client/"
+					dest: "build/client/"
 				}
 			]
 		},
@@ -128,7 +128,7 @@ module.exports = function(grunt){
 						'**/*',
 						'*'
 					],
-					dest: "client/vendor"
+					dest: "build/client/vendor"
 				}
 			]
 		},
@@ -142,7 +142,7 @@ module.exports = function(grunt){
 						'**/*.js',
 						'*.js'
 					],
-					dest: "client/js/"
+					dest: "build/client/js/"
 				}
 			]
 		},
@@ -156,7 +156,7 @@ module.exports = function(grunt){
 						'**/*.{html,htm,xhtml}',
 						'*.{html,htm,xhtml}',
 					],
-					dest: "client/",
+					dest: "build/client/",
 					ext: '.html'
 				}
 			]
@@ -168,7 +168,7 @@ module.exports = function(grunt){
 					expand: true,
 					cwd: "src/client/",
 					src: '**/*.{ttf,svg,eot,woff}',
-					dest: "client/fonts/",
+					dest: "build/client/fonts/",
 					flatten: true
 				}
 			]

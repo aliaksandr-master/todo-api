@@ -7,9 +7,9 @@ module.exports = function(grunt){
     return function(){
 
         var options = {
-            root: "src/client/lang",
-            config: "src/client/lang/lang.json",
-            dest: 'api/var/'
+            root: "src/client/static/lang",
+            config: "src/client/static/config/lang.json",
+            dest: 'build/api/var/'
         };
 
         var config = grunt.file.readJSON(options.config);

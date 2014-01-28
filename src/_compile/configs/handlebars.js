@@ -21,7 +21,7 @@ module.exports = function(grunt){
 						'**/*.hbs',
 						'*.hbs'
 					],
-					dest: 'client/templates',
+					dest: 'build/client/templates',
 					ext: '.js'
 				}
 			]

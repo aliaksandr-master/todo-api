@@ -13,7 +13,7 @@ module.exports = function(grunt){
             "*.md",
             "**/*.md"
         ],
-        dest: "client/content/",
+        dest: "build/client/content/",
         ext: "html",
         template: "templates/template.hbs"
     };

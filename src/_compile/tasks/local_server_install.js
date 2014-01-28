@@ -11,13 +11,13 @@ module.exports = function(grunt){
                 cwd: "src/api/_config/",
                 src: "database.php",
                 dest: "build/api/config/",
-                by: "_local/db.json"
+                by: "./src/_env/local/configs/db.json"
             }
         ]
     };
 
     return function(){
-        var json2php = require("./../../../src/grunt/utils.js").json2phpArray;
+        var json2php = require("./../../../src/_compile/utils.js").json2phpArray;
 
         _.each(config.files, function(fileObject){
             var array = grunt.file.expandMapping(fileObject.src || [], fileObject.dest, _.pick(fileObject, ["flatten", "expand", "ext", "rename", "cwd"]));

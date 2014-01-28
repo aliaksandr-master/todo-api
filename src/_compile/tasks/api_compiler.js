@@ -11,8 +11,8 @@ module.exports = function(grunt){
 		],
 		jsonSpaces: 4,
 		apiRoot: '/api',
-		destSourceJsonFile: 'api/var/api.source.json',
-		destParsedJsonFile: 'api/var/api.parsed.json'
+		destSourceJsonFile: 'build/api/var/api.source.json',
+		destParsedJsonFile: 'build/api/var/api.parsed.json'
 	};
 
 	var OPTIONS            = 'options',

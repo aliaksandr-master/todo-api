@@ -8,7 +8,7 @@ module.exports = function(grunt){
 				verbose: true,
 				layout: 'byType',
 //				copy: true,
-				targetDir: './client/vendor',
+				targetDir: './build/client/vendor',
 				cleanBowerDir: false,
 				cleanTargetDir: true
 			}
