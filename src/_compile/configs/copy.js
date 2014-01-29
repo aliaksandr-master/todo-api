@@ -119,16 +119,16 @@ module.exports = function(grunt){
 			]
 		},
 
-		vendors: {
+		'client-vendors': {
 			files: [
 				{
 					expand: true,
-					cwd: "src/client/vendor",
+					cwd: "src/client/static/vendor",
 					src: [
 						'**/*',
 						'*'
 					],
-					dest: "build/client/vendor"
+					dest: "build/client/static/vendor"
 				}
 			]
 		},

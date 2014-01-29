@@ -1,6 +1,6 @@
 module.exports = [
 
-	'jshint:check',
+	'jshint:client',
 	'clean:scripts',
 	'copy:scripts',
 //	'coffee:compile',

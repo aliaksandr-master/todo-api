@@ -104,10 +104,10 @@ var _ = require('underscore');
 
 module.exports = {
 
-	register: function register (grunt, cwd, src, callback, options) {
+	register: function register (grunt, src, callback, options) {
 		var COMPILE = '_compile';
-		_.each(grunt.file.expand({cwd: cwd}, [COMPILE+'/'+src+'/*.js', COMPILE+'/'+src+'/**/*.js', '**/'+COMPILE+'/'+src+'/*.js', '**/'+COMPILE+'/'+src+'/**/*.js']), function (fpath) {
-			var file = '../../' + cwd + '/' + fpath;
+		_.each(grunt.file.expand({cwd: './src/'}, [COMPILE+'/'+src+'/*.js', COMPILE+'/'+src+'/**/*.js', '**/'+COMPILE+'/'+src+'/*.js', '**/'+COMPILE+'/'+src+'/**/*.js']), function (fpath) {
+			var file = '../' + fpath;
 			var module = require(file),
 				task = _.isFunction(module) ? module(grunt, options) : module,
 				name = fpath.split(/[\\\/]+/).pop().replace(/\.js$/, '');

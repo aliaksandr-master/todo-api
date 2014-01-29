@@ -2,20 +2,14 @@
 module.exports = function(grunt){
 
     return {
-        options: {
-
-        },
-        local: {
-            options: {
-
-            },
+		'api-local-config': {
+            options: {},
 
             files: [
                 {
-                    cwd: "src/environment/local/",
+                    cwd: "src/api/config",
                     src: [
-                        "*.json",
-                        "**/*.json"
+                        "database.json"
                     ],
                     dest: "_local/"
                 }
