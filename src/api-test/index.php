@@ -3,9 +3,9 @@
 error_reporting(E_ALL);
 
 define('ROOT', __DIR__);
-define('MY_ROOT_URL', "/test.api/");
-define('API_ROOT_URL', "/server/");
-define('API_SOURCE_JSON_FILE', "/server/_generated_/api.source.json");
+define('MY_ROOT_URL', "/api-test/");
+define('API_ROOT_URL', "/api/");
+define('API_SOURCE_JSON_FILE', "/api-test/var/api.source.json");
 ?>
 <html>
 <head>
@@ -33,7 +33,5 @@ define('API_SOURCE_JSON_FILE', "/server/_generated_/api.source.json");
     <script type="text/plain" id="template-form-text"><?php include('templates/form/text.hbs'); ?></script>
     <script type="text/plain" id="template-form-toggle"><?php include('templates/form/toggle.hbs'); ?></script>
 </head>
-<body>
-
-</body>
+<body></body>
 </html>
