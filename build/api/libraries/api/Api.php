@@ -7,7 +7,7 @@ class Api {
         'send_only_2xx_3xx_403_404_500_503' => false
     );
 
-    const REQUEST_URI_ROOT  = API_ROOT_PATH; // '/server'
+    const REQUEST_URI_ROOT  = API_ROOT_URL; // '/server'
 
     const API_NAME          = 'api_name';
     const CELL_NAME         = 'id';
@@ -117,7 +117,7 @@ class Api {
      */
     static function instanceBy (ApiController &$context, $method, $uriCall, array $arguments = array()) {
 
-        $parsedFile = GENERATED_DIR."/api.parsed.json";
+        $parsedFile = VAR_DIR.DS."api.parsed.json";
 
         if (empty(self::$_apiParsed)) {
             self::$_apiParsed = json_decode(file_get_contents($parsedFile), true);

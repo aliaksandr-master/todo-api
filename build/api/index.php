@@ -11,8 +11,8 @@ define('SD', '\\');
 
 define("SERVER_DIR", str_replace(SD, DS, __DIR__));
 define("VAR_DIR", SERVER_DIR.DS."var");
-define("CACHE_DIR", VAR_DIR.DS."cache");
-define("SESSION_DIR", SERVER_DIR.DS."session");
+define("CACHE_DIR", SERVER_DIR.DS."cache");
+define("SESSION_DIR", CACHE_DIR.DS."session");
 
 define("INDEX_DIR_NAME", array_pop(explode(DS, SERVER_DIR)));
 
@@ -37,13 +37,12 @@ ini_set('xdebug.show_exception_trace', 'On');
 
 
 
-
 /*
  * -------------------------------------------------------------------
  *   CLASS AUTO-LOADER
  * -------------------------------------------------------------------
  */
-$_CLASS_MAP = json_decode(file_get_contents(GENERATED_DIR.'/class-map.json'), true);
+$_CLASS_MAP = json_decode(file_get_contents(VAR_DIR.'/class-map.json'), true);
 spl_autoload_register(function ($className) {
     global $_CLASS_MAP;
     if (isset($_CLASS_MAP[$className])) {
@@ -70,7 +69,6 @@ foreach($exploded as $pair) {
     }
 }
 $GLOBALS["_INPUT_"] = $_INPUT;
-
 
 
 
@@ -112,8 +110,8 @@ if ($user_inactive_time) {
  * NOTE: If you change these, also change the error_reporting() code below
  *
  */
-$config = is_file(VAR_DIR."/config.php") ? include(VAR_DIR."/config.php") : array('environment' => 'development');
-define('ENVIRONMENT', $config['environment']);
+$configEnv = is_file(VAR_DIR."/config.php") ? include(VAR_DIR."/config.php") : array('environment' => 'development');
+define('ENVIRONMENT', $configEnv['environment']);
 
 
 
@@ -144,7 +142,6 @@ if (defined('ENVIRONMENT'))
 			exit('The application environment is not set correctly.');
 	}
 }
-
 /*
  *---------------------------------------------------------------
  * SYSTEM FOLDER NAME
@@ -254,7 +251,6 @@ $application_folder = '';
 	{
 		exit("Your system folder path does not appear to be set correctly. Please open the following file and correct this: ".pathinfo(__FILE__, PATHINFO_BASENAME));
 	}
-
 /*
  * -------------------------------------------------------------------
  *  Now that we know the path, set the main path constants
@@ -278,15 +274,7 @@ $application_folder = '';
 
 
 	// The path to the "application" folder
-	if (is_dir($application_folder)) {
-		define('APPPATH', $application_folder.'/');
-	} else {
-		if ( ! is_dir(BASEPATH.$application_folder.'/')) {
-			exit("Your application folder path does not appear to be set correctly. Please open the following file and correct this: ".SELF);
-		}
-		define('APPPATH', BASEPATH.$application_folder.'/');
-	}
-
+    define('APPPATH', SERVER_DIR.DS);
 /*
  * --------------------------------------------------------------------
  * LOAD THE BOOTSTRAP FILE

@@ -4,7 +4,7 @@ module.exports = function(grunt){
 	var _ = require('underscore');
 
 	var options = {
-		cwd: 'build/',
+		cwd: this.BUILD + '/',
 		src: [
 			'api/controllers/*.php',
 			'api/controllers/**/*.php',
@@ -28,8 +28,7 @@ module.exports = function(grunt){
 			'opt/codeigniter/database/*.php'
 		],
 		jsonSpaces: 4,
-		apiRoot: '/api',
-		dest: 'build/api/var/class-map.json'
+		dest: this.BUILD + '/api/var/class-map.json'
 	};
 
 	options.cwd = options.cwd.replace(/[\\\/]*$/, '/');
@@ -47,7 +46,7 @@ module.exports = function(grunt){
 			var content = grunt.file.read(options.cwd + filePath);
 			if(/\s+(class|interface)\s*/.test(content)){
 				content.replace(/\n\s*(?:abstract|final)?\s*(class|interface)\s+([a-z0-9A-Z_]+)\s*/g, function($0, $1, $2){
-					add($2, filePath);
+					add($2, '../' + filePath);
 					return $0;
 				});
 			}
