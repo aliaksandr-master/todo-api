@@ -37,5 +37,6 @@
 /build/api/config/database.php
 
 /build/api/var/
+/build/api/var/*.json
 !/build/api/var/index.html
 !/build/api/var/.htaccess
