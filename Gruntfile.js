@@ -1,5 +1,5 @@
 'use strict';
-
+var W = global;
 module.exports = function (grunt) {
 
 	var _ = require('underscore');
@@ -10,13 +10,13 @@ module.exports = function (grunt) {
 	var config = {},
 		options = require('./src/_compile/options.js')(grunt);
 
-	options.ROOT = global.ROOT = __dirname;
-	options.DS = global.DS = '/';
-	options.SD = global.SD = '\\';
-	options.SRC = global.SRC = ROOT + '/src';
-	options.BUILD = global.BUILD = ROOT + '/build';
-	options.DEPLOY = global.DEPLOY = ROOT + '/deploy';
-	options.LOCAL = global.LOCAL = ROOT + '/_local';
+	options.ROOT = W.ROOT = __dirname;
+	options.DS = W.DS = '/';
+	options.SD = W.SD = '\\';
+	options.SRC = W.SRC = W.ROOT + '/src';
+	options.BUILD = W.BUILD = W.ROOT + '/build';
+	options.DEPLOY = W.DEPLOY = W.ROOT + '/deploy';
+	options.LOCAL = W.LOCAL = W.ROOT + '/_local';
 
 	utils.register(grunt, 'tasks', grunt.registerTask, options);
 	utils.register(grunt, 'aliases', grunt.registerTask, options);
@@ -27,5 +27,5 @@ module.exports = function (grunt) {
 		config = _.deepExtend(config, taskObject);
 	}, options);
 
-//	grunt.initConfig(config);
+	grunt.initConfig(config);
 };
