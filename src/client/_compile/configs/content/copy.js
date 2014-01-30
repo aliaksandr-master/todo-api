@@ -3,7 +3,7 @@ module.exports = function(grunt){
 
     return {
 
-        content_img: {
+        'client-content-img': {
 
             options: {
                 excludeEmpty: true
@@ -12,11 +12,11 @@ module.exports = function(grunt){
             files: [
                 {
                     expand: true,
-                    cwd: "_src/content/",
+                    cwd: this.SRC + "/client/content/",
                     src: [
-                        '**/*.{png,jpg,jpeg,gif}'
+                        '**/*.{png,jpg,jpeg,gif,svg}'
                     ],
-                    dest: "client/content"
+                    dest: this.BUILD + "/client/content/"
                 }
             ]
         }

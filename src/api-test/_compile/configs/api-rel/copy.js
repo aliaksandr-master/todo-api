@@ -5,7 +5,7 @@ module.exports = function(grunt, options){
 	//
 
 	return {
-		'build-api-test': {
+		'api-test-var': {
 			options: {
 				excludeEmpty: true
 			},
@@ -14,8 +14,8 @@ module.exports = function(grunt, options){
 					expand: true,
 					cwd: global.BUILD + '/api/var',
 					src: [
-						'*.{json}',
-						'**/*.{json}',
+						'*.json',
+						'**/*.json',
 					],
 					dest: global.BUILD + '/api-test/var'
 				}

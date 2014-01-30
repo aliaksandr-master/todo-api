@@ -3,7 +3,7 @@ module.exports = function(grunt){
 
     return {
 
-        build_opt: {
+        'build-opt': {
 
             options: {
                 excludeEmpty: true

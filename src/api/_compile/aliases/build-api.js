@@ -1,9 +1,11 @@
 module.exports = [
 
 	'jshint:api',
-	'clean:serverApi',
-	'api_compiler',
-	'compile-api-local-config',
-	'compile-api-php-classes',
+	'clean:api-var',
+	'copy:api-local-config',
+	'copy-new-files:api-local-config',
+	'replace:api-local-config',
+	'api-compiler',
+	'api-php-classes-register'
 
 ];

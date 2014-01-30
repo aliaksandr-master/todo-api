@@ -17,6 +17,7 @@
 	"browser": true,
 	"node": true,
 	"globals": {
+		"global": true,
 		"window": true,
 		"Error": true,
 		"RangeError": true,

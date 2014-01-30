@@ -4,9 +4,10 @@ module.exports = function(grunt){
 	return {
 		client: {
 			src: [
-				'src/client/js/**/*.js',
-				'src/client/js/*.js',
-				'src/client/*.js'
+				this.SRC + '/client/_compile/**/*.{js,json}',
+				this.SRC + '/client/static/js/**/*.js',
+				this.SRC + '/client/static/js/*.js',
+				this.SRC + '/client/static/*.js'
 			]
 		}
 

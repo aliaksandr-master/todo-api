@@ -109,7 +109,7 @@ module.exports = {
 		_.each(grunt.file.expand({cwd: './src/'}, [COMPILE+'/'+src+'/*.js', COMPILE+'/'+src+'/**/*.js', '**/'+COMPILE+'/'+src+'/*.js', '**/'+COMPILE+'/'+src+'/**/*.js']), function (fpath) {
 			var file = '../' + fpath;
 			var module = require(file),
-				task = _.isFunction(module) ? module(grunt, options) : module,
+				task = _.isFunction(module) ? module.call(global, grunt, options) : module,
 				name = fpath.split(/[\\\/]+/).pop().replace(/\.js$/, '');
 
 			if (name !== fpath && !/^_/.test(name)) {

@@ -5,7 +5,7 @@ module.exports = function(grunt, options){
 	//
 
 	return {
-		'build-api-test': {
+		'api-test': {
 			options: {
 				excludeEmpty: true
 			},

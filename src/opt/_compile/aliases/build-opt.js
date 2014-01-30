@@ -1,5 +1,5 @@
 module.exports = [
 
-    'copy:build_opt'
+	'copy:build-opt'
 
 ];

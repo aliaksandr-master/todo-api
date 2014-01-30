@@ -1,4 +1,8 @@
 module.exports = [
+
+	'clean:client',
 	'bower:client-install',
-	'copy:client-vendors'
+	'clean:client-vendor',
+	'copy:client-vendor'
+
 ];

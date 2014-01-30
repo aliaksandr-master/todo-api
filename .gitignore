@@ -17,6 +17,7 @@
 /_local/
 /build/client/
 /build/api-test/
+/build/api/config/database.php
 
 
 # api ignore

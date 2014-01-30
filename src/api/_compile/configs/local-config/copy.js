@@ -11,8 +11,8 @@ module.exports = function(grunt){
 
 			files: [
 				{
-					src: "src/api/config/database.php",
-					dest: "build/api/config/database.php"
+					src: global.SRC    + "/api/config-source/database.php",
+					dest: global.BUILD + "/api/config/database.php"
 				}
 			]
 		}

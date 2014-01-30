@@ -2,7 +2,8 @@
 module.exports = function(grunt){
 
     return {
-
-        content: ['client/content/']
+        'client-content': [
+			this.BUILD + '/client/content/'
+		]
     };
 };

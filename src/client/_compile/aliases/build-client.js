@@ -1,10 +1,9 @@
 module.exports = [
-	'client-compile-langs',
-	'client-compile-php',
-	'client-compile-pictures',
-	'client-compile-styles',
-	'client-compile-html',
-	'client-compile-scripts',
-	'client-compile-templates',
-	'client-compile-content'
+	'compile-client-langs',
+	'compile-client-images',
+	'compile-client-styles',
+	'compile-client-html',
+	'compile-client-scripts',
+	'compile-client-templates',
+	'compile-client-content'
 ];

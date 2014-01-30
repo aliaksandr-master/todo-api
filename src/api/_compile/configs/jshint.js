@@ -4,10 +4,8 @@ module.exports = function(grunt){
 	return {
 		api: {
 			src: [
-				'src/api/**/*.js',
-				'src/api/*.js',
-				'src/api/**/*.json',
-				'src/api/*.json'
+				global.SRC + '/api/**/*.{js,json}',
+				global.SRC + '/api/*.{js,json}'
 			]
 		}
 	};
