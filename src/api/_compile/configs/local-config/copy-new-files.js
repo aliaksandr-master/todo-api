@@ -6,7 +6,7 @@ module.exports = function(grunt){
             options: {},
             files: [
                 {
-                    cwd: global.SRC + "/api/config-source",
+                    cwd: global.SRC + "/api/_config",
                     src: [
                         "database.json"
                     ],
