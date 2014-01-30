@@ -21,9 +21,9 @@ module.exports = function(grunt){
 			files: [
 				{
 					expand: true,
-					cwd: "src/client/",
+					cwd: this.SRC + "/client/static/",
 					src: '**/*.{ttf,svg,eot,woff}',
-					dest: "build/client/fonts/",
+					dest: this.BUILD + "/client/static/fonts/",
 					flatten: true
 				}
 			]

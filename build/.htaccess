@@ -20,11 +20,11 @@ Options -MultiViews
 # You can customize what Apache returns to the client in case of an error (see
 # http://httpd.apache.org/docs/current/mod/core.html#errordocument).
 
-errorDocument 400 /client/error.html
-errorDocument 401 /client/error.html
+errorDocument 400 /client/static/error.html
+errorDocument 401 /client/static/error.html
 errorDocument 403 "Sorry can't allow you access today, 403 Status Codes Apache"
-errorDocument 404 /client/error.html
-errorDocument 500 /client/error.html
+errorDocument 404 /client/static/error.html
+errorDocument 500 /client/static/error.html
 
 # ##############################################################################
 # # INTERNET EXPLORER                                                          #
@@ -219,7 +219,7 @@ AddDefaultCharset utf-8
 # ------------------------------------------------------------------------------
 
 <ifModule mod_rewrite.c>
-    RewriteRule livereload\.js$ client/livereload.js [L]
+    RewriteRule livereload\.js$ client/static/livereload.js [L]
 </ifModule>
 
 
@@ -228,11 +228,11 @@ AddDefaultCharset utf-8
 # ------------------------------------------------------------------------------
 
 <ifModule mod_rewrite.c>
-    RewriteRule ^/?$ client/index.html [L]
+    RewriteRule ^/?$ client/static/index.html [L]
 
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteCond %{REQUEST_FILENAME} !-f
-    RewriteRule ^(.*)/$ client/index.html [L,QSA]
+    RewriteRule ^(.*)/$ client/static/index.html [L,QSA]
 </ifModule>
 
 # ##############################################################################
