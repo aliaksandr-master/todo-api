@@ -10,7 +10,7 @@ module.exports = function(grunt){
                     src: [
                         "database.json"
                     ],
-                    dest: global.LOCAL + "/_local/"
+                    dest: global.LOCAL + "/"
                 }
             ]
         }

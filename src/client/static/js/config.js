@@ -2,7 +2,7 @@ require.config({
 
 	enforceDefine: false,
 
-	baseUrl: '/client${config:cacheKey}/js/',
+	baseUrl: '/client/static-${config:cacheKey}/js/',
 
 	paths: {
 

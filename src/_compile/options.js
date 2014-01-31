@@ -11,7 +11,7 @@ module.exports = function(grunt){
 //		EXT_FONTS: ['woff', 'otf', 'ttf', 'svg'],
 //		EXT_STATIC: ['hbs', 'js', 'css', 'less', ''],
 //
-		cacheKey: "-"+Date.now(),
+		cacheKey: Date.now(),
 		package: pkg,
 		liveReload: {
 			port: 35729,

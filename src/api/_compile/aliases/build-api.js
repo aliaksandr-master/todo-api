@@ -6,6 +6,7 @@ module.exports = [
 	'copy-new-files:api-local-config',
 	'replace:api-local-config',
 	'api-compiler',
-	'api-php-classes-register'
+	'api-php-classes-register',
+	'api-db-schema'
 
 ];

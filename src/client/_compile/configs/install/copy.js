@@ -15,7 +15,7 @@ module.exports = function(grunt){
 					dest: this.BUILD + "/client/static/vendor"
 				}
 			]
-		},
+		}
 
 	};
 

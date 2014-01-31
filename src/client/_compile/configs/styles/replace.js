@@ -25,8 +25,8 @@ module.exports = function(grunt, options){
 						if(/\.(woff|ttf|eot|svg)/.test(url)){
 							fileName = url.split(/[\/\\]+/).pop();
 							url = '//client-'+CACHE_KEY+'/fonts/'+fileName;
-						}else if(/^[\/\\]*client\//.test(url) && /\.(png|jpg|jpeg|gif)/.test(url)){
-							url = url.replace(/^([\/\\]*)client/,'//client-'+CACHE_KEY+'//');
+						}else if(/^[\/\\]*static\//.test(url) && /\.(png|jpg|jpeg|gif)/.test(url)){
+							url = url.replace(/^([\/\\]*)static/,'//static-'+CACHE_KEY+'//');
 						}
 						//							console.log($0,'  url:',url);
 						return "url('"+url+"')";

@@ -1,4 +1,5 @@
 module.exports = [
+	'compile-client-env',
 	'compile-client-langs',
 	'compile-client-images',
 	'compile-client-styles',

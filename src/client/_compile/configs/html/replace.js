@@ -17,8 +17,8 @@ module.exports = function(grunt, options){
 			],
 			replacements: [
 				{
-					from: /(['"]\s*[\\\/]*)\s*client[^\\\/]+\//gi,
-					to: '$1client-'+CACHE_KEY+'/'
+					from: /(['"]\s*[\\\/]*)\s*static[^\\\/]+\//gi,
+					to: '$1static-'+CACHE_KEY+'/'
 				}
 			]
 		}

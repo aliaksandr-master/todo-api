@@ -18,7 +18,7 @@ module.exports = function(grunt){
 				},
 				{
 					src: this.SRC + '/client/static/favicon.ico',
-					dest: this.BUILD + '/client/favicon.ico'
+					dest: this.BUILD + '/client/static/favicon.ico'
 				}
 			]
 		}
