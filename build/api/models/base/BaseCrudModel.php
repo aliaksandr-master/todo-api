@@ -29,7 +29,7 @@ abstract class BaseCrudModel implements ICrudMoldel {
         return $withAttributes ? $this->_tableFieldsWithAttr : $this->_tableFields;
     }
 
-    function checkApiInputByFieldMap(array $nameFieldToInputMap = array()){
+    function checkApiInput(array $nameFieldToInputMap = array()){
         $api = &get_instance()->api;
         /* @var Api $api  */
         $input = $api->input->get();
