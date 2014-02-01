@@ -20,7 +20,7 @@ class ApiInput {
         $this->_shuttle = $shuttle;
     }
 
-    function error ($inputParamName, $ruleName, $ruleParams = array(), $statusCode = null) {
+    function error ($inputParamName, $ruleName, array $ruleParams = array(), $statusCode = null) {
         $this->_errors[$inputParamName][$ruleName] = $ruleParams;
         $this->_shuttle->output->status($statusCode);
         return $this;
@@ -183,6 +183,18 @@ class ApiInput {
             $this->_shuttle->error('Validation Method "'.$fuckUp.'" Doesn\'t exists');
         }
         return !($error || $fuckUp);
+    }
+
+    function pick () {
+        return __::pick($this->_input, func_get_args());
+    }
+
+    function omit () {
+        return __::omit($this->_input, func_get_args());
+    }
+
+    function __get($name){
+        return $this->get($name);
     }
 
 }

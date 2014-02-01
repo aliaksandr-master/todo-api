@@ -1,17 +1,91 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
 
-/**
- * Class MY_Model
- * @var CI_DB_active_record db
- * @var CI_Loader load
- *
- */
-abstract class BaseCrudModel extends CI_Model implements ICrudMoldel {
+abstract class BaseCrudModel implements ICrudMoldel {
 
-    function __construct () {
-        parent::__construct();
-        $this->load->database();
+    private static $_instances = array();
+
+    private static $_dbConnection = array();
+    private static $_dbSchemes = array();
+
+    /**
+     * @var CI_DB_active_record $db
+     */
+    protected $db;
+    private $_dbScheme = array();
+    protected $_tableName = null;
+    private $_tableFields = array();
+    private $_tableFieldsWithAttr = array();
+
+    function getDbName () {
+        return 'default';
+    }
+
+    final function getTableName () {
+        return $this->_tableName;
+    }
+
+    final function getTableFields ($withAttributes = false) {
+        return $withAttributes ? $this->_tableFieldsWithAttr : $this->_tableFields;
+    }
+
+    function checkApiInputByFieldMap(array $nameFieldToInputMap = array()){
+        $api = &get_instance()->api;
+        /* @var Api $api  */
+        $input = $api->input->get();
+        $status = true;
+        $fields = $this->getTableFields(true);
+        foreach($input as $key => $value){
+            $name = $key;
+            if(isset($nameFieldToInputMap[$name])){
+                $name = $nameFieldToInputMap[$name];
+            }
+            $value = $api->input->get($name);
+            if (is_bool($value)) {
+                $value = 1 * $value;
+            }
+            if (isset($value) && $fields[$name]['length'] && strlen((string)$value) > $fields[$name]['length']){
+                $api->input->error($name, "max_length", array($fields[$name]['length']), 400);
+                $status = false;
+            }
+        }
+        if ($api->hasError()){
+            $api->output->send();
+        }
+        return $status;
+    }
+
+    public function idAttribute(){
+        return "id";
+    }
+
+    public static function instance () {
+        $className = get_called_class();
+        if(empty(self::$_instances[$className])){
+            self::$_instances[$className] = new $className();
+        }
+        return self::$_instances[$className];
+    }
+
+    private function __construct () {
+        $dbName = $this->getDbName();
+        if (!isset(self::$_dbConnection[$dbName])) {
+            self::$_dbConnection[$dbName] = get_instance()->load->database($dbName, true);
+        }
+        if (!isset(self::$_dbSchemes[$dbName])) {
+            self::$_dbSchemes[$dbName] = MVar::get('db.'.$dbName.'.scheme.parsed');
+        }
+
+        $this->_dbScheme = self::$_dbSchemes[$dbName];
+        $this->db = self::$_dbConnection[$dbName];
+
+        if (is_null($this->_tableName)) {
+            $this->_tableName = Utils::underscoreCase(get_class($this));
+            $this->_tableName = preg_replace('/[_]*model(.*)$/i', '', $this->_tableName);
+        }
+
+        $this->_tableFieldsWithAttr = $this->_dbScheme[$this->getTableName()];
+        $this->_tableFields         = array_keys($this->_tableFieldsWithAttr);
     }
 
     function defaults(){
@@ -112,10 +186,6 @@ abstract class BaseCrudModel extends CI_Model implements ICrudMoldel {
             ->insert();
 
         return $this->db->insert_id();
-    }
-
-    public function idAttribute(){
-        return "id";
     }
 
     public function getPrimaryKeys(){

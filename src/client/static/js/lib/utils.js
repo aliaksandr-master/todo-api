@@ -26,11 +26,9 @@ define(function(require, exports, module){
 			var DS = '/';
 			_.each(Array.prototype.slice.call(arguments, 1), function (v) {
 				if (v != null) {
-					console.log(v);
 					root = (root || '').replace(/[\\\/]$/, '') + DS + (v || '').replace(/^[\\\/]/, '');
 				}
 			});
-			console.log(root, arguments);
 			return root;
 		},
 

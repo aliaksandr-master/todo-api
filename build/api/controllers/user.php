@@ -2,14 +2,14 @@
 
 class User extends ApiController {
 
-    public function __construct(){
+    public function __construct () {
         parent::__construct();
         $this->load->library('email');
         $this->load->helper('email');
         $this->load->helper('url');
     }
 
-    public function logout_get(){
+    public function logout_get () {
         $id = $this->user->current('id');
         $this->user->logout();
         return array(
@@ -55,11 +55,11 @@ class User extends ApiController {
         return $this->user->read();
     }
 
-    public function index_get($userId = null){
+    public function index_get ($userId = null) {
         return is_null($userId) ? $this->getAll() : $this->getOne($userId);
     }
 
-    public function index_put($id){
+    public function index_put ($id) {
         $data = $this->api->input->pipe($this->user->safeFieldsMap());
         if($this->input('password_new')){
             $data['password'] = $this->input('password_new');
@@ -68,7 +68,7 @@ class User extends ApiController {
         return $this->getOne($id);
     }
 
-    public function index_delete($id){
+    public function index_delete ($id) {
         $user = $this->user->read($id);
         if(empty($user)){
             $this->api->output->error(404);
@@ -80,7 +80,7 @@ class User extends ApiController {
         );
     }
 
-    public function index_post(){
+    public function index_post () {
         $data = $this->api->input->pipe($this->user->safeFieldsMap());
         $data['password'] = $this->user->cryptPassword($data['password']);
         $data['date_register'] = date("Y-m-d H:i:s", gettimeofday(true));
@@ -117,14 +117,14 @@ class User extends ApiController {
         ));
         return !empty($data);
     }
-    public function _rule__exists($value, $fieldName){
+    public function _rule__exists ($value, $fieldName) {
         $data = $this->user->read(array(
             $fieldName => $value
         ));
         return !empty($data);
     }
 
-    public function _rule__unique($value, $fieldName){
+    public function _rule__unique ($value, $fieldName) {
         $data = $this->user->read(array(
             $fieldName => $value
         ));

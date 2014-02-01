@@ -4,8 +4,8 @@ module.exports = function(grunt){
 	return {
 
 		'api-var': [
-			'api/var/*.json',
-			'api/var/**/.json'
+			this.BUILD + '/api/var/*.json',
+			this.BUILD + '/api/var/**/.json'
 		]
 
 	};

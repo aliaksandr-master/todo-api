@@ -3,19 +3,19 @@
 class Todo extends ApiController {
 
     /**
-     * @var Todo_model
+     * @var TodoModel
      */
     public $todoList;
 
     /**
-     * @var TodoItem_model
+     * @var TodoItemModel
      */
     public $todoItem;
 
     public function __construct() {
         parent::__construct();
-        $this->load->model('Todo_model', "todoList");
-        $this->load->model('TodoItem_model', "todoItem");
+        $this->todoList = TodoModel::instance();
+        $this->todoItem = TodoItemModel::instance();
     }
 
 
@@ -29,7 +29,10 @@ class Todo extends ApiController {
 
     // READ ONE LIST
     private function _getOneList($listId){
-        return $this->todoList->read($listId);
+        return $this->todoList->read(array(
+            "id" => $listId,
+            "user_id" => $this->user->current("id")
+        ));
     }
 
 
@@ -44,12 +47,10 @@ class Todo extends ApiController {
 
     // CREATE LIST
     public function list_post(){
-        $data['user_id']        = $this->user->current("id");
-        $data['name']           = $this->input('name', "");
-        $data['is_shared']      = $this->input('is_shared', 0);
-        $data['sort_order']     = $this->input('sort_order', 0);
-        $data['date_create']    = date("Y-m-d H:i:s", gettimeofday(true));
-        $data['link']           = md5(gettimeofday(true).rand(1, 1100)).gettimeofday(true);
+        $data = $this->api->input->pick('name', 'is_shared', 'sort_order');
+        $data['user_id']     = $this->user->current("id");
+        $data['date_create'] = date("Y-m-d H:i:s", gettimeofday(true));
+        $data['link']        = rand(1, 1100).gettimeofday(true).rand(1, 1100);
         $listId = $this->todoList->create($data);
         return $this->_getOneList($listId);
     }
@@ -57,9 +58,7 @@ class Todo extends ApiController {
 
     // UPDATE LIST
     public function list_put($listId){
-        $data['name']           = $this->input('name', "");
-        $data['is_shared']      = $this->input('is_shared', 0);
-        $data['sort_order']     = $this->input('sort_order', 0);
+        $data = $this->api->input->pick('name', 'is_shared', 'sort_order');
         $this->todoList->update($data, array(
             "id" => $listId,
             'user_id' => $this->user->current("id")

@@ -93,7 +93,7 @@ class ApiOutput {
             );
         }
         $this->_shuttle->context->response($response, $this->status());
-        // EXIT
+        exit;
     }
 
     function error($code){

@@ -30,34 +30,75 @@ module.exports = function(grunt){
 				arrayNotation: false
 			});
 
-			var rr = {table:{},tables:[]};
+			var sourceScheme = {table:{},tables:[]};
 
-			if(!config.options.verbose){
-				_.each(r.mysqldump.database.table_structure, function(table, tableCounter){
-					rr.table[table.name] = {field:{},fields:[]};
-					_.each(table.field, function(field){
-						rr.table[table.name].fields.push(field.Field);
-						var type = field.Type.replace(/^(\w+)(?:\((\d+)\))?/, '$1');
-						var length = field.Type.replace(/^(\w+)(?:\((\d+)\))?/, '$2');
-						rr.table[table.name].field[field.Field] = {
-							'type': type,
-							'length': length,
-							'null': field.Null,
-							'pk' : field.Key === 'PRI',
-							'ai' : field.Extra === 'auto_increment'
-						};
-					});
-					rr.tables.push(table.name);
-					grunt.log.writeln('#'+(tableCounter+1)+' '+table.name+' '+JSON.stringify(rr.table[table.name].fields));
+			_.each(r.mysqldump.database.table_structure, function(table, tableCounter){
+				sourceScheme.table[table.name] = {field:{},fields:[]};
+				_.each(table.field, function(field){
+					sourceScheme.table[table.name].fields.push(field.Field);
+					var type = field.Type.replace(/^(\w+)(?:\((\d+)\))?/, '$1');
+					var length = field.Type.replace(/^(\w+)(?:\((\d+)\))?/, '$2');
+					var dataType;
+					switch(type){
+						case 'int':
+						case 'tinyint':
+						case 'smallint':
+						case 'mediumint':
+						case 'bigint':
+						case 'float':
+						case 'double':
+						case 'decimal':
+							dataType = 'numeric';
+							break;
+						case 'date':
+						case 'datetime':
+						case 'timestamp':
+						case 'time':
+						case 'year':
+							dataType = 'date';
+							break;
+						default:
+							dataType = 'string';
+							break;
+					}
+					sourceScheme.table[table.name].field[field.Field] = {
+						'category': dataType,
+						'type': type,
+						'length': length,
+						'default': field.Default,
+						'null': field.Null,
+						'pk' : field.Key === 'PRI',
+						'ai' : field.Extra === 'auto_increment'
+					};
 				});
-			} else {
-				rr = r.mysqldump.database.table_structure;
-			}
+				sourceScheme.tables.push(table.name);
+				grunt.log.writeln('#'+(tableCounter+1)+' '+table.name+' '+JSON.stringify(sourceScheme.table[table.name].fields));
+			});
 
-			r = JSON.stringify(rr, null, config.options.beauty ? 4 : 0);
+			var verboseScheme = r.mysqldump.database;
 
-			var file = config.dest + 'db.' + dbRefName + '.scheme.json';
-			grunt.file.write(file, r);
+			var file;
+
+			// verbose save
+			file = config.dest + 'db.' + dbRefName + '.scheme.verbose.json';
+			grunt.file.write(file, JSON.stringify(verboseScheme, null, config.options.beauty ? 4 : 0));
+			grunt.log.ok(file, ' was created.');
+
+			// source save
+			file = config.dest + 'db.' + dbRefName + '.scheme.source.json';
+			grunt.file.write(file, JSON.stringify(sourceScheme, null, config.options.beauty ? 4 : 0));
+			grunt.log.ok(file, ' was created.');
+
+
+			// parsed compile
+			var parsedScheme = {};
+			_.each(sourceScheme.table, function(data, name){
+				parsedScheme[name] = data.field;
+			});
+
+			// parsed save
+			file = config.dest + 'db.' + dbRefName + '.scheme.parsed.json';
+			grunt.file.write(file, JSON.stringify(parsedScheme, null, config.options.beauty ? 4 : 0));
 			grunt.log.ok(file, ' was created.');
 		});
 	};

@@ -3,7 +3,7 @@
 abstract class ApiController extends REST_Controller {
 
     /**
-     * @var User_model
+     * @var UserModel
      */
     public $user;
     /**
@@ -13,7 +13,7 @@ abstract class ApiController extends REST_Controller {
 
     public function __construct(){
         parent::__construct();
-        $this->load->model('User_model', "user");
+        $this->user = UserModel::instance();
     }
 
     function input($name = null, $default = null){
