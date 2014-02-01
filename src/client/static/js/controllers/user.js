@@ -29,7 +29,6 @@ define(function(require, exports, module){
 
 		logout: function(){
 			Session.logout();
-			$.get('/server/user/logout');
 			this.redirectTo({url: '/'});
 			this.preloader.off();
 		},

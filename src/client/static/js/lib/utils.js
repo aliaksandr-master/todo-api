@@ -14,16 +14,24 @@ define(function(require, exports, module){
 			preloader.on();
 		},
 
-		hidePreloader: function(){
+		hidePreloader: function () {
 			preloader.off();
 		},
 
-		showServerError: function(){
+		showServerError: function () {
 			window.console && console.error('ERROR!');
 		},
 
-		concatPaths: function(one, two, sep){
-			return (one||'').replace(/[\\\/]$/, '') + (sep || '/') + (two||'').replace(/^[\\\/]/, '');
+		concatPaths: function (root) {
+			var DS = '/';
+			_.each(Array.prototype.slice.call(arguments, 1), function (v) {
+				if (v != null) {
+					console.log(v);
+					root = (root || '').replace(/[\\\/]$/, '') + DS + (v || '').replace(/^[\\\/]/, '');
+				}
+			});
+			console.log(root, arguments);
+			return root;
 		},
 
 		makePath: function(path, sep){

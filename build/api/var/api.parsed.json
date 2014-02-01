@@ -1173,7 +1173,7 @@
             }
         },
         "access": {
-            "need_login": true,
+            "need_login": false,
             "only_owner": false,
             "access_name": false
         },

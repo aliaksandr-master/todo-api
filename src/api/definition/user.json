@@ -62,7 +62,7 @@
 	},
     "GET user/current": {
         "access": {
-            "need_login": true
+            "need_login": false
         },
         "response": [
             "id:integer",

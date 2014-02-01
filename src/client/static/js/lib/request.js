@@ -1,22 +1,27 @@
 define(function(require, exports, module){
     "use strict";
 
-	var apiProvider = require('lib/providers/api');
+	var ApiProvider  = require('lib/providers/api');
+	var SelfProvider = require('lib/providers/self');
+
 	var $ = require('jquery');
 	var _ = require('underscore');
 	var utils = require('lib/utils');
 
-	var providers = {
-		api: apiProvider
-	};
+	var Request = utils.BackboneClass({
 
-	var Request = function Request () {
+		providers: {},
 
-	};
-
-	Request.prototype = {
-
-		Request: Request,
+		provider: function (name, Provider) {
+			var provider = null;
+			if (Provider) {
+				this.providers[name] = Provider;
+			} else if (this.providers[name]){
+				Provider = this.providers[name];
+				provider = new Provider();
+			}
+			return provider;
+		},
 
 		load: function(url, provider, opt, isSync){
 			if (_.isBoolean(opt)) {
@@ -48,19 +53,27 @@ define(function(require, exports, module){
 
 			opt.async = !isSync;
 
-			var deferred = provider ? providers[provider].ajax(opt) : $.ajax(opt);
-
-			utils.showPreloader();
-			deferred.always(function () {
-				utils.hidePreloader();
-			});
-
-			return deferred;
+			var providerName = provider;
+			provider = this.provider(providerName);
+			if (provider) {
+				if (provider.preloaded) {
+					utils.showPreloader();
+				}
+				return provider.request(opt).always(function () {
+					if (provider.preloaded) {
+						utils.hidePreloader();
+					}
+				});
+			}
+			throw new Error('provider "'+providerName+'" is undefined');
 		}
 
-	};
+	});
 
-	exports = new Request();
+	var request = new Request();
 
-    return exports;
+	request.provider('api', ApiProvider);
+	request.provider('self', SelfProvider);
+
+    return request;
 });

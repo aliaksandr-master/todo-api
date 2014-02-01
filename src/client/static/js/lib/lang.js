@@ -4,7 +4,7 @@ define(function(require, exports, module){
 	var request = require('lib/request');
 
 	var lang = {};
-	request.load('/_generated_/lang.en.json', 'api', true).then(function (json) {
+	request.load('/var/lang.en.json', 'self', true).then(function (json) {
 		lang = json;
 	});
 

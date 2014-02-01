@@ -17,7 +17,7 @@ class User extends ApiController {
         );
     }
 
-    public function login_post(){
+    public function login_post () {
         $password = $this->user->cryptPassword($this->input('password'));
         $user = $this->user->read(array(
             'username' => $this->input("username"),
@@ -39,15 +39,19 @@ class User extends ApiController {
         return $user[0];
     }
 
-    public function current_get(){
-        return $this->user->current();
+    public function current_get () {
+        $user = $this->user->current();
+        if (empty($user)) {
+            $this->api->output->error(404);
+        }
+        return $user;
     }
 
-    public function getOne($userId){
+    public function getOne ($userId) {
         return $this->user->read($userId);
     }
 
-    public function getAll(){
+    public function getAll () {
         return $this->user->read();
     }
 

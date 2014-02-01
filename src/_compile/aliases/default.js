@@ -1,5 +1,5 @@
 module.exports = [
 
-	'build-all'
+	'build'
 
 ];

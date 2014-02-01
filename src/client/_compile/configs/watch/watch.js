@@ -7,60 +7,52 @@ module.exports = function(grunt, options){
 			livereload: options.liveReload.port
 		},
 
-		scripts: {
+		'client-scripts': {
 			files: [
-				'src/client/**/*.{coffee,ts,js}',
-				'src/client/*.{coffee,ts,js}'
+				this.SRC+'/client/static/**/*.js',
+				this.SRC+'/client/static/*.js'
 			],
-			tasks: 'compile_scripts'
+			tasks: 'compile-client-scripts'
 		},
 
-		pitures: {
+		'client-env': {
 			files: [
-				'src/client/**/*.{png,gif,jpeg,jpg,ico}',
-				'src/client/*.{png,gif,jpeg,jpg,ico}'
+				this.SRC+'/client/.htaccess',
+				this.SRC+'/client/static/.htaccess'
 			],
-			tasks: 'compile_pictures'
+			tasks: 'compile-client-env'
 		},
 
-		html: {
+		'client-images': {
 			files: [
-				'src/client/**/*.html',
-				'src/client/*.html'
+				this.SRC + '/client/static/**/*.{png,gif,jpeg,jpg,ico}',
+				this.SRC + '/client/static/*.{png,gif,jpeg,jpg,ico}'
 			],
-			tasks: 'compile_html'
+			tasks: 'compile-client-images'
 		},
 
-		templates: {
+		'client-html': {
 			files: [
-				'src/client/**/*.hbs',
-				'src/client/*.hbs'
+				this.SRC + '/client/static/**/*.html',
+				this.SRC + '/client/static/*.html'
 			],
-			tasks: 'compile_templates'
+			tasks: 'compile-client-html'
 		},
 
-		styles: {
+		'client-templates': {
 			files: [
-				'src/client/**/*.{less,scss,sass,css}',
-				'src/client/*.{less,scss,sass,css}'
+				this.SRC + '/client/static/**/*.hbs',
+				this.SRC + '/client/static/*.hbs'
 			],
-			tasks: 'compile_styles'
+			tasks: 'compile-client-templates'
 		},
 
-//		php: {
-//			files: [
-//				'api/**/*.{php,inc}',
-//				'api/*.{php,inc}',
-//			],
-//			tasks: 'compile_php'
-//		},
-
-		api: {
+		'client-styles': {
 			files: [
-				'src/api/**/*.{json,js}',
-				'src/api/*.{json,js}'
+				this.SRC + '/client/static/**/*.{less,scss,sass,css}',
+				this.SRC + '/client/static/*.{less,scss,sass,css}'
 			],
-			tasks: 'compile_api'
+			tasks: 'compile-client-styles'
 		}
 
 	};

@@ -1,92 +1,55 @@
 define(function(require, exports, module){
-    "use strict";
+	"use strict";
 
 	var _ = require('underscore');
-	var $ = require('jquery');
 	var Chaplin = require('chaplin');
 	var utils = require('lib/utils');
+	var BaseProvider = require('lib/providers/base/provider');
 
-	var config = {
-		apiVersion: '',
-		root: 'server/'
-	};
+	var ApiProvider = BaseProvider.extend({
 
-    var Api = function ApiProvider () {
+		version: null,
 
-		this.rootUrl = utils.makePath(utils.concatPaths(config.root, this.apiVersion));
+		base: 'api/',
 
-		this.dataType = 'json';
-	};
+		defaultParams: {
+			dataType: 'json',
+			contentType: 'json'
+		},
 
-	Api.prototype = {
-
-		_prepareResponse: function(resp){
-			if (_.isString(resp)) {
-				try {
-					resp = JSON.parse(resp);
-				} catch (_e) {}
-			}
-
-			if (!_.isObject(resp)) {
+		prepareResponse: function(resp, options){
+			resp = ApiProvider.__super__.prepareResponse.apply(this, arguments);
+			if (!resp) {
 				return null;
 			}
-
 			return {
 				status: resp.status,
 				meta: resp.meta,
 				data: resp.data
 			};
-
 		},
 
-		prepareOptions: function(opt){
-			return _.extend({}, opt);
-		},
-
-		ajax: function (opt) {
+		prepareParams: function (opt) {
 			var that = this;
-
-			opt = _.clone(opt);
-
-			var _success  = opt.success || function(){},
-				_error    = opt.error || function(){};
-
-			opt.url = utils.makePath(utils.concatPaths(this.rootUrl, opt.url));
-
-			opt.dataType = opt.dataType || this.dataType;
-
-			if (opt.dataType === 'json' && _.isObject(opt.data)) {
+			opt = ApiProvider.__super__.prepareParams.apply(this, arguments);
+			if (opt.contentType === 'json' && _.isObject(opt.data)) {
 				opt.data = JSON.stringify(opt.data);
 			}
-
-			opt.success = function (resp, jqHXR) {
-				resp = that._prepareResponse(resp);
-				if (resp !== null) {
-					_success.call(this, resp);
-					_success = null;
-				} else {
-					_error.call(this, jqHXR);
-					_error = null;
-				}
-			};
-
+			var _error = opt.error;
 			opt.error = function(jqXHR, textStatus, errorThrown){
-				var resp = that._prepareResponse(jqXHR.responseText);
-				if (resp !== null) {
-					_error.call(this, jqXHR, textStatus, errorThrown);
-					if (jqXHR.status === 401 && !opt.silentErrorHandler) {
-						Chaplin.utils.redirectTo({url: 'user/login/'});
-					}
-				} else {
-					jqXHR.responseText = null;
-					_error.call(this, jqXHR, textStatus, errorThrown);
+				var standard = true;
+				var resp = that.prepareResponse(jqXHR.responseText, opt);
+				if (_error) {
+					standard = false === _error.call(this, jqXHR, textStatus, errorThrown);
+				}
+				if (standard && (jqXHR.status === 401 || resp.status === 401)) {
+					Chaplin.utils.redirectTo({url: 'user/login/'});
 				}
 			};
-
-			return $.ajax(opt);
+			return opt;
 		}
+	});
 
-	};
 
-    return new Api();
+	return ApiProvider;
 });
