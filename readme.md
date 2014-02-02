@@ -89,7 +89,7 @@
 
 или развернутый вариант (он в strict_mode = только так)
 
-    "[PARAM_TYPE]PARAM_NAME:DATA_TYPE": {
+    "[PARAM_TYPE]PARAM_NAME:DATA_TYPE{LENGTH}": {
         "before": ["BEFORE_FILTER", "BEFORE_FILTER"],
         "rules": ["VALIDATION_RULE", "VALIDATION_RULE"],
         "after": ["AFTER_FILTER", "AFTER_FILTER"]
@@ -99,14 +99,14 @@
 Есть три типа входных данных:
 
 * **[query]** - знак @. Приходит из Query-string-params (в урл запроса после "?").
+Есть следующий список исключенных значений для имен query:
 
-    Есть следующий список исключенных значений для имен query:
-        API_VERSION,
-        api_version,
-        API_OUTPUT_FORMAT,
-        API_INPUT_FORMAT,
-        api_input_format,
-        api_output_format
+    API_VERSION,
+    api_version,
+    API_OUTPUT_FORMAT,
+    API_INPUT_FORMAT,
+    api_input_format,
+    api_output_format
 
 
 * **[url]**    - знак $
@@ -207,12 +207,12 @@
 ### 2.2.2 Response
 
     формат описания выходных данных
-        "response:FORMAT({LIMIT,MAX_LIMIT},PAGE_NUMBER)": [
+        "response:FORMAT({LIMIT,MAX_LIMIT}PAGE_NUMBER)": [
             "OUTPUT_PARAM_NAME:DATA_TYPE",
             "OUTPUT_PARAM_NAME:DATA_TYPE"
         ]
     или
-        "response:FORMAT({LIMIT,MAX_LIMIT},PAGE_NUMBER)": {
+        "response:FORMAT({LIMIT,MAX_LIMIT}PAGE_NUMBER)": {
             data: [
                 "OUTPUT_PARAM_NAME:DATA_TYPE",
                 "OUTPUT_PARAM_NAME:DATA_TYPE"

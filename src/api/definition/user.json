@@ -1,6 +1,6 @@
 {
 	"GET user": {
-		"response:array": [
+		"response:many({255})": [
 			"id:integer",
 			"username:string",
 			"email:string"

@@ -1,9 +1,9 @@
 {
 	"GET todo/$todo_id/item": {
 		"request": {
-			"$todo_id:number": "required"
+			"$todo_id:integer": "required"
 		},
-		"response:array": [
+		"response:many({255})": [
 			"id:integer",
 			"todo_id:integer",
 			"sort_order:integer",
@@ -14,11 +14,11 @@
 	},
 	"GET todo/$todo_id/item/$id": {
 		"request": {
-			"$todo_id:number": "required",
-			"$id:number": "required"
+			"$todo_id:integer": "required",
+			"$id:integer": "required"
 		},
 		"response": [
-			"id:number",
+			"id:integer",
 			"name:string",
 			"date_create:string",
 			"sort_order:integer",

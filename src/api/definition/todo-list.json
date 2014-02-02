@@ -4,7 +4,7 @@
 			"need_login": true,
 			"only_owner": true
 		},
-		"response:array": [
+		"response:many({255})": [
 			"id:integer",
 			"link:string",
 			"name:string",
@@ -14,7 +14,7 @@
 	},
 	"GET todo/$id": {
 		"request": {
-			"$id:number": "required"
+			"$id:integer": "required"
 		},
 		"response": [
 			"id:integer",

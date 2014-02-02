@@ -1,9 +1,9 @@
 {
     "GET todo/$todo_id/item": {
         "request": {
-            "$todo_id:number": "required"
+            "$todo_id:integer": "required"
         },
-        "response:array": [
+        "response:many({255})": [
             "id:integer",
             "todo_id:integer",
             "sort_order:integer",
@@ -14,11 +14,11 @@
     },
     "GET todo/$todo_id/item/$id": {
         "request": {
-            "$todo_id:number": "required",
-            "$id:number": "required"
+            "$todo_id:integer": "required",
+            "$id:integer": "required"
         },
         "response": [
-            "id:number",
+            "id:integer",
             "name:string",
             "date_create:string",
             "sort_order:integer",
@@ -82,7 +82,7 @@
             "need_login": true,
             "only_owner": true
         },
-        "response:array": [
+        "response:many({255})": [
             "id:integer",
             "link:string",
             "name:string",
@@ -92,7 +92,7 @@
     },
     "GET todo/$id": {
         "request": {
-            "$id:number": "required"
+            "$id:integer": "required"
         },
         "response": [
             "id:integer",
@@ -152,7 +152,7 @@
         ]
     },
     "GET user": {
-        "response:array": [
+        "response:many({255})": [
             "id:integer",
             "username:string",
             "email:string"
@@ -187,7 +187,7 @@
         },
         "request": {
             "$id:integer": "optional|exists",
-            "username:string": "optional|unique|need['password_old']",
+            "username:string": "optional|need['password_old']|unique",
             "email:string": "required|valid_email|unique|need['password_old']",
             "password_old:string": "optional|valid_password",
             "password_new:string": "optional|matches['password_new_confirm']|need['password_old']",

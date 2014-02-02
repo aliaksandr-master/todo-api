@@ -131,6 +131,10 @@ abstract class ApiController extends REST_Controller {
         return (bool) preg_match( '/^[0-9]+$/', $value);
     }
 
+    function _rule__float ($value, $fieldName) {
+        return (bool) preg_match('/^[\-+]?[0-9]+(\.[0-9]+)?([eE][\-+]?[0-9]+)?$/', $value);
+    }
+
     function _rule__is_natural_no_zero ($value, $fieldName) {
         return (bool) (preg_match( '/^[0-9]+$/', $value) && $value != 0);
     }
