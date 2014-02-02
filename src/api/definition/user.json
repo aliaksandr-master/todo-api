@@ -35,7 +35,7 @@
 		},
 		"request" : {
 			"$id:integer": "optional|exists",
-			"username:string": "optional|unique|need['password_old']",
+			"username:string": "optional|need['password_old']|unique",
 			"email:string": "required|valid_email|unique|need['password_old']",
 			"password_old:string": "optional|valid_password",
 			"password_new:string": "optional|matches['password_new_confirm']|need['password_old']",
