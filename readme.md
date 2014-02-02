@@ -1,16 +1,20 @@
 # 1. Commands
+
 ## 1.1 Dependencies. Install next Programs
     nodejs
     npm
     mysqldump
     npm install -g grunt-cli
+
 ## 1.2 exec for build node deps and build the project
     npm install
-# 1.3 update build:
+
+## 1.3 update build:
     npm install
     grunt install build
     grunt install watch
-# 1.4 deployment build
+
+## 1.4 deployment build
     npm install
     grunt build-dev
     grunt build-test
@@ -75,99 +79,128 @@
         man_url
 
 ### 2.2.1 request
+Каждое входное значение может быть задано в форме
 
-    Каждое входное значение может быть задано в форме
-        "[PARAM_TYPE]PARAM_NAME:DATA_TYPE{LENGTH}#BEFORE_FILTER*AFTER_FILTER": "VALIDATION_RULE|VALIDATION_RULE"
-    или валидация может быть заданна в виде массива
-        "[PARAM_TYPE]PARAM_NAME:DATA_TYPE{LENGTH}#BEFORE_FILTER*AFTER_FILTER": ["VALIDATION_RULE", "VALIDATION_RULE"]
-    или развернутый вариант (он в strict_mode = только так)
-        "[PARAM_TYPE]PARAM_NAME:DATA_TYPE": {
-            "before": ["BEFORE_FILTER", "BEFORE_FILTER"],
-            "rules": ["VALIDATION_RULE", "VALIDATION_RULE"],
-            "after": ["AFTER_FILTER", "AFTER_FILTER"]
-        }
+    "[PARAM_TYPE]PARAM_NAME:DATA_TYPE{LENGTH}#BEFORE_FILTER*AFTER_FILTER": "VALIDATION_RULE|VALIDATION_RULE"
 
-    PARAM_TYPE
-        Есть три типа входных данных:
-            [query] - знак @
-                приходит из Query-string-params (в урл запроса после "?")
-                Есть следующий список исключенных значений для имен query
-                    API_VERSION
-                    api_version
-                    API_OUTPUT_FORMAT
-                    API_INPUT_FORMAT
-                    api_input_format
-                    api_output_format
-            [url]    - знак $
-                приходит из урл запроса в случае если заданы в имени описания
-            [input]  - знак > его можно не писать вообще, все данные без обозначения = [input]
-                приходит в боди запроса. Соответсвтенно нету в GET запросе.
+или валидация может быть заданна в виде массива
 
-    PARAM_NAME
-        Названия могут содержать только следующие символы, заданные шаблоном ([a-zA-Z0-9_]+)
+    "[PARAM_TYPE]PARAM_NAME:DATA_TYPE{LENGTH}#BEFORE_FILTER*AFTER_FILTER": ["VALIDATION_RULE", "VALIDATION_RULE"]
 
-    DATA_TYPE
-        Тип данных нужен для приведения к нему входного значения
-        Если тип данных не указан - то по умолчанию это string
-        Доступны следующие типы данных:
-            :text - строка, по умолчанию не имеет ограничений по длине и не производится никаких процедур для приведения к формату
-            :string - не может привышать длинной 255 символов (если не задано другого  в параметрах), убираются все пробельные символы (\s) в начале и конце строки (trim)
-            :integer - целочиселнное значение. только цифры и знак.
-            :decimal - целочиселнное значение. только цифры. без знака
-            :float - число с плавающей точкой. только цифры, знак и точка (а не запятая). также воспринимается и формат "-0.2e-10"
-            :boolean - преобразуется в булевское значение. Пустая строка, 0, '0' преобразуются в FALSE
-        Для числовых типов по умолчанию не происходит trim и нет ограничения по длине. Но есть ограничение по формату
+или развернутый вариант (он в strict_mode = только так)
 
-    LENGTH
-        Длина входного значения.
-        После записи типа данных может быть описано длина входных данных. при этом можно описывать :
-            {30} - жесткое соответствие длине строки
-            {1,30} - длина от 1 до 30
-            {4,} - длина должна быть от 4 до бесконечности
-            {,50} - длина должна быть ограничена 50-ю символами
-        В случае числовых типов знак "-" будет учитываться в длине строки. все положительные знчения не имеют знака.
+    "[PARAM_TYPE]PARAM_NAME:DATA_TYPE": {
+        "before": ["BEFORE_FILTER", "BEFORE_FILTER"],
+        "rules": ["VALIDATION_RULE", "VALIDATION_RULE"],
+        "after": ["AFTER_FILTER", "AFTER_FILTER"]
+    }
+
+#### PARAM_TYPE
+Есть три типа входных данных:
+
+* **[query]** - знак @. Приходит из Query-string-params (в урл запроса после "?").
+
+    Есть следующий список исключенных значений для имен query:
+        API_VERSION,
+        api_version,
+        API_OUTPUT_FORMAT,
+        API_INPUT_FORMAT,
+        api_input_format,
+        api_output_format
+
+
+* **[url]**    - знак $
+    приходит из урл запроса в случае если заданы в имени описания
+
+
+* **[input]**  - знак > его можно не писать вообще, все данные без обозначения = [input].
+    приходит в боди запроса. Соответсвтенно нету в GET запросе.
+
+#### PARAM_NAME
+    Названия могут содержать только следующие символы, заданные шаблоном ([a-zA-Z0-9_]+)
+
+#### DATA_TYPE
+    Тип данных нужен для приведения к нему входного значения
+    Если тип данных не указан - то по умолчанию это string
+    Доступны следующие типы данных:
+        :text - строка, по умолчанию не имеет ограничений по длине и не производится никаких процедур для приведения к формату
+        :string - не может привышать длинной 255 символов (если не задано другого  в параметрах), убираются все пробельные символы (\s) в начале и конце строки (trim)
+        :integer - целочиселнное значение. только цифры и знак.
+        :decimal - целочиселнное значение. только цифры. без знака
+        :float - число с плавающей точкой. только цифры, знак и точка (а не запятая). также воспринимается и формат "-0.2e-10"
+        :boolean - преобразуется в булевское значение. Пустая строка, 0, '0' преобразуются в FALSE
+    Для числовых типов по умолчанию не происходит trim и нет ограничения по длине. Но есть ограничение по формату
+
+#### LENGTH
+    Длина входного значения.
+    После записи типа данных может быть описано длина входных данных. при этом можно описывать :
+        {30} - жесткое соответствие длине строки
+        {1,30} - длина от 1 до 30
+        {4,} - длина должна быть от 4 до бесконечности
+        {,50} - длина должна быть ограничена 50-ю символами
+    В случае числовых типов знак "-" будет учитываться в длине строки. все положительные знчения не имеют знака.
     по типу данных и длине производится валидация correct['DATA_TYPE','LENGTH'].
     В случае не корректно введенных данных - вернется ощибка "correct" и параметрами
 
-    BEFORE_FILTER
-        Это перечисление последовательности процедур для приведение к нужному формату
-        Все :string получают автоматически trim и xss фильтры
-        Доступны
-            trim
-            xss
-            to_string
-            to_integer
-            to_boolean
-            to_float
-            camelcase
-            underscorecase
-            dashcase
-            capitalize
-            uppercase
-            lowercase
+#### BEFORE_FILTER
+    Это перечисление последовательности процедур для приведение к нужному формату
+    Все :string получают автоматически trim и xss фильтры
+    Доступны
+        trim
+        xss
+        to_string
+        to_integer
+        to_boolean
+        to_float
+        camelcase
+        underscorecase
+        dashcase
+        capitalize
+        uppercase
+        lowercase
 
-    AFTER_FILTER
-        Это закрытое свойство. в компилируемом открытом апи этого не будет указано.
-        Это перечисление постфильтров для параметра.
-        Производятся после всех валидаций
-        доступны все BEFORE_FILTER фильтры, а также
-            password - реализуется системой
-            key('SOME') - переназывает ключ
-            и другие, которые написаны в системе.
+#### AFTER_FILTER
+    Это закрытое свойство. в компилируемом открытом апи этого не будет указано.
+    Это перечисление постфильтров для параметра.
+    Производятся после всех валидаций
+    доступны все BEFORE_FILTER фильтры, а также
+        password - реализуется системой
+        key('SOME') - переназывает ключ
+        и другие, которые написаны в системе.
 
-    VALIDATION_RULE
-        Правила валидации могут быть как встроенные в систему, так и добавленные специально для необходимого модуля
-        Обязательные правила только: optional и required - они не могут быть заданы одновременно. В случае если не задан ни один - по умолчанию это означает 'required'
-        Правила могут записываться как в форме массива, так и в форме сплошной строки, правила при этом разделяются вертикальной чертой "|"
-        Правила могут иметь параметры, при этом параметры записываются в JSON строки. Значения не должны содержать одиночных ковычек. Знак одиночной ковычки используются как алиас для экраниования двойной ковычки
+#### VALIDATION_RULE
+    Правила валидации могут быть как встроенные в систему, так и добавленные специально для необходимого модуля
+    Обязательные правила только: optional и required - они не могут быть заданы одновременно. В случае если не задан ни один - по умолчанию это означает 'required'
+    Правила могут записываться как в форме массива, так и в форме сплошной строки, правила при этом разделяются вертикальной чертой "|"
+    Правила могут иметь параметры, при этом параметры записываются в JSON строки. Значения не должны содержать одиночных ковычек. Знак одиночной ковычки используются как алиас для экраниования двойной ковычки
+    примеры правил:
+        required
+        need
+        matches['inputName']
+        min_length['value']
+        max_length['value']
+        exact_length['value']
+        alpha
+        alpha_numeric
+        alpha_dash
+        numeric
+        integer
+        decimal
+        is_natural
+        is_natural_no_zero
+        valid_base64
+        valid_email
+        valid_url
+        valid_date
+        unique"
 
-    Примеры
-        "$user_id:number{1,11}#trim": "required|exists"
-        "@is_active:boolean": "optional"
-        "password:string{6,25}": "optional"
-        ">view_name:string{3,30}#trim": "required"
-        "last_name:string{3,30}#trim": "required"
-        "first_name:string{3,30}#trim": ["required"]
+#### Примеры
+    "$user_id:number{1,11}#trim": "required|exists"
+    "@is_active:boolean": "optional"
+    "password:string{6,25}": "optional"
+    ">view_name:string{3,30}#trim": "required"
+    "last_name:string{3,30}#trim": "required"
+    "first_name:string{3,30}#trim": ["required"]
 
     Система не должна взять больше параметров чем заявлено в описании. если взяла - то это баг
 
@@ -220,7 +253,7 @@
         для задания PARAM_FILTER необходимо обязательно задать FORMAT :many
         Задается имя входного параметра вместе PARAM_TYPE (@,$,>)
         это может быть только :decimal тип
- 
+
 ### 2.2.3 Access
     Задается параметрами системы.
     only_owner: true - можно изменить в случае если залогинен и user_id равен user_id создателя записи.
@@ -244,3 +277,24 @@
             xml
             json
 
+
+## 2.4 ПРИМЕР ОПИСАНИЯ
+    "PUT user/$id": {
+        "access": {
+            "need_login": true,
+            "only_owner": true
+        },
+        "request" : {
+            "$id:integer": "optional|exists",
+            "username:string": "optional|need['password_old']|unique",
+            "email:string": "required|valid_email|unique|need['password_old']",
+            "password_old:string": "optional|valid_password",
+            "password_new:string": "optional|matches['password_new_confirm']|need['password_old']",
+            "password_new_confirm:string": "optional|matches['password_new']|need['password_old']"
+        },
+        "response": [
+            "id:integer",
+            "username:string",
+            "email:string"
+        ]
+    },
