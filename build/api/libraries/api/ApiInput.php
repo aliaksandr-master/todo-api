@@ -10,9 +10,9 @@ class ApiInput {
     private $_shuttle;
 
     private $_input = array();
-    private $_inputParams = array();
-    private $_inputFilters = array();
-    private $_inputArguments = array();
+    private $_URL = array();
+    private $_QUERY = array();
+    private $_INPUT = array();
 
     private $_errors = array();
 
@@ -59,30 +59,30 @@ class ApiInput {
 
     function argument ($name = null, $default = null) {
         if (is_null($name)) {
-            return $this->_inputArguments;
+            return $this->_INPUT;
         }
-        if (isset($this->_inputArguments[$name])) {
-            return $this->_inputArguments[$name];
+        if (isset($this->_INPUT[$name])) {
+            return $this->_INPUT[$name];
         }
         return $default;
     }
 
     function param ($name = null, $default = null) {
         if (is_null($name)) {
-            return $this->_inputParams;
+            return $this->_URL;
         }
-        if (isset($this->_inputParams[$name])) {
-            return $this->_inputParams[$name];
+        if (isset($this->_URL[$name])) {
+            return $this->_URL[$name];
         }
         return $default;
     }
 
     function filter ($name = null, $default = null) {
         if (is_null($name)) {
-            return $this->_inputFilters;
+            return $this->_QUERY;
         }
-        if (isset($this->_inputFilters[$name])) {
-            return $this->_inputFilters[$name];
+        if (isset($this->_QUERY[$name])) {
+            return $this->_QUERY[$name];
         }
         return $default;
     }
@@ -97,46 +97,72 @@ class ApiInput {
         return $default;
     }
 
-    function init ($arguments, $urlParams, $inputFilters){
-        foreach ($this->_shuttle->api->get(Api::URL_PARAMS) as $param) {
-            $value = isset($urlParams[$param['index']]) ? $urlParams[$param['index']] : null;
-            if (!is_null($value)) {
-                $this->_inputParams[$param["name"]] = $this->_shuttle->toType($value, $param["type"]);
+    function init ($input, $url, $QUERY){
+        $request = $this->_shuttle->api->get(Api::REQUEST);
+
+        if (!empty($request['input']['URL'])) {
+            foreach ($request['input']['URL'] as  $index => $param) {
+                $value = isset($url[$index]) ? $url[$index] : null;
+                if (!is_null($value)) {
+                    foreach ($param['beforeFilters'] as $filter) {
+                        $value = $this->_shuttle->applyFilter($value, $filter, array());
+                    }
+                    $this->_URL[$param["name"]] = $this->_shuttle->toType($value, $param["type"], $param);
+                }
             }
         }
-        foreach ($this->_shuttle->api->get(Api::REQUEST) as $param) {
-            $value = isset($arguments[$param['name']]) ? $arguments[$param['name']] : null;
-            if (!is_null($value)) {
-                $this->_inputArguments[$param["name"]] = $this->_shuttle->toType($value, $param["type"]);
+
+        if (!empty($request['input']['INPUT'])) {
+            foreach ($request['input']['INPUT'] as $param) {
+                $value = isset($input[$param['name']]) ? $input[$param['name']] : null;
+                if (!is_null($value)) {
+                    foreach ($param['beforeFilters'] as $filter) {
+                        $value = $this->_shuttle->applyFilter($value, $filter, array());
+                    }
+                    $this->_INPUT[$param["name"]] = $this->_shuttle->toType($value, $param["type"], $param);
+                }
             }
         }
-        foreach ($this->_shuttle->api->get(Api::FILTERS) as $param) {
-            $value = isset($inputFilters[$param['name']]) ? $inputFilters[$param['name']] : null;
-            if (!is_null($value)) {
-                $this->_inputFilters[$param["name"]] = $this->_shuttle->toType($value, $param["type"]);
+
+        if (!empty($request['input']['QUERY'])) {
+            foreach ($request['input']['QUERY'] as $param) {
+                $value = isset($QUERY[$param['name']]) ? $QUERY[$param['name']] : null;
+                if (!is_null($value)) {
+                    foreach ($param['beforeFilters'] as $filter) {
+                        $value = $this->_shuttle->applyFilter($value, $filter, array());
+                    }
+                    $this->_QUERY[$param["name"]] = $this->_shuttle->toType($value, $param["type"], $param);
+                }
             }
         }
-        $this->_input = array_merge($this->_input, $this->_inputFilters, $this->_inputParams, $this->_inputArguments);
+        $this->_input = array_merge($this->_input, $this->_QUERY, $this->_URL, $this->_INPUT);
     }
 
     function check () {
         $valid = 1;
-        foreach ($this->_shuttle->api->get(Api::URL_PARAMS) as $param) {
-            $value = isset($this->_inputParams[$param['name']]) ? $this->_inputParams[$param['name']] : null;
-            if (!empty($param['validation'])) {
-                $valid *= $this->validate($param["name"], $value, $param['validation'], true);
+        $request = $this->_shuttle->api->get(Api::REQUEST);
+        if (!empty($request['input']['URL'])) {
+            foreach ($request['input']['URL'] as $param) {
+                $value = isset($this->_URL[$param['name']]) ? $this->_URL[$param['name']] : null;
+                if (!empty($param['validation'])) {
+                    $valid *= $this->validate($param["name"], $value, $param['validation'], true);
+                }
             }
         }
-        foreach ($this->_shuttle->api->get(Api::REQUEST) as $param) {
-            $value = isset($this->_inputArguments[$param['name']]) ? $this->_inputArguments[$param['name']] : null;
-            if (!empty($param['validation'])) {
-                $valid *= $this->validate($param["name"], $value, $param['validation'], true);
+        if (!empty($request['input']['INPUT'])) {
+            foreach ($request['input']['INPUT'] as $param) {
+                $value = isset($this->_INPUT[$param['name']]) ? $this->_INPUT[$param['name']] : null;
+                if (!empty($param['validation'])) {
+                    $valid *= $this->validate($param["name"], $value, $param['validation'], true);
+                }
             }
         }
-        foreach ($this->_shuttle->api->get(Api::FILTERS) as $param) {
-            $value = isset($this->_inputFilters[$param['name']]) ? $this->_inputFilters[$param['name']] : null;
-            if (!empty($param['validation'])) {
-                $valid *= $this->validate($param["name"], $value, $param['validation'], true);
+        if (!empty($request['input']['QUERY'])) {
+            foreach ($request['input']['QUERY'] as $param) {
+                $value = isset($this->_QUERY[$param['name']]) ? $this->_QUERY[$param['name']] : null;
+                if (!empty($param['validation'])) {
+                    $valid *= $this->validate($param["name"], $value, $param['validation'], true);
+                }
             }
         }
         if (!$valid) {

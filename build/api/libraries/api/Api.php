@@ -12,28 +12,21 @@ class Api {
     const API_NAME          = 'api_name';
     const CELL_NAME         = 'id';
     const URL               = 'url';
-    const URL_PARAMS        = 'params';
     const ARGUMENTS_COUNT   = 'params_count';
-    const FILTERS           = 'filters';
     const RESPONSE          = 'response';
-    const RESPONSE_TYPE     = "response_type";
     const REQUEST           = 'request';
     const REQUEST_METHOD    = "method";
     const ACCESS            = "access";
 
-    const RESPONSE_TYPES    = 'item|array';
-    const RESPONSE_TYPE_ONE = 'item';
-    const RESPONSE_TYPE_ALL = 'array';
+    const RESPONSE_TYPE_ONE = 'one';
+    const RESPONSE_TYPE_ALL = 'many';
 
-    const TYPES             = 'array|object|number|string|integer|float|boolean|bool';
-    const TYPE_ARRAY        = 'array';
-    const TYPE_OBJECT       = 'object';
-    const TYPE_NUMBER       = 'number';
+    const TYPE_TEXT         = 'text';
+    const TYPE_DECIMAL      = 'decimal';
     const TYPE_STRING       = 'string';
     const TYPE_INTEGER      = 'integer';
     const TYPE_FLOAT        = 'float';
     const TYPE_BOOLEAN      = 'boolean';
-    const TYPE_BOOL         = 'bool';
 
     private static $_apiParsed  = array();
     private static $_singletons = array();
@@ -77,7 +70,10 @@ class Api {
         $this->_shuttle->input->check();
     }
 
-    function get ($name, $default = null) {
+    function get ($name = null, $default = null) {
+        if (is_null($name)){
+            return $this->_apiData;
+        }
         return isset($this->_apiData[$name]) ? $this->_apiData[$name] : $default;
     }
 

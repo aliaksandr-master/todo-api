@@ -59,35 +59,41 @@ class ApiOutput {
                 }
             }
         }
+
         // SEND RESPONSE
         if($this->_shuttle->api->hasError()){
             $response["data"] = array();
         }else{
             if(isset($response["data"])){
-                $data = $this->prepareResponseData($response["data"]);
+                $data = $this->prepareResponseData($response["data"], 'data');
                 if(is_null($data)){
                     $response["data"] = array();
-                    $this->status(404);
                 } else {
                     $response["data"] = $data;
                 }
             } else {
-                $this->status(500);
+                $response["data"] = array();
             }
         }
+
+        // SEND RESPONSE
+        if (isset($response["meta"])) {
+            $response["meta"] = $this->prepareResponseData($response["meta"], 'meta');
+        }
+
         // DEBUG DATA (only for development or testing mode
         if(ENVIRONMENT == "development" || ENVIRONMENT == "testing"){
             $response["debug"] = array(
                 'url' => $_SERVER['REQUEST_URI'],
                 'method' => $method,
                 'time' => (round((gettimeofday(true) - START_TIME)*100000)/100000),
+                "API" => $this->_shuttle->api->get(),
                 'input' => array(
-                    "api" => $this->_shuttle->api->get(Api::API_NAME),
                     'data' => array(
                         "source" => INPUT_DATA,
-                        "params"    => $this->_shuttle->input->param(),
-                        "arguments" => $this->_shuttle->input->argument(),
-                        "filters"   => $this->_shuttle->input->filter()
+                        "URL"    => $this->_shuttle->input->param(),
+                        "INPUT" => $this->_shuttle->input->argument(),
+                        "QUERY"   => $this->_shuttle->input->filter()
                     )
                 )
             );
@@ -134,7 +140,8 @@ class ApiOutput {
     public function response(){
         $response = array(
             'status' => $this->status(),
-            'data' => $this->_data
+            'data' => $this->_data,
+            'meta' => $this->_meta
         );
 
         $inputErrors = $this->_shuttle->input->errors();
@@ -189,9 +196,11 @@ class ApiOutput {
         }
     }
 
-    function prepareResponseData ($data) {
+    function prepareResponseData ($data, $keyName = 'data') {
         $_data = array();
-        $type = $this->_shuttle->api->get(Api::RESPONSE_TYPE);
+        $type = $this->_shuttle->api->get(Api::RESPONSE);
+        $type = $type['type'];
+        $response = $this->_shuttle->api->get(Api::RESPONSE);
 
         if($type == Api::RESPONSE_TYPE_ONE){
             if (isset($data[0]) && is_array($data[0])) {
@@ -200,18 +209,22 @@ class ApiOutput {
             if (empty($data)) {
                 return null;
             } else {
-                foreach ($this->_shuttle->api->get(Api::RESPONSE) as $param) {
-                    $this->_prepareData($_data, $data, $param, true);
+                if (!empty($response['output'][$keyName])) {
+                    foreach ($response['output'][$keyName] as $param) {
+                        $this->_prepareData($_data, $data, $param, true);
+                    }
                 }
             }
         } else if ($type == Api::RESPONSE_TYPE_ALL) {
             if (!empty($data) && (!isset($data[0]) || !is_array($data[0]))) {
                 $data = array($data);
             }
-            foreach ($data as $k=>$_d) {
-                $_data[$k] = array();
-                foreach ($this->_shuttle->api->get(Api::RESPONSE) as $param) {
-                    $this->_prepareData($_data[$k], $_d, $param, true);
+            if (!empty($response['output'][$keyName])) {
+                foreach ($data as $k => $_d) {
+                    $_data[$k] = array();
+                    foreach ($response['output'][$keyName] as $param) {
+                        $this->_prepareData($_data[$k], $_d, $param, true);
+                    }
                 }
             }
         }

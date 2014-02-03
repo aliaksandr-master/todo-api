@@ -300,6 +300,7 @@ module.exports = function(grunt){
 								throw new Error(apiName + ': Invalid response data param "' + option + '"');
 							}
 							response.output.data[name] = {
+								name: name,
 								type: type
 							}
 						});
@@ -312,6 +313,7 @@ module.exports = function(grunt){
 							var name = opt[0];
 							var type = opt[1] || DEFAULT_TYPE;
 							response.output.meta[name] = {
+								name: name,
 								type: type
 							};
 							if (!TYPES_EXP.test(type)) {

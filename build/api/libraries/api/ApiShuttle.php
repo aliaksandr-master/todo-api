@@ -50,14 +50,18 @@ class ApiShuttle {
         return $this->_errors;
     }
 
-    public function toType ($var, $type) {
+    public function applyFilter ($var, $filter, $params = array()) {
+        $filterMethod = '_filter__'.$filter;
+        return $this->context->$filterMethod($var, $params);
+    }
+
+    public function toType ($var, $type, $param = null) {
         switch ($type) {
-            case Api::TYPE_NUMBER:
+            case Api::TYPE_DECIMAL:
             case Api::TYPE_INTEGER:
                 return intval(trim((string) $var));
             case Api::TYPE_FLOAT:
                 return floatval(trim((string) $var));
-            case Api::TYPE_BOOL:
             case Api::TYPE_BOOLEAN:
                 return (bool) $var;
         }

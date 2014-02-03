@@ -55,6 +55,17 @@ abstract class ApiController extends REST_Controller {
         return true;
     }
 
+    /*---------------------------------------------- FILTERS ----------------------------*/
+
+    function _filter__xss ($value, $params = array()) {
+        return $value;
+    }
+
+    function _filter__trim ($value, $params = array()) {
+        return trim((string)$value);
+    }
+
+
     /*---------------------------------------------- VALIDATION RULES ----------------------------*/
 
     function _rule__required($value){
