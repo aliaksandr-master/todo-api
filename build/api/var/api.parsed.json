@@ -8,26 +8,19 @@
                 "URL": [
                     {
                         "name": "todo_id",
-                        "type": "string",
-                        "beforeFilters": [
-                            "xss",
-                            "trim"
-                        ],
-                        "afterFilters": [],
+                        "type": "integer",
+                        "filters": {
+                            "before": [],
+                            "after": []
+                        },
                         "validation": {
                             "required": {
-                                "source": "required",
                                 "name": "required",
-                                "method": "_rule__required",
-                                "params": {}
+                                "params": []
                             },
-                            "max_length": {
-                                "source": "max_length",
-                                "name": "max_length",
-                                "method": "_rule__max_length",
-                                "params": [
-                                    255
-                                ]
+                            "integer": {
+                                "name": "integer",
+                                "params": []
                             }
                         },
                         "url_index": 9
@@ -44,27 +37,51 @@
                 "data": {
                     "id": {
                         "name": "id",
-                        "type": "integer"
+                        "type": "integer",
+                        "filters": {
+                            "before": [],
+                            "after": []
+                        }
                     },
                     "todo_id": {
                         "name": "todo_id",
-                        "type": "integer"
+                        "type": "integer",
+                        "filters": {
+                            "before": [],
+                            "after": []
+                        }
                     },
                     "sort_order": {
                         "name": "sort_order",
-                        "type": "integer"
+                        "type": "integer",
+                        "filters": {
+                            "before": [],
+                            "after": []
+                        }
                     },
                     "name": {
                         "name": "name",
-                        "type": "string"
+                        "type": "string",
+                        "filters": {
+                            "before": [],
+                            "after": []
+                        }
                     },
                     "date_create": {
                         "name": "date_create",
-                        "type": "string"
+                        "type": "string",
+                        "filters": {
+                            "before": [],
+                            "after": []
+                        }
                     },
                     "is_active": {
                         "name": "is_active",
-                        "type": "boolean"
+                        "type": "boolean",
+                        "filters": {
+                            "before": [],
+                            "after": []
+                        }
                     }
                 },
                 "meta": {}
@@ -86,52 +103,38 @@
                 "URL": [
                     {
                         "name": "todo_id",
-                        "type": "string",
-                        "beforeFilters": [
-                            "xss",
-                            "trim"
-                        ],
-                        "afterFilters": [],
+                        "type": "integer",
+                        "filters": {
+                            "before": [],
+                            "after": []
+                        },
                         "validation": {
                             "required": {
-                                "source": "required",
                                 "name": "required",
-                                "method": "_rule__required",
-                                "params": {}
+                                "params": []
                             },
-                            "max_length": {
-                                "source": "max_length",
-                                "name": "max_length",
-                                "method": "_rule__max_length",
-                                "params": [
-                                    255
-                                ]
+                            "integer": {
+                                "name": "integer",
+                                "params": []
                             }
                         },
                         "url_index": 9
                     },
                     {
                         "name": "id",
-                        "type": "string",
-                        "beforeFilters": [
-                            "xss",
-                            "trim"
-                        ],
-                        "afterFilters": [],
+                        "type": "integer",
+                        "filters": {
+                            "before": [],
+                            "after": []
+                        },
                         "validation": {
                             "required": {
-                                "source": "required",
                                 "name": "required",
-                                "method": "_rule__required",
-                                "params": {}
+                                "params": []
                             },
-                            "max_length": {
-                                "source": "max_length",
-                                "name": "max_length",
-                                "method": "_rule__max_length",
-                                "params": [
-                                    255
-                                ]
+                            "integer": {
+                                "name": "integer",
+                                "params": []
                             }
                         },
                         "url_index": 23
@@ -145,23 +148,43 @@
                 "data": {
                     "id": {
                         "name": "id",
-                        "type": "integer"
+                        "type": "integer",
+                        "filters": {
+                            "before": [],
+                            "after": []
+                        }
                     },
                     "name": {
                         "name": "name",
-                        "type": "string"
+                        "type": "string",
+                        "filters": {
+                            "before": [],
+                            "after": []
+                        }
                     },
                     "date_create": {
                         "name": "date_create",
-                        "type": "string"
+                        "type": "string",
+                        "filters": {
+                            "before": [],
+                            "after": []
+                        }
                     },
                     "sort_order": {
                         "name": "sort_order",
-                        "type": "integer"
+                        "type": "integer",
+                        "filters": {
+                            "before": [],
+                            "after": []
+                        }
                     },
                     "is_active": {
                         "name": "is_active",
-                        "type": "boolean"
+                        "type": "boolean",
+                        "filters": {
+                            "before": [],
+                            "after": []
+                        }
                     }
                 },
                 "meta": {}
@@ -183,26 +206,19 @@
                 "URL": [
                     {
                         "name": "todo_id",
-                        "type": "string",
-                        "beforeFilters": [
-                            "xss",
-                            "trim"
-                        ],
-                        "afterFilters": [],
+                        "type": "integer",
+                        "filters": {
+                            "before": [],
+                            "after": []
+                        },
                         "validation": {
                             "required": {
-                                "source": "required",
                                 "name": "required",
-                                "method": "_rule__required",
-                                "params": {}
+                                "params": []
                             },
-                            "max_length": {
-                                "source": "max_length",
-                                "name": "max_length",
-                                "method": "_rule__max_length",
-                                "params": [
-                                    255
-                                ]
+                            "integer": {
+                                "name": "integer",
+                                "params": []
                             }
                         },
                         "url_index": 10
@@ -212,22 +228,27 @@
                     "name": {
                         "name": "name",
                         "type": "string",
-                        "beforeFilters": [
-                            "xss",
-                            "trim"
-                        ],
-                        "afterFilters": [],
+                        "filters": {
+                            "before": [
+                                {
+                                    "name": "trim",
+                                    "params": []
+                                }
+                            ],
+                            "after": [
+                                {
+                                    "name": "xss",
+                                    "params": []
+                                }
+                            ]
+                        },
                         "validation": {
                             "optional": {
-                                "source": "optional",
                                 "name": "optional",
-                                "method": "_rule__optional",
-                                "params": {}
+                                "params": []
                             },
                             "max_length": {
-                                "source": "max_length",
                                 "name": "max_length",
-                                "method": "_rule__max_length",
                                 "params": [
                                     255
                                 ]
@@ -236,26 +257,15 @@
                     },
                     "is_active": {
                         "name": "is_active",
-                        "type": "string",
-                        "beforeFilters": [
-                            "xss",
-                            "trim"
-                        ],
-                        "afterFilters": [],
+                        "type": "boolean",
+                        "filters": {
+                            "before": [],
+                            "after": []
+                        },
                         "validation": {
                             "optional": {
-                                "source": "optional",
                                 "name": "optional",
-                                "method": "_rule__optional",
-                                "params": {}
-                            },
-                            "max_length": {
-                                "source": "max_length",
-                                "name": "max_length",
-                                "method": "_rule__max_length",
-                                "params": [
-                                    255
-                                ]
+                                "params": []
                             }
                         }
                     }
@@ -268,27 +278,51 @@
                 "data": {
                     "id": {
                         "name": "id",
-                        "type": "integer"
+                        "type": "integer",
+                        "filters": {
+                            "before": [],
+                            "after": []
+                        }
                     },
                     "todo_id": {
                         "name": "todo_id",
-                        "type": "integer"
+                        "type": "integer",
+                        "filters": {
+                            "before": [],
+                            "after": []
+                        }
                     },
                     "sort_order": {
                         "name": "sort_order",
-                        "type": "integer"
+                        "type": "integer",
+                        "filters": {
+                            "before": [],
+                            "after": []
+                        }
                     },
                     "name": {
                         "name": "name",
-                        "type": "string"
+                        "type": "string",
+                        "filters": {
+                            "before": [],
+                            "after": []
+                        }
                     },
                     "date_create": {
                         "name": "date_create",
-                        "type": "string"
+                        "type": "string",
+                        "filters": {
+                            "before": [],
+                            "after": []
+                        }
                     },
                     "is_active": {
                         "name": "is_active",
-                        "type": "boolean"
+                        "type": "boolean",
+                        "filters": {
+                            "before": [],
+                            "after": []
+                        }
                     }
                 },
                 "meta": {}
@@ -310,52 +344,38 @@
                 "URL": [
                     {
                         "name": "todo_id",
-                        "type": "string",
-                        "beforeFilters": [
-                            "xss",
-                            "trim"
-                        ],
-                        "afterFilters": [],
+                        "type": "integer",
+                        "filters": {
+                            "before": [],
+                            "after": []
+                        },
                         "validation": {
                             "required": {
-                                "source": "required",
                                 "name": "required",
-                                "method": "_rule__required",
-                                "params": {}
+                                "params": []
                             },
-                            "max_length": {
-                                "source": "max_length",
-                                "name": "max_length",
-                                "method": "_rule__max_length",
-                                "params": [
-                                    255
-                                ]
+                            "integer": {
+                                "name": "integer",
+                                "params": []
                             }
                         },
                         "url_index": 9
                     },
                     {
                         "name": "id",
-                        "type": "string",
-                        "beforeFilters": [
-                            "xss",
-                            "trim"
-                        ],
-                        "afterFilters": [],
+                        "type": "integer",
+                        "filters": {
+                            "before": [],
+                            "after": []
+                        },
                         "validation": {
                             "required": {
-                                "source": "required",
                                 "name": "required",
-                                "method": "_rule__required",
-                                "params": {}
+                                "params": []
                             },
-                            "max_length": {
-                                "source": "max_length",
-                                "name": "max_length",
-                                "method": "_rule__max_length",
-                                "params": [
-                                    255
-                                ]
+                            "integer": {
+                                "name": "integer",
+                                "params": []
                             }
                         },
                         "url_index": 23
@@ -365,22 +385,27 @@
                     "name": {
                         "name": "name",
                         "type": "string",
-                        "beforeFilters": [
-                            "xss",
-                            "trim"
-                        ],
-                        "afterFilters": [],
+                        "filters": {
+                            "before": [
+                                {
+                                    "name": "trim",
+                                    "params": []
+                                }
+                            ],
+                            "after": [
+                                {
+                                    "name": "xss",
+                                    "params": []
+                                }
+                            ]
+                        },
                         "validation": {
                             "optional": {
-                                "source": "optional",
                                 "name": "optional",
-                                "method": "_rule__optional",
-                                "params": {}
+                                "params": []
                             },
                             "max_length": {
-                                "source": "max_length",
                                 "name": "max_length",
-                                "method": "_rule__max_length",
                                 "params": [
                                     255
                                 ]
@@ -389,26 +414,15 @@
                     },
                     "is_active": {
                         "name": "is_active",
-                        "type": "string",
-                        "beforeFilters": [
-                            "xss",
-                            "trim"
-                        ],
-                        "afterFilters": [],
+                        "type": "boolean",
+                        "filters": {
+                            "before": [],
+                            "after": []
+                        },
                         "validation": {
                             "optional": {
-                                "source": "optional",
                                 "name": "optional",
-                                "method": "_rule__optional",
-                                "params": {}
-                            },
-                            "max_length": {
-                                "source": "max_length",
-                                "name": "max_length",
-                                "method": "_rule__max_length",
-                                "params": [
-                                    255
-                                ]
+                                "params": []
                             }
                         }
                     }
@@ -421,27 +435,51 @@
                 "data": {
                     "id": {
                         "name": "id",
-                        "type": "integer"
+                        "type": "integer",
+                        "filters": {
+                            "before": [],
+                            "after": []
+                        }
                     },
                     "todo_id": {
                         "name": "todo_id",
-                        "type": "integer"
+                        "type": "integer",
+                        "filters": {
+                            "before": [],
+                            "after": []
+                        }
                     },
                     "sort_order": {
                         "name": "sort_order",
-                        "type": "integer"
+                        "type": "integer",
+                        "filters": {
+                            "before": [],
+                            "after": []
+                        }
                     },
                     "name": {
                         "name": "name",
-                        "type": "string"
+                        "type": "string",
+                        "filters": {
+                            "before": [],
+                            "after": []
+                        }
                     },
                     "date_create": {
                         "name": "date_create",
-                        "type": "string"
+                        "type": "string",
+                        "filters": {
+                            "before": [],
+                            "after": []
+                        }
                     },
                     "is_active": {
                         "name": "is_active",
-                        "type": "boolean"
+                        "type": "boolean",
+                        "filters": {
+                            "before": [],
+                            "after": []
+                        }
                     }
                 },
                 "meta": {}
@@ -463,52 +501,38 @@
                 "URL": [
                     {
                         "name": "todo_id",
-                        "type": "string",
-                        "beforeFilters": [
-                            "xss",
-                            "trim"
-                        ],
-                        "afterFilters": [],
+                        "type": "integer",
+                        "filters": {
+                            "before": [],
+                            "after": []
+                        },
                         "validation": {
                             "required": {
-                                "source": "required",
                                 "name": "required",
-                                "method": "_rule__required",
-                                "params": {}
+                                "params": []
                             },
-                            "max_length": {
-                                "source": "max_length",
-                                "name": "max_length",
-                                "method": "_rule__max_length",
-                                "params": [
-                                    255
-                                ]
+                            "integer": {
+                                "name": "integer",
+                                "params": []
                             }
                         },
                         "url_index": 12
                     },
                     {
                         "name": "id",
-                        "type": "string",
-                        "beforeFilters": [
-                            "xss",
-                            "trim"
-                        ],
-                        "afterFilters": [],
+                        "type": "integer",
+                        "filters": {
+                            "before": [],
+                            "after": []
+                        },
                         "validation": {
                             "required": {
-                                "source": "required",
                                 "name": "required",
-                                "method": "_rule__required",
-                                "params": {}
+                                "params": []
                             },
-                            "max_length": {
-                                "source": "max_length",
-                                "name": "max_length",
-                                "method": "_rule__max_length",
-                                "params": [
-                                    255
-                                ]
+                            "integer": {
+                                "name": "integer",
+                                "params": []
                             }
                         },
                         "url_index": 26
@@ -522,7 +546,11 @@
                 "data": {
                     "status": {
                         "name": "status",
-                        "type": "boolean"
+                        "type": "boolean",
+                        "filters": {
+                            "before": [],
+                            "after": []
+                        }
                     }
                 },
                 "meta": {}
@@ -551,23 +579,43 @@
                 "data": {
                     "id": {
                         "name": "id",
-                        "type": "integer"
+                        "type": "integer",
+                        "filters": {
+                            "before": [],
+                            "after": []
+                        }
                     },
                     "link": {
                         "name": "link",
-                        "type": "string"
+                        "type": "string",
+                        "filters": {
+                            "before": [],
+                            "after": []
+                        }
                     },
                     "name": {
                         "name": "name",
-                        "type": "string"
+                        "type": "string",
+                        "filters": {
+                            "before": [],
+                            "after": []
+                        }
                     },
                     "is_shared": {
                         "name": "is_shared",
-                        "type": "boolean"
+                        "type": "boolean",
+                        "filters": {
+                            "before": [],
+                            "after": []
+                        }
                     },
                     "sort_order": {
                         "name": "sort_order",
-                        "type": "integer"
+                        "type": "integer",
+                        "filters": {
+                            "before": [],
+                            "after": []
+                        }
                     }
                 },
                 "meta": {}
@@ -589,26 +637,19 @@
                 "URL": [
                     {
                         "name": "id",
-                        "type": "string",
-                        "beforeFilters": [
-                            "xss",
-                            "trim"
-                        ],
-                        "afterFilters": [],
+                        "type": "integer",
+                        "filters": {
+                            "before": [],
+                            "after": []
+                        },
                         "validation": {
                             "required": {
-                                "source": "required",
                                 "name": "required",
-                                "method": "_rule__required",
-                                "params": {}
+                                "params": []
                             },
-                            "max_length": {
-                                "source": "max_length",
-                                "name": "max_length",
-                                "method": "_rule__max_length",
-                                "params": [
-                                    255
-                                ]
+                            "integer": {
+                                "name": "integer",
+                                "params": []
                             }
                         },
                         "url_index": 9
@@ -622,23 +663,43 @@
                 "data": {
                     "id": {
                         "name": "id",
-                        "type": "integer"
+                        "type": "integer",
+                        "filters": {
+                            "before": [],
+                            "after": []
+                        }
                     },
                     "link": {
                         "name": "link",
-                        "type": "string"
+                        "type": "string",
+                        "filters": {
+                            "before": [],
+                            "after": []
+                        }
                     },
                     "name": {
                         "name": "name",
-                        "type": "string"
+                        "type": "string",
+                        "filters": {
+                            "before": [],
+                            "after": []
+                        }
                     },
                     "is_shared": {
                         "name": "is_shared",
-                        "type": "boolean"
+                        "type": "boolean",
+                        "filters": {
+                            "before": [],
+                            "after": []
+                        }
                     },
                     "sort_order": {
                         "name": "sort_order",
-                        "type": "integer"
+                        "type": "integer",
+                        "filters": {
+                            "before": [],
+                            "after": []
+                        }
                     }
                 },
                 "meta": {}
@@ -661,22 +722,27 @@
                     "name": {
                         "name": "name",
                         "type": "string",
-                        "beforeFilters": [
-                            "xss",
-                            "trim"
-                        ],
-                        "afterFilters": [],
+                        "filters": {
+                            "before": [
+                                {
+                                    "name": "trim",
+                                    "params": []
+                                }
+                            ],
+                            "after": [
+                                {
+                                    "name": "xss",
+                                    "params": []
+                                }
+                            ]
+                        },
                         "validation": {
                             "optional": {
-                                "source": "optional",
                                 "name": "optional",
-                                "method": "_rule__optional",
-                                "params": {}
+                                "params": []
                             },
                             "max_length": {
-                                "source": "max_length",
                                 "name": "max_length",
-                                "method": "_rule__max_length",
                                 "params": [
                                     255
                                 ]
@@ -685,51 +751,33 @@
                     },
                     "is_shared": {
                         "name": "is_shared",
-                        "type": "string",
-                        "beforeFilters": [
-                            "xss",
-                            "trim"
-                        ],
-                        "afterFilters": [],
+                        "type": "boolean",
+                        "filters": {
+                            "before": [],
+                            "after": []
+                        },
                         "validation": {
                             "optional": {
-                                "source": "optional",
                                 "name": "optional",
-                                "method": "_rule__optional",
-                                "params": {}
-                            },
-                            "max_length": {
-                                "source": "max_length",
-                                "name": "max_length",
-                                "method": "_rule__max_length",
-                                "params": [
-                                    255
-                                ]
+                                "params": []
                             }
                         }
                     },
                     "sort_order": {
                         "name": "sort_order",
-                        "type": "string",
-                        "beforeFilters": [
-                            "xss",
-                            "trim"
-                        ],
-                        "afterFilters": [],
+                        "type": "integer",
+                        "filters": {
+                            "before": [],
+                            "after": []
+                        },
                         "validation": {
                             "optional": {
-                                "source": "optional",
                                 "name": "optional",
-                                "method": "_rule__optional",
-                                "params": {}
+                                "params": []
                             },
-                            "max_length": {
-                                "source": "max_length",
-                                "name": "max_length",
-                                "method": "_rule__max_length",
-                                "params": [
-                                    255
-                                ]
+                            "integer": {
+                                "name": "integer",
+                                "params": []
                             }
                         }
                     }
@@ -742,23 +790,43 @@
                 "data": {
                     "id": {
                         "name": "id",
-                        "type": "integer"
+                        "type": "integer",
+                        "filters": {
+                            "before": [],
+                            "after": []
+                        }
                     },
                     "link": {
                         "name": "link",
-                        "type": "string"
+                        "type": "string",
+                        "filters": {
+                            "before": [],
+                            "after": []
+                        }
                     },
                     "name": {
                         "name": "name",
-                        "type": "string"
+                        "type": "string",
+                        "filters": {
+                            "before": [],
+                            "after": []
+                        }
                     },
                     "is_shared": {
                         "name": "is_shared",
-                        "type": "boolean"
+                        "type": "boolean",
+                        "filters": {
+                            "before": [],
+                            "after": []
+                        }
                     },
                     "sort_order": {
                         "name": "sort_order",
-                        "type": "integer"
+                        "type": "integer",
+                        "filters": {
+                            "before": [],
+                            "after": []
+                        }
                     }
                 },
                 "meta": {}
@@ -780,26 +848,19 @@
                 "URL": [
                     {
                         "name": "id",
-                        "type": "string",
-                        "beforeFilters": [
-                            "xss",
-                            "trim"
-                        ],
-                        "afterFilters": [],
+                        "type": "integer",
+                        "filters": {
+                            "before": [],
+                            "after": []
+                        },
                         "validation": {
                             "required": {
-                                "source": "required",
                                 "name": "required",
-                                "method": "_rule__required",
-                                "params": {}
+                                "params": []
                             },
-                            "max_length": {
-                                "source": "max_length",
-                                "name": "max_length",
-                                "method": "_rule__max_length",
-                                "params": [
-                                    255
-                                ]
+                            "integer": {
+                                "name": "integer",
+                                "params": []
                             }
                         },
                         "url_index": 9
@@ -809,22 +870,27 @@
                     "name": {
                         "name": "name",
                         "type": "string",
-                        "beforeFilters": [
-                            "xss",
-                            "trim"
-                        ],
-                        "afterFilters": [],
+                        "filters": {
+                            "before": [
+                                {
+                                    "name": "trim",
+                                    "params": []
+                                }
+                            ],
+                            "after": [
+                                {
+                                    "name": "xss",
+                                    "params": []
+                                }
+                            ]
+                        },
                         "validation": {
                             "optional": {
-                                "source": "optional",
                                 "name": "optional",
-                                "method": "_rule__optional",
-                                "params": {}
+                                "params": []
                             },
                             "max_length": {
-                                "source": "max_length",
                                 "name": "max_length",
-                                "method": "_rule__max_length",
                                 "params": [
                                     255
                                 ]
@@ -833,51 +899,33 @@
                     },
                     "is_shared": {
                         "name": "is_shared",
-                        "type": "string",
-                        "beforeFilters": [
-                            "xss",
-                            "trim"
-                        ],
-                        "afterFilters": [],
+                        "type": "boolean",
+                        "filters": {
+                            "before": [],
+                            "after": []
+                        },
                         "validation": {
                             "optional": {
-                                "source": "optional",
                                 "name": "optional",
-                                "method": "_rule__optional",
-                                "params": {}
-                            },
-                            "max_length": {
-                                "source": "max_length",
-                                "name": "max_length",
-                                "method": "_rule__max_length",
-                                "params": [
-                                    255
-                                ]
+                                "params": []
                             }
                         }
                     },
                     "sort_order": {
                         "name": "sort_order",
-                        "type": "string",
-                        "beforeFilters": [
-                            "xss",
-                            "trim"
-                        ],
-                        "afterFilters": [],
+                        "type": "integer",
+                        "filters": {
+                            "before": [],
+                            "after": []
+                        },
                         "validation": {
                             "optional": {
-                                "source": "optional",
                                 "name": "optional",
-                                "method": "_rule__optional",
-                                "params": {}
+                                "params": []
                             },
-                            "max_length": {
-                                "source": "max_length",
-                                "name": "max_length",
-                                "method": "_rule__max_length",
-                                "params": [
-                                    255
-                                ]
+                            "integer": {
+                                "name": "integer",
+                                "params": []
                             }
                         }
                     }
@@ -890,23 +938,43 @@
                 "data": {
                     "id": {
                         "name": "id",
-                        "type": "integer"
+                        "type": "integer",
+                        "filters": {
+                            "before": [],
+                            "after": []
+                        }
                     },
                     "link": {
                         "name": "link",
-                        "type": "string"
+                        "type": "string",
+                        "filters": {
+                            "before": [],
+                            "after": []
+                        }
                     },
                     "name": {
                         "name": "name",
-                        "type": "string"
+                        "type": "string",
+                        "filters": {
+                            "before": [],
+                            "after": []
+                        }
                     },
                     "is_shared": {
                         "name": "is_shared",
-                        "type": "boolean"
+                        "type": "boolean",
+                        "filters": {
+                            "before": [],
+                            "after": []
+                        }
                     },
                     "sort_order": {
                         "name": "sort_order",
-                        "type": "integer"
+                        "type": "integer",
+                        "filters": {
+                            "before": [],
+                            "after": []
+                        }
                     }
                 },
                 "meta": {}
@@ -928,26 +996,19 @@
                 "URL": [
                     {
                         "name": "todo_id",
-                        "type": "string",
-                        "beforeFilters": [
-                            "xss",
-                            "trim"
-                        ],
-                        "afterFilters": [],
+                        "type": "integer",
+                        "filters": {
+                            "before": [],
+                            "after": []
+                        },
                         "validation": {
                             "required": {
-                                "source": "required",
                                 "name": "required",
-                                "method": "_rule__required",
-                                "params": {}
+                                "params": []
                             },
-                            "max_length": {
-                                "source": "max_length",
-                                "name": "max_length",
-                                "method": "_rule__max_length",
-                                "params": [
-                                    255
-                                ]
+                            "integer": {
+                                "name": "integer",
+                                "params": []
                             }
                         },
                         "url_index": 12
@@ -961,7 +1022,11 @@
                 "data": {
                     "status": {
                         "name": "status",
-                        "type": "boolean"
+                        "type": "boolean",
+                        "filters": {
+                            "before": [],
+                            "after": []
+                        }
                     }
                 },
                 "meta": {}
@@ -990,15 +1055,27 @@
                 "data": {
                     "id": {
                         "name": "id",
-                        "type": "integer"
+                        "type": "integer",
+                        "filters": {
+                            "before": [],
+                            "after": []
+                        }
                     },
                     "username": {
                         "name": "username",
-                        "type": "string"
+                        "type": "string",
+                        "filters": {
+                            "before": [],
+                            "after": []
+                        }
                     },
                     "email": {
                         "name": "email",
-                        "type": "string"
+                        "type": "string",
+                        "filters": {
+                            "before": [],
+                            "after": []
+                        }
                     }
                 },
                 "meta": {}
@@ -1020,26 +1097,19 @@
                 "URL": [
                     {
                         "name": "id",
-                        "type": "string",
-                        "beforeFilters": [
-                            "xss",
-                            "trim"
-                        ],
-                        "afterFilters": [],
+                        "type": "integer",
+                        "filters": {
+                            "before": [],
+                            "after": []
+                        },
                         "validation": {
                             "required": {
-                                "source": "required",
                                 "name": "required",
-                                "method": "_rule__required",
-                                "params": {}
+                                "params": []
                             },
-                            "max_length": {
-                                "source": "max_length",
-                                "name": "max_length",
-                                "method": "_rule__max_length",
-                                "params": [
-                                    255
-                                ]
+                            "integer": {
+                                "name": "integer",
+                                "params": []
                             }
                         },
                         "url_index": 9
@@ -1053,15 +1123,27 @@
                 "data": {
                     "id": {
                         "name": "id",
-                        "type": "integer"
+                        "type": "integer",
+                        "filters": {
+                            "before": [],
+                            "after": []
+                        }
                     },
                     "username": {
                         "name": "username",
-                        "type": "string"
+                        "type": "string",
+                        "filters": {
+                            "before": [],
+                            "after": []
+                        }
                     },
                     "email": {
                         "name": "email",
-                        "type": "string"
+                        "type": "string",
+                        "filters": {
+                            "before": [],
+                            "after": []
+                        }
                     }
                 },
                 "meta": {}
@@ -1083,26 +1165,19 @@
                 "URL": [
                     {
                         "name": "id",
-                        "type": "string",
-                        "beforeFilters": [
-                            "xss",
-                            "trim"
-                        ],
-                        "afterFilters": [],
+                        "type": "integer",
+                        "filters": {
+                            "before": [],
+                            "after": []
+                        },
                         "validation": {
                             "required": {
-                                "source": "required",
                                 "name": "required",
-                                "method": "_rule__required",
-                                "params": {}
+                                "params": []
                             },
-                            "max_length": {
-                                "source": "max_length",
-                                "name": "max_length",
-                                "method": "_rule__max_length",
-                                "params": [
-                                    255
-                                ]
+                            "integer": {
+                                "name": "integer",
+                                "params": []
                             }
                         },
                         "url_index": 12
@@ -1116,7 +1191,11 @@
                 "data": {
                     "status": {
                         "name": "status",
-                        "type": "boolean"
+                        "type": "boolean",
+                        "filters": {
+                            "before": [],
+                            "after": []
+                        }
                     }
                 },
                 "meta": {}
@@ -1138,32 +1217,23 @@
                 "URL": [
                     {
                         "name": "id",
-                        "type": "string",
-                        "beforeFilters": [
-                            "xss",
-                            "trim"
-                        ],
-                        "afterFilters": [],
+                        "type": "integer",
+                        "filters": {
+                            "before": [],
+                            "after": []
+                        },
                         "validation": {
                             "optional": {
-                                "source": "optional",
                                 "name": "optional",
-                                "method": "_rule__optional",
-                                "params": {}
+                                "params": []
                             },
                             "exists": {
-                                "source": "exists",
                                 "name": "exists",
-                                "method": "_rule__exists",
-                                "params": {}
+                                "params": []
                             },
-                            "max_length": {
-                                "source": "max_length",
-                                "name": "max_length",
-                                "method": "_rule__max_length",
-                                "params": [
-                                    255
-                                ]
+                            "integer": {
+                                "name": "integer",
+                                "params": []
                             }
                         },
                         "url_index": 9
@@ -1173,36 +1243,37 @@
                     "username": {
                         "name": "username",
                         "type": "string",
-                        "beforeFilters": [
-                            "xss",
-                            "trim"
-                        ],
-                        "afterFilters": [],
+                        "filters": {
+                            "before": [
+                                {
+                                    "name": "trim",
+                                    "params": []
+                                }
+                            ],
+                            "after": [
+                                {
+                                    "name": "xss",
+                                    "params": []
+                                }
+                            ]
+                        },
                         "validation": {
                             "optional": {
-                                "source": "optional",
                                 "name": "optional",
-                                "method": "_rule__optional",
-                                "params": {}
+                                "params": []
                             },
                             "need": {
-                                "source": "need['password_old']",
                                 "name": "need",
-                                "method": "_rule__need",
                                 "params": [
                                     "password_old"
                                 ]
                             },
                             "unique": {
-                                "source": "unique",
                                 "name": "unique",
-                                "method": "_rule__unique",
-                                "params": {}
+                                "params": []
                             },
                             "max_length": {
-                                "source": "max_length",
                                 "name": "max_length",
-                                "method": "_rule__max_length",
                                 "params": [
                                     255
                                 ]
@@ -1212,42 +1283,41 @@
                     "email": {
                         "name": "email",
                         "type": "string",
-                        "beforeFilters": [
-                            "xss",
-                            "trim"
-                        ],
-                        "afterFilters": [],
+                        "filters": {
+                            "before": [
+                                {
+                                    "name": "trim",
+                                    "params": []
+                                }
+                            ],
+                            "after": [
+                                {
+                                    "name": "xss",
+                                    "params": []
+                                }
+                            ]
+                        },
                         "validation": {
                             "required": {
-                                "source": "required",
                                 "name": "required",
-                                "method": "_rule__required",
-                                "params": {}
+                                "params": []
                             },
                             "valid_email": {
-                                "source": "valid_email",
                                 "name": "valid_email",
-                                "method": "_rule__valid_email",
-                                "params": {}
+                                "params": []
                             },
                             "unique": {
-                                "source": "unique",
                                 "name": "unique",
-                                "method": "_rule__unique",
-                                "params": {}
+                                "params": []
                             },
                             "need": {
-                                "source": "need['password_old']",
                                 "name": "need",
-                                "method": "_rule__need",
                                 "params": [
                                     "password_old"
                                 ]
                             },
                             "max_length": {
-                                "source": "max_length",
                                 "name": "max_length",
-                                "method": "_rule__max_length",
                                 "params": [
                                     255
                                 ]
@@ -1257,28 +1327,31 @@
                     "password_old": {
                         "name": "password_old",
                         "type": "string",
-                        "beforeFilters": [
-                            "xss",
-                            "trim"
-                        ],
-                        "afterFilters": [],
+                        "filters": {
+                            "before": [
+                                {
+                                    "name": "trim",
+                                    "params": []
+                                }
+                            ],
+                            "after": [
+                                {
+                                    "name": "xss",
+                                    "params": []
+                                }
+                            ]
+                        },
                         "validation": {
                             "optional": {
-                                "source": "optional",
                                 "name": "optional",
-                                "method": "_rule__optional",
-                                "params": {}
+                                "params": []
                             },
                             "valid_password": {
-                                "source": "valid_password",
                                 "name": "valid_password",
-                                "method": "_rule__valid_password",
-                                "params": {}
+                                "params": []
                             },
                             "max_length": {
-                                "source": "max_length",
                                 "name": "max_length",
-                                "method": "_rule__max_length",
                                 "params": [
                                     255
                                 ]
@@ -1288,38 +1361,39 @@
                     "password_new": {
                         "name": "password_new",
                         "type": "string",
-                        "beforeFilters": [
-                            "xss",
-                            "trim"
-                        ],
-                        "afterFilters": [],
+                        "filters": {
+                            "before": [
+                                {
+                                    "name": "trim",
+                                    "params": []
+                                }
+                            ],
+                            "after": [
+                                {
+                                    "name": "xss",
+                                    "params": []
+                                }
+                            ]
+                        },
                         "validation": {
                             "optional": {
-                                "source": "optional",
                                 "name": "optional",
-                                "method": "_rule__optional",
-                                "params": {}
+                                "params": []
                             },
                             "matches": {
-                                "source": "matches['password_new_confirm']",
                                 "name": "matches",
-                                "method": "_rule__matches",
                                 "params": [
                                     "password_new_confirm"
                                 ]
                             },
                             "need": {
-                                "source": "need['password_old']",
                                 "name": "need",
-                                "method": "_rule__need",
                                 "params": [
                                     "password_old"
                                 ]
                             },
                             "max_length": {
-                                "source": "max_length",
                                 "name": "max_length",
-                                "method": "_rule__max_length",
                                 "params": [
                                     255
                                 ]
@@ -1329,38 +1403,39 @@
                     "password_new_confirm": {
                         "name": "password_new_confirm",
                         "type": "string",
-                        "beforeFilters": [
-                            "xss",
-                            "trim"
-                        ],
-                        "afterFilters": [],
+                        "filters": {
+                            "before": [
+                                {
+                                    "name": "trim",
+                                    "params": []
+                                }
+                            ],
+                            "after": [
+                                {
+                                    "name": "xss",
+                                    "params": []
+                                }
+                            ]
+                        },
                         "validation": {
                             "optional": {
-                                "source": "optional",
                                 "name": "optional",
-                                "method": "_rule__optional",
-                                "params": {}
+                                "params": []
                             },
                             "matches": {
-                                "source": "matches['password_new']",
                                 "name": "matches",
-                                "method": "_rule__matches",
                                 "params": [
                                     "password_new"
                                 ]
                             },
                             "need": {
-                                "source": "need['password_old']",
                                 "name": "need",
-                                "method": "_rule__need",
                                 "params": [
                                     "password_old"
                                 ]
                             },
                             "max_length": {
-                                "source": "max_length",
                                 "name": "max_length",
-                                "method": "_rule__max_length",
                                 "params": [
                                     255
                                 ]
@@ -1376,15 +1451,27 @@
                 "data": {
                     "id": {
                         "name": "id",
-                        "type": "integer"
+                        "type": "integer",
+                        "filters": {
+                            "before": [],
+                            "after": []
+                        }
                     },
                     "username": {
                         "name": "username",
-                        "type": "string"
+                        "type": "string",
+                        "filters": {
+                            "before": [],
+                            "after": []
+                        }
                     },
                     "email": {
                         "name": "email",
-                        "type": "string"
+                        "type": "string",
+                        "filters": {
+                            "before": [],
+                            "after": []
+                        }
                     }
                 },
                 "meta": {}
@@ -1407,28 +1494,31 @@
                     "username": {
                         "name": "username",
                         "type": "string",
-                        "beforeFilters": [
-                            "xss",
-                            "trim"
-                        ],
-                        "afterFilters": [],
+                        "filters": {
+                            "before": [
+                                {
+                                    "name": "trim",
+                                    "params": []
+                                }
+                            ],
+                            "after": [
+                                {
+                                    "name": "xss",
+                                    "params": []
+                                }
+                            ]
+                        },
                         "validation": {
                             "required": {
-                                "source": "required",
                                 "name": "required",
-                                "method": "_rule__required",
-                                "params": {}
+                                "params": []
                             },
                             "unique": {
-                                "source": "unique",
                                 "name": "unique",
-                                "method": "_rule__unique",
-                                "params": {}
+                                "params": []
                             },
                             "max_length": {
-                                "source": "max_length",
                                 "name": "max_length",
-                                "method": "_rule__max_length",
                                 "params": [
                                     255
                                 ]
@@ -1438,34 +1528,35 @@
                     "email": {
                         "name": "email",
                         "type": "string",
-                        "beforeFilters": [
-                            "xss",
-                            "trim"
-                        ],
-                        "afterFilters": [],
+                        "filters": {
+                            "before": [
+                                {
+                                    "name": "trim",
+                                    "params": []
+                                }
+                            ],
+                            "after": [
+                                {
+                                    "name": "xss",
+                                    "params": []
+                                }
+                            ]
+                        },
                         "validation": {
                             "required": {
-                                "source": "required",
                                 "name": "required",
-                                "method": "_rule__required",
-                                "params": {}
+                                "params": []
                             },
                             "valid_email": {
-                                "source": "valid_email",
                                 "name": "valid_email",
-                                "method": "_rule__valid_email",
-                                "params": {}
+                                "params": []
                             },
                             "unique": {
-                                "source": "unique",
                                 "name": "unique",
-                                "method": "_rule__unique",
-                                "params": {}
+                                "params": []
                             },
                             "max_length": {
-                                "source": "max_length",
                                 "name": "max_length",
-                                "method": "_rule__max_length",
                                 "params": [
                                     255
                                 ]
@@ -1475,30 +1566,33 @@
                     "password": {
                         "name": "password",
                         "type": "string",
-                        "beforeFilters": [
-                            "xss",
-                            "trim"
-                        ],
-                        "afterFilters": [],
+                        "filters": {
+                            "before": [
+                                {
+                                    "name": "trim",
+                                    "params": []
+                                }
+                            ],
+                            "after": [
+                                {
+                                    "name": "xss",
+                                    "params": []
+                                }
+                            ]
+                        },
                         "validation": {
                             "required": {
-                                "source": "required",
                                 "name": "required",
-                                "method": "_rule__required",
-                                "params": {}
+                                "params": []
                             },
                             "matches": {
-                                "source": "matches['confirm_password']",
                                 "name": "matches",
-                                "method": "_rule__matches",
                                 "params": [
                                     "confirm_password"
                                 ]
                             },
                             "max_length": {
-                                "source": "max_length",
                                 "name": "max_length",
-                                "method": "_rule__max_length",
                                 "params": [
                                     255
                                 ]
@@ -1508,30 +1602,33 @@
                     "confirm_password": {
                         "name": "confirm_password",
                         "type": "string",
-                        "beforeFilters": [
-                            "xss",
-                            "trim"
-                        ],
-                        "afterFilters": [],
+                        "filters": {
+                            "before": [
+                                {
+                                    "name": "trim",
+                                    "params": []
+                                }
+                            ],
+                            "after": [
+                                {
+                                    "name": "xss",
+                                    "params": []
+                                }
+                            ]
+                        },
                         "validation": {
                             "required": {
-                                "source": "required",
                                 "name": "required",
-                                "method": "_rule__required",
-                                "params": {}
+                                "params": []
                             },
                             "matches": {
-                                "source": "matches['password']",
                                 "name": "matches",
-                                "method": "_rule__matches",
                                 "params": [
                                     "password"
                                 ]
                             },
                             "max_length": {
-                                "source": "max_length",
                                 "name": "max_length",
-                                "method": "_rule__max_length",
                                 "params": [
                                     255
                                 ]
@@ -1547,15 +1644,27 @@
                 "data": {
                     "id": {
                         "name": "id",
-                        "type": "integer"
+                        "type": "integer",
+                        "filters": {
+                            "before": [],
+                            "after": []
+                        }
                     },
                     "username": {
                         "name": "username",
-                        "type": "string"
+                        "type": "string",
+                        "filters": {
+                            "before": [],
+                            "after": []
+                        }
                     },
                     "email": {
                         "name": "email",
-                        "type": "string"
+                        "type": "string",
+                        "filters": {
+                            "before": [],
+                            "after": []
+                        }
                     }
                 },
                 "meta": {}
@@ -1581,15 +1690,27 @@
                 "data": {
                     "id": {
                         "name": "id",
-                        "type": "integer"
+                        "type": "integer",
+                        "filters": {
+                            "before": [],
+                            "after": []
+                        }
                     },
                     "username": {
                         "name": "username",
-                        "type": "string"
+                        "type": "string",
+                        "filters": {
+                            "before": [],
+                            "after": []
+                        }
                     },
                     "email": {
                         "name": "email",
-                        "type": "string"
+                        "type": "string",
+                        "filters": {
+                            "before": [],
+                            "after": []
+                        }
                     }
                 },
                 "meta": {}
@@ -1612,22 +1733,27 @@
                     "username": {
                         "name": "username",
                         "type": "string",
-                        "beforeFilters": [
-                            "xss",
-                            "trim"
-                        ],
-                        "afterFilters": [],
+                        "filters": {
+                            "before": [
+                                {
+                                    "name": "trim",
+                                    "params": []
+                                }
+                            ],
+                            "after": [
+                                {
+                                    "name": "xss",
+                                    "params": []
+                                }
+                            ]
+                        },
                         "validation": {
                             "required": {
-                                "source": "required",
                                 "name": "required",
-                                "method": "_rule__required",
-                                "params": {}
+                                "params": []
                             },
                             "max_length": {
-                                "source": "max_length",
                                 "name": "max_length",
-                                "method": "_rule__max_length",
                                 "params": [
                                     255
                                 ]
@@ -1637,22 +1763,27 @@
                     "password": {
                         "name": "password",
                         "type": "string",
-                        "beforeFilters": [
-                            "xss",
-                            "trim"
-                        ],
-                        "afterFilters": [],
+                        "filters": {
+                            "before": [
+                                {
+                                    "name": "trim",
+                                    "params": []
+                                }
+                            ],
+                            "after": [
+                                {
+                                    "name": "xss",
+                                    "params": []
+                                }
+                            ]
+                        },
                         "validation": {
                             "required": {
-                                "source": "required",
                                 "name": "required",
-                                "method": "_rule__required",
-                                "params": {}
+                                "params": []
                             },
                             "max_length": {
-                                "source": "max_length",
                                 "name": "max_length",
-                                "method": "_rule__max_length",
                                 "params": [
                                     255
                                 ]
@@ -1661,26 +1792,15 @@
                     },
                     "remember": {
                         "name": "remember",
-                        "type": "string",
-                        "beforeFilters": [
-                            "xss",
-                            "trim"
-                        ],
-                        "afterFilters": [],
+                        "type": "boolean",
+                        "filters": {
+                            "before": [],
+                            "after": []
+                        },
                         "validation": {
                             "optional": {
-                                "source": "optional",
                                 "name": "optional",
-                                "method": "_rule__optional",
-                                "params": {}
-                            },
-                            "max_length": {
-                                "source": "max_length",
-                                "name": "max_length",
-                                "method": "_rule__max_length",
-                                "params": [
-                                    255
-                                ]
+                                "params": []
                             }
                         }
                     }
@@ -1693,15 +1813,27 @@
                 "data": {
                     "id": {
                         "name": "id",
-                        "type": "integer"
+                        "type": "integer",
+                        "filters": {
+                            "before": [],
+                            "after": []
+                        }
                     },
                     "username": {
                         "name": "username",
-                        "type": "string"
+                        "type": "string",
+                        "filters": {
+                            "before": [],
+                            "after": []
+                        }
                     },
                     "email": {
                         "name": "email",
-                        "type": "string"
+                        "type": "string",
+                        "filters": {
+                            "before": [],
+                            "after": []
+                        }
                     }
                 },
                 "meta": {}
@@ -1727,7 +1859,11 @@
                 "data": {
                     "status": {
                         "name": "status",
-                        "type": "boolean"
+                        "type": "boolean",
+                        "filters": {
+                            "before": [],
+                            "after": []
+                        }
                     }
                 },
                 "meta": {}

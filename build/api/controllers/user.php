@@ -109,7 +109,7 @@ class User extends ApiController {
 //
 //    }
 
-    public function _rule__valid_password ($value, $fieldName) {
+    public function _rule__valid_password ($value, array $params = array(), $name = null) {
         $id = $this->input("id");
         $data = $this->user->read(array(
             'password' => $this->user->cryptPassword($value),
@@ -117,16 +117,16 @@ class User extends ApiController {
         ));
         return !empty($data);
     }
-    public function _rule__exists ($value, $fieldName) {
+    public function _rule__exists ($value, array $params = array(), $name = null) {
         $data = $this->user->read(array(
-            $fieldName => $value
+            $name => $value
         ));
         return !empty($data);
     }
 
-    public function _rule__unique ($value, $fieldName) {
+    public function _rule__unique ($value, array $params = array(), $name = null) {
         $data = $this->user->read(array(
-            $fieldName => $value
+            $name => $value
         ));
         if(empty($data)){
             return true;

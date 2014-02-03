@@ -104,8 +104,8 @@ class ApiInput {
             foreach ($request['input']['URL'] as  $index => $param) {
                 $value = isset($url[$index]) ? $url[$index] : null;
                 if (!is_null($value)) {
-                    foreach ($param['beforeFilters'] as $filter) {
-                        $value = $this->_shuttle->applyFilter($value, $filter, array());
+                    foreach ($param['filters']['before'] as $filter) {
+                        $value = $this->_shuttle->applyFilter($value, $filter["name"], $filter["params"], $param["name"]);
                     }
                     $this->_URL[$param["name"]] = $this->_shuttle->toType($value, $param["type"], $param);
                 }
@@ -116,8 +116,8 @@ class ApiInput {
             foreach ($request['input']['INPUT'] as $param) {
                 $value = isset($input[$param['name']]) ? $input[$param['name']] : null;
                 if (!is_null($value)) {
-                    foreach ($param['beforeFilters'] as $filter) {
-                        $value = $this->_shuttle->applyFilter($value, $filter, array());
+                    foreach ($param['filters']['before'] as $filter) {
+                        $value = $this->_shuttle->applyFilter($value, $filter["name"], $filter["params"], $param['name']);
                     }
                     $this->_INPUT[$param["name"]] = $this->_shuttle->toType($value, $param["type"], $param);
                 }
@@ -128,8 +128,8 @@ class ApiInput {
             foreach ($request['input']['QUERY'] as $param) {
                 $value = isset($QUERY[$param['name']]) ? $QUERY[$param['name']] : null;
                 if (!is_null($value)) {
-                    foreach ($param['beforeFilters'] as $filter) {
-                        $value = $this->_shuttle->applyFilter($value, $filter, array());
+                    foreach ($param['filters']['before'] as $filter) {
+                        $value = $this->_shuttle->applyFilter($value, $filter["name"], $filter["params"], $param['name']);
                     }
                     $this->_QUERY[$param["name"]] = $this->_shuttle->toType($value, $param["type"], $param);
                 }
@@ -170,13 +170,27 @@ class ApiInput {
         }
     }
 
+    function applyAfterFilters () {
+        $request = $this->_shuttle->api->get(Api::REQUEST);
+        if (!empty($request['input']['QUERY'])) {
+            foreach ($request['input']['QUERY'] as $param) {
+                $value = isset($QUERY[$param['name']]) ? $QUERY[$param['name']] : null;
+                if (!is_null($value)) {
+                    foreach ($param['filters']['before'] as $filter) {
+                        $value = $this->_shuttle->applyFilter($value, $filter["name"], $filter["params"], $param['name']);
+                    }
+                    $this->_QUERY[$param["name"]] = $this->_shuttle->toType($value, $param["type"], $param);
+                }
+            }
+        }
+    }
+
 
     function validate($fieldName, $value, array $rules, $setError = false){
-        $fuckUp = false;
         $error  = false;
 
         $required = !empty($rules["required"]) || empty($rules["optional"]);
-        if($required && !$this->_shuttle->context->_rule__required($value, $fieldName)){
+        if($required && !$this->_shuttle->applyValidationRule($value, 'required')){
             if ($setError) {
                 $this->error($fieldName, 'required', array(), 400);
             }
@@ -186,29 +200,18 @@ class ApiInput {
         unset($rules["optional"]);
         unset($rules["required"]);
 
-        if (!$error && $this->_shuttle->context->_rule__required($value, $fieldName)) {
+        if (!$error && isset($value) && (strlen((string)$value) || $value === false)) {
             foreach ($rules as $rule) {
-                if (method_exists($this->_shuttle->context, $rule["method"])) {
-                    $call = array($this->_shuttle->context, $rule["method"]);
-                    $args = array_merge(array($value), array($fieldName), $rule["params"]);
-                    if(!call_user_func_array($call, $args)){
-                        if ($setError) {
-                            $this->error($fieldName, $rule["name"], $rule['params'], 400);
-                        }
-                        $error = true;
-                        break;
+                if (!$this->_shuttle->applyValidationRule($value, $rule['name'], $rule["params"], $fieldName)) {
+                    if ($setError) {
+                        $this->error($fieldName, $rule["name"], $rule['params'], 400);
                     }
-                } else {
-                    trigger_error($this->_shuttle->errorPref.'invalid validation-rule-method "'.$rule['method'].'"', E_USER_WARNING);
-                    $fuckUp = $rule['method'];
+                    $error = true;
                     break;
                 }
             }
         }
-        if ($fuckUp) {
-            $this->_shuttle->error('Validation Method "'.$fuckUp.'" Doesn\'t exists');
-        }
-        return !($error || $fuckUp);
+        return !$error;
     }
 
     function pick () {

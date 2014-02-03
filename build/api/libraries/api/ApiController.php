@@ -57,30 +57,33 @@ abstract class ApiController extends REST_Controller {
 
     /*---------------------------------------------- FILTERS ----------------------------*/
 
-    function _filter__xss ($value, $params = array()) {
+    function _filter__xss ($value, $params = array(), $name) {
         return $value;
     }
 
-    function _filter__trim ($value, $params = array()) {
+    function _filter__trim ($value, $params = array(), $name) {
         return trim((string)$value);
     }
 
 
     /*---------------------------------------------- VALIDATION RULES ----------------------------*/
 
-    function _rule__required($value){
+    function _rule__required ($value, array $params = array(), $name = null) {
         return isset($value) && strlen((string) $value);
     }
 
-    function _rule__need($value, $fieldName, $existFiled){
-        return $this->_rule__required($this->input($existFiled), $existFiled);
+    function _rule__need ($value, array $params = array(), $name = null) {
+        $existFiled = $params[0];
+        return $this->_rule__required($this->input($existFiled), array($existFiled), $name);
     }
 
-    function _rule__matches ($value, $fieldName, $matchFieldName) {
+    function _rule__matches ($value, array $params = array(), $name = null) {
+        $matchFieldName = $params[0];
         return (bool) ($value === $this->input($matchFieldName, null));
     }
 
-    function _rule__min_length ($value, $fieldName, $length) {
+    function _rule__min_length ($value, array $params = array(), $name = null) {
+        $length = $params[0];
         if (preg_match("/[^0-9]/", $length)){
             return false;
         }
@@ -90,7 +93,8 @@ abstract class ApiController extends REST_Controller {
         return !(strlen($value) < $length);
     }
 
-    function _rule__max_length ($value, $fieldName, $length) {
+    function _rule__max_length ($value, array $params = array(), $name = null) {
+        $length = $params[0];
         if (preg_match("/[^0-9]/", $length)){
             return false;
         }
@@ -100,7 +104,8 @@ abstract class ApiController extends REST_Controller {
         return !(strlen($value) > $length);
     }
 
-    function _rule__exact_length ($value, $fieldName, $length) {
+    function _rule__exact_length ($value, array $params = array(), $name = null) {
+        $length = $params[0];
         if (preg_match("/[^0-9]/", $length)){
             return false;
         }
@@ -110,55 +115,55 @@ abstract class ApiController extends REST_Controller {
         return (bool) (strlen($value) == $length);
     }
 
-    function _rule__valid_email ($value, $fieldName) {
+    function _rule__valid_email ($value, array $params = array(), $name = null) {
         return (bool) preg_match("/^([a-z0-9\+_\-]+)(\.[a-z0-9\+_\-]+)*@([a-z0-9\-]+\.)+[a-z]{2,6}$/ix", $value);
     }
 
-    function _rule__alpha ($value) {
+    function _rule__alpha ($value, array $params = array(), $name = null) {
         return (bool) preg_match("/^([a-z])+$/i", $value);
     }
 
-    function _rule__alpha_numeric ($value, $fieldName) {
+    function _rule__alpha_numeric ($value, array $params = array(), $name = null) {
         return (bool) preg_match("/^([a-z0-9])+$/i", $value);
     }
 
-    function _rule__alpha_dash ($value, $fieldName) {
+    function _rule__alpha_dash ($value, array $params = array(), $name = null) {
         return (bool) preg_match("/^([-a-z0-9_-])+$/i", $value);
     }
 
-    function _rule__numeric ($value, $fieldName) {
+    function _rule__numeric ($value, array $params = array(), $name = null) {
         return (bool) preg_match('/^[\-+]?\d*\.?\d+$/', $value);
     }
 
-    function _rule__integer ($value, $fieldName) {
+    function _rule__integer ($value, array $params = array(), $name = null) {
         return (bool) preg_match('/^[\-+]?\d+$/', $value);
     }
 
-    function _rule__decimal ($value, $fieldName) {
+    function _rule__decimal ($value, array $params = array(), $name = null) {
         return (bool) preg_match('/^\d+$/', $value);
     }
 
-    function _rule__is_natural ($value, $fieldName) {
+    function _rule__is_natural ($value, array $params = array(), $name = null) {
         return (bool) preg_match( '/^[0-9]+$/', $value);
     }
 
-    function _rule__float ($value, $fieldName) {
+    function _rule__float ($value, array $params = array(), $name = null) {
         return (bool) preg_match('/^[\-+]?[0-9]+(\.[0-9]+)?([eE][\-+]?[0-9]+)?$/', $value);
     }
 
-    function _rule__is_natural_no_zero ($value, $fieldName) {
+    function _rule__is_natural_no_zero ($value, array $params = array(), $name = null) {
         return (bool) (preg_match( '/^[0-9]+$/', $value) && $value != 0);
     }
 
-    function _rule__valid_base64 ($value, $fieldName) {
+    function _rule__valid_base64 ($value, array $params = array(), $name = null) {
         return (bool) ! preg_match('/[^a-zA-Z0-9\/\+=]/', $value);
     }
 
-    function _rule__valid_url ($value, $fieldName) {
+    function _rule__valid_url ($value, array $params = array(), $name = null) {
         return filter_var($value, FILTER_VALIDATE_URL);
     }
 
-    function _rule__valid_date ($value, $fieldName) {
+    function _rule__valid_date ($value, array $params = array(), $name = null) {
         $stamp = strtotime($value);
         if (is_numeric($stamp)) {
             return (bool) checkdate(date( 'm', $stamp ), date( 'd', $stamp ), date( 'Y', $stamp ));

@@ -50,9 +50,14 @@ class ApiShuttle {
         return $this->_errors;
     }
 
-    public function applyFilter ($var, $filter, $params = array()) {
-        $filterMethod = '_filter__'.$filter;
-        return $this->context->$filterMethod($var, $params);
+    public function applyFilter ($value, $filterName, array $params = array(), $contextName = null) {
+        $method = '_filter__'.$filterName;
+        return $this->context->$method($value, $params, $contextName);
+    }
+
+    public function applyValidationRule($value, $ruleName, array $params = array(), $contextName = null){
+        $method = '_rule__'.$ruleName;
+        return (bool) $this->context->$method($value, $params, $contextName);
     }
 
     public function toType ($var, $type, $param = null) {
