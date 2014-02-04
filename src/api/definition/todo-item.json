@@ -1,12 +1,12 @@
 {
 	"GET todo/$todo_id/item": {
 		"request": {
-			"$todo_id:integer": "required"
+			"$todo_id:decimal": "required"
 		},
-		"response:many({255})": [
-			"id:integer",
-			"todo_id:integer",
-			"sort_order:integer",
+		"response:many": [
+			"id:decimal",
+			"todo_id:decimal",
+			"sort_order:decimal",
 			"name:string",
 			"date_create:string",
 			"is_active:boolean"
@@ -14,14 +14,14 @@
 	},
 	"GET todo/$todo_id/item/$id": {
 		"request": {
-			"$todo_id:integer": "required",
-			"$id:integer": "required"
+			"$todo_id:decimal": "required",
+			"$id:decimal": "required"
 		},
 		"response": [
-			"id:integer",
+			"id:decimal",
 			"name:string",
 			"date_create:string",
-			"sort_order:integer",
+			"sort_order:decimal",
 			"is_active:boolean"
 		]
 	},
@@ -31,14 +31,14 @@
 			"only_owner": true
 		},
 		"request": {
-			"$todo_id:integer": "required",
+			"$todo_id:decimal": "required",
 			"name:string": "optional",
 			"is_active:boolean": "optional"
 		},
 		"response": [
-			"id:integer",
-			"todo_id:integer",
-			"sort_order:integer",
+			"id:decimal",
+			"todo_id:decimal",
+			"sort_order:decimal",
 			"name:string",
 			"date_create:string",
 			"is_active:boolean"
@@ -50,15 +50,15 @@
 			"only_owner": true
 		},
 		"request": {
-			"$todo_id:integer": "required",
-			"$id:integer": "required",
+			"$todo_id:decimal": "required",
+			"$id:decimal": "required",
 			"name:string": "optional",
 			"is_active:boolean": "optional"
 		},
 		"response": [
-			"id:integer",
-			"todo_id:integer",
-			"sort_order:integer",
+			"id:decimal",
+			"todo_id:decimal",
+			"sort_order:decimal",
 			"name:string",
 			"date_create:string",
 			"is_active:boolean"
@@ -70,8 +70,8 @@
 			"only_owner": true
 		},
 		"request": {
-			"$todo_id:integer": "required",
-			"$id:integer": "required"
+			"$todo_id:decimal": "required",
+			"$id:decimal": "required"
 		},
 		"response": [
 			"status:boolean"

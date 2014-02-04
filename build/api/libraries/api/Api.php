@@ -2,24 +2,16 @@
 
 class Api {
 
-    private $_config = array(
-        'send_only_virtual_status_codes' => false,
-        'send_only_2xx_3xx_403_404_500_503' => false
-    );
+    private $_config = array();
 
     const REQUEST_URI_ROOT  = API_ROOT_URL; // '/server'
 
-    const API_NAME          = 'api_name';
-    const CELL_NAME         = 'id';
+    const NAME          = 'name';
+    const VERSION       = 'version';
     const URL               = 'url';
-    const ARGUMENTS_COUNT   = 'params_count';
     const RESPONSE          = 'response';
     const REQUEST           = 'request';
-    const REQUEST_METHOD    = "method";
     const ACCESS            = "access";
-
-    const RESPONSE_TYPE_ONE = 'one';
-    const RESPONSE_TYPE_ALL = 'many';
 
     const TYPE_TEXT         = 'text';
     const TYPE_DECIMAL      = 'decimal';
@@ -130,13 +122,13 @@ class Api {
 
         $uriR = $uriCall;
         $implArgs = implode('|', $arguments);
-        $uriR = preg_replace('#/('.$implArgs.')/#', '/$arg/', $uriR);
-        $uriR = preg_replace('#^('.$implArgs.')/#', '$arg/', $uriR);
-        $uriR = preg_replace('#^('.$implArgs.')$#', '$arg', $uriR);
-        $uriR = preg_replace('#/('.$implArgs.')$#', '/$arg', $uriR);
+        $uriR = preg_replace('#^('.$implArgs.')$#', '<param>', $uriR);
+        $uriR = preg_replace('#^('.$implArgs.')/#', '<param>/', $uriR);
+        $uriR = preg_replace('#/('.$implArgs.')/#', '/<param>/', $uriR);
+        $uriR = preg_replace('#/('.$implArgs.')$#', '/<param>', $uriR);
 
         // CELL NAME
-        $cellName = $method." ".preg_replace('#\$[^\/]+#', '%1', $uriR)." (".count($arguments).")";
+        $cellName = $method.":".$uriR;
 
         if (!empty(self::$_singletons[$cellName])) {
             return self::$_singletons[$cellName];
@@ -147,7 +139,7 @@ class Api {
         $maskUri = $method.' '.$uriCall;
 
         if (isset(self::$_apiParsed[$cellName])) {
-            $_apiName = self::$_apiParsed[$cellName][self::API_NAME];
+            $_apiName = self::$_apiParsed[$cellName][self::NAME];
             $maskExp = $_apiName;
             $maskExp = str_replace('\\', '/', $maskExp);
             $maskExp = preg_replace('/(?:\$[^\/\\\]+)/', '[^\/]+', $maskExp);

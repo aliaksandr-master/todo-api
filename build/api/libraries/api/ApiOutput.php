@@ -13,6 +13,9 @@ class ApiOutput {
 
     const DEFAULT_STATUS = 200;
 
+    const RESPONSE_TYPE_ONE = 'one';
+    const RESPONSE_TYPE_ALL = 'many';
+
     private $_status = null;
 
     function __construct(ApiShuttle &$shuttle){
@@ -81,21 +84,19 @@ class ApiOutput {
             $response["meta"] = $this->prepareResponseData($response["meta"], 'meta');
         }
 
-        // DEBUG DATA (only for development or testing mode
+        // DEBUG DATA (only for development and testing mode)
         if(ENVIRONMENT == "development" || ENVIRONMENT == "testing"){
             $response["debug"] = array(
                 'url' => $_SERVER['REQUEST_URI'],
                 'method' => $method,
-                'time' => (round((gettimeofday(true) - START_TIME)*100000)/100000),
-                "API" => $this->_shuttle->api->get(),
+                'time' => (round((gettimeofday(true) - START_TIME) * 100000) / 100000),
                 'input' => array(
-                    'data' => array(
-                        "source" => INPUT_DATA,
-                        "URL"    => $this->_shuttle->input->param(),
-                        "INPUT" => $this->_shuttle->input->argument(),
-                        "QUERY"   => $this->_shuttle->input->filter()
-                    )
-                )
+                    "URL"    => $this->_shuttle->input->url(),
+                    "QUERY"  => $this->_shuttle->input->query(),
+                    "BODY"   => $this->_shuttle->input->body(),
+                    "BODY:source" => INPUT_DATA
+                ),
+                "API" => $this->_shuttle->api->get()
             );
         }
         $this->_shuttle->context->response($response, $this->status());
@@ -192,7 +193,7 @@ class ApiOutput {
         if (isset($data[$name])) {
             $_data[$name] = $this->_shuttle->toType($data[$name], $param["type"]);
         } else if ($strict) {
-            trigger_error("Api '".$this->_shuttle->api->get(Api::API_NAME)."': invalid response. '".$name."' is undefined!");
+            trigger_error("Api '".$this->_shuttle->api->get(Api::NAME)."': invalid response. '".$name."' is undefined!");
         }
     }
 
@@ -202,7 +203,7 @@ class ApiOutput {
         $type = $type['type'];
         $response = $this->_shuttle->api->get(Api::RESPONSE);
 
-        if($type == Api::RESPONSE_TYPE_ONE){
+        if($type == self::RESPONSE_TYPE_ONE){
             if (isset($data[0]) && is_array($data[0])) {
                 $data = $data[0];
             }
@@ -215,7 +216,7 @@ class ApiOutput {
                     }
                 }
             }
-        } else if ($type == Api::RESPONSE_TYPE_ALL) {
+        } else if ($type == self::RESPONSE_TYPE_ALL) {
             if (!empty($data) && (!isset($data[0]) || !is_array($data[0]))) {
                 $data = array($data);
             }

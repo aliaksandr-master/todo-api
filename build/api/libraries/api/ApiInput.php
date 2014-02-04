@@ -12,7 +12,7 @@ class ApiInput {
     private $_input = array();
     private $_URL = array();
     private $_QUERY = array();
-    private $_INPUT = array();
+    private $_BODY = array();
 
     private $_errors = array();
 
@@ -57,17 +57,17 @@ class ApiInput {
         return $data;
     }
 
-    function argument ($name = null, $default = null) {
+    function body ($name = null, $default = null) {
         if (is_null($name)) {
-            return $this->_INPUT;
+            return $this->_BODY;
         }
-        if (isset($this->_INPUT[$name])) {
-            return $this->_INPUT[$name];
+        if (isset($this->_BODY[$name])) {
+            return $this->_BODY[$name];
         }
         return $default;
     }
 
-    function param ($name = null, $default = null) {
+    function url ($name = null, $default = null) {
         if (is_null($name)) {
             return $this->_URL;
         }
@@ -77,7 +77,7 @@ class ApiInput {
         return $default;
     }
 
-    function filter ($name = null, $default = null) {
+    function query ($name = null, $default = null) {
         if (is_null($name)) {
             return $this->_QUERY;
         }
@@ -105,21 +105,21 @@ class ApiInput {
                 $value = isset($url[$index]) ? $url[$index] : null;
                 if (!is_null($value)) {
                     foreach ($param['filters']['before'] as $filter) {
-                        $value = $this->_shuttle->applyFilter($value, $filter["name"], $filter["params"], $param["name"]);
+                        $value = $this->_shuttle->applyFilter($value, key($filter), $filter[key($filter)], $param["name"]);
                     }
                     $this->_URL[$param["name"]] = $this->_shuttle->toType($value, $param["type"], $param);
                 }
             }
         }
 
-        if (!empty($request['input']['INPUT'])) {
-            foreach ($request['input']['INPUT'] as $param) {
+        if (!empty($request['input']['BODY'])) {
+            foreach ($request['input']['BODY'] as $param) {
                 $value = isset($input[$param['name']]) ? $input[$param['name']] : null;
                 if (!is_null($value)) {
                     foreach ($param['filters']['before'] as $filter) {
-                        $value = $this->_shuttle->applyFilter($value, $filter["name"], $filter["params"], $param['name']);
+                        $value = $this->_shuttle->applyFilter($value, key($filter), $filter[key($filter)], $param['name']);
                     }
-                    $this->_INPUT[$param["name"]] = $this->_shuttle->toType($value, $param["type"], $param);
+                    $this->_BODY[$param["name"]] = $this->_shuttle->toType($value, $param["type"], $param);
                 }
             }
         }
@@ -129,13 +129,13 @@ class ApiInput {
                 $value = isset($QUERY[$param['name']]) ? $QUERY[$param['name']] : null;
                 if (!is_null($value)) {
                     foreach ($param['filters']['before'] as $filter) {
-                        $value = $this->_shuttle->applyFilter($value, $filter["name"], $filter["params"], $param['name']);
+                        $value = $this->_shuttle->applyFilter($value, key($filter), $filter[key($filter)], $param['name']);
                     }
                     $this->_QUERY[$param["name"]] = $this->_shuttle->toType($value, $param["type"], $param);
                 }
             }
         }
-        $this->_input = array_merge($this->_input, $this->_QUERY, $this->_URL, $this->_INPUT);
+        $this->_input = array_merge($this->_input, $this->_QUERY, $this->_URL, $this->_BODY);
     }
 
     function check () {
@@ -149,9 +149,9 @@ class ApiInput {
                 }
             }
         }
-        if (!empty($request['input']['INPUT'])) {
-            foreach ($request['input']['INPUT'] as $param) {
-                $value = isset($this->_INPUT[$param['name']]) ? $this->_INPUT[$param['name']] : null;
+        if (!empty($request['input']['BODY'])) {
+            foreach ($request['input']['BODY'] as $param) {
+                $value = isset($this->_BODY[$param['name']]) ? $this->_BODY[$param['name']] : null;
                 if (!empty($param['validation'])) {
                     $valid *= $this->validate($param["name"], $value, $param['validation'], true);
                 }
@@ -177,7 +177,7 @@ class ApiInput {
                 $value = isset($QUERY[$param['name']]) ? $QUERY[$param['name']] : null;
                 if (!is_null($value)) {
                     foreach ($param['filters']['before'] as $filter) {
-                        $value = $this->_shuttle->applyFilter($value, $filter["name"], $filter["params"], $param['name']);
+                        $value = $this->_shuttle->applyFilter($value, key($filter), $filter[key($filter)], $param['name']);
                     }
                     $this->_QUERY[$param["name"]] = $this->_shuttle->toType($value, $param["type"], $param);
                 }
@@ -186,7 +186,7 @@ class ApiInput {
     }
 
 
-    function validate($fieldName, $value, array $rules, $setError = false){
+    function validate ($fieldName, $value, array $rules, $setError = false) {
         $error  = false;
 
         $required = !empty($rules["required"]) || empty($rules["optional"]);
@@ -201,10 +201,10 @@ class ApiInput {
         unset($rules["required"]);
 
         if (!$error && isset($value) && (strlen((string)$value) || $value === false)) {
-            foreach ($rules as $rule) {
-                if (!$this->_shuttle->applyValidationRule($value, $rule['name'], $rule["params"], $fieldName)) {
+            foreach ($rules as $ruleName => $ruleParams) {
+                if (!$this->_shuttle->applyValidationRule($value, $ruleName, $ruleParams, $fieldName)) {
                     if ($setError) {
-                        $this->error($fieldName, $rule["name"], $rule['params'], 400);
+                        $this->error($fieldName, $ruleName, $ruleParams, 400);
                     }
                     $error = true;
                     break;

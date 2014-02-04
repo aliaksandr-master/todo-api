@@ -4,24 +4,24 @@
 			"need_login": true,
 			"only_owner": true
 		},
-		"response:many({255})": [
-			"id:integer",
+		"response:many": [
+			"id:decimal",
 			"link:string",
 			"name:string",
 			"is_shared:boolean",
-			"sort_order:integer"
+			"sort_order:decimal"
 		]
 	},
 	"GET todo/$id": {
 		"request": {
-			"$id:integer": "required"
+			"$id:decimal": "required"
 		},
 		"response": [
-			"id:integer",
+			"id:decimal",
 			"link:string",
 			"name:string",
 			"is_shared:boolean",
-			"sort_order:integer"
+			"sort_order:decimal"
 		]
 	},
 
@@ -33,14 +33,14 @@
 		"request": {
 			"name:string": "optional",
 			"is_shared:boolean": "optional",
-			"sort_order:integer": "optional"
+			"sort_order:decimal": "optional"
 		},
 		"response": [
-			"id:integer",
+			"id:decimal",
 			"link:string",
 			"name:string",
 			"is_shared:boolean",
-			"sort_order:integer"
+			"sort_order:decimal"
 		]
 	},
 
@@ -50,17 +50,17 @@
 			"only_owner": true
 		},
 		"request": {
-			"$id:integer": "required",
-			"name:string": "optional",
+			"$id:decimal": "required",
+			"name:string{1,40}": "optional",
 			"is_shared:boolean": "optional",
-			"sort_order:integer": "optional"
+			"sort_order:decimal{1,11}": "optional"
 		},
 		"response": [
-			"id:integer",
+			"id:decimal",
 			"link:string",
 			"name:string",
 			"is_shared:boolean",
-			"sort_order:integer"
+			"sort_order:decimal"
 		]
 	},
 
@@ -70,7 +70,7 @@
 			"only_owner": true
 		},
 		"request": {
-			"$todo_id:integer": "required"
+			"$todo_id:decimal{1,11}": "required"
 		},
 		"response": [
 			"status:boolean"

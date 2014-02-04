@@ -5,15 +5,14 @@ var _ = require('underscore');
 var parseFilter = (function () {
 
 	var filtersSepMap = {
-		'before': '#',
-		'after':  '*'
+		'before': ['^', /^\^/, /\s*\^\s*/g],
+		'after':  ['|', /^\|/, /\s*\|\s*/g]
 	};
-	var formatExp = /^([\w\d]+)(.+)$/i;
+	var formatExp = /^([\w\d]+)(.*)$/i;
 	return function (str, name, apiName) {
 		if (str) {
 			var sep = filtersSepMap[name],
-				sepExp = new RegExp('^\\' + sep),
-				parts = str.replace(sepExp, '').split(sep);
+				parts = str.replace(sep[1], '').split(sep[2]);
 
 			return _.map(parts, function (part) {
 				var filterName   = part.replace(formatExp, '$1');
@@ -22,13 +21,12 @@ var parseFilter = (function () {
 					try {
 						filterParams = JSON.parse(filterParams);
 					} catch (e) {
-						throw new Error('"' + apiName + '" has invalid JSON format in ' + name + 'Filters params');
+						throw new Error('"' + apiName + '" has invalid JSON format in ' + name.toUpperCase() + '_FILTERS "' + part + '"');
 					}
 				}
-				return {
-					name: filterName,
-					params: filterParams || []
-				};
+				var obj = {};
+				obj[filterName] = filterParams || [];
+				return obj;
 			});
 		}
 		return [];
@@ -54,22 +52,17 @@ var parseParams = function (param, apiName){
 	return params;
 };
 
-var validationRuleFormat = function (ruleName, param, apiName) {
-	return {
-		name:   ruleName.trim(),
-		params: parseParams(param || null, apiName) || []
-	};
+var validationRuleParamsFormat = function (param, apiName) {
+	return parseParams(param || null, apiName) || [];
 };
 
 var parseStrArray = function (strOrArray, apiName) {
 	if (_.isString(strOrArray)) {
 		strOrArray = strOrArray.split(/\s*\|\s*/);
 	}
-
 	if (!_.isArray(strOrArray)) {
 		throw new Error('"' + apiName + '" has invalid sting-array format "' + JSON.stringify(strOrArray, null, 4) + '"');
 	}
-
 	return strOrArray;
 };
 
@@ -80,14 +73,16 @@ var parseValidation = (function () {
 		_.each(parseStrArray(option, apiName), function(rule){
 			var ruleName    = rule.replace(formatExp, '$1'),
 				paramString = rule.replace(formatExp, '$2');
-			opt[ruleName] = validationRuleFormat(ruleName, paramString, apiName);
+
+			opt[ruleName] = validationRuleParamsFormat(paramString, apiName);
+
 		});
 		return opt;
 	};
 })();
 
 var categoryFormat = function (category) {
-	return category == '$' ? 'URL' : (category == '@' ? 'QUERY' : 'INPUT');
+	return category == '$' ? 'URL' : (category == '?' ? 'QUERY' : 'BODY');
 };
 
 var typeFormat = (function () {
@@ -103,32 +98,39 @@ var typeFormat = (function () {
 	}
 })();
 
-var rangeFormat = (function () {
+var rangeFormat = function (rangeString, apiName) {
+	var range,
+		minLength = null,
+		maxLength = null;
 
-	return function (rangeString, rangeDefault, apiName) {
-		var range;
-		var minLength = rangeDefault[0];
-		var maxLength = rangeDefault[1];
+	if (rangeString) {
+		range = rangeString.trim().split(/\s*,\s*/);
+		minLength = range[0];
+		maxLength = range.length == 1 ? range[0] : range[1];
 
-		if (rangeString) {
-			range = rangeString.trim().split(/\s*,\s*/);
-			minLength = range[0];
-			maxLength = range.length == 1 ? range[0] : range[1];
+		if (range.length > 2 || !range.length || (/^[0-9]+,[0-9]+$/.test(rangeString) && minLength > maxLength)) {
+			throw new Error ('"' + apiName + '" has invalid format in Range "{' + rangeString + '}"');
+		}
 
-			if (range.length > 2 || !range.length || /^[0-9,]+$/.test(rangeString) || minLength > maxLength) {
-				throw new Error ('"' + apiName + '" has invalid format in Range "{' + rangeString + '}"');
+		if (range.length == 2) {
+			if (!minLength.length) {
+				minLength = null;
+			}
+			if (!maxLength.length) {
+				maxLength = 'infinity';
 			}
 		}
 
-		return [minLength, maxLength];
 	}
-})();
+
+	return [minLength, maxLength];
+};
 
 var addRule = function (object, ruleName, params, apiName) {
 	if (!object.validation) {
 		object.validation = {};
 	}
-	object.validation[ruleName] = validationRuleFormat(ruleName, params, apiName);
+	object.validation[ruleName] = validationRuleParamsFormat(params, apiName);
 };
 
 var addFilter = function (object, toEnd, type, name, params) {
@@ -138,16 +140,13 @@ var addFilter = function (object, toEnd, type, name, params) {
 			after: []
 		};
 	}
-	var obj = {
-		name: name,
-		params: params || []
-	};
+	var obj = {};
+	obj[name] = params || [];
 	toEnd ? object.filters[type].push(obj) : object.filters[type].unshift(obj);
 };
 
-var makeCellName = function(method, url1, argsCount){
-	var url = url1.replace(/\$[^\/]+/g, '%1');
-	return method + " " + url + " (" + argsCount + ")";
+var makeCellName = function(method, url){
+	return method + ':' + url.replace(/\$[^\/]+/g, '<param>');
 };
 
 var parseApiName = function (apiName) {
@@ -164,10 +163,10 @@ var parseApiName = function (apiName) {
 
 var parseParamDirective = function (str, apiName) {
 	var parsed = {};
-	str.replace(/^([@>$]?)([\w][\w\d]*)(?:\:?([a-zA-Z]*))(?:\{([^\}]+)\})?(#[^#]+)*(\*[^\*]+)*$/, function (word, category, name, type, len, beforeFilters, afterFilters) {
+	str.replace(/^([\?$]?)([\w][\w\d]*)(?:\:?([a-zA-Z]*))(?:\{([^\}]+)\})?(\^[^\^\|]+)*(\|[^\|]+)*$/, function (word, category, name, type, len, beforeFilters, afterFilters) {
 		type = typeFormat(type, 'string', apiName);
 
-		var range = rangeFormat(len, [null, type == 'string' ? 255 : null], apiName);
+		var range = rangeFormat(len, apiName);
 
 		parsed = {
 			category: categoryFormat(category),
@@ -216,7 +215,7 @@ module.exports = {
 		strArray: parseStrArray
 	},
 	format: {
-		rule: validationRuleFormat,
+		ruleParam: validationRuleParamsFormat,
 		category: categoryFormat,
 		type: typeFormat,
 		range: rangeFormat

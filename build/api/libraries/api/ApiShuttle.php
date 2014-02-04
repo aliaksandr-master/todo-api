@@ -36,7 +36,7 @@ class ApiShuttle {
         $this->output  = new ApiOutput($this);
         $this->access  = new ApiAccess($this);
 
-        $this->errorPref .= $this->api->get(Api::API_NAME).': ';
+        $this->errorPref .= $this->api->get(Api::NAME).': ';
     }
 
     private $_errors = array();

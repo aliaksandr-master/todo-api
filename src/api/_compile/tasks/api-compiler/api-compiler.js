@@ -22,9 +22,8 @@ module.exports = function(grunt){
 
 		var result = utils.parse.paramDirective(optionName, apiName);
 
-		if (!result) {
-			throw new Error(apiName + ': has invalid format');
-			return null;
+		if (_.isEmpty(result)) {
+			throw new Error(apiName + ': has invalid request format');
 		}
 
 		result.validation = utils.parse.validation(optionData, apiName);
@@ -37,21 +36,32 @@ module.exports = function(grunt){
 		if (result.type == 'string') {
 			utils.addFilter(result, false, 'before', 'trim');
 			utils.addFilter(result, false, 'after', 'xss');
+			if (!result.length.max) {
+				result.length.max = 255;
+			}
 		}
-		if (result.length.min) {
-			utils.addRule(result, 'min_length', [result.length.min], apiName);
+		if (result.type == 'decimal') {
+			if (!result.length.min) {
+				result.length.min = 1
+			}
+			if (!result.length.max) {
+				result.length.max = 11
+			}
 		}
-		if (result.length.max) {
-			utils.addRule(result, 'max_length', [result.length.max], apiName);
+		if (result.length.min && result.length.max && result.length.min === result.length.max) {
+			if (result.length.min) {
+				utils.addRule(result, 'exact_length', [result.length.min], apiName);
+			}
+		} else {
+			if (result.length.min) {
+				utils.addRule(result, 'min_length', [result.length.min], apiName);
+			}
+			if (result.length.max && result.length.max !== 'infinity') {
+				utils.addRule(result, 'max_length', [result.length.max], apiName);
+			}
 		}
 		if (/decimal|integer|float/.test(result.type)) {
 			utils.addRule(result, result.type, [], apiName);
-		}
-		if (result.category == 'URL') {
-			result.url_index = apiName.indexOf("$" + result.name);
-			if(result.url_index < 0 ) {
-				throw new Error('"' + optionName + '" has invalid URL param. param "' + result.name + '" is not attach in url string "' + optionName + '"');
-			}
 		}
 		delete result.length;
 		return result;
@@ -59,29 +69,29 @@ module.exports = function(grunt){
 
 	var parseResponseOption = function (directive, options, apiName){
 		var response = {};
-		directive.replace(/^response[:]?(?:(one|many)\s*\(([^\)]+)\)\s*)?$/, function (word, type, params) {
+		directive.replace(/^response(?::(one|many)\s*\(([^\)]+)\)\s*)?(?:\|(.+))?$/, function (word, type, params) {
 			response.type = type || 'one';
 			if(params){
 				response.pagenator = {};
-				params.replace(/^\s*\{([^\}]+)\}\s*([^\s]*)\s*$/, function(word, limits, pageNumber){
+				params.replace(/^\s*\{\s*([^\}]+)\s*\}\s*([^\s]*)\s*$/, function(word, limits, pageNumber){
 					var category;
 					if (pageNumber) {
 						if (/^[0-9]$/.test(pageNumber)) {
 							response.pagenator.page_number = pageNumber;
-						} else if (/^[$@>]?[a-zA-Z_0-9]+$/.test(pageNumber)) {
-							response.pagenator.page_param_name = pageNumber.replace(/^[$@>]/, '');
-							category = pageNumber.replace(/^([$@>])(.+)$/, '$1');
-							response.pagenator.page_param_category = category == '$' ? 'URL' : (category == '@' ? 'QUERY' : 'INPUT');
+						} else if (/^[$\?]?[a-zA-Z_0-9]+$/.test(pageNumber)) {
+							response.pagenator.page_param_name = pageNumber.replace(/^[$\?]/, '');
+							category = pageNumber.replace(/^([$\?])(.+)$/, '$1');
+							response.pagenator.page_param_category = utils.format.category(category);
 						} else {
 							throw new Error(apiName + ': Invalid type of response "'+params+'" param PAGE_NUMBER');
 						}
 					}
 
-					var LIMIT_EXP = /^\s*([$@>]?)([a-zA-Z][a-zA-Z0-9_]*)(?:\s*,\s*([1-9][0-9]*))?\s*$/;
+					var LIMIT_EXP = /^\s*([$\?]?)([a-zA-Z][a-zA-Z0-9_]*)(?:\s*,\s*([1-9][0-9]*))?\s*$/;
 					if (LIMIT_EXP.test(limits)) {
 						response.pagenator.limit_param_name = limits.replace(LIMIT_EXP, '$2');
 						category = limits.replace(LIMIT_EXP, '$1');
-						response.pagenator.limit_param_category = category == '$' ? 'URL' : (category == '@' ? 'QUERY' : 'INPUT');
+						response.pagenator.limit_param_category = utils.format.category(category);
 						response.pagenator.max_limit = limits.replace(LIMIT_EXP, '$3') || 255;
 					} else if (/^\s*([1-9][0-9]*)\s*$/.test(limits)) {
 						response.pagenator.max_limit = limits.replace(/^\s*([0-9]+)\s*$/, '$1') || 255;
@@ -115,6 +125,8 @@ module.exports = function(grunt){
 	var compile = function(source){
 		var resultApi = {};
 		_.each(source, function(apiData, apiName){
+			console.log(apiName);
+
 			var title = apiName;
 			var request = {};
 			var response = {};
@@ -122,16 +134,23 @@ module.exports = function(grunt){
 				need_login: false,
 				only_owner: false
 			};
+
 			_.each(apiData, function(options, directive){
+
 				if (directive === 'access') {
 					_.extend(access, options);
 					return;
 				}
+
 				if (directive === 'title') {
 					title = options;
 					return;
 				}
+
 				if (/^request/.test(directive)) {
+					if (!_.isEmpty(request)) {
+						throw new Error(apiName + ': must have one directive "request"');
+					}
 					request.input = _.map(options, function(option, optionName){
 						if (_.isObject(option)){
 							optionName += option.before ? '#' + option.before.join('#') : '';
@@ -143,6 +162,9 @@ module.exports = function(grunt){
 					return;
 				}
 				if (/^response/.test(directive)) {
+					if (!_.isEmpty(response)) {
+						throw new Error(apiName + ': must have one directive "response"');
+					}
 					response = parseResponseOption(directive, options, apiName);
 				}
 			});
@@ -158,8 +180,20 @@ module.exports = function(grunt){
 			request.input = _requestInput;
 
 			if (request.input.URL) {
+				_.each(request.input.URL, function (params, name) {
+					var existsInUrl =
+						apiName.indexOf(' $' + name + ' ') !== -1 ||
+						apiName.indexOf(' $' + name + '/') !== -1 ||
+						apiName.indexOf('/$' + name + '/') !== -1 ||
+						apiName.indexOf('/$' + name) !== -1;
+					if (!existsInUrl) {
+						throw new Error('"' + apiName + '" param "' + name + '" was not attach to url string');
+					}
+				});
 				request.input.URL = _.sortBy(request.input.URL, "url_index");
 			}
+
+
 
 			var hasError = false;
 			if (response.paginator) {
@@ -195,18 +229,23 @@ module.exports = function(grunt){
 
 			var parseApi = utils.parse.apiName(apiName);
 
+			if (!/^POST|HEAD|OPTION|DELETE|GET|PUT|PATCH$/.test(parseApi.method)) {
+				throw new Error(apiName + ': invalid method type "' + parseApi.method + '"');
+			}
+
 			// RESULT
 			var api = {};
 			api['url'] = parseApi.url;
-			api['params_count'] = (request.input.URL || []).length;
-			api['method'] = parseApi.method;
+			api['title'] = title;
+			api['name'] = apiName;
 			api['request'] = request;
+			api['request'].method = parseApi.method;
 			api['response'] = response;
 			api['access'] = access;
-			api['api_name'] = apiName;
-			api['api_version'] = parseApi.version;
-			api['id'] = utils.make.apiCellName(parseApi.method, parseApi.url, api['params_count']);
-			resultApi[api['id']] = api;
+			api['version'] = parseApi.version;
+
+			var id = utils.make.apiCellName(parseApi.method, parseApi.url, api['params_count']);
+			resultApi[id] = api;
 		});
 		return resultApi;
 	};
@@ -221,9 +260,6 @@ module.exports = function(grunt){
 
 		// compile
 		var parsed = compile(source);
-
-		parsed['options'] = {};
-		parsed['options']['api_root'] = options.apiRoot;
 
 		grunt.file.write(options.destSourceJsonFile, JSON.stringify(source, null, options.jsonSpaces));
 		grunt.file.write(options.destParsedJsonFile, JSON.stringify(parsed, null, options.jsonSpaces));

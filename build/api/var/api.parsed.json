@@ -1,86 +1,867 @@
 {
-    "GET todo/%1/item (1)": {
-        "url": "todo/$todo_id/item",
-        "params_count": 1,
-        "method": "GET",
+    "HEAD:test/module/<param>/<param>/some/<param>/<param>/<param>": {
+        "url": "test/module/$someVar/$some1/some/$Var2/$someVar3/$some",
+        "title": "HEAD test/module/$someVar/$some1/some/$Var2/$someVar3/$some 1.2.3",
+        "name": "HEAD test/module/$someVar/$some1/some/$Var2/$someVar3/$some 1.2.3",
         "request": {
             "input": {
-                "URL": [
-                    {
-                        "name": "todo_id",
+                "QUERY": {
+                    "checkVar_1": {
+                        "name": "checkVar_1",
+                        "type": "string",
+                        "filters": {
+                            "before": [
+                                {
+                                    "trim": []
+                                }
+                            ],
+                            "after": [
+                                {
+                                    "xss": []
+                                }
+                            ]
+                        },
+                        "validation": {
+                            "required": [],
+                            "min_length": [
+                                "1"
+                            ]
+                        }
+                    },
+                    "checkVar_3": {
+                        "name": "checkVar_3",
+                        "type": "string",
+                        "filters": {
+                            "before": [
+                                {
+                                    "trim": []
+                                }
+                            ],
+                            "after": [
+                                {
+                                    "xss": []
+                                }
+                            ]
+                        },
+                        "validation": {
+                            "required": [],
+                            "min_length": [
+                                "1"
+                            ],
+                            "max_length": [
+                                "3"
+                            ]
+                        }
+                    },
+                    "checkVar_4": {
+                        "name": "checkVar_4",
+                        "type": "string",
+                        "filters": {
+                            "before": [
+                                {
+                                    "trim": []
+                                }
+                            ],
+                            "after": [
+                                {
+                                    "xss": []
+                                }
+                            ]
+                        },
+                        "validation": {
+                            "required": [],
+                            "max_length": [
+                                "3"
+                            ]
+                        }
+                    },
+                    "checkVar_5": {
+                        "name": "checkVar_5",
+                        "type": "string",
+                        "filters": {
+                            "before": [
+                                {
+                                    "trim": []
+                                }
+                            ],
+                            "after": [
+                                {
+                                    "xss": []
+                                }
+                            ]
+                        },
+                        "validation": {
+                            "required": [],
+                            "exact_length": [
+                                "3"
+                            ]
+                        }
+                    },
+                    "checkVar_6": {
+                        "name": "checkVar_6",
+                        "type": "string",
+                        "filters": {
+                            "before": [
+                                {
+                                    "trim": []
+                                }
+                            ],
+                            "after": [
+                                {
+                                    "xss": []
+                                },
+                                {
+                                    "trim": []
+                                }
+                            ]
+                        },
+                        "validation": {
+                            "required": [],
+                            "max_length": [
+                                255
+                            ]
+                        }
+                    },
+                    "checkVar_7": {
+                        "name": "checkVar_7",
+                        "type": "string",
+                        "filters": {
+                            "before": [
+                                {
+                                    "trim": []
+                                }
+                            ],
+                            "after": [
+                                {
+                                    "xss": []
+                                },
+                                {
+                                    "trim": []
+                                }
+                            ]
+                        },
+                        "validation": {
+                            "required": [],
+                            "max_length": [
+                                255
+                            ]
+                        }
+                    },
+                    "checkVar_8": {
+                        "name": "checkVar_8",
+                        "type": "string",
+                        "filters": {
+                            "before": [
+                                {
+                                    "trim": []
+                                }
+                            ],
+                            "after": [
+                                {
+                                    "xss": []
+                                },
+                                {
+                                    "trim": [
+                                        123
+                                    ]
+                                }
+                            ]
+                        },
+                        "validation": {
+                            "required": [],
+                            "max_length": [
+                                255
+                            ]
+                        }
+                    },
+                    "checkVar_9": {
+                        "name": "checkVar_9",
+                        "type": "string",
+                        "filters": {
+                            "before": [
+                                {
+                                    "trim": []
+                                }
+                            ],
+                            "after": [
+                                {
+                                    "xss": []
+                                },
+                                {
+                                    "trim": [
+                                        "123"
+                                    ]
+                                }
+                            ]
+                        },
+                        "validation": {
+                            "required": [],
+                            "max_length": [
+                                255
+                            ]
+                        }
+                    },
+                    "checkVar_10": {
+                        "name": "checkVar_10",
+                        "type": "string",
+                        "filters": {
+                            "before": [
+                                {
+                                    "trim": []
+                                }
+                            ],
+                            "after": [
+                                {
+                                    "xss": []
+                                },
+                                {
+                                    "trim": [
+                                        123,
+                                        "aaa"
+                                    ]
+                                }
+                            ]
+                        },
+                        "validation": {
+                            "required": [],
+                            "max_length": [
+                                255
+                            ]
+                        }
+                    },
+                    "checkVar_11": {
+                        "name": "checkVar_11",
+                        "type": "string",
+                        "filters": {
+                            "before": [
+                                {
+                                    "trim": []
+                                },
+                                {
+                                    "trim": []
+                                }
+                            ],
+                            "after": [
+                                {
+                                    "xss": []
+                                }
+                            ]
+                        },
+                        "validation": {
+                            "required": [],
+                            "max_length": [
+                                255
+                            ]
+                        }
+                    },
+                    "checkVar_12": {
+                        "name": "checkVar_12",
+                        "type": "string",
+                        "filters": {
+                            "before": [
+                                {
+                                    "trim": []
+                                },
+                                {
+                                    "trim": [
+                                        123
+                                    ]
+                                }
+                            ],
+                            "after": [
+                                {
+                                    "xss": []
+                                }
+                            ]
+                        },
+                        "validation": {
+                            "required": [],
+                            "max_length": [
+                                255
+                            ]
+                        }
+                    },
+                    "checkVar_13": {
+                        "name": "checkVar_13",
+                        "type": "string",
+                        "filters": {
+                            "before": [
+                                {
+                                    "trim": []
+                                },
+                                {
+                                    "trim": [
+                                        "123"
+                                    ]
+                                }
+                            ],
+                            "after": [
+                                {
+                                    "xss": []
+                                }
+                            ]
+                        },
+                        "validation": {
+                            "required": [],
+                            "max_length": [
+                                255
+                            ]
+                        }
+                    },
+                    "checkVar_14": {
+                        "name": "checkVar_14",
+                        "type": "string",
+                        "filters": {
+                            "before": [
+                                {
+                                    "trim": []
+                                },
+                                {
+                                    "trim": [
+                                        "123"
+                                    ]
+                                }
+                            ],
+                            "after": [
+                                {
+                                    "xss": []
+                                }
+                            ]
+                        },
+                        "validation": {
+                            "required": [],
+                            "max_length": [
+                                255
+                            ]
+                        }
+                    },
+                    "checkVar_15": {
+                        "name": "checkVar_15",
+                        "type": "string",
+                        "filters": {
+                            "before": [
+                                {
+                                    "trim": []
+                                },
+                                {
+                                    "trim": [
+                                        "123"
+                                    ]
+                                }
+                            ],
+                            "after": [
+                                {
+                                    "xss": []
+                                },
+                                {
+                                    "trim": []
+                                }
+                            ]
+                        },
+                        "validation": {
+                            "required": [],
+                            "max_length": [
+                                255
+                            ]
+                        }
+                    },
+                    "checkVar_16": {
+                        "name": "checkVar_16",
+                        "type": "string",
+                        "filters": {
+                            "before": [
+                                {
+                                    "trim": []
+                                },
+                                {
+                                    "trim": [
+                                        "123"
+                                    ]
+                                }
+                            ],
+                            "after": [
+                                {
+                                    "xss": []
+                                },
+                                {
+                                    "trim": []
+                                }
+                            ]
+                        },
+                        "validation": {
+                            "required": [],
+                            "max_length": [
+                                255
+                            ]
+                        }
+                    },
+                    "checkVar_17": {
+                        "name": "checkVar_17",
+                        "type": "string",
+                        "filters": {
+                            "before": [
+                                {
+                                    "trim": []
+                                },
+                                {
+                                    "trim": [
+                                        "123"
+                                    ]
+                                }
+                            ],
+                            "after": [
+                                {
+                                    "xss": []
+                                },
+                                {
+                                    "trim": []
+                                }
+                            ]
+                        },
+                        "validation": {
+                            "required": [],
+                            "max_length": [
+                                255
+                            ]
+                        }
+                    },
+                    "checkVar_18": {
+                        "name": "checkVar_18",
+                        "type": "string",
+                        "filters": {
+                            "before": [
+                                {
+                                    "trim": []
+                                },
+                                {
+                                    "trim": []
+                                }
+                            ],
+                            "after": [
+                                {
+                                    "xss": []
+                                }
+                            ]
+                        },
+                        "validation": {
+                            "required": [],
+                            "min_length": [
+                                "1"
+                            ]
+                        }
+                    },
+                    "checkVar_19": {
+                        "name": "checkVar_19",
+                        "type": "string",
+                        "filters": {
+                            "before": [
+                                {
+                                    "trim": []
+                                }
+                            ],
+                            "after": [
+                                {
+                                    "xss": []
+                                },
+                                {
+                                    "trim": []
+                                }
+                            ]
+                        },
+                        "validation": {
+                            "required": [],
+                            "min_length": [
+                                "1"
+                            ],
+                            "max_length": [
+                                "3"
+                            ]
+                        }
+                    },
+                    "checkVar_20": {
+                        "name": "checkVar_20",
+                        "type": "string",
+                        "filters": {
+                            "before": [
+                                {
+                                    "trim": []
+                                },
+                                {
+                                    "trim": []
+                                }
+                            ],
+                            "after": [
+                                {
+                                    "xss": []
+                                },
+                                {
+                                    "trim": []
+                                }
+                            ]
+                        },
+                        "validation": {
+                            "required": [],
+                            "max_length": [
+                                "3"
+                            ]
+                        }
+                    },
+                    "checkVar_21": {
+                        "name": "checkVar_21",
+                        "type": "string",
+                        "filters": {
+                            "before": [
+                                {
+                                    "trim": []
+                                },
+                                {
+                                    "trim": [
+                                        "zxc"
+                                    ]
+                                }
+                            ],
+                            "after": [
+                                {
+                                    "xss": []
+                                },
+                                {
+                                    "trim": [
+                                        "zxc"
+                                    ]
+                                }
+                            ]
+                        },
+                        "validation": {
+                            "required": [],
+                            "exact_length": [
+                                "3"
+                            ]
+                        }
+                    },
+                    "someVar": {
+                        "name": "someVar",
+                        "type": "decimal",
+                        "filters": {
+                            "before": [],
+                            "after": []
+                        },
+                        "validation": {
+                            "required": [],
+                            "min_length": [
+                                1
+                            ],
+                            "max_length": [
+                                11
+                            ],
+                            "decimal": []
+                        }
+                    },
+                    "someVar2": {
+                        "name": "someVar2",
                         "type": "integer",
                         "filters": {
                             "before": [],
                             "after": []
                         },
                         "validation": {
-                            "required": {
-                                "name": "required",
-                                "params": []
-                            },
-                            "integer": {
-                                "name": "integer",
-                                "params": []
-                            }
+                            "optional": [],
+                            "integer": []
+                        }
+                    },
+                    "someVar3": {
+                        "name": "someVar3",
+                        "type": "float",
+                        "filters": {
+                            "before": [],
+                            "after": []
                         },
-                        "url_index": 9
+                        "validation": {
+                            "required": [],
+                            "float": []
+                        }
+                    },
+                    "some1": {
+                        "name": "some1",
+                        "type": "text",
+                        "filters": {
+                            "before": [],
+                            "after": []
+                        },
+                        "validation": {
+                            "optional": []
+                        }
+                    },
+                    "some": {
+                        "name": "some",
+                        "type": "string",
+                        "filters": {
+                            "before": [
+                                {
+                                    "trim": []
+                                }
+                            ],
+                            "after": [
+                                {
+                                    "xss": []
+                                }
+                            ]
+                        },
+                        "validation": {
+                            "required": [],
+                            "max_length": [
+                                255
+                            ]
+                        }
                     }
-                ]
-            }
+                },
+                "URL": [
+                    {
+                        "name": "someVar",
+                        "type": "decimal",
+                        "filters": {
+                            "before": [],
+                            "after": []
+                        },
+                        "validation": {
+                            "required": [],
+                            "min_length": [
+                                1
+                            ],
+                            "max_length": [
+                                11
+                            ],
+                            "decimal": []
+                        }
+                    },
+                    {
+                        "name": "some1",
+                        "type": "float",
+                        "filters": {
+                            "before": [
+                                {
+                                    "uu": []
+                                }
+                            ],
+                            "after": []
+                        },
+                        "validation": {
+                            "required": [],
+                            "float": []
+                        }
+                    },
+                    {
+                        "name": "Var2",
+                        "type": "text",
+                        "filters": {
+                            "before": [],
+                            "after": []
+                        },
+                        "validation": {
+                            "optional": []
+                        }
+                    },
+                    {
+                        "name": "someVar3",
+                        "type": "string",
+                        "filters": {
+                            "before": [
+                                {
+                                    "trim": []
+                                }
+                            ],
+                            "after": [
+                                {
+                                    "xss": []
+                                }
+                            ]
+                        },
+                        "validation": {
+                            "required": [],
+                            "max_length": [
+                                255
+                            ]
+                        }
+                    },
+                    {
+                        "name": "some",
+                        "type": "string",
+                        "filters": {
+                            "before": [
+                                {
+                                    "trim": []
+                                }
+                            ],
+                            "after": [
+                                {
+                                    "xss": []
+                                }
+                            ]
+                        },
+                        "validation": {
+                            "required": [],
+                            "max_length": [
+                                255
+                            ]
+                        }
+                    }
+                ],
+                "BODY": {
+                    "someVar": {
+                        "name": "someVar",
+                        "type": "decimal",
+                        "filters": {
+                            "before": [],
+                            "after": []
+                        },
+                        "validation": {
+                            "required": [],
+                            "min_length": [
+                                1
+                            ],
+                            "max_length": [
+                                11
+                            ],
+                            "decimal": []
+                        }
+                    },
+                    "someVar2": {
+                        "name": "someVar2",
+                        "type": "integer",
+                        "filters": {
+                            "before": [],
+                            "after": []
+                        },
+                        "validation": {
+                            "optional": [],
+                            "integer": []
+                        }
+                    },
+                    "someVar3": {
+                        "name": "someVar3",
+                        "type": "float",
+                        "filters": {
+                            "before": [],
+                            "after": []
+                        },
+                        "validation": {
+                            "required": [],
+                            "float": []
+                        }
+                    },
+                    "some1": {
+                        "name": "some1",
+                        "type": "text",
+                        "filters": {
+                            "before": [],
+                            "after": []
+                        },
+                        "validation": {
+                            "optional": []
+                        }
+                    },
+                    "some": {
+                        "name": "some",
+                        "type": "string",
+                        "filters": {
+                            "before": [
+                                {
+                                    "trim": []
+                                }
+                            ],
+                            "after": [
+                                {
+                                    "xss": []
+                                }
+                            ]
+                        },
+                        "validation": {
+                            "required": [],
+                            "max_length": [
+                                255
+                            ]
+                        }
+                    }
+                }
+            },
+            "method": "HEAD"
         },
         "response": {
             "type": "many",
             "pagenator": {
-                "max_limit": "255"
+                "limit_param_name": "limit",
+                "limit_param_category": "QUERY",
+                "max_limit": "33"
             },
             "output": {
                 "data": {
-                    "id": {
-                        "name": "id",
+                    "checkVar_1": {
+                        "name": "checkVar_1",
                         "type": "integer",
                         "filters": {
                             "before": [],
-                            "after": []
+                            "after": [
+                                {
+                                    "filter": []
+                                }
+                            ]
                         }
                     },
-                    "todo_id": {
-                        "name": "todo_id",
-                        "type": "integer",
+                    "checkVar_2": {
+                        "name": "checkVar_2",
+                        "type": "decimal",
                         "filters": {
                             "before": [],
-                            "after": []
+                            "after": [
+                                {
+                                    "filter123": []
+                                }
+                            ]
                         }
                     },
-                    "sort_order": {
-                        "name": "sort_order",
-                        "type": "integer",
+                    "checkVar_3": {
+                        "name": "checkVar_3",
+                        "type": "float",
                         "filters": {
                             "before": [],
-                            "after": []
+                            "after": [
+                                {
+                                    "filter123": [
+                                        "asd"
+                                    ]
+                                }
+                            ]
                         }
                     },
-                    "name": {
-                        "name": "name",
+                    "checkVar_4": {
+                        "name": "checkVar_4",
+                        "type": "text",
+                        "filters": {
+                            "before": [],
+                            "after": [
+                                {
+                                    "filter123": [
+                                        "asd",
+                                        1
+                                    ]
+                                }
+                            ]
+                        }
+                    },
+                    "checkVar_5": {
+                        "name": "checkVar_5",
                         "type": "string",
                         "filters": {
                             "before": [],
-                            "after": []
-                        }
-                    },
-                    "date_create": {
-                        "name": "date_create",
-                        "type": "string",
-                        "filters": {
-                            "before": [],
-                            "after": []
-                        }
-                    },
-                    "is_active": {
-                        "name": "is_active",
-                        "type": "boolean",
-                        "filters": {
-                            "before": [],
-                            "after": []
+                            "after": [
+                                {
+                                    "filter123": [
+                                        "asd",
+                                        "123",
+                                        333,
+                                        44
+                                    ]
+                                }
+                            ]
                         }
                     }
                 },
@@ -91,96 +872,131 @@
             "need_login": false,
             "only_owner": false
         },
-        "api_name": "GET todo/$todo_id/item",
-        "id": "GET todo/%1/item (1)"
+        "version": "1.2.3"
     },
-    "GET todo/%1/item/%1 (2)": {
-        "url": "todo/$todo_id/item/$id",
-        "params_count": 2,
-        "method": "GET",
+    "OPTION:test/<param>": {
+        "url": "test/$some",
+        "title": "OPTION test/$some 1.2",
+        "name": "OPTION test/$some 1.2",
         "request": {
             "input": {
                 "URL": [
                     {
-                        "name": "todo_id",
-                        "type": "integer",
+                        "name": "some",
+                        "type": "decimal",
                         "filters": {
                             "before": [],
                             "after": []
                         },
                         "validation": {
-                            "required": {
-                                "name": "required",
-                                "params": []
-                            },
-                            "integer": {
-                                "name": "integer",
-                                "params": []
-                            }
-                        },
-                        "url_index": 9
-                    },
-                    {
-                        "name": "id",
-                        "type": "integer",
-                        "filters": {
-                            "before": [],
-                            "after": []
-                        },
-                        "validation": {
-                            "required": {
-                                "name": "required",
-                                "params": []
-                            },
-                            "integer": {
-                                "name": "integer",
-                                "params": []
-                            }
-                        },
-                        "url_index": 23
+                            "required": [],
+                            "min_length": [
+                                1
+                            ],
+                            "max_length": [
+                                11
+                            ],
+                            "decimal": []
+                        }
                     }
-                ]
-            }
+                ],
+                "BODY": {
+                    "some": {
+                        "name": "some",
+                        "type": "string",
+                        "filters": {
+                            "before": [
+                                {
+                                    "trim": []
+                                }
+                            ],
+                            "after": [
+                                {
+                                    "xss": []
+                                }
+                            ]
+                        },
+                        "validation": {
+                            "required": [],
+                            "max_length": [
+                                255
+                            ]
+                        }
+                    }
+                },
+                "QUERY": {
+                    "some": {
+                        "name": "some",
+                        "type": "string",
+                        "filters": {
+                            "before": [
+                                {
+                                    "trim": []
+                                }
+                            ],
+                            "after": [
+                                {
+                                    "xss": []
+                                }
+                            ]
+                        },
+                        "validation": {
+                            "required": [],
+                            "max_length": [
+                                255
+                            ]
+                        }
+                    }
+                }
+            },
+            "method": "OPTION"
         },
         "response": {
-            "type": "one",
+            "type": "many",
+            "pagenator": {
+                "page_param_name": "page_number",
+                "page_param_category": "QUERY",
+                "limit_param_name": "limit",
+                "limit_param_category": "QUERY",
+                "max_limit": "33"
+            },
             "output": {
                 "data": {
-                    "id": {
-                        "name": "id",
+                    "checkVar_1": {
+                        "name": "checkVar_1",
                         "type": "integer",
                         "filters": {
                             "before": [],
                             "after": []
                         }
                     },
-                    "name": {
-                        "name": "name",
+                    "checkVar_2": {
+                        "name": "checkVar_2",
+                        "type": "decimal",
+                        "filters": {
+                            "before": [],
+                            "after": []
+                        }
+                    },
+                    "checkVar_3": {
+                        "name": "checkVar_3",
+                        "type": "float",
+                        "filters": {
+                            "before": [],
+                            "after": []
+                        }
+                    },
+                    "checkVar_4": {
+                        "name": "checkVar_4",
+                        "type": "text",
+                        "filters": {
+                            "before": [],
+                            "after": []
+                        }
+                    },
+                    "checkVar_5": {
+                        "name": "checkVar_5",
                         "type": "string",
-                        "filters": {
-                            "before": [],
-                            "after": []
-                        }
-                    },
-                    "date_create": {
-                        "name": "date_create",
-                        "type": "string",
-                        "filters": {
-                            "before": [],
-                            "after": []
-                        }
-                    },
-                    "sort_order": {
-                        "name": "sort_order",
-                        "type": "integer",
-                        "filters": {
-                            "before": [],
-                            "after": []
-                        }
-                    },
-                    "is_active": {
-                        "name": "is_active",
-                        "type": "boolean",
                         "filters": {
                             "before": [],
                             "after": []
@@ -194,351 +1010,576 @@
             "need_login": false,
             "only_owner": false
         },
-        "api_name": "GET todo/$todo_id/item/$id",
-        "id": "GET todo/%1/item/%1 (2)"
+        "version": "1.2"
     },
-    "POST todo/%1/item (1)": {
+    "GET:test/user": {
+        "url": "test/user",
+        "title": "GET test/user 1",
+        "name": "GET test/user 1",
+        "request": {
+            "input": {},
+            "method": "GET"
+        },
+        "response": {
+            "type": "many",
+            "pagenator": {
+                "max_limit": "244"
+            },
+            "output": {
+                "data": {
+                    "checkVar_1": {
+                        "name": "checkVar_1",
+                        "type": "integer",
+                        "filters": {
+                            "before": [],
+                            "after": []
+                        }
+                    },
+                    "checkVar_2": {
+                        "name": "checkVar_2",
+                        "type": "decimal",
+                        "filters": {
+                            "before": [],
+                            "after": []
+                        }
+                    },
+                    "checkVar_3": {
+                        "name": "checkVar_3",
+                        "type": "float",
+                        "filters": {
+                            "before": [],
+                            "after": []
+                        }
+                    },
+                    "checkVar_4": {
+                        "name": "checkVar_4",
+                        "type": "text",
+                        "filters": {
+                            "before": [],
+                            "after": []
+                        }
+                    },
+                    "checkVar_5": {
+                        "name": "checkVar_5",
+                        "type": "string",
+                        "filters": {
+                            "before": [],
+                            "after": []
+                        }
+                    }
+                },
+                "meta": {}
+            }
+        },
+        "access": {
+            "need_login": false,
+            "only_owner": false
+        },
+        "version": "1"
+    },
+    "GET:todo/<param>/item": {
         "url": "todo/$todo_id/item",
-        "params_count": 1,
-        "method": "POST",
+        "title": "GET todo/$todo_id/item",
+        "name": "GET todo/$todo_id/item",
         "request": {
             "input": {
                 "URL": [
                     {
                         "name": "todo_id",
-                        "type": "integer",
+                        "type": "decimal",
                         "filters": {
                             "before": [],
                             "after": []
                         },
                         "validation": {
-                            "required": {
-                                "name": "required",
-                                "params": []
-                            },
-                            "integer": {
-                                "name": "integer",
-                                "params": []
-                            }
-                        },
-                        "url_index": 10
-                    }
-                ],
-                "INPUT": {
-                    "name": {
-                        "name": "name",
-                        "type": "string",
-                        "filters": {
-                            "before": [
-                                {
-                                    "name": "trim",
-                                    "params": []
-                                }
+                            "required": [],
+                            "min_length": [
+                                1
                             ],
-                            "after": [
-                                {
-                                    "name": "xss",
-                                    "params": []
-                                }
-                            ]
-                        },
-                        "validation": {
-                            "optional": {
-                                "name": "optional",
-                                "params": []
-                            },
-                            "max_length": {
-                                "name": "max_length",
-                                "params": [
-                                    255
-                                ]
-                            }
-                        }
-                    },
-                    "is_active": {
-                        "name": "is_active",
-                        "type": "boolean",
-                        "filters": {
-                            "before": [],
-                            "after": []
-                        },
-                        "validation": {
-                            "optional": {
-                                "name": "optional",
-                                "params": []
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "response": {
-            "type": "one",
-            "output": {
-                "data": {
-                    "id": {
-                        "name": "id",
-                        "type": "integer",
-                        "filters": {
-                            "before": [],
-                            "after": []
-                        }
-                    },
-                    "todo_id": {
-                        "name": "todo_id",
-                        "type": "integer",
-                        "filters": {
-                            "before": [],
-                            "after": []
-                        }
-                    },
-                    "sort_order": {
-                        "name": "sort_order",
-                        "type": "integer",
-                        "filters": {
-                            "before": [],
-                            "after": []
-                        }
-                    },
-                    "name": {
-                        "name": "name",
-                        "type": "string",
-                        "filters": {
-                            "before": [],
-                            "after": []
-                        }
-                    },
-                    "date_create": {
-                        "name": "date_create",
-                        "type": "string",
-                        "filters": {
-                            "before": [],
-                            "after": []
-                        }
-                    },
-                    "is_active": {
-                        "name": "is_active",
-                        "type": "boolean",
-                        "filters": {
-                            "before": [],
-                            "after": []
-                        }
-                    }
-                },
-                "meta": {}
-            }
-        },
-        "access": {
-            "need_login": true,
-            "only_owner": true
-        },
-        "api_name": "POST todo/$todo_id/item",
-        "id": "POST todo/%1/item (1)"
-    },
-    "PUT todo/%1/item/%1 (2)": {
-        "url": "todo/$todo_id/item/$id",
-        "params_count": 2,
-        "method": "PUT",
-        "request": {
-            "input": {
-                "URL": [
-                    {
-                        "name": "todo_id",
-                        "type": "integer",
-                        "filters": {
-                            "before": [],
-                            "after": []
-                        },
-                        "validation": {
-                            "required": {
-                                "name": "required",
-                                "params": []
-                            },
-                            "integer": {
-                                "name": "integer",
-                                "params": []
-                            }
-                        },
-                        "url_index": 9
-                    },
-                    {
-                        "name": "id",
-                        "type": "integer",
-                        "filters": {
-                            "before": [],
-                            "after": []
-                        },
-                        "validation": {
-                            "required": {
-                                "name": "required",
-                                "params": []
-                            },
-                            "integer": {
-                                "name": "integer",
-                                "params": []
-                            }
-                        },
-                        "url_index": 23
-                    }
-                ],
-                "INPUT": {
-                    "name": {
-                        "name": "name",
-                        "type": "string",
-                        "filters": {
-                            "before": [
-                                {
-                                    "name": "trim",
-                                    "params": []
-                                }
+                            "max_length": [
+                                11
                             ],
-                            "after": [
-                                {
-                                    "name": "xss",
-                                    "params": []
-                                }
-                            ]
-                        },
-                        "validation": {
-                            "optional": {
-                                "name": "optional",
-                                "params": []
-                            },
-                            "max_length": {
-                                "name": "max_length",
-                                "params": [
-                                    255
-                                ]
-                            }
+                            "decimal": []
                         }
-                    },
-                    "is_active": {
-                        "name": "is_active",
-                        "type": "boolean",
-                        "filters": {
-                            "before": [],
-                            "after": []
-                        },
-                        "validation": {
-                            "optional": {
-                                "name": "optional",
-                                "params": []
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "response": {
-            "type": "one",
-            "output": {
-                "data": {
-                    "id": {
-                        "name": "id",
-                        "type": "integer",
-                        "filters": {
-                            "before": [],
-                            "after": []
-                        }
-                    },
-                    "todo_id": {
-                        "name": "todo_id",
-                        "type": "integer",
-                        "filters": {
-                            "before": [],
-                            "after": []
-                        }
-                    },
-                    "sort_order": {
-                        "name": "sort_order",
-                        "type": "integer",
-                        "filters": {
-                            "before": [],
-                            "after": []
-                        }
-                    },
-                    "name": {
-                        "name": "name",
-                        "type": "string",
-                        "filters": {
-                            "before": [],
-                            "after": []
-                        }
-                    },
-                    "date_create": {
-                        "name": "date_create",
-                        "type": "string",
-                        "filters": {
-                            "before": [],
-                            "after": []
-                        }
-                    },
-                    "is_active": {
-                        "name": "is_active",
-                        "type": "boolean",
-                        "filters": {
-                            "before": [],
-                            "after": []
-                        }
-                    }
-                },
-                "meta": {}
-            }
-        },
-        "access": {
-            "need_login": true,
-            "only_owner": true
-        },
-        "api_name": "PUT todo/$todo_id/item/$id",
-        "id": "PUT todo/%1/item/%1 (2)"
-    },
-    "DELETE todo/%1/item/%1 (2)": {
-        "url": "todo/$todo_id/item/$id",
-        "params_count": 2,
-        "method": "DELETE",
-        "request": {
-            "input": {
-                "URL": [
-                    {
-                        "name": "todo_id",
-                        "type": "integer",
-                        "filters": {
-                            "before": [],
-                            "after": []
-                        },
-                        "validation": {
-                            "required": {
-                                "name": "required",
-                                "params": []
-                            },
-                            "integer": {
-                                "name": "integer",
-                                "params": []
-                            }
-                        },
-                        "url_index": 12
-                    },
-                    {
-                        "name": "id",
-                        "type": "integer",
-                        "filters": {
-                            "before": [],
-                            "after": []
-                        },
-                        "validation": {
-                            "required": {
-                                "name": "required",
-                                "params": []
-                            },
-                            "integer": {
-                                "name": "integer",
-                                "params": []
-                            }
-                        },
-                        "url_index": 26
                     }
                 ]
+            },
+            "method": "GET"
+        },
+        "response": {
+            "output": {
+                "data": {
+                    "id": {
+                        "name": "id",
+                        "type": "decimal",
+                        "filters": {
+                            "before": [],
+                            "after": []
+                        }
+                    },
+                    "todo_id": {
+                        "name": "todo_id",
+                        "type": "decimal",
+                        "filters": {
+                            "before": [],
+                            "after": []
+                        }
+                    },
+                    "sort_order": {
+                        "name": "sort_order",
+                        "type": "decimal",
+                        "filters": {
+                            "before": [],
+                            "after": []
+                        }
+                    },
+                    "name": {
+                        "name": "name",
+                        "type": "string",
+                        "filters": {
+                            "before": [],
+                            "after": []
+                        }
+                    },
+                    "date_create": {
+                        "name": "date_create",
+                        "type": "string",
+                        "filters": {
+                            "before": [],
+                            "after": []
+                        }
+                    },
+                    "is_active": {
+                        "name": "is_active",
+                        "type": "boolean",
+                        "filters": {
+                            "before": [],
+                            "after": []
+                        }
+                    }
+                },
+                "meta": {}
             }
+        },
+        "access": {
+            "need_login": false,
+            "only_owner": false
+        }
+    },
+    "GET:todo/<param>/item/<param>": {
+        "url": "todo/$todo_id/item/$id",
+        "title": "GET todo/$todo_id/item/$id",
+        "name": "GET todo/$todo_id/item/$id",
+        "request": {
+            "input": {
+                "URL": [
+                    {
+                        "name": "todo_id",
+                        "type": "decimal",
+                        "filters": {
+                            "before": [],
+                            "after": []
+                        },
+                        "validation": {
+                            "required": [],
+                            "min_length": [
+                                1
+                            ],
+                            "max_length": [
+                                11
+                            ],
+                            "decimal": []
+                        }
+                    },
+                    {
+                        "name": "id",
+                        "type": "decimal",
+                        "filters": {
+                            "before": [],
+                            "after": []
+                        },
+                        "validation": {
+                            "required": [],
+                            "min_length": [
+                                1
+                            ],
+                            "max_length": [
+                                11
+                            ],
+                            "decimal": []
+                        }
+                    }
+                ]
+            },
+            "method": "GET"
+        },
+        "response": {
+            "type": "one",
+            "output": {
+                "data": {
+                    "id": {
+                        "name": "id",
+                        "type": "decimal",
+                        "filters": {
+                            "before": [],
+                            "after": []
+                        }
+                    },
+                    "name": {
+                        "name": "name",
+                        "type": "string",
+                        "filters": {
+                            "before": [],
+                            "after": []
+                        }
+                    },
+                    "date_create": {
+                        "name": "date_create",
+                        "type": "string",
+                        "filters": {
+                            "before": [],
+                            "after": []
+                        }
+                    },
+                    "sort_order": {
+                        "name": "sort_order",
+                        "type": "decimal",
+                        "filters": {
+                            "before": [],
+                            "after": []
+                        }
+                    },
+                    "is_active": {
+                        "name": "is_active",
+                        "type": "boolean",
+                        "filters": {
+                            "before": [],
+                            "after": []
+                        }
+                    }
+                },
+                "meta": {}
+            }
+        },
+        "access": {
+            "need_login": false,
+            "only_owner": false
+        }
+    },
+    "POST:todo/<param>/item": {
+        "url": "todo/$todo_id/item",
+        "title": "POST todo/$todo_id/item",
+        "name": "POST todo/$todo_id/item",
+        "request": {
+            "input": {
+                "URL": [
+                    {
+                        "name": "todo_id",
+                        "type": "decimal",
+                        "filters": {
+                            "before": [],
+                            "after": []
+                        },
+                        "validation": {
+                            "required": [],
+                            "min_length": [
+                                1
+                            ],
+                            "max_length": [
+                                11
+                            ],
+                            "decimal": []
+                        }
+                    }
+                ],
+                "BODY": {
+                    "name": {
+                        "name": "name",
+                        "type": "string",
+                        "filters": {
+                            "before": [
+                                {
+                                    "trim": []
+                                }
+                            ],
+                            "after": [
+                                {
+                                    "xss": []
+                                }
+                            ]
+                        },
+                        "validation": {
+                            "optional": [],
+                            "max_length": [
+                                255
+                            ]
+                        }
+                    },
+                    "is_active": {
+                        "name": "is_active",
+                        "type": "boolean",
+                        "filters": {
+                            "before": [],
+                            "after": []
+                        },
+                        "validation": {
+                            "optional": []
+                        }
+                    }
+                }
+            },
+            "method": "POST"
+        },
+        "response": {
+            "type": "one",
+            "output": {
+                "data": {
+                    "id": {
+                        "name": "id",
+                        "type": "decimal",
+                        "filters": {
+                            "before": [],
+                            "after": []
+                        }
+                    },
+                    "todo_id": {
+                        "name": "todo_id",
+                        "type": "decimal",
+                        "filters": {
+                            "before": [],
+                            "after": []
+                        }
+                    },
+                    "sort_order": {
+                        "name": "sort_order",
+                        "type": "decimal",
+                        "filters": {
+                            "before": [],
+                            "after": []
+                        }
+                    },
+                    "name": {
+                        "name": "name",
+                        "type": "string",
+                        "filters": {
+                            "before": [],
+                            "after": []
+                        }
+                    },
+                    "date_create": {
+                        "name": "date_create",
+                        "type": "string",
+                        "filters": {
+                            "before": [],
+                            "after": []
+                        }
+                    },
+                    "is_active": {
+                        "name": "is_active",
+                        "type": "boolean",
+                        "filters": {
+                            "before": [],
+                            "after": []
+                        }
+                    }
+                },
+                "meta": {}
+            }
+        },
+        "access": {
+            "need_login": true,
+            "only_owner": true
+        }
+    },
+    "PUT:todo/<param>/item/<param>": {
+        "url": "todo/$todo_id/item/$id",
+        "title": "PUT todo/$todo_id/item/$id",
+        "name": "PUT todo/$todo_id/item/$id",
+        "request": {
+            "input": {
+                "URL": [
+                    {
+                        "name": "todo_id",
+                        "type": "decimal",
+                        "filters": {
+                            "before": [],
+                            "after": []
+                        },
+                        "validation": {
+                            "required": [],
+                            "min_length": [
+                                1
+                            ],
+                            "max_length": [
+                                11
+                            ],
+                            "decimal": []
+                        }
+                    },
+                    {
+                        "name": "id",
+                        "type": "decimal",
+                        "filters": {
+                            "before": [],
+                            "after": []
+                        },
+                        "validation": {
+                            "required": [],
+                            "min_length": [
+                                1
+                            ],
+                            "max_length": [
+                                11
+                            ],
+                            "decimal": []
+                        }
+                    }
+                ],
+                "BODY": {
+                    "name": {
+                        "name": "name",
+                        "type": "string",
+                        "filters": {
+                            "before": [
+                                {
+                                    "trim": []
+                                }
+                            ],
+                            "after": [
+                                {
+                                    "xss": []
+                                }
+                            ]
+                        },
+                        "validation": {
+                            "optional": [],
+                            "max_length": [
+                                255
+                            ]
+                        }
+                    },
+                    "is_active": {
+                        "name": "is_active",
+                        "type": "boolean",
+                        "filters": {
+                            "before": [],
+                            "after": []
+                        },
+                        "validation": {
+                            "optional": []
+                        }
+                    }
+                }
+            },
+            "method": "PUT"
+        },
+        "response": {
+            "type": "one",
+            "output": {
+                "data": {
+                    "id": {
+                        "name": "id",
+                        "type": "decimal",
+                        "filters": {
+                            "before": [],
+                            "after": []
+                        }
+                    },
+                    "todo_id": {
+                        "name": "todo_id",
+                        "type": "decimal",
+                        "filters": {
+                            "before": [],
+                            "after": []
+                        }
+                    },
+                    "sort_order": {
+                        "name": "sort_order",
+                        "type": "decimal",
+                        "filters": {
+                            "before": [],
+                            "after": []
+                        }
+                    },
+                    "name": {
+                        "name": "name",
+                        "type": "string",
+                        "filters": {
+                            "before": [],
+                            "after": []
+                        }
+                    },
+                    "date_create": {
+                        "name": "date_create",
+                        "type": "string",
+                        "filters": {
+                            "before": [],
+                            "after": []
+                        }
+                    },
+                    "is_active": {
+                        "name": "is_active",
+                        "type": "boolean",
+                        "filters": {
+                            "before": [],
+                            "after": []
+                        }
+                    }
+                },
+                "meta": {}
+            }
+        },
+        "access": {
+            "need_login": true,
+            "only_owner": true
+        }
+    },
+    "DELETE:todo/<param>/item/<param>": {
+        "url": "todo/$todo_id/item/$id",
+        "title": "DELETE todo/$todo_id/item/$id",
+        "name": "DELETE todo/$todo_id/item/$id",
+        "request": {
+            "input": {
+                "URL": [
+                    {
+                        "name": "todo_id",
+                        "type": "decimal",
+                        "filters": {
+                            "before": [],
+                            "after": []
+                        },
+                        "validation": {
+                            "required": [],
+                            "min_length": [
+                                1
+                            ],
+                            "max_length": [
+                                11
+                            ],
+                            "decimal": []
+                        }
+                    },
+                    {
+                        "name": "id",
+                        "type": "decimal",
+                        "filters": {
+                            "before": [],
+                            "after": []
+                        },
+                        "validation": {
+                            "required": [],
+                            "min_length": [
+                                1
+                            ],
+                            "max_length": [
+                                11
+                            ],
+                            "decimal": []
+                        }
+                    }
+                ]
+            },
+            "method": "DELETE"
         },
         "response": {
             "type": "one",
@@ -559,27 +1600,22 @@
         "access": {
             "need_login": true,
             "only_owner": true
-        },
-        "api_name": "DELETE todo/$todo_id/item/$id",
-        "id": "DELETE todo/%1/item/%1 (2)"
+        }
     },
-    "GET todo (0)": {
+    "GET:todo": {
         "url": "todo",
-        "params_count": 0,
-        "method": "GET",
+        "title": "GET todo",
+        "name": "GET todo",
         "request": {
-            "input": {}
+            "input": {},
+            "method": "GET"
         },
         "response": {
-            "type": "many",
-            "pagenator": {
-                "max_limit": "255"
-            },
             "output": {
                 "data": {
                     "id": {
                         "name": "id",
-                        "type": "integer",
+                        "type": "decimal",
                         "filters": {
                             "before": [],
                             "after": []
@@ -611,7 +1647,7 @@
                     },
                     "sort_order": {
                         "name": "sort_order",
-                        "type": "integer",
+                        "type": "decimal",
                         "filters": {
                             "before": [],
                             "after": []
@@ -624,38 +1660,36 @@
         "access": {
             "need_login": true,
             "only_owner": true
-        },
-        "api_name": "GET todo",
-        "id": "GET todo (0)"
+        }
     },
-    "GET todo/%1 (1)": {
+    "GET:todo/<param>": {
         "url": "todo/$id",
-        "params_count": 1,
-        "method": "GET",
+        "title": "GET todo/$id",
+        "name": "GET todo/$id",
         "request": {
             "input": {
                 "URL": [
                     {
                         "name": "id",
-                        "type": "integer",
+                        "type": "decimal",
                         "filters": {
                             "before": [],
                             "after": []
                         },
                         "validation": {
-                            "required": {
-                                "name": "required",
-                                "params": []
-                            },
-                            "integer": {
-                                "name": "integer",
-                                "params": []
-                            }
-                        },
-                        "url_index": 9
+                            "required": [],
+                            "min_length": [
+                                1
+                            ],
+                            "max_length": [
+                                11
+                            ],
+                            "decimal": []
+                        }
                     }
                 ]
-            }
+            },
+            "method": "GET"
         },
         "response": {
             "type": "one",
@@ -663,7 +1697,7 @@
                 "data": {
                     "id": {
                         "name": "id",
-                        "type": "integer",
+                        "type": "decimal",
                         "filters": {
                             "before": [],
                             "after": []
@@ -695,7 +1729,7 @@
                     },
                     "sort_order": {
                         "name": "sort_order",
-                        "type": "integer",
+                        "type": "decimal",
                         "filters": {
                             "before": [],
                             "after": []
@@ -708,45 +1742,35 @@
         "access": {
             "need_login": false,
             "only_owner": false
-        },
-        "api_name": "GET todo/$id",
-        "id": "GET todo/%1 (1)"
+        }
     },
-    "POST todo (0)": {
+    "POST:todo": {
         "url": "todo",
-        "params_count": 0,
-        "method": "POST",
+        "title": "POST todo",
+        "name": "POST todo",
         "request": {
             "input": {
-                "INPUT": {
+                "BODY": {
                     "name": {
                         "name": "name",
                         "type": "string",
                         "filters": {
                             "before": [
                                 {
-                                    "name": "trim",
-                                    "params": []
+                                    "trim": []
                                 }
                             ],
                             "after": [
                                 {
-                                    "name": "xss",
-                                    "params": []
+                                    "xss": []
                                 }
                             ]
                         },
                         "validation": {
-                            "optional": {
-                                "name": "optional",
-                                "params": []
-                            },
-                            "max_length": {
-                                "name": "max_length",
-                                "params": [
-                                    255
-                                ]
-                            }
+                            "optional": [],
+                            "max_length": [
+                                255
+                            ]
                         }
                     },
                     "is_shared": {
@@ -757,32 +1781,30 @@
                             "after": []
                         },
                         "validation": {
-                            "optional": {
-                                "name": "optional",
-                                "params": []
-                            }
+                            "optional": []
                         }
                     },
                     "sort_order": {
                         "name": "sort_order",
-                        "type": "integer",
+                        "type": "decimal",
                         "filters": {
                             "before": [],
                             "after": []
                         },
                         "validation": {
-                            "optional": {
-                                "name": "optional",
-                                "params": []
-                            },
-                            "integer": {
-                                "name": "integer",
-                                "params": []
-                            }
+                            "optional": [],
+                            "min_length": [
+                                1
+                            ],
+                            "max_length": [
+                                11
+                            ],
+                            "decimal": []
                         }
                     }
                 }
-            }
+            },
+            "method": "POST"
         },
         "response": {
             "type": "one",
@@ -790,7 +1812,7 @@
                 "data": {
                     "id": {
                         "name": "id",
-                        "type": "integer",
+                        "type": "decimal",
                         "filters": {
                             "before": [],
                             "after": []
@@ -822,7 +1844,7 @@
                     },
                     "sort_order": {
                         "name": "sort_order",
-                        "type": "integer",
+                        "type": "decimal",
                         "filters": {
                             "before": [],
                             "after": []
@@ -835,66 +1857,58 @@
         "access": {
             "need_login": true,
             "only_owner": true
-        },
-        "api_name": "POST todo",
-        "id": "POST todo (0)"
+        }
     },
-    "PUT todo/%1 (1)": {
+    "PUT:todo/<param>": {
         "url": "todo/$id",
-        "params_count": 1,
-        "method": "PUT",
+        "title": "PUT todo/$id",
+        "name": "PUT todo/$id",
         "request": {
             "input": {
                 "URL": [
                     {
                         "name": "id",
-                        "type": "integer",
+                        "type": "decimal",
                         "filters": {
                             "before": [],
                             "after": []
                         },
                         "validation": {
-                            "required": {
-                                "name": "required",
-                                "params": []
-                            },
-                            "integer": {
-                                "name": "integer",
-                                "params": []
-                            }
-                        },
-                        "url_index": 9
+                            "required": [],
+                            "min_length": [
+                                1
+                            ],
+                            "max_length": [
+                                11
+                            ],
+                            "decimal": []
+                        }
                     }
                 ],
-                "INPUT": {
+                "BODY": {
                     "name": {
                         "name": "name",
                         "type": "string",
                         "filters": {
                             "before": [
                                 {
-                                    "name": "trim",
-                                    "params": []
+                                    "trim": []
                                 }
                             ],
                             "after": [
                                 {
-                                    "name": "xss",
-                                    "params": []
+                                    "xss": []
                                 }
                             ]
                         },
                         "validation": {
-                            "optional": {
-                                "name": "optional",
-                                "params": []
-                            },
-                            "max_length": {
-                                "name": "max_length",
-                                "params": [
-                                    255
-                                ]
-                            }
+                            "optional": [],
+                            "min_length": [
+                                "1"
+                            ],
+                            "max_length": [
+                                "40"
+                            ]
                         }
                     },
                     "is_shared": {
@@ -905,32 +1919,30 @@
                             "after": []
                         },
                         "validation": {
-                            "optional": {
-                                "name": "optional",
-                                "params": []
-                            }
+                            "optional": []
                         }
                     },
                     "sort_order": {
                         "name": "sort_order",
-                        "type": "integer",
+                        "type": "decimal",
                         "filters": {
                             "before": [],
                             "after": []
                         },
                         "validation": {
-                            "optional": {
-                                "name": "optional",
-                                "params": []
-                            },
-                            "integer": {
-                                "name": "integer",
-                                "params": []
-                            }
+                            "optional": [],
+                            "min_length": [
+                                "1"
+                            ],
+                            "max_length": [
+                                "11"
+                            ],
+                            "decimal": []
                         }
                     }
                 }
-            }
+            },
+            "method": "PUT"
         },
         "response": {
             "type": "one",
@@ -938,7 +1950,7 @@
                 "data": {
                     "id": {
                         "name": "id",
-                        "type": "integer",
+                        "type": "decimal",
                         "filters": {
                             "before": [],
                             "after": []
@@ -970,7 +1982,7 @@
                     },
                     "sort_order": {
                         "name": "sort_order",
-                        "type": "integer",
+                        "type": "decimal",
                         "filters": {
                             "before": [],
                             "after": []
@@ -983,38 +1995,36 @@
         "access": {
             "need_login": true,
             "only_owner": true
-        },
-        "api_name": "PUT todo/$id",
-        "id": "PUT todo/%1 (1)"
+        }
     },
-    "DELETE todo/%1 (1)": {
+    "DELETE:todo/<param>": {
         "url": "todo/$todo_id",
-        "params_count": 1,
-        "method": "DELETE",
+        "title": "DELETE todo/$todo_id",
+        "name": "DELETE todo/$todo_id",
         "request": {
             "input": {
                 "URL": [
                     {
                         "name": "todo_id",
-                        "type": "integer",
+                        "type": "decimal",
                         "filters": {
                             "before": [],
                             "after": []
                         },
                         "validation": {
-                            "required": {
-                                "name": "required",
-                                "params": []
-                            },
-                            "integer": {
-                                "name": "integer",
-                                "params": []
-                            }
-                        },
-                        "url_index": 12
+                            "required": [],
+                            "min_length": [
+                                "1"
+                            ],
+                            "max_length": [
+                                "11"
+                            ],
+                            "decimal": []
+                        }
                     }
                 ]
-            }
+            },
+            "method": "DELETE"
         },
         "response": {
             "type": "one",
@@ -1035,16 +2045,15 @@
         "access": {
             "need_login": true,
             "only_owner": true
-        },
-        "api_name": "DELETE todo/$todo_id",
-        "id": "DELETE todo/%1 (1)"
+        }
     },
-    "GET user (0)": {
+    "GET:user": {
         "url": "user",
-        "params_count": 0,
-        "method": "GET",
+        "title": "GET user",
+        "name": "GET user",
         "request": {
-            "input": {}
+            "input": {},
+            "method": "GET"
         },
         "response": {
             "type": "many",
@@ -1055,7 +2064,7 @@
                 "data": {
                     "id": {
                         "name": "id",
-                        "type": "integer",
+                        "type": "decimal",
                         "filters": {
                             "before": [],
                             "after": []
@@ -1084,38 +2093,36 @@
         "access": {
             "need_login": false,
             "only_owner": false
-        },
-        "api_name": "GET user",
-        "id": "GET user (0)"
+        }
     },
-    "GET user/%1 (1)": {
+    "GET:user/<param>": {
         "url": "user/$id",
-        "params_count": 1,
-        "method": "GET",
+        "title": "GET user/$id",
+        "name": "GET user/$id",
         "request": {
             "input": {
                 "URL": [
                     {
                         "name": "id",
-                        "type": "integer",
+                        "type": "decimal",
                         "filters": {
                             "before": [],
                             "after": []
                         },
                         "validation": {
-                            "required": {
-                                "name": "required",
-                                "params": []
-                            },
-                            "integer": {
-                                "name": "integer",
-                                "params": []
-                            }
-                        },
-                        "url_index": 9
+                            "required": [],
+                            "min_length": [
+                                1
+                            ],
+                            "max_length": [
+                                11
+                            ],
+                            "decimal": []
+                        }
                     }
                 ]
-            }
+            },
+            "method": "GET"
         },
         "response": {
             "type": "one",
@@ -1123,7 +2130,7 @@
                 "data": {
                     "id": {
                         "name": "id",
-                        "type": "integer",
+                        "type": "decimal",
                         "filters": {
                             "before": [],
                             "after": []
@@ -1152,38 +2159,36 @@
         "access": {
             "need_login": false,
             "only_owner": false
-        },
-        "api_name": "GET user/$id",
-        "id": "GET user/%1 (1)"
+        }
     },
-    "DELETE user/%1 (1)": {
+    "DELETE:user/<param>": {
         "url": "user/$id",
-        "params_count": 1,
-        "method": "DELETE",
+        "title": "DELETE user/$id",
+        "name": "DELETE user/$id",
         "request": {
             "input": {
                 "URL": [
                     {
                         "name": "id",
-                        "type": "integer",
+                        "type": "decimal",
                         "filters": {
                             "before": [],
                             "after": []
                         },
                         "validation": {
-                            "required": {
-                                "name": "required",
-                                "params": []
-                            },
-                            "integer": {
-                                "name": "integer",
-                                "params": []
-                            }
-                        },
-                        "url_index": 12
+                            "required": [],
+                            "min_length": [
+                                1
+                            ],
+                            "max_length": [
+                                11
+                            ],
+                            "decimal": []
+                        }
                     }
                 ]
-            }
+            },
+            "method": "DELETE"
         },
         "response": {
             "type": "one",
@@ -1204,80 +2209,60 @@
         "access": {
             "need_login": true,
             "only_owner": true
-        },
-        "api_name": "DELETE user/$id",
-        "id": "DELETE user/%1 (1)"
+        }
     },
-    "PUT user/%1 (1)": {
+    "PUT:user/<param>": {
         "url": "user/$id",
-        "params_count": 1,
-        "method": "PUT",
+        "title": "PUT user/$id",
+        "name": "PUT user/$id",
         "request": {
             "input": {
                 "URL": [
                     {
                         "name": "id",
-                        "type": "integer",
+                        "type": "decimal",
                         "filters": {
                             "before": [],
                             "after": []
                         },
                         "validation": {
-                            "optional": {
-                                "name": "optional",
-                                "params": []
-                            },
-                            "exists": {
-                                "name": "exists",
-                                "params": []
-                            },
-                            "integer": {
-                                "name": "integer",
-                                "params": []
-                            }
-                        },
-                        "url_index": 9
+                            "optional": [],
+                            "exists": [],
+                            "min_length": [
+                                1
+                            ],
+                            "max_length": [
+                                11
+                            ],
+                            "decimal": []
+                        }
                     }
                 ],
-                "INPUT": {
+                "BODY": {
                     "username": {
                         "name": "username",
                         "type": "string",
                         "filters": {
                             "before": [
                                 {
-                                    "name": "trim",
-                                    "params": []
+                                    "trim": []
                                 }
                             ],
                             "after": [
                                 {
-                                    "name": "xss",
-                                    "params": []
+                                    "xss": []
                                 }
                             ]
                         },
                         "validation": {
-                            "optional": {
-                                "name": "optional",
-                                "params": []
-                            },
-                            "need": {
-                                "name": "need",
-                                "params": [
-                                    "password_old"
-                                ]
-                            },
-                            "unique": {
-                                "name": "unique",
-                                "params": []
-                            },
-                            "max_length": {
-                                "name": "max_length",
-                                "params": [
-                                    255
-                                ]
-                            }
+                            "optional": [],
+                            "need": [
+                                "password_old"
+                            ],
+                            "unique": [],
+                            "max_length": [
+                                255
+                            ]
                         }
                     },
                     "email": {
@@ -1286,42 +2271,25 @@
                         "filters": {
                             "before": [
                                 {
-                                    "name": "trim",
-                                    "params": []
+                                    "trim": []
                                 }
                             ],
                             "after": [
                                 {
-                                    "name": "xss",
-                                    "params": []
+                                    "xss": []
                                 }
                             ]
                         },
                         "validation": {
-                            "required": {
-                                "name": "required",
-                                "params": []
-                            },
-                            "valid_email": {
-                                "name": "valid_email",
-                                "params": []
-                            },
-                            "unique": {
-                                "name": "unique",
-                                "params": []
-                            },
-                            "need": {
-                                "name": "need",
-                                "params": [
-                                    "password_old"
-                                ]
-                            },
-                            "max_length": {
-                                "name": "max_length",
-                                "params": [
-                                    255
-                                ]
-                            }
+                            "required": [],
+                            "valid_email": [],
+                            "unique": [],
+                            "need": [
+                                "password_old"
+                            ],
+                            "max_length": [
+                                255
+                            ]
                         }
                     },
                     "password_old": {
@@ -1330,32 +2298,21 @@
                         "filters": {
                             "before": [
                                 {
-                                    "name": "trim",
-                                    "params": []
+                                    "trim": []
                                 }
                             ],
                             "after": [
                                 {
-                                    "name": "xss",
-                                    "params": []
+                                    "xss": []
                                 }
                             ]
                         },
                         "validation": {
-                            "optional": {
-                                "name": "optional",
-                                "params": []
-                            },
-                            "valid_password": {
-                                "name": "valid_password",
-                                "params": []
-                            },
-                            "max_length": {
-                                "name": "max_length",
-                                "params": [
-                                    255
-                                ]
-                            }
+                            "optional": [],
+                            "valid_password": [],
+                            "max_length": [
+                                255
+                            ]
                         }
                     },
                     "password_new": {
@@ -1364,40 +2321,26 @@
                         "filters": {
                             "before": [
                                 {
-                                    "name": "trim",
-                                    "params": []
+                                    "trim": []
                                 }
                             ],
                             "after": [
                                 {
-                                    "name": "xss",
-                                    "params": []
+                                    "xss": []
                                 }
                             ]
                         },
                         "validation": {
-                            "optional": {
-                                "name": "optional",
-                                "params": []
-                            },
-                            "matches": {
-                                "name": "matches",
-                                "params": [
-                                    "password_new_confirm"
-                                ]
-                            },
-                            "need": {
-                                "name": "need",
-                                "params": [
-                                    "password_old"
-                                ]
-                            },
-                            "max_length": {
-                                "name": "max_length",
-                                "params": [
-                                    255
-                                ]
-                            }
+                            "optional": [],
+                            "matches": [
+                                "password_new_confirm"
+                            ],
+                            "need": [
+                                "password_old"
+                            ],
+                            "max_length": [
+                                255
+                            ]
                         }
                     },
                     "password_new_confirm": {
@@ -1406,44 +2349,31 @@
                         "filters": {
                             "before": [
                                 {
-                                    "name": "trim",
-                                    "params": []
+                                    "trim": []
                                 }
                             ],
                             "after": [
                                 {
-                                    "name": "xss",
-                                    "params": []
+                                    "xss": []
                                 }
                             ]
                         },
                         "validation": {
-                            "optional": {
-                                "name": "optional",
-                                "params": []
-                            },
-                            "matches": {
-                                "name": "matches",
-                                "params": [
-                                    "password_new"
-                                ]
-                            },
-                            "need": {
-                                "name": "need",
-                                "params": [
-                                    "password_old"
-                                ]
-                            },
-                            "max_length": {
-                                "name": "max_length",
-                                "params": [
-                                    255
-                                ]
-                            }
+                            "optional": [],
+                            "matches": [
+                                "password_new"
+                            ],
+                            "need": [
+                                "password_old"
+                            ],
+                            "max_length": [
+                                255
+                            ]
                         }
                     }
                 }
-            }
+            },
+            "method": "PUT"
         },
         "response": {
             "type": "one",
@@ -1451,7 +2381,7 @@
                 "data": {
                     "id": {
                         "name": "id",
-                        "type": "integer",
+                        "type": "decimal",
                         "filters": {
                             "before": [],
                             "after": []
@@ -1480,49 +2410,36 @@
         "access": {
             "need_login": true,
             "only_owner": true
-        },
-        "api_name": "PUT user/$id",
-        "id": "PUT user/%1 (1)"
+        }
     },
-    "POST user (0)": {
+    "POST:user": {
         "url": "user",
-        "params_count": 0,
-        "method": "POST",
+        "title": "POST user",
+        "name": "POST user",
         "request": {
             "input": {
-                "INPUT": {
+                "BODY": {
                     "username": {
                         "name": "username",
                         "type": "string",
                         "filters": {
                             "before": [
                                 {
-                                    "name": "trim",
-                                    "params": []
+                                    "trim": []
                                 }
                             ],
                             "after": [
                                 {
-                                    "name": "xss",
-                                    "params": []
+                                    "xss": []
                                 }
                             ]
                         },
                         "validation": {
-                            "required": {
-                                "name": "required",
-                                "params": []
-                            },
-                            "unique": {
-                                "name": "unique",
-                                "params": []
-                            },
-                            "max_length": {
-                                "name": "max_length",
-                                "params": [
-                                    255
-                                ]
-                            }
+                            "required": [],
+                            "unique": [],
+                            "max_length": [
+                                255
+                            ]
                         }
                     },
                     "email": {
@@ -1531,36 +2448,22 @@
                         "filters": {
                             "before": [
                                 {
-                                    "name": "trim",
-                                    "params": []
+                                    "trim": []
                                 }
                             ],
                             "after": [
                                 {
-                                    "name": "xss",
-                                    "params": []
+                                    "xss": []
                                 }
                             ]
                         },
                         "validation": {
-                            "required": {
-                                "name": "required",
-                                "params": []
-                            },
-                            "valid_email": {
-                                "name": "valid_email",
-                                "params": []
-                            },
-                            "unique": {
-                                "name": "unique",
-                                "params": []
-                            },
-                            "max_length": {
-                                "name": "max_length",
-                                "params": [
-                                    255
-                                ]
-                            }
+                            "required": [],
+                            "valid_email": [],
+                            "unique": [],
+                            "max_length": [
+                                255
+                            ]
                         }
                     },
                     "password": {
@@ -1569,34 +2472,23 @@
                         "filters": {
                             "before": [
                                 {
-                                    "name": "trim",
-                                    "params": []
+                                    "trim": []
                                 }
                             ],
                             "after": [
                                 {
-                                    "name": "xss",
-                                    "params": []
+                                    "xss": []
                                 }
                             ]
                         },
                         "validation": {
-                            "required": {
-                                "name": "required",
-                                "params": []
-                            },
-                            "matches": {
-                                "name": "matches",
-                                "params": [
-                                    "confirm_password"
-                                ]
-                            },
-                            "max_length": {
-                                "name": "max_length",
-                                "params": [
-                                    255
-                                ]
-                            }
+                            "required": [],
+                            "matches": [
+                                "confirm_password"
+                            ],
+                            "max_length": [
+                                255
+                            ]
                         }
                     },
                     "confirm_password": {
@@ -1605,38 +2497,28 @@
                         "filters": {
                             "before": [
                                 {
-                                    "name": "trim",
-                                    "params": []
+                                    "trim": []
                                 }
                             ],
                             "after": [
                                 {
-                                    "name": "xss",
-                                    "params": []
+                                    "xss": []
                                 }
                             ]
                         },
                         "validation": {
-                            "required": {
-                                "name": "required",
-                                "params": []
-                            },
-                            "matches": {
-                                "name": "matches",
-                                "params": [
-                                    "password"
-                                ]
-                            },
-                            "max_length": {
-                                "name": "max_length",
-                                "params": [
-                                    255
-                                ]
-                            }
+                            "required": [],
+                            "matches": [
+                                "password"
+                            ],
+                            "max_length": [
+                                255
+                            ]
                         }
                     }
                 }
-            }
+            },
+            "method": "POST"
         },
         "response": {
             "type": "one",
@@ -1644,7 +2526,7 @@
                 "data": {
                     "id": {
                         "name": "id",
-                        "type": "integer",
+                        "type": "decimal",
                         "filters": {
                             "before": [],
                             "after": []
@@ -1673,16 +2555,15 @@
         "access": {
             "need_login": false,
             "only_owner": false
-        },
-        "api_name": "POST user",
-        "id": "POST user (0)"
+        }
     },
-    "GET user/current (0)": {
+    "GET:user/current": {
         "url": "user/current",
-        "params_count": 0,
-        "method": "GET",
+        "title": "GET user/current",
+        "name": "GET user/current",
         "request": {
-            "input": {}
+            "input": {},
+            "method": "GET"
         },
         "response": {
             "type": "one",
@@ -1690,7 +2571,7 @@
                 "data": {
                     "id": {
                         "name": "id",
-                        "type": "integer",
+                        "type": "decimal",
                         "filters": {
                             "before": [],
                             "after": []
@@ -1719,45 +2600,35 @@
         "access": {
             "need_login": false,
             "only_owner": false
-        },
-        "api_name": "GET user/current",
-        "id": "GET user/current (0)"
+        }
     },
-    "POST user/login (0)": {
+    "POST:user/login": {
         "url": "user/login",
-        "params_count": 0,
-        "method": "POST",
+        "title": "POST user/login",
+        "name": "POST user/login",
         "request": {
             "input": {
-                "INPUT": {
+                "BODY": {
                     "username": {
                         "name": "username",
                         "type": "string",
                         "filters": {
                             "before": [
                                 {
-                                    "name": "trim",
-                                    "params": []
+                                    "trim": []
                                 }
                             ],
                             "after": [
                                 {
-                                    "name": "xss",
-                                    "params": []
+                                    "xss": []
                                 }
                             ]
                         },
                         "validation": {
-                            "required": {
-                                "name": "required",
-                                "params": []
-                            },
-                            "max_length": {
-                                "name": "max_length",
-                                "params": [
-                                    255
-                                ]
-                            }
+                            "required": [],
+                            "max_length": [
+                                255
+                            ]
                         }
                     },
                     "password": {
@@ -1766,28 +2637,20 @@
                         "filters": {
                             "before": [
                                 {
-                                    "name": "trim",
-                                    "params": []
+                                    "trim": []
                                 }
                             ],
                             "after": [
                                 {
-                                    "name": "xss",
-                                    "params": []
+                                    "xss": []
                                 }
                             ]
                         },
                         "validation": {
-                            "required": {
-                                "name": "required",
-                                "params": []
-                            },
-                            "max_length": {
-                                "name": "max_length",
-                                "params": [
-                                    255
-                                ]
-                            }
+                            "required": [],
+                            "max_length": [
+                                255
+                            ]
                         }
                     },
                     "remember": {
@@ -1798,14 +2661,12 @@
                             "after": []
                         },
                         "validation": {
-                            "optional": {
-                                "name": "optional",
-                                "params": []
-                            }
+                            "optional": []
                         }
                     }
                 }
-            }
+            },
+            "method": "POST"
         },
         "response": {
             "type": "one",
@@ -1813,7 +2674,7 @@
                 "data": {
                     "id": {
                         "name": "id",
-                        "type": "integer",
+                        "type": "decimal",
                         "filters": {
                             "before": [],
                             "after": []
@@ -1842,16 +2703,15 @@
         "access": {
             "need_login": false,
             "only_owner": false
-        },
-        "api_name": "POST user/login",
-        "id": "POST user/login (0)"
+        }
     },
-    "GET user/logout (0)": {
+    "GET:user/logout": {
         "url": "user/logout",
-        "params_count": 0,
-        "method": "GET",
+        "title": "GET user/logout",
+        "name": "GET user/logout",
         "request": {
-            "input": {}
+            "input": {},
+            "method": "GET"
         },
         "response": {
             "type": "one",
@@ -1872,11 +2732,6 @@
         "access": {
             "need_login": false,
             "only_owner": false
-        },
-        "api_name": "GET user/logout",
-        "id": "GET user/logout (0)"
-    },
-    "options": {
-        "api_root": "/api"
+        }
     }
 }

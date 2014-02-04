@@ -1,12 +1,81 @@
 {
+    "HEAD test/module/$someVar/$some1/some/$Var2/$someVar3/$some 1.2.3": {
+        "request": {
+            "?checkVar_1:string{1,}": "required",
+            "?checkVar_3:string{1,3}": "required",
+            "?checkVar_4:string{,3}": "required",
+            "?checkVar_5:string{3}": "required",
+            "?checkVar_6:string|trim": "required",
+            "?checkVar_7:string|trim|trim": "required",
+            "?checkVar_8:string|trim|trim|trim[123]": "required",
+            "?checkVar_9:string|trim|trim['123']": "required",
+            "?checkVar_10:string|trim|trim[123,'aaa']": "required",
+            "?checkVar_11:string^trim": "required",
+            "?checkVar_12:string^trim[123]": "required",
+            "?checkVar_13:string^trim['123']": "required",
+            "?checkVar_14:string^trim^trim['123']": "required",
+            "?checkVar_15:string^trim['123']|trim": "required",
+            "?checkVar_16:string^trim^trim['123']|trim|trim": "required",
+            "?checkVar_17:string^trim^trim['123']|trim[123,'aaa']|trim": "required",
+            "?checkVar_18:string{1,}^trim": "required",
+            "?checkVar_19:string{1,3}|trim": "required",
+            "?checkVar_20:string{,3}^trim|trim": "required",
+            "?checkVar_21:string{3}^trim['zxc']|trim['zxc']": "required",
+            "$someVar:decimal": "required",
+            "$some1:float^xss^uu": "required",
+            "$Var2:text": "optional",
+            "$someVar3:string": "required",
+            "$some:string": "required",
+            "?someVar:decimal": "required",
+            "?someVar2:integer": "optional",
+            "?someVar3:float": "required",
+            "?some1:text": "optional",
+            "?some:string": "required",
+            "someVar:decimal": "required",
+            "someVar2:integer": "optional",
+            "someVar3:float": "required",
+            "some1:text": "optional",
+            "some:string": "required"
+        },
+        "response:many({?limit,33})|filter1|filter2['asd']|filter2[1]": [
+            "checkVar_1:integer|filter",
+            "checkVar_2:decimal|filter123",
+            "checkVar_3:float|filter123['asd']",
+            "checkVar_4:text|filter123['asd',1]",
+            "checkVar_5:string|filter123['asd','123',333,44]"
+        ]
+    },
+    "OPTION test/$some 1.2": {
+        "request": {
+            "$some:decimal": "required",
+            "some:string": "required",
+            "?some:string": "required"
+        },
+        "response:many({?limit,33}?page_number)|filter1|filter2['asd']|filter2[1]": [
+            "checkVar_1:integer",
+            "checkVar_2:decimal",
+            "checkVar_3:float",
+            "checkVar_4:text",
+            "checkVar_5:string"
+        ]
+    },
+    "GET test/user 1": {
+        "response:many({244})": [
+            "checkVar_1:integer",
+            "checkVar_2:decimal",
+            "checkVar_3:float",
+            "checkVar_4:text",
+            "checkVar_5:string"
+        ]
+    },
     "GET todo/$todo_id/item": {
         "request": {
-            "$todo_id:integer": "required"
+            "$todo_id:decimal": "required"
         },
-        "response:many({255})": [
-            "id:integer",
-            "todo_id:integer",
-            "sort_order:integer",
+        "response:many": [
+            "id:decimal",
+            "todo_id:decimal",
+            "sort_order:decimal",
             "name:string",
             "date_create:string",
             "is_active:boolean"
@@ -14,14 +83,14 @@
     },
     "GET todo/$todo_id/item/$id": {
         "request": {
-            "$todo_id:integer": "required",
-            "$id:integer": "required"
+            "$todo_id:decimal": "required",
+            "$id:decimal": "required"
         },
         "response": [
-            "id:integer",
+            "id:decimal",
             "name:string",
             "date_create:string",
-            "sort_order:integer",
+            "sort_order:decimal",
             "is_active:boolean"
         ]
     },
@@ -31,14 +100,14 @@
             "only_owner": true
         },
         "request": {
-            "$todo_id:integer": "required",
+            "$todo_id:decimal": "required",
             "name:string": "optional",
             "is_active:boolean": "optional"
         },
         "response": [
-            "id:integer",
-            "todo_id:integer",
-            "sort_order:integer",
+            "id:decimal",
+            "todo_id:decimal",
+            "sort_order:decimal",
             "name:string",
             "date_create:string",
             "is_active:boolean"
@@ -50,15 +119,15 @@
             "only_owner": true
         },
         "request": {
-            "$todo_id:integer": "required",
-            "$id:integer": "required",
+            "$todo_id:decimal": "required",
+            "$id:decimal": "required",
             "name:string": "optional",
             "is_active:boolean": "optional"
         },
         "response": [
-            "id:integer",
-            "todo_id:integer",
-            "sort_order:integer",
+            "id:decimal",
+            "todo_id:decimal",
+            "sort_order:decimal",
             "name:string",
             "date_create:string",
             "is_active:boolean"
@@ -70,8 +139,8 @@
             "only_owner": true
         },
         "request": {
-            "$todo_id:integer": "required",
-            "$id:integer": "required"
+            "$todo_id:decimal": "required",
+            "$id:decimal": "required"
         },
         "response": [
             "status:boolean"
@@ -82,24 +151,24 @@
             "need_login": true,
             "only_owner": true
         },
-        "response:many({255})": [
-            "id:integer",
+        "response:many": [
+            "id:decimal",
             "link:string",
             "name:string",
             "is_shared:boolean",
-            "sort_order:integer"
+            "sort_order:decimal"
         ]
     },
     "GET todo/$id": {
         "request": {
-            "$id:integer": "required"
+            "$id:decimal": "required"
         },
         "response": [
-            "id:integer",
+            "id:decimal",
             "link:string",
             "name:string",
             "is_shared:boolean",
-            "sort_order:integer"
+            "sort_order:decimal"
         ]
     },
     "POST todo": {
@@ -110,14 +179,14 @@
         "request": {
             "name:string": "optional",
             "is_shared:boolean": "optional",
-            "sort_order:integer": "optional"
+            "sort_order:decimal": "optional"
         },
         "response": [
-            "id:integer",
+            "id:decimal",
             "link:string",
             "name:string",
             "is_shared:boolean",
-            "sort_order:integer"
+            "sort_order:decimal"
         ]
     },
     "PUT todo/$id": {
@@ -126,17 +195,17 @@
             "only_owner": true
         },
         "request": {
-            "$id:integer": "required",
-            "name:string": "optional",
+            "$id:decimal": "required",
+            "name:string{1,40}": "optional",
             "is_shared:boolean": "optional",
-            "sort_order:integer": "optional"
+            "sort_order:decimal{1,11}": "optional"
         },
         "response": [
-            "id:integer",
+            "id:decimal",
             "link:string",
             "name:string",
             "is_shared:boolean",
-            "sort_order:integer"
+            "sort_order:decimal"
         ]
     },
     "DELETE todo/$todo_id": {
@@ -145,7 +214,7 @@
             "only_owner": true
         },
         "request": {
-            "$todo_id:integer": "required"
+            "$todo_id:decimal{1,11}": "required"
         },
         "response": [
             "status:boolean"
@@ -153,17 +222,17 @@
     },
     "GET user": {
         "response:many({255})": [
-            "id:integer",
+            "id:decimal",
             "username:string",
             "email:string"
         ]
     },
     "GET user/$id": {
         "request": {
-            "$id:integer": "required"
+            "$id:decimal": "required"
         },
         "response": [
-            "id:integer",
+            "id:decimal",
             "username:string",
             "email:string"
         ]
@@ -174,7 +243,7 @@
             "only_owner": true
         },
         "request": {
-            "$id:integer": "required"
+            "$id:decimal": "required"
         },
         "response": [
             "status:boolean"
@@ -186,7 +255,7 @@
             "only_owner": true
         },
         "request": {
-            "$id:integer": "optional|exists",
+            "$id:decimal": "optional|exists",
             "username:string": "optional|need['password_old']|unique",
             "email:string": "required|valid_email|unique|need['password_old']",
             "password_old:string": "optional|valid_password",
@@ -194,7 +263,7 @@
             "password_new_confirm:string": "optional|matches['password_new']|need['password_old']"
         },
         "response": [
-            "id:integer",
+            "id:decimal",
             "username:string",
             "email:string"
         ]
@@ -207,7 +276,7 @@
             "confirm_password:string": "required|matches['password']"
         },
         "response": [
-            "id:integer",
+            "id:decimal",
             "username:string",
             "email:string"
         ]
@@ -217,7 +286,7 @@
             "need_login": false
         },
         "response": [
-            "id:integer",
+            "id:decimal",
             "username:string",
             "email:string"
         ]
@@ -229,7 +298,7 @@
             "remember:boolean": "optional"
         },
         "response": [
-            "id:integer",
+            "id:decimal",
             "username:string",
             "email:string"
         ],

@@ -1,17 +1,17 @@
 {
 	"GET user": {
 		"response:many({255})": [
-			"id:integer",
+			"id:decimal",
 			"username:string",
 			"email:string"
 		]
 	},
 	"GET user/$id": {
 		"request": {
-			"$id:integer": "required"
+			"$id:decimal": "required"
 		},
 		"response": [
-			"id:integer",
+			"id:decimal",
 			"username:string",
 			"email:string"
 		]
@@ -22,7 +22,7 @@
 			"only_owner": true
 		},
 		"request": {
-			"$id:integer": "required"
+			"$id:decimal": "required"
 		},
 		"response": [
 			"status:boolean"
@@ -34,7 +34,7 @@
 			"only_owner": true
 		},
 		"request" : {
-			"$id:integer": "optional|exists",
+			"$id:decimal": "optional|exists",
 			"username:string": "optional|need['password_old']|unique",
 			"email:string": "required|valid_email|unique|need['password_old']",
 			"password_old:string": "optional|valid_password",
@@ -42,7 +42,7 @@
 			"password_new_confirm:string": "optional|matches['password_new']|need['password_old']"
 		},
 		"response": [
-			"id:integer",
+			"id:decimal",
 			"username:string",
 			"email:string"
 		]
@@ -55,7 +55,7 @@
 			"confirm_password:string": "required|matches['password']"
 		},
 		"response": [
-			"id:integer",
+			"id:decimal",
 			"username:string",
 			"email:string"
 		]
@@ -65,7 +65,7 @@
             "need_login": false
         },
         "response": [
-            "id:integer",
+            "id:decimal",
             "username:string",
             "email:string"
         ]
@@ -79,7 +79,7 @@
 			"remember:boolean": "optional"
 		},
 		"response": [
-			"id:integer",
+			"id:decimal",
 			"username:string",
 			"email:string"
 		],
