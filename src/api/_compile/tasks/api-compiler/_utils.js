@@ -30,7 +30,7 @@ var parseFilter = (function () {
 			});
 		}
 		return [];
-	}
+	};
 })();
 
 
@@ -82,7 +82,7 @@ var parseValidation = (function () {
 })();
 
 var categoryFormat = function (category) {
-	return category == '$' ? 'URL' : (category == '?' ? 'QUERY' : 'BODY');
+	return category === '$' ? 'URL' : (category === '?' ? 'QUERY' : 'BODY');
 };
 
 var typeFormat = (function () {
@@ -95,7 +95,7 @@ var typeFormat = (function () {
 			throw new Error('"' + apiName + '" has invalid format in type "'+typeString+'"');
 		}
 		return typeString;
-	}
+	};
 })();
 
 var rangeFormat = function (rangeString, apiName) {
@@ -106,13 +106,13 @@ var rangeFormat = function (rangeString, apiName) {
 	if (rangeString) {
 		range = rangeString.trim().split(/\s*,\s*/);
 		minLength = range[0];
-		maxLength = range.length == 1 ? range[0] : range[1];
+		maxLength = range.length === 1 ? range[0] : range[1];
 
 		if (range.length > 2 || !range.length || (/^[0-9]+,[0-9]+$/.test(rangeString) && minLength > maxLength)) {
 			throw new Error ('"' + apiName + '" has invalid format in Range "{' + rangeString + '}"');
 		}
 
-		if (range.length == 2) {
+		if (range.length === 2) {
 			if (!minLength.length) {
 				minLength = null;
 			}
@@ -158,7 +158,7 @@ var parseApiName = function (apiName) {
 		method: method,
 		url: url,
 		version: version
-	}
+	};
 };
 
 var parseParamDirective = function (str, apiName) {

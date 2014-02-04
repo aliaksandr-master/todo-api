@@ -6,8 +6,8 @@ class Api {
 
     const REQUEST_URI_ROOT  = API_ROOT_URL; // '/server'
 
-    const NAME          = 'name';
-    const VERSION       = 'version';
+    const NAME              = 'name';
+    const VERSION           = 'version';
     const URL               = 'url';
     const RESPONSE          = 'response';
     const REQUEST           = 'request';
@@ -107,10 +107,6 @@ class Api {
 
         $parsedFile = VAR_DIR.DS."api.parsed.json";
 
-        if (empty(self::$_apiParsed)) {
-            self::$_apiParsed = json_decode(file_get_contents($parsedFile), true);
-        }
-
         $method = strtoupper($method);
         if (is_null($uriCall)) {
             $uriCall = $_SERVER["REQUEST_URI"];
@@ -129,6 +125,7 @@ class Api {
 
         // CELL NAME
         $cellName = $method.":".$uriR;
+        $cellName = sha1($cellName);
 
         if (!empty(self::$_singletons[$cellName])) {
             return self::$_singletons[$cellName];
@@ -136,17 +133,9 @@ class Api {
 
         $apiData = array();
 
-        $maskUri = $method.' '.$uriCall;
-
-        if (isset(self::$_apiParsed[$cellName])) {
-            $_apiName = self::$_apiParsed[$cellName][self::NAME];
-            $maskExp = $_apiName;
-            $maskExp = str_replace('\\', '/', $maskExp);
-            $maskExp = preg_replace('/(?:\$[^\/\\\]+)/', '[^\/]+', $maskExp);
-            $maskExp = '#^'.$maskExp.'$#';
-            if (preg_match($maskExp, $maskUri)) {
-               $apiData = self::$_apiParsed[$cellName];
-            }
+        $apiFile = VAR_DIR.DS.'system'.DS.$cellName.'.php';
+        if (is_file($apiFile)) {
+            $apiData = include($apiFile);
         }
 
         self::$_singletons[$cellName] = new Api($apiData, $context);

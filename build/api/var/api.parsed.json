@@ -1,7 +1,7 @@
 {
     "HEAD:test/module/<param>/<param>/some/<param>/<param>/<param>": {
         "url": "test/module/$someVar/$some1/some/$Var2/$someVar3/$some",
-        "title": "HEAD test/module/$someVar/$some1/some/$Var2/$someVar3/$some 1.2.3",
+        "title": "test api",
         "name": "HEAD test/module/$someVar/$some1/some/$Var2/$someVar3/$some 1.2.3",
         "request": {
             "input": {

@@ -16,6 +16,11 @@ class ApiOutput {
     const RESPONSE_TYPE_ONE = 'one';
     const RESPONSE_TYPE_ALL = 'many';
 
+    const RESPONSE_FORMAT_QUERY_KEY = 'api_format';
+
+    const RESPONSE_FORMAT_JSON = 'json';
+    const RESPONSE_FORMAT_XML  = 'xml';
+
     private $_status = null;
 
     function __construct(ApiShuttle &$shuttle){

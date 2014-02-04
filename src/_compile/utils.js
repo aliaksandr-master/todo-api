@@ -118,7 +118,8 @@ module.exports = {
 		});
 	},
 
-    json2phpArray: function(data) {
+    json2phpArray: function(data, compress) {
+		compress = compress == null ? true : !!compress;
         var son2php;
 
         son2php = function(obj) {
@@ -140,16 +141,16 @@ module.exports = {
                     result = obj.toString();
                     break;
                 case '[object Array]':
-                    result = 'array(' + obj.map(son2php).join(', ') + ')';
+                    result = 'array(' + obj.map(son2php).join(compress ? ',': ", ") + ')';
                     break;
                 case '[object Object]':
                     result = [];
                     for (i in obj) {
                         if (obj.hasOwnProperty(i)) {
-                            result.push(son2php(i) + " => " + son2php(obj[i]));
+                            result.push(son2php(i) + (compress ? "=>": " => ") + son2php(obj[i]));
                         }
                     }
-                    result = "array(" + result.join(", ") + ")";
+                    result = "array(" + result.join(compress ? ',': ", ") + ")";
                     break;
                 default:
                     result = 'null';

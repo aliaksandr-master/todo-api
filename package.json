@@ -4,6 +4,7 @@
 	"dependencies": {
 		"xml2json": "latest",
 		"shelljs": "latest",
+		"sha1": "latest",
 
 		"grunt": "~0.4",
 		"load-grunt-tasks": "latest",

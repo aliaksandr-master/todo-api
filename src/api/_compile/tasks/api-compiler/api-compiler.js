@@ -3,6 +3,8 @@ module.exports = function(grunt){
 
 	var _ = require('underscore');
 	var utils = require('./_utils.js');
+	var json2phpArray = require(this.SRC + '/_compile/utils.js').json2phpArray;
+	var sha1 = require('sha1');
 
 	var options = {
 		cwd: 'src/api/definition/',
@@ -12,9 +14,13 @@ module.exports = function(grunt){
 		],
 		jsonSpaces: 4,
 		apiRoot: '/api',
+		verbose: false,
 		destSourceJsonFile: 'build/api/var/api.source.json',
-		destParsedJsonFile: 'build/api/var/api.parsed.json'
+		destParsedJsonFile: 'build/api/var/api.parsed.json',
+		destDir: 'build/api/var/system/'
 	};
+
+	var mainOptions = options;
 
 	options.cwd = options.cwd.replace(/[\\\/]*$/, '/');
 
@@ -33,19 +39,19 @@ module.exports = function(grunt){
 		} else if (!result.validation.optional) {
 			utils.addRule(result, 'required', [], apiName);
 		}
-		if (result.type == 'string') {
+		if (result.type === 'string') {
 			utils.addFilter(result, false, 'before', 'trim');
 			utils.addFilter(result, false, 'after', 'xss');
 			if (!result.length.max) {
 				result.length.max = 255;
 			}
 		}
-		if (result.type == 'decimal') {
+		if (result.type === 'decimal') {
 			if (!result.length.min) {
-				result.length.min = 1
+				result.length.min = 1;
 			}
 			if (!result.length.max) {
-				result.length.max = 11
+				result.length.max = 11;
 			}
 		}
 		if (result.length.min && result.length.max && result.length.min === result.length.max) {
@@ -125,7 +131,9 @@ module.exports = function(grunt){
 	var compile = function(source){
 		var resultApi = {};
 		_.each(source, function(apiData, apiName){
-			console.log(apiName);
+			if (mainOptions.verbose) {
+				console.log(apiName);
+			}
 
 			var title = apiName;
 			var request = {};
@@ -201,7 +209,7 @@ module.exports = function(grunt){
 					if (!request.input[response.paginator.limit_param_category]){
 						throw new Error('"' + apiName + '" :  hasn\'t input param of "' + response.paginator.limit_param_category + '" category for LIMIT param of RESPONSE;');
 					}
-					if (response.paginator.limit_param_category == 'URL') {
+					if (response.paginator.limit_param_category === 'URL') {
 						hasError = !_.contains(_.pluck(request.input.URL, 'name'), response.paginator.limit_param_name);
 					} else {
 						hasError = !!request.input[response.paginator.limit_param_category] && !!request.input[response.paginator.limit_param_category][response.paginator.limit_param_name];
@@ -216,7 +224,7 @@ module.exports = function(grunt){
 					if (!request.input[response.paginator.page_param_category]){
 						throw new Error('"' + apiName + '" :  hasn\'t input param of "' + response.paginator.page_param_category+ '" category for PAGE_NUMBER param of RESPONSE;');
 					}
-					if (response.paginator.page_param_category == 'URL') {
+					if (response.paginator.page_param_category === 'URL') {
 						hasError = !_.contains(_.pluck(request.input.URL, 'name'), response.paginator.page_param_category);
 					} else {
 						hasError = !!request.input[response.paginator.page_param_category] && !!request.input[response.paginator.page_param_category][response.paginator.page_param_category];
@@ -260,6 +268,13 @@ module.exports = function(grunt){
 
 		// compile
 		var parsed = compile(source);
+
+		_.each(parsed, function (value, name) {
+			var file = options.destDir + sha1(name) +'.php';
+//			grunt.file.write(file+'.json', JSON.stringify(value));
+			grunt.file.write(file, '<?php \nreturn ' + json2phpArray(value) + ';');
+			grunt.log.ok(value.name + ', file: ' + file);
+		});
 
 		grunt.file.write(options.destSourceJsonFile, JSON.stringify(source, null, options.jsonSpaces));
 		grunt.file.write(options.destParsedJsonFile, JSON.stringify(parsed, null, options.jsonSpaces));

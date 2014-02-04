@@ -89,7 +89,7 @@
 			}
 			map[method].push({
 				name: name,
-				text: k.replace(/^([a-zA-Z]+)\s+(.+)$/, '$2'),
+				text: (v.title || k).replace(/^(POST|PUT|DELETE|GET|PATCH|HEAD|OPTION)\s+(.+)$/, '$2'),
 				link: '#' + name
 			});
 			if((currLocation && currLocation == name) || (!currLocation && !currName)){
@@ -148,13 +148,13 @@
 								} else {
 									value = window.randomString(10);
 								}
-							} else if (/number|numeric|float|integer/.test(type)) {
+							} else if (/decimal|float|integer/.test(type)) {
 								if (isValidData) {
 									value = window.randomInteger(0, 1000);
 								} else {
 									value = window.randomString(10, false);
 								}
-							} else if (/string/.test(type)){
+							} else if (/text|string/.test(type)){
 								if (isValidData) {
 									value = window.randomString(10, true);
 								} else {
@@ -174,7 +174,7 @@
 								var name = k.replace(/^([\w\d]+)\:?(.+)$/, '$1');
 								var type = k.replace(/^([\w\d]+)\:?(.+)$/, '$2');
 								var $elem = $form.find('[name="'+name+'"]');
-								if (/bool/.test(type)) {
+								if (/boolean/.test(type)) {
 									$elem.filter('[value="'+(window.randomBoolean() * 1)+'"]').click();
 								} else {
 									if (_.isArray(v)) {
@@ -202,7 +202,7 @@
 						if(!/^\$/.test(k)){
 							var name = k.replace(/^([\w\d]+)\:?(.+)$/, '$1');
 							var type = k.replace(/^([\w\d]+)\:?(.+)$/, '$2');
-							if(/bool/.test(type)){
+							if(/boolean/.test(type)){
 								formElement += tplCover({
 									type: type,
 									content: tplFormToggle({

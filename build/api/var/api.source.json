@@ -1,5 +1,6 @@
 {
     "HEAD test/module/$someVar/$some1/some/$Var2/$someVar3/$some 1.2.3": {
+        "title": "test api",
         "request": {
             "?checkVar_1:string{1,}": "required",
             "?checkVar_3:string{1,3}": "required",
