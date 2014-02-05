@@ -34,7 +34,12 @@
 !/build/api/session/.htaccess
 
 /build/opt/codeigniter
+
 /build/api/config/database.php
+build/api/config/database.php
+
+/build/db/application/config/database.php
+build/db/application/config/database.php
 
 /build/api/var/
 /build/api/var/*.json
