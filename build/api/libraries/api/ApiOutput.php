@@ -204,9 +204,8 @@ class ApiOutput {
 
     function prepareResponseData ($data, $keyName = 'data') {
         $_data = array();
-        $type = $this->_shuttle->api->get(Api::RESPONSE);
-        $type = $type['type'];
         $response = $this->_shuttle->api->get(Api::RESPONSE);
+        $type = $response['type'];
 
         if($type == self::RESPONSE_TYPE_ONE){
             if (isset($data[0]) && is_array($data[0])) {

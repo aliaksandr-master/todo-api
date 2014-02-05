@@ -62,8 +62,10 @@ module.exports = function(grunt){
 	};
 
 	var parseResponseOption = function (directive, options, apiName){
-		var response = {};
-		directive.replace(/^response(?::(one|many)\s*\(([^\)]+)\)\s*)?(?:\|(.+))?$/, function (word, type, params) {
+		var response = {
+
+		};
+		directive.replace(/^response(?::(one|many)(?:\s*\(([^\)]+)\)\s*)?)?(?:\|(.+))?$/, function (word, type, params) {
 			response.type = type || 'one';
 			if(params){
 				response.pagenator = {};
@@ -100,7 +102,7 @@ module.exports = function(grunt){
 			}
 			return '';
 		});
-		if (!response){
+		if (_.isEmpty(response)){
 			throw new Error(apiName + ': Invalid type of response param "'+directive+'" : \n'+JSON.stringify(options,null, 4));
 		}
 		if (_.isArray(options)) {

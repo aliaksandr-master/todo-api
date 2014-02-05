@@ -1253,6 +1253,7 @@
             "method": "GET"
         },
         "response": {
+            "type": "many",
             "output": {
                 "data": {
                     "id": {
@@ -1788,6 +1789,7 @@
             "method": "GET"
         },
         "response": {
+            "type": "many",
             "output": {
                 "data": {
                     "id": {

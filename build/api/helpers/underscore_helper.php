@@ -1117,28 +1117,5 @@ class __ {
     private function _collection($collection) {
         return (!is_array($collection) && !is_object($collection)) ? str_split((string) $collection) : $collection;
     }
+
 }
-
-
-__()->mixin(array(
-
-    'pick' => function ($obj) {
-        $copy = array();
-        $keys = $this->_wrap_args(func_get_args(), 1);
-        $this->each($keys, function($key) use ($copy) {
-            if (isset($obj[$key])) {
-                $copy[$key] = $obj[$key];
-            }
-        });
-        return $this->_wrap($copy);
-    },
-
-    'omit' => function ($obj) {
-        $copy = $this->clone($obj);
-        $keys = $this->_wrap_args(func_get_args(), 1);
-        $this->each($keys, function ($key) use ($copy) {
-            unset($copy[$key]);
-        });
-        return $this->_wrap($copy);
-    }
-));

@@ -12,7 +12,7 @@ define(function(require, exports, module){
 			var that = this;
 			BaseView.prototype.initialize.apply(this,arguments);
 			this.formSubmit({
-				onSuccess: function(data){
+				success: function(data){
 					that.trigger('logged', data);
 				}
 			});

@@ -24,25 +24,27 @@ define(function(require, exports, module){
 					vals[v.name] = v.value;
 				});
 				return vals;
-			},
-			always: function () {
 			}
-		},
-		register: {
-
 		}
 	};
 
-	$.fn.smartForm = function (opt) {
+	$.fn.smartForm = function ($_opt, context) {
+
 		var $el = $(this);
-		opt = $.extend({}, forms.options, opt);
-		var _success = opt.success;
-		var _error   = opt.error;
-		delete opt.success;
-		delete opt.error;
+
+		if ($el.data('$hasSmartForm')) {
+			return;
+		}
+		$el.data('$hasSmartForm', true);
+
+		var _opt = _.extend({}, forms.options, $_opt);
 
 		$el.on('submit', 'form', function(){
-			opt = _.clone(opt);
+			var opt = _.clone(_opt);
+			var _success = opt.success;
+			var _error   = opt.error;
+			delete opt.success;
+			delete opt.error;
 			var $form = $(this);
 
 			var provider = $form.attr('data-provider') || forms.defaults.provider;
@@ -69,7 +71,7 @@ define(function(require, exports, module){
 			opt.success = function(){
 				$form.hideErrorAll();
 				if (_success) {
-					_success.apply(this, arguments);
+					_success.apply(context || this, arguments);
 				}
 			};
 
@@ -89,11 +91,11 @@ define(function(require, exports, module){
 					utils.shooptwServerError();
 				}
 				if(_error){
-					_error.apply(this, arguments);
+					_error.apply(context || this, arguments);
 				}
 			};
 
-			request.load(url, provider, opt).always(opt.always);
+			request.load(url, provider, opt);
 
 			return false;
 		});
@@ -118,7 +120,9 @@ define(function(require, exports, module){
 		return messageMap[ruleName]({
 			value: value,
 			fieldName: fieldName,
-			params: params
+			param: _.map(params, function (v) {
+				return {value: v};
+			})
 		});
 	};
 

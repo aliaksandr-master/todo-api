@@ -6,7 +6,6 @@ define(function(require, exports, module){
     var SimpleLayoutView = require('views/layouts/simple');
 	var preloader = require('lib/preloader');
 
-
 	var BaseController = Chaplin.Controller.extend({
 
 		preloader: preloader,

@@ -5,9 +5,7 @@ RewriteEngine On
 # modules
 RewriteRule ^/?api-test/(.+)$ api-test/$1 [L]
 RewriteRule ^/?api/(.+)$ api/$1 [L]
+RewriteRule ^/?files/(.+)$ files/$1 [L]
 
 RewriteCond %{REQUEST_FILENAME} !-f
-RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^(.+)$ client/$1 [L,QSA]
-
-#RewriteRule (.*) /client/$1 [L]
+RewriteRule ^(.*)$ client/$1 [L,QSA]

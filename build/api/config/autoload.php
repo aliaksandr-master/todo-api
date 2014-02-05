@@ -66,7 +66,7 @@ $autoload['libraries'] = array();
 |	$autoload['helper'] = array('url', 'file');
 */
 
-$autoload['helper'] = array('dump');
+$autoload['helper'] = array('dump', 'underscore');
 
 
 /*

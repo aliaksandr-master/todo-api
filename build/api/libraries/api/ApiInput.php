@@ -216,11 +216,38 @@ class ApiInput {
     }
 
     function pick () {
-        return __::pick($this->_input, func_get_args());
+        $copy = array();
+
+        $keys = func_get_args();
+        foreach ($keys as $key) {
+            if (!is_array($key)){
+                $key = array($key);
+            }
+            foreach ($key as $k) {
+                if (isset($this->_input[$k])) {
+                    $copy[$k] = $this->_input[$k];
+                }
+            }
+        }
+
+        return $copy;
     }
 
     function omit () {
-        return __::omit($this->_input, func_get_args());
+        $copy = array();
+        foreach ($this->_input as $k => $v) {
+            $copy[$k] = $v;
+        }
+        $keys = func_get_args();
+        foreach ($keys as $key) {
+            if (!is_array($key)){
+                $key = array($key);
+            }
+            foreach ($key as $k) {
+                unset($copy[$k]);
+            }
+        }
+        return $copy;
     }
 
     function __get($name){

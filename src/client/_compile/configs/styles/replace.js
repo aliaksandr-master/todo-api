@@ -12,7 +12,7 @@ module.exports = function(grunt, options){
 		'client-fonts':{
 			overwrite: true,
 			src: [
-				this.BUILD + '/client/**/*.css'
+				this.BUILD + '/client/static/**/*.css'
 			],
 			replacements: [
 				{
@@ -24,9 +24,9 @@ module.exports = function(grunt, options){
 						// FONTS
 						if(/\.(woff|ttf|eot|svg)/.test(url)){
 							fileName = url.split(/[\/\\]+/).pop();
-							url = '//client-'+CACHE_KEY+'/fonts/'+fileName;
+							url = '/client/static-'+CACHE_KEY+'/fonts/'+fileName;
 						}else if(/^[\/\\]*static\//.test(url) && /\.(png|jpg|jpeg|gif)/.test(url)){
-							url = url.replace(/^([\/\\]*)static/,'//static-'+CACHE_KEY+'//');
+							url = url.replace(/([\/\\]?)static[\\\/]]/,'$1static-' + CACHE_KEY +'/');
 						}
 						//							console.log($0,'  url:',url);
 						return "url('"+url+"')";

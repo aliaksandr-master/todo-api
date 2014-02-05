@@ -26,7 +26,7 @@ define(function(require, exports, module){
 		},
 
 		formSubmit: function(opt){
-			this.$el.smartForm(opt);
+			this.$el.smartForm(opt, this);
 		},
 
 		template: function(){},

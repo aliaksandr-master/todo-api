@@ -38,19 +38,19 @@ define(function(require, exports, module){
 
 		BackboneClass: function(proto, stat){
 
-			function Child() {
+			function MyChild () {
 				this.initialize.apply(this, arguments);
 			}
 
-			_.extend(Child.prototype, {
-				initialize: function(){}
-			}, Backbone.Event, Chaplin.EventBroker, proto);
-
-			_.extend(Child, {
+			_.extend(MyChild, {
 				extend: Backbone.Model.extend
 			}, stat);
 
-			return Child;
+			_.extend(MyChild.prototype, Backbone.Events, Chaplin.EventBroker, {
+				initialize: function () { }
+			}, proto);
+
+			return MyChild;
 		}
 
 	});

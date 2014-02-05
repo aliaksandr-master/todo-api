@@ -1,13 +1,11 @@
 define(function(require, exports, module){
     "use strict";
 
-    var BaseController = require('controllers/base/controller');
-
-	var _ = require("underscore"),
-		Session = require("lib/session"),
+    var _ = require("underscore"),
 		$ = require("jquery");
-	require('jquery.swipe');
 
+	var userSession = require("lib/session");
+	var UserRelController = require('controllers/base/user-rel');
 	var TodoListCollectionView = require('views/todo/list');
 	var TodoListItemCollection = require('collections/todo/list-item');
 	var TodoListsCollectionView = require('views/todo/lists');
@@ -15,37 +13,40 @@ define(function(require, exports, module){
 	var TodoListsCollection = require('collections/todo/lists');
 	var TodoItemView = require('views/todo/item');
 	var TodoListShareView = require('views/todo/list-share');
-	var TodoController = BaseController.extend({
+
+	require('jquery.swipe');
+
+
+	var TodoController = UserRelController.extend({
 
 		initialize: function(){
 			TodoController.__super__.initialize.apply(this, arguments);
 			$(document).off('.mainSwipe');
-			if(!Session.logged()){
-				this.redirectTo({url: '/user/login/'});
-			}
 		},
 
-		create: function(){
+		create: function () {
 			this.todoListsCollection = new TodoListsCollection();
 
 			var listModel = this.todoListsCollection.create();
 
-			this.listenTo(listModel, "sync", function(){
+			this.listenTo(listModel, "sync", function () {
 				this.redirectTo({
 					url: "/todo/" + listModel.get("listId") + "/item/"
 				});
 			});
 		},
 
-		index: function(params){
+		index: function (params) {
 			this.todoListsCollection = new TodoListsCollection();
-			this.todoListsCollection.fetch().then(function(){
+			this.todoListsCollection.fetch().then(function () {
+				console.log(111);
 				this.todoListsView = new TodoListsCollectionView({
 					collection: this.todoListsCollection,
 					region: "main"
 				});
-
-			}.bind(this));
+			}.bind(this), function () {
+				console.error(this, arguments);
+			});
 		},
 
 		shared: function(params){
