@@ -66,18 +66,37 @@ var parseStrArray = function (strOrArray, apiName) {
 	return strOrArray;
 };
 
+var addRule = function (object, ruleName, params, toStart, apiName) {
+	ruleName = ruleName.trim();
+	if (!object.validation) {
+		object.validation = {
+			required: true,
+			rules: []
+		};
+	}
+	if (ruleName === 'required' || ruleName === 'optional') {
+		object.validation.required = ruleName === 'required';
+	} else {
+		var obj = {};
+		obj[ruleName] = validationRuleParamsFormat(params, apiName);
+		if (toStart) {
+			object.validation.rules.unshift(obj);
+		} else {
+			object.validation.rules.push(obj);
+		}
+
+	}
+};
+
 var parseValidation = (function () {
 	var formatExp = /^([a-z0-9_]+)(.*)$/i;
-	return function (option, apiName){
-		var opt = {};
+	return function (result, option, apiName){
 		_.each(parseStrArray(option, apiName), function(rule){
 			var ruleName    = rule.replace(formatExp, '$1'),
 				paramString = rule.replace(formatExp, '$2');
-
-			opt[ruleName] = validationRuleParamsFormat(paramString, apiName);
-
+			addRule(result, ruleName, paramString, false, apiName);
 		});
-		return opt;
+		return result;
 	};
 })();
 
@@ -108,10 +127,6 @@ var rangeFormat = function (rangeString, apiName) {
 		minLength = range[0];
 		maxLength = range.length === 1 ? range[0] : range[1];
 
-		if (range.length > 2 || !range.length || (/^[0-9]+,[0-9]+$/.test(rangeString) && minLength > maxLength)) {
-			throw new Error ('"' + apiName + '" has invalid format in Range "{' + rangeString + '}"');
-		}
-
 		if (range.length === 2) {
 			if (!minLength.length) {
 				minLength = null;
@@ -121,16 +136,21 @@ var rangeFormat = function (rangeString, apiName) {
 			}
 		}
 
+		if (/^[0-9]+$/.test(maxLength)) {
+			maxLength = +maxLength;
+		}
+
+		if (/^[0-9]+$/.test(minLength)) {
+			minLength = +minLength;
+		}
+
+		if (range.length > 2 || !range.length || (/^[0-9]+,[0-9]+$/.test(rangeString) && minLength > maxLength)) {
+			throw new Error ('"' + apiName + '" has invalid format in Range "{' + rangeString + '}"');
+		}
+
 	}
 
 	return [minLength, maxLength];
-};
-
-var addRule = function (object, ruleName, params, apiName) {
-	if (!object.validation) {
-		object.validation = {};
-	}
-	object.validation[ruleName] = validationRuleParamsFormat(params, apiName);
 };
 
 var addFilter = function (object, toEnd, type, name, params) {

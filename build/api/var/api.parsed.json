@@ -22,9 +22,13 @@
                             ]
                         },
                         "validation": {
-                            "required": [],
-                            "min_length": [
-                                "1"
+                            "required": true,
+                            "rules": [
+                                {
+                                    "min_length": [
+                                        1
+                                    ]
+                                }
                             ]
                         }
                     },
@@ -44,12 +48,18 @@
                             ]
                         },
                         "validation": {
-                            "required": [],
-                            "min_length": [
-                                "1"
-                            ],
-                            "max_length": [
-                                "3"
+                            "required": true,
+                            "rules": [
+                                {
+                                    "max_length": [
+                                        3
+                                    ]
+                                },
+                                {
+                                    "min_length": [
+                                        1
+                                    ]
+                                }
                             ]
                         }
                     },
@@ -69,9 +79,13 @@
                             ]
                         },
                         "validation": {
-                            "required": [],
-                            "max_length": [
-                                "3"
+                            "required": true,
+                            "rules": [
+                                {
+                                    "max_length": [
+                                        3
+                                    ]
+                                }
                             ]
                         }
                     },
@@ -91,9 +105,13 @@
                             ]
                         },
                         "validation": {
-                            "required": [],
-                            "exact_length": [
-                                "3"
+                            "required": true,
+                            "rules": [
+                                {
+                                    "exact_length": [
+                                        3
+                                    ]
+                                }
                             ]
                         }
                     },
@@ -116,9 +134,13 @@
                             ]
                         },
                         "validation": {
-                            "required": [],
-                            "max_length": [
-                                255
+                            "required": true,
+                            "rules": [
+                                {
+                                    "max_length": [
+                                        255
+                                    ]
+                                }
                             ]
                         }
                     },
@@ -141,9 +163,13 @@
                             ]
                         },
                         "validation": {
-                            "required": [],
-                            "max_length": [
-                                255
+                            "required": true,
+                            "rules": [
+                                {
+                                    "max_length": [
+                                        255
+                                    ]
+                                }
                             ]
                         }
                     },
@@ -168,9 +194,13 @@
                             ]
                         },
                         "validation": {
-                            "required": [],
-                            "max_length": [
-                                255
+                            "required": true,
+                            "rules": [
+                                {
+                                    "max_length": [
+                                        255
+                                    ]
+                                }
                             ]
                         }
                     },
@@ -195,9 +225,13 @@
                             ]
                         },
                         "validation": {
-                            "required": [],
-                            "max_length": [
-                                255
+                            "required": true,
+                            "rules": [
+                                {
+                                    "max_length": [
+                                        255
+                                    ]
+                                }
                             ]
                         }
                     },
@@ -223,9 +257,13 @@
                             ]
                         },
                         "validation": {
-                            "required": [],
-                            "max_length": [
-                                255
+                            "required": true,
+                            "rules": [
+                                {
+                                    "max_length": [
+                                        255
+                                    ]
+                                }
                             ]
                         }
                     },
@@ -248,9 +286,13 @@
                             ]
                         },
                         "validation": {
-                            "required": [],
-                            "max_length": [
-                                255
+                            "required": true,
+                            "rules": [
+                                {
+                                    "max_length": [
+                                        255
+                                    ]
+                                }
                             ]
                         }
                     },
@@ -275,9 +317,13 @@
                             ]
                         },
                         "validation": {
-                            "required": [],
-                            "max_length": [
-                                255
+                            "required": true,
+                            "rules": [
+                                {
+                                    "max_length": [
+                                        255
+                                    ]
+                                }
                             ]
                         }
                     },
@@ -302,9 +348,13 @@
                             ]
                         },
                         "validation": {
-                            "required": [],
-                            "max_length": [
-                                255
+                            "required": true,
+                            "rules": [
+                                {
+                                    "max_length": [
+                                        255
+                                    ]
+                                }
                             ]
                         }
                     },
@@ -329,9 +379,13 @@
                             ]
                         },
                         "validation": {
-                            "required": [],
-                            "max_length": [
-                                255
+                            "required": true,
+                            "rules": [
+                                {
+                                    "max_length": [
+                                        255
+                                    ]
+                                }
                             ]
                         }
                     },
@@ -359,9 +413,13 @@
                             ]
                         },
                         "validation": {
-                            "required": [],
-                            "max_length": [
-                                255
+                            "required": true,
+                            "rules": [
+                                {
+                                    "max_length": [
+                                        255
+                                    ]
+                                }
                             ]
                         }
                     },
@@ -389,9 +447,13 @@
                             ]
                         },
                         "validation": {
-                            "required": [],
-                            "max_length": [
-                                255
+                            "required": true,
+                            "rules": [
+                                {
+                                    "max_length": [
+                                        255
+                                    ]
+                                }
                             ]
                         }
                     },
@@ -419,9 +481,13 @@
                             ]
                         },
                         "validation": {
-                            "required": [],
-                            "max_length": [
-                                255
+                            "required": true,
+                            "rules": [
+                                {
+                                    "max_length": [
+                                        255
+                                    ]
+                                }
                             ]
                         }
                     },
@@ -444,9 +510,13 @@
                             ]
                         },
                         "validation": {
-                            "required": [],
-                            "min_length": [
-                                "1"
+                            "required": true,
+                            "rules": [
+                                {
+                                    "min_length": [
+                                        1
+                                    ]
+                                }
                             ]
                         }
                     },
@@ -469,12 +539,18 @@
                             ]
                         },
                         "validation": {
-                            "required": [],
-                            "min_length": [
-                                "1"
-                            ],
-                            "max_length": [
-                                "3"
+                            "required": true,
+                            "rules": [
+                                {
+                                    "max_length": [
+                                        3
+                                    ]
+                                },
+                                {
+                                    "min_length": [
+                                        1
+                                    ]
+                                }
                             ]
                         }
                     },
@@ -500,9 +576,13 @@
                             ]
                         },
                         "validation": {
-                            "required": [],
-                            "max_length": [
-                                "3"
+                            "required": true,
+                            "rules": [
+                                {
+                                    "max_length": [
+                                        3
+                                    ]
+                                }
                             ]
                         }
                     },
@@ -532,9 +612,13 @@
                             ]
                         },
                         "validation": {
-                            "required": [],
-                            "exact_length": [
-                                "3"
+                            "required": true,
+                            "rules": [
+                                {
+                                    "exact_length": [
+                                        3
+                                    ]
+                                }
                             ]
                         }
                     },
@@ -546,14 +630,17 @@
                             "after": []
                         },
                         "validation": {
-                            "required": [],
-                            "min_length": [
-                                1
-                            ],
-                            "max_length": [
-                                11
-                            ],
-                            "decimal": []
+                            "required": true,
+                            "rules": [
+                                {
+                                    "decimal": []
+                                },
+                                {
+                                    "max_length": [
+                                        11
+                                    ]
+                                }
+                            ]
                         }
                     },
                     "someVar2": {
@@ -564,8 +651,12 @@
                             "after": []
                         },
                         "validation": {
-                            "optional": [],
-                            "integer": []
+                            "required": false,
+                            "rules": [
+                                {
+                                    "integer": []
+                                }
+                            ]
                         }
                     },
                     "someVar3": {
@@ -576,8 +667,12 @@
                             "after": []
                         },
                         "validation": {
-                            "required": [],
-                            "float": []
+                            "required": true,
+                            "rules": [
+                                {
+                                    "float": []
+                                }
+                            ]
                         }
                     },
                     "some1": {
@@ -588,7 +683,8 @@
                             "after": []
                         },
                         "validation": {
-                            "optional": []
+                            "required": false,
+                            "rules": []
                         }
                     },
                     "some": {
@@ -607,9 +703,13 @@
                             ]
                         },
                         "validation": {
-                            "required": [],
-                            "max_length": [
-                                255
+                            "required": true,
+                            "rules": [
+                                {
+                                    "max_length": [
+                                        255
+                                    ]
+                                }
                             ]
                         }
                     }
@@ -623,14 +723,17 @@
                             "after": []
                         },
                         "validation": {
-                            "required": [],
-                            "min_length": [
-                                1
-                            ],
-                            "max_length": [
-                                11
-                            ],
-                            "decimal": []
+                            "required": true,
+                            "rules": [
+                                {
+                                    "decimal": []
+                                },
+                                {
+                                    "max_length": [
+                                        11
+                                    ]
+                                }
+                            ]
                         }
                     },
                     {
@@ -645,8 +748,12 @@
                             "after": []
                         },
                         "validation": {
-                            "required": [],
-                            "float": []
+                            "required": true,
+                            "rules": [
+                                {
+                                    "float": []
+                                }
+                            ]
                         }
                     },
                     {
@@ -657,7 +764,8 @@
                             "after": []
                         },
                         "validation": {
-                            "optional": []
+                            "required": false,
+                            "rules": []
                         }
                     },
                     {
@@ -676,9 +784,13 @@
                             ]
                         },
                         "validation": {
-                            "required": [],
-                            "max_length": [
-                                255
+                            "required": true,
+                            "rules": [
+                                {
+                                    "max_length": [
+                                        255
+                                    ]
+                                }
                             ]
                         }
                     },
@@ -698,9 +810,13 @@
                             ]
                         },
                         "validation": {
-                            "required": [],
-                            "max_length": [
-                                255
+                            "required": true,
+                            "rules": [
+                                {
+                                    "max_length": [
+                                        255
+                                    ]
+                                }
                             ]
                         }
                     }
@@ -714,14 +830,17 @@
                             "after": []
                         },
                         "validation": {
-                            "required": [],
-                            "min_length": [
-                                1
-                            ],
-                            "max_length": [
-                                11
-                            ],
-                            "decimal": []
+                            "required": true,
+                            "rules": [
+                                {
+                                    "decimal": []
+                                },
+                                {
+                                    "max_length": [
+                                        11
+                                    ]
+                                }
+                            ]
                         }
                     },
                     "someVar2": {
@@ -732,8 +851,12 @@
                             "after": []
                         },
                         "validation": {
-                            "optional": [],
-                            "integer": []
+                            "required": false,
+                            "rules": [
+                                {
+                                    "integer": []
+                                }
+                            ]
                         }
                     },
                     "someVar3": {
@@ -744,8 +867,12 @@
                             "after": []
                         },
                         "validation": {
-                            "required": [],
-                            "float": []
+                            "required": true,
+                            "rules": [
+                                {
+                                    "float": []
+                                }
+                            ]
                         }
                     },
                     "some1": {
@@ -756,7 +883,8 @@
                             "after": []
                         },
                         "validation": {
-                            "optional": []
+                            "required": false,
+                            "rules": []
                         }
                     },
                     "some": {
@@ -775,9 +903,13 @@
                             ]
                         },
                         "validation": {
-                            "required": [],
-                            "max_length": [
-                                255
+                            "required": true,
+                            "rules": [
+                                {
+                                    "max_length": [
+                                        255
+                                    ]
+                                }
                             ]
                         }
                     }
@@ -889,14 +1021,17 @@
                             "after": []
                         },
                         "validation": {
-                            "required": [],
-                            "min_length": [
-                                1
-                            ],
-                            "max_length": [
-                                11
-                            ],
-                            "decimal": []
+                            "required": true,
+                            "rules": [
+                                {
+                                    "decimal": []
+                                },
+                                {
+                                    "max_length": [
+                                        11
+                                    ]
+                                }
+                            ]
                         }
                     }
                 ],
@@ -917,9 +1052,13 @@
                             ]
                         },
                         "validation": {
-                            "required": [],
-                            "max_length": [
-                                255
+                            "required": true,
+                            "rules": [
+                                {
+                                    "max_length": [
+                                        255
+                                    ]
+                                }
                             ]
                         }
                     }
@@ -941,9 +1080,13 @@
                             ]
                         },
                         "validation": {
-                            "required": [],
-                            "max_length": [
-                                255
+                            "required": true,
+                            "rules": [
+                                {
+                                    "max_length": [
+                                        255
+                                    ]
+                                }
                             ]
                         }
                     }
@@ -1092,14 +1235,17 @@
                             "after": []
                         },
                         "validation": {
-                            "required": [],
-                            "min_length": [
-                                1
-                            ],
-                            "max_length": [
-                                11
-                            ],
-                            "decimal": []
+                            "required": true,
+                            "rules": [
+                                {
+                                    "decimal": []
+                                },
+                                {
+                                    "max_length": [
+                                        11
+                                    ]
+                                }
+                            ]
                         }
                     }
                 ]
@@ -1181,14 +1327,17 @@
                             "after": []
                         },
                         "validation": {
-                            "required": [],
-                            "min_length": [
-                                1
-                            ],
-                            "max_length": [
-                                11
-                            ],
-                            "decimal": []
+                            "required": true,
+                            "rules": [
+                                {
+                                    "decimal": []
+                                },
+                                {
+                                    "max_length": [
+                                        11
+                                    ]
+                                }
+                            ]
                         }
                     },
                     {
@@ -1199,14 +1348,17 @@
                             "after": []
                         },
                         "validation": {
-                            "required": [],
-                            "min_length": [
-                                1
-                            ],
-                            "max_length": [
-                                11
-                            ],
-                            "decimal": []
+                            "required": true,
+                            "rules": [
+                                {
+                                    "decimal": []
+                                },
+                                {
+                                    "max_length": [
+                                        11
+                                    ]
+                                }
+                            ]
                         }
                     }
                 ]
@@ -1281,14 +1433,17 @@
                             "after": []
                         },
                         "validation": {
-                            "required": [],
-                            "min_length": [
-                                1
-                            ],
-                            "max_length": [
-                                11
-                            ],
-                            "decimal": []
+                            "required": true,
+                            "rules": [
+                                {
+                                    "decimal": []
+                                },
+                                {
+                                    "max_length": [
+                                        11
+                                    ]
+                                }
+                            ]
                         }
                     }
                 ],
@@ -1309,9 +1464,13 @@
                             ]
                         },
                         "validation": {
-                            "optional": [],
-                            "max_length": [
-                                255
+                            "required": false,
+                            "rules": [
+                                {
+                                    "max_length": [
+                                        255
+                                    ]
+                                }
                             ]
                         }
                     },
@@ -1323,7 +1482,8 @@
                             "after": []
                         },
                         "validation": {
-                            "optional": []
+                            "required": false,
+                            "rules": []
                         }
                     }
                 }
@@ -1406,14 +1566,17 @@
                             "after": []
                         },
                         "validation": {
-                            "required": [],
-                            "min_length": [
-                                1
-                            ],
-                            "max_length": [
-                                11
-                            ],
-                            "decimal": []
+                            "required": true,
+                            "rules": [
+                                {
+                                    "decimal": []
+                                },
+                                {
+                                    "max_length": [
+                                        11
+                                    ]
+                                }
+                            ]
                         }
                     },
                     {
@@ -1424,14 +1587,17 @@
                             "after": []
                         },
                         "validation": {
-                            "required": [],
-                            "min_length": [
-                                1
-                            ],
-                            "max_length": [
-                                11
-                            ],
-                            "decimal": []
+                            "required": true,
+                            "rules": [
+                                {
+                                    "decimal": []
+                                },
+                                {
+                                    "max_length": [
+                                        11
+                                    ]
+                                }
+                            ]
                         }
                     }
                 ],
@@ -1452,9 +1618,13 @@
                             ]
                         },
                         "validation": {
-                            "optional": [],
-                            "max_length": [
-                                255
+                            "required": false,
+                            "rules": [
+                                {
+                                    "max_length": [
+                                        255
+                                    ]
+                                }
                             ]
                         }
                     },
@@ -1466,7 +1636,8 @@
                             "after": []
                         },
                         "validation": {
-                            "optional": []
+                            "required": false,
+                            "rules": []
                         }
                     }
                 }
@@ -1549,14 +1720,17 @@
                             "after": []
                         },
                         "validation": {
-                            "required": [],
-                            "min_length": [
-                                1
-                            ],
-                            "max_length": [
-                                11
-                            ],
-                            "decimal": []
+                            "required": true,
+                            "rules": [
+                                {
+                                    "decimal": []
+                                },
+                                {
+                                    "max_length": [
+                                        11
+                                    ]
+                                }
+                            ]
                         }
                     },
                     {
@@ -1567,14 +1741,17 @@
                             "after": []
                         },
                         "validation": {
-                            "required": [],
-                            "min_length": [
-                                1
-                            ],
-                            "max_length": [
-                                11
-                            ],
-                            "decimal": []
+                            "required": true,
+                            "rules": [
+                                {
+                                    "decimal": []
+                                },
+                                {
+                                    "max_length": [
+                                        11
+                                    ]
+                                }
+                            ]
                         }
                     }
                 ]
@@ -1677,14 +1854,17 @@
                             "after": []
                         },
                         "validation": {
-                            "required": [],
-                            "min_length": [
-                                1
-                            ],
-                            "max_length": [
-                                11
-                            ],
-                            "decimal": []
+                            "required": true,
+                            "rules": [
+                                {
+                                    "decimal": []
+                                },
+                                {
+                                    "max_length": [
+                                        11
+                                    ]
+                                }
+                            ]
                         }
                     }
                 ]
@@ -1767,9 +1947,13 @@
                             ]
                         },
                         "validation": {
-                            "optional": [],
-                            "max_length": [
-                                255
+                            "required": false,
+                            "rules": [
+                                {
+                                    "max_length": [
+                                        255
+                                    ]
+                                }
                             ]
                         }
                     },
@@ -1781,7 +1965,8 @@
                             "after": []
                         },
                         "validation": {
-                            "optional": []
+                            "required": false,
+                            "rules": []
                         }
                     },
                     "sort_order": {
@@ -1792,14 +1977,17 @@
                             "after": []
                         },
                         "validation": {
-                            "optional": [],
-                            "min_length": [
-                                1
-                            ],
-                            "max_length": [
-                                11
-                            ],
-                            "decimal": []
+                            "required": false,
+                            "rules": [
+                                {
+                                    "decimal": []
+                                },
+                                {
+                                    "max_length": [
+                                        11
+                                    ]
+                                }
+                            ]
                         }
                     }
                 }
@@ -1874,14 +2062,17 @@
                             "after": []
                         },
                         "validation": {
-                            "required": [],
-                            "min_length": [
-                                1
-                            ],
-                            "max_length": [
-                                11
-                            ],
-                            "decimal": []
+                            "required": true,
+                            "rules": [
+                                {
+                                    "decimal": []
+                                },
+                                {
+                                    "max_length": [
+                                        11
+                                    ]
+                                }
+                            ]
                         }
                     }
                 ],
@@ -1902,12 +2093,18 @@
                             ]
                         },
                         "validation": {
-                            "optional": [],
-                            "min_length": [
-                                "1"
-                            ],
-                            "max_length": [
-                                "40"
+                            "required": false,
+                            "rules": [
+                                {
+                                    "max_length": [
+                                        40
+                                    ]
+                                },
+                                {
+                                    "min_length": [
+                                        1
+                                    ]
+                                }
                             ]
                         }
                     },
@@ -1919,7 +2116,8 @@
                             "after": []
                         },
                         "validation": {
-                            "optional": []
+                            "required": false,
+                            "rules": []
                         }
                     },
                     "sort_order": {
@@ -1930,14 +2128,22 @@
                             "after": []
                         },
                         "validation": {
-                            "optional": [],
-                            "min_length": [
-                                "1"
-                            ],
-                            "max_length": [
-                                "11"
-                            ],
-                            "decimal": []
+                            "required": false,
+                            "rules": [
+                                {
+                                    "decimal": []
+                                },
+                                {
+                                    "max_length": [
+                                        11
+                                    ]
+                                },
+                                {
+                                    "min_length": [
+                                        1
+                                    ]
+                                }
+                            ]
                         }
                     }
                 }
@@ -2012,14 +2218,22 @@
                             "after": []
                         },
                         "validation": {
-                            "required": [],
-                            "min_length": [
-                                "1"
-                            ],
-                            "max_length": [
-                                "11"
-                            ],
-                            "decimal": []
+                            "required": true,
+                            "rules": [
+                                {
+                                    "decimal": []
+                                },
+                                {
+                                    "max_length": [
+                                        11
+                                    ]
+                                },
+                                {
+                                    "min_length": [
+                                        1
+                                    ]
+                                }
+                            ]
                         }
                     }
                 ]
@@ -2110,14 +2324,17 @@
                             "after": []
                         },
                         "validation": {
-                            "required": [],
-                            "min_length": [
-                                1
-                            ],
-                            "max_length": [
-                                11
-                            ],
-                            "decimal": []
+                            "required": true,
+                            "rules": [
+                                {
+                                    "decimal": []
+                                },
+                                {
+                                    "max_length": [
+                                        11
+                                    ]
+                                }
+                            ]
                         }
                     }
                 ]
@@ -2176,14 +2393,17 @@
                             "after": []
                         },
                         "validation": {
-                            "required": [],
-                            "min_length": [
-                                1
-                            ],
-                            "max_length": [
-                                11
-                            ],
-                            "decimal": []
+                            "required": true,
+                            "rules": [
+                                {
+                                    "decimal": []
+                                },
+                                {
+                                    "max_length": [
+                                        11
+                                    ]
+                                }
+                            ]
                         }
                     }
                 ]
@@ -2226,15 +2446,20 @@
                             "after": []
                         },
                         "validation": {
-                            "optional": [],
-                            "exists": [],
-                            "min_length": [
-                                1
-                            ],
-                            "max_length": [
-                                11
-                            ],
-                            "decimal": []
+                            "required": false,
+                            "rules": [
+                                {
+                                    "decimal": []
+                                },
+                                {
+                                    "max_length": [
+                                        11
+                                    ]
+                                },
+                                {
+                                    "exists": []
+                                }
+                            ]
                         }
                     }
                 ],
@@ -2255,13 +2480,21 @@
                             ]
                         },
                         "validation": {
-                            "optional": [],
-                            "need": [
-                                "password_old"
-                            ],
-                            "unique": [],
-                            "max_length": [
-                                255
+                            "required": false,
+                            "rules": [
+                                {
+                                    "max_length": [
+                                        255
+                                    ]
+                                },
+                                {
+                                    "need": [
+                                        "password_old"
+                                    ]
+                                },
+                                {
+                                    "unique": []
+                                }
                             ]
                         }
                     },
@@ -2281,14 +2514,24 @@
                             ]
                         },
                         "validation": {
-                            "required": [],
-                            "valid_email": [],
-                            "unique": [],
-                            "need": [
-                                "password_old"
-                            ],
-                            "max_length": [
-                                255
+                            "required": true,
+                            "rules": [
+                                {
+                                    "max_length": [
+                                        255
+                                    ]
+                                },
+                                {
+                                    "valid_email": []
+                                },
+                                {
+                                    "unique": []
+                                },
+                                {
+                                    "need": [
+                                        "password_old"
+                                    ]
+                                }
                             ]
                         }
                     },
@@ -2308,10 +2551,16 @@
                             ]
                         },
                         "validation": {
-                            "optional": [],
-                            "valid_password": [],
-                            "max_length": [
-                                255
+                            "required": false,
+                            "rules": [
+                                {
+                                    "max_length": [
+                                        255
+                                    ]
+                                },
+                                {
+                                    "valid_password": []
+                                }
                             ]
                         }
                     },
@@ -2331,15 +2580,23 @@
                             ]
                         },
                         "validation": {
-                            "optional": [],
-                            "matches": [
-                                "password_new_confirm"
-                            ],
-                            "need": [
-                                "password_old"
-                            ],
-                            "max_length": [
-                                255
+                            "required": false,
+                            "rules": [
+                                {
+                                    "max_length": [
+                                        255
+                                    ]
+                                },
+                                {
+                                    "matches": [
+                                        "password_new_confirm"
+                                    ]
+                                },
+                                {
+                                    "need": [
+                                        "password_old"
+                                    ]
+                                }
                             ]
                         }
                     },
@@ -2359,15 +2616,23 @@
                             ]
                         },
                         "validation": {
-                            "optional": [],
-                            "matches": [
-                                "password_new"
-                            ],
-                            "need": [
-                                "password_old"
-                            ],
-                            "max_length": [
-                                255
+                            "required": false,
+                            "rules": [
+                                {
+                                    "max_length": [
+                                        255
+                                    ]
+                                },
+                                {
+                                    "matches": [
+                                        "password_new"
+                                    ]
+                                },
+                                {
+                                    "need": [
+                                        "password_old"
+                                    ]
+                                }
                             ]
                         }
                     }
@@ -2435,10 +2700,24 @@
                             ]
                         },
                         "validation": {
-                            "required": [],
-                            "unique": [],
-                            "max_length": [
-                                255
+                            "required": true,
+                            "rules": [
+                                {
+                                    "max_length": [
+                                        50
+                                    ]
+                                },
+                                {
+                                    "min_length": [
+                                        3
+                                    ]
+                                },
+                                {
+                                    "alpha_dash": []
+                                },
+                                {
+                                    "unique": []
+                                }
                             ]
                         }
                     },
@@ -2458,11 +2737,19 @@
                             ]
                         },
                         "validation": {
-                            "required": [],
-                            "valid_email": [],
-                            "unique": [],
-                            "max_length": [
-                                255
+                            "required": true,
+                            "rules": [
+                                {
+                                    "max_length": [
+                                        255
+                                    ]
+                                },
+                                {
+                                    "valid_email": []
+                                },
+                                {
+                                    "unique": []
+                                }
                             ]
                         }
                     },
@@ -2482,12 +2769,23 @@
                             ]
                         },
                         "validation": {
-                            "required": [],
-                            "matches": [
-                                "confirm_password"
-                            ],
-                            "max_length": [
-                                255
+                            "required": true,
+                            "rules": [
+                                {
+                                    "max_length": [
+                                        50
+                                    ]
+                                },
+                                {
+                                    "min_length": [
+                                        6
+                                    ]
+                                },
+                                {
+                                    "matches": [
+                                        "confirm_password"
+                                    ]
+                                }
                             ]
                         }
                     },
@@ -2507,12 +2805,23 @@
                             ]
                         },
                         "validation": {
-                            "required": [],
-                            "matches": [
-                                "password"
-                            ],
-                            "max_length": [
-                                255
+                            "required": true,
+                            "rules": [
+                                {
+                                    "max_length": [
+                                        50
+                                    ]
+                                },
+                                {
+                                    "min_length": [
+                                        6
+                                    ]
+                                },
+                                {
+                                    "matches": [
+                                        "password"
+                                    ]
+                                }
                             ]
                         }
                     }
@@ -2625,9 +2934,18 @@
                             ]
                         },
                         "validation": {
-                            "required": [],
-                            "max_length": [
-                                255
+                            "required": true,
+                            "rules": [
+                                {
+                                    "max_length": [
+                                        50
+                                    ]
+                                },
+                                {
+                                    "min_length": [
+                                        3
+                                    ]
+                                }
                             ]
                         }
                     },
@@ -2647,9 +2965,18 @@
                             ]
                         },
                         "validation": {
-                            "required": [],
-                            "max_length": [
-                                255
+                            "required": true,
+                            "rules": [
+                                {
+                                    "max_length": [
+                                        50
+                                    ]
+                                },
+                                {
+                                    "min_length": [
+                                        6
+                                    ]
+                                }
                             ]
                         }
                     },
@@ -2661,7 +2988,8 @@
                             "after": []
                         },
                         "validation": {
-                            "optional": []
+                            "required": false,
+                            "rules": []
                         }
                     }
                 }

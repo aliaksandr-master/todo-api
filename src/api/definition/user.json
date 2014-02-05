@@ -6,6 +6,8 @@
 			"email:string"
 		]
 	},
+
+
 	"GET user/$id": {
 		"request": {
 			"$id:decimal": "required"
@@ -16,6 +18,8 @@
 			"email:string"
 		]
 	},
+
+
 	"DELETE user/$id": {
 		"access": {
 			"need_login": true,
@@ -28,6 +32,8 @@
 			"status:boolean"
 		]
 	},
+
+
 	"PUT user/$id": {
 		"access": {
 			"need_login": true,
@@ -47,12 +53,14 @@
 			"email:string"
 		]
 	},
+
+
 	"POST user": {
 		"request": {
-			"username:string": "required|unique",
+			"username:string{3,50}": "required|alpha_dash|unique",
 			"email:string": "required|valid_email|unique",
-			"password:string": "required|matches['confirm_password']",
-			"confirm_password:string": "required|matches['password']"
+			"password:string{6,50}": "required|matches['confirm_password']",
+			"confirm_password:string{6,50}": "required|matches['password']"
 		},
 		"response": [
 			"id:decimal",
@@ -60,7 +68,9 @@
 			"email:string"
 		]
 	},
-    "GET user/current": {
+
+
+	"GET user/current": {
         "access": {
             "need_login": false
         },
@@ -74,8 +84,8 @@
 
 	"POST user/login": {
 		"request": {
-			"username:string": "required",
-			"password:string": "required",
+			"username:string{3,50}": "required",
+			"password:string{6,50}": "required",
 			"remember:boolean": "optional"
 		},
 		"response": [
@@ -87,6 +97,8 @@
 			"password": "incorrect"
 		}
 	},
+
+
 	"GET user/logout": {
 		"response": [
 			"status:boolean"

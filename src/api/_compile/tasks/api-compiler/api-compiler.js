@@ -32,13 +32,8 @@ module.exports = function(grunt){
 			throw new Error(apiName + ': has invalid request format');
 		}
 
-		result.validation = utils.parse.validation(optionData, apiName);
+		result = utils.parse.validation(result, optionData, apiName);
 
-		if (result.validation.required) {
-			delete result.validation.optional;
-		} else if (!result.validation.optional) {
-			utils.addRule(result, 'required', [], apiName);
-		}
 		if (result.type === 'string') {
 			utils.addFilter(result, false, 'before', 'trim');
 			utils.addFilter(result, false, 'after', 'xss');
@@ -46,28 +41,21 @@ module.exports = function(grunt){
 				result.length.max = 255;
 			}
 		}
-		if (result.type === 'decimal') {
-			if (!result.length.min) {
-				result.length.min = 1;
-			}
-			if (!result.length.max) {
-				result.length.max = 11;
-			}
+		if (result.type === 'decimal' && !result.length.max) {
+			result.length.max = 11;
 		}
-		if (result.length.min && result.length.max && result.length.min === result.length.max) {
-			if (result.length.min) {
-				utils.addRule(result, 'exact_length', [result.length.min], apiName);
-			}
+		if (result.length.min && result.length.min === result.length.max && result.length.min !== 'infinity') {
+			utils.addRule(result, 'exact_length', [result.length.min], true, apiName);
 		} else {
 			if (result.length.min) {
-				utils.addRule(result, 'min_length', [result.length.min], apiName);
+				utils.addRule(result, 'min_length', [result.length.min], true, apiName);
 			}
 			if (result.length.max && result.length.max !== 'infinity') {
-				utils.addRule(result, 'max_length', [result.length.max], apiName);
+				utils.addRule(result, 'max_length', [result.length.max], true, apiName);
 			}
 		}
 		if (/decimal|integer|float/.test(result.type)) {
-			utils.addRule(result, result.type, [], apiName);
+			utils.addRule(result, result.type, [], true, apiName);
 		}
 		delete result.length;
 		return result;

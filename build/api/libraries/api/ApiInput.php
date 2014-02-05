@@ -186,10 +186,12 @@ class ApiInput {
     }
 
 
-    function validate ($fieldName, $value, array $rules, $setError = false) {
-        $error  = false;
+    function validate ($fieldName, $value, array $validation, $setError = false) {
+        $error = false;
 
-        $required = !empty($rules["required"]) || empty($rules["optional"]);
+        $rules = $validation['rules'];
+        $required = !empty($validation["required"]);
+
         if($required && !$this->_shuttle->applyValidationRule($value, 'required')){
             if ($setError) {
                 $this->error($fieldName, 'required', array(), 400);
@@ -197,11 +199,10 @@ class ApiInput {
             $error = true;
         }
 
-        unset($rules["optional"]);
-        unset($rules["required"]);
-
         if (!$error && isset($value) && (strlen((string)$value) || $value === false)) {
-            foreach ($rules as $ruleName => $ruleParams) {
+            foreach ($rules as $rule) {
+                $ruleName = key($rule);
+                $ruleParams = $rule[$ruleName];
                 if (!$this->_shuttle->applyValidationRule($value, $ruleName, $ruleParams, $fieldName)) {
                     if ($setError) {
                         $this->error($fieldName, $ruleName, $ruleParams, 400);
