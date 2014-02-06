@@ -3,10 +3,11 @@ define(function(require, exports, module){
 
 
 	var $ = require("jquery");
+	var BaseCollectionView = require('views/base/collection-view');
 	require("jqueryui");
+	require("jquery-ui-touch-punch");
 	require('jquery.swipe');
 	require('css!styles/todo/list');
-	var BaseCollectionView = require('views/base/collection-view');
 
 	var ListItemView = require("views/todo/list-item");
 	var template = require("templates/todo/list");

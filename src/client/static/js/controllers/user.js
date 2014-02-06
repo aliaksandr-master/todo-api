@@ -39,7 +39,10 @@ define(function(require, exports, module){
 		},
 
 		profile: function(params){
-			this.view = new PageUserProfileView({region: "main"});
+			this.view = new PageUserProfileView({
+				model: userSession.model(),
+				region: "main"
+			});
 		},
 
 		register: function(params){

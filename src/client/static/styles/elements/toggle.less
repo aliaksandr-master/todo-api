@@ -4,9 +4,9 @@
 	@sqSize: 16px;
 	@offset: 5px;
 	@borderWidth: 1px;
-	@border: @borderWidth solid #dedede;
+	@border: @borderWidth solid #aaa;
 	@borderColor-hover: #66afe9;
-	@checkColor: #555;
+	@checkColor: #000;
 
 	input.chk,
 	input[type="radio"].chk,
@@ -38,6 +38,7 @@
 		top: 50%;
 		left: 0;
 		border: @border;
+		background: #fff;
 		box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
 		transition: border-color ease-in-out 0.3s,box-shadow ease-in-out 0.3s;
 	}

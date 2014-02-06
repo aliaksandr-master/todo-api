@@ -1,14 +1,23 @@
 define(function(require, exports, module){
 	"use strict";
 
+	var $ = require('jquery');
 	var BaseCollectionView = require('views/base/collection-view');
-
 	var TodoListsItem = require('views/todo/lists-item');
 	var template = require('templates/todo/lists');
-	var $ = require('jquery');
+	require("jqueryui");
+	require("jquery-ui-touch-punch");
 	require('css!styles/todo/lists');
 
 	var TodoLists = BaseCollectionView.extend({
+
+		events: {
+			'change .todo-lists-view-select': 'viewChange'
+		},
+
+		viewChange: function () {
+
+		},
 
 		attach: function(){
 			TodoLists.__super__.attach.apply(this, arguments);

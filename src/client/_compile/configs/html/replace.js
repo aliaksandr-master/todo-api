@@ -12,13 +12,12 @@ module.exports = function(grunt, options){
 		'client-index-static-version': {
 			overwrite: true,
 			src: [
-				this.BUILD + '/client/static/*.{html,css}',
-				this.BUILD + '/client/static/**/*.{html,css}'
+				this.BUILD + '/client/static/index.html'
 			],
 			replacements: [
 				{
-					from: /(['"]\s*[\\\/]*)\s*static[^\\\/]+\//gi,
-					to: '$1static-'+CACHE_KEY+'/'
+					from: 'static/',
+					to: 'static-' + CACHE_KEY + '/'
 				}
 			]
 		}

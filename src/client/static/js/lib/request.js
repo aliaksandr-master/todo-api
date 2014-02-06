@@ -15,7 +15,7 @@ define(function(require, exports, module){
 		provider: function (name, Provider) {
 			var provider = null;
 			if (Provider) {
-				this.providers[name] = Provider;
+				provider = this.providers[name] = Provider;
 			} else if (this.providers[name]){
 				Provider = this.providers[name];
 				provider = new Provider();
@@ -54,13 +54,13 @@ define(function(require, exports, module){
 			opt.async = !isSync;
 
 			var providerName = provider;
-			provider = this.provider(providerName);
-			if (provider) {
-				if (provider.preloaded) {
+			var providerObj = this.provider(providerName);
+			if (providerObj) {
+				if (providerObj.preloaded) {
 					utils.showPreloader();
 				}
-				return provider.request(opt).always(function () {
-					if (provider.preloaded) {
+				return providerObj.request(opt).always(function () {
+					if (providerObj.preloaded) {
 						utils.hidePreloader();
 					}
 				});

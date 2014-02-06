@@ -7,6 +7,16 @@ define(function(require, exports, module){
 
 	var UserProfilePageView = BaseView.extend({
 
+		initialize: function(){
+			var that = this;
+			BaseView.prototype.initialize.apply(this,arguments);
+			this.formSubmit({
+				success: function(data){
+					that.trigger('registered', data);
+				}
+			});
+		},
+
 		template: template,
 
 		autoRender: true

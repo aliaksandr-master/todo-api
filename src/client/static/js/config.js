@@ -1,3 +1,5 @@
+'use strict';
+
 require.config({
 
 	enforceDefine: false,
@@ -11,6 +13,7 @@ require.config({
 		'vendor': '../vendor',
 		'templates': '../templates',
 		'jquery': '../vendor/jquery/jquery',
+		'jquery-ui-touch-punch': '../vendor/jquery-ui-touch-punch-amd/jquery.ui.touch-punch',
 		'jqueryui': '../vendor/jqueryui/jquery-ui-1.10.3.custom/js/jquery-ui-1.10.3.custom.min',
 		'underscore': '../vendor/underscore/underscore',
 		'backbone': '../vendor/backbone/backbone',
@@ -34,7 +37,22 @@ require.config({
 
 	shim: {
 		jquery: {
-			exports: 'jQuery'
+			init: function(){
+				var _rq = window.require;
+				var _df = window.define;
+
+				window.require = function () {
+					window.$(document.body).removeClass("-preloader-inactive");
+					return _rq.apply(this, arguments);
+				};
+
+				window.define = function () {
+					window.$(document.body).addClass("-preloader-inactive");
+					return _df.apply(this, arguments);
+				};
+
+				return window.jQuery;
+			}
 		},
 		underscore: {
 			exports: '_'

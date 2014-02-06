@@ -1,8 +1,32 @@
 @import url('../base/base.less');
 
-.todo-paginator-li { float: left; display: block; }
-.todo-paginator-li-link { display: block; text-align: center; ._text(16px, 20px); height: 20px; border-right-width: 0; }
-.todo-paginator-li-link:hover { text-decoration: none; background: #eee; }
-.todo-paginator-li:first-child .todo-paginator-li-link{ border-left-width: 0; }
-.todo-paginator-li.-active .todo-paginator-li-link { background: #aaa; color: #fff; }
-.todo-paginator-li.-active .todo-paginator-li-link:hover { background: #aaa; }
+.todo-paginator-li {
+	display: inline-block;
+	width: 40px !important;
+	height: 20px;
+	position: relative;
+}
+.todo-paginator-li-link {
+	position: absolute;
+	display: block;
+	text-align: center;
+	height: 10px;
+	._text(0);
+	width: 30px;
+	border-radius: 40%;
+	border: 1px solid #aaa;
+	margin: 7px 0 0 5px;
+	overflow: hidden;
+}
+.todo-paginator-li-link:hover {
+	text-decoration: none;
+	background: #eee;
+}
+.todo-paginator-li.-active .todo-paginator-li-link {
+	background: #aaa;
+	height: 16px;
+	margin-top: 4px;
+}
+.todo-paginator-li.-active .todo-paginator-li-link:hover {
+	background: #aaa;
+}

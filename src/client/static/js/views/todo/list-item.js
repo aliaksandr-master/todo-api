@@ -13,7 +13,17 @@ define(function(require){
 		},
 
 		listen: {
-			'change:done model': 'updateDone'
+			'change:done model': 'updateDone',
+			'change:itemId model': 'updateId'
+		},
+
+		updateId: function () {
+			var listId = this.model.get("listId");
+			var itemId = this.model.get("itemId");
+			this.$(".todo-list-li-link").attr("href", '/todo/'+listId+'/item/'+itemId+'/');
+			this.$el.attr("data-itemId", itemId);
+			this.$('.chk').attr("id", 'chk-'+itemId);
+			this.$('.chk + label').attr("for", 'chk-'+itemId);
 		},
 
 		updateDone: function () {
@@ -35,10 +45,6 @@ define(function(require){
 		initialize: function () {
 			ListItemView.__super__.initialize.apply(this, arguments);
 			this.listenTo(this.model, "sync", function(){
-				var listId = this.model.get("listId");
-				var itemId = this.model.get("itemId");
-				this.$(".todo-list-li-link").attr("href", '/todo/'+listId+'/item/'+itemId+'/');
-				this.$el.attr("data-itemId", itemId);
 			});
 		},
 

@@ -8,7 +8,7 @@ body {
 body:after {
 	content: "";
 	._size(30px);
-	position: fixed;
+	position: absolute;
 	top: 11px;
 	left: 13px;
 	z-index: 9999;
@@ -20,6 +20,7 @@ body:after {
 	opacity: 0.9;
 	animation: spinner 1s infinite linear;
 	transition: opacity 0.1s linear;
+	transition-delay: 0.3s;
 }
 
 @keyframes spinner {

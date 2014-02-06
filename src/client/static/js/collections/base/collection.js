@@ -11,15 +11,16 @@ define(function(require, exports, module){
 
 		format: "json",
 
-		initialize: function(args){
-			args = args || {};
+		initialize: function(models, options){
+			options = options || {};
 
-			if(args.propModel){
-				this.propModel = args.propModel;
-				delete args.propModel;
+			if(options.propModel){
+				options = _.clone(options);
+				this.propModel = options.propModel;
+				delete options.propModel;
 			}
 
-			BaseCollection.__super__.initialize.call(this, args);
+			BaseCollection.__super__.initialize.apply(this, arguments);
 		},
 
 		remote: true, // DualStorage option

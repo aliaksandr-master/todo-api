@@ -6,13 +6,15 @@ define(function(require, exports, module){
 
 	var userSession = require("lib/session");
 	var UserRelController = require('controllers/base/user-rel');
+
 	var TodoListCollectionView = require('views/todo/list');
-	var TodoListItemCollection = require('collections/todo/list-item');
 	var TodoListsCollectionView = require('views/todo/lists');
-	var TodoPaginatorView = require('views/todo/paginator');
-	var TodoListsCollection = require('collections/todo/lists');
 	var TodoItemView = require('views/todo/item');
 	var TodoListShareView = require('views/todo/list-share');
+	var TodoPaginatorView = require('views/todo/paginator');
+
+	var TodoListItemCollection = require('collections/todo/list-item');
+	var TodoListsCollection = require('collections/todo/lists');
 
 	require('jquery.swipe');
 
@@ -39,7 +41,6 @@ define(function(require, exports, module){
 		index: function (params) {
 			this.todoListsCollection = new TodoListsCollection();
 			this.todoListsCollection.fetch().then(function () {
-				console.log(111);
 				this.todoListsView = new TodoListsCollectionView({
 					collection: this.todoListsCollection,
 					region: "main"
@@ -93,7 +94,7 @@ define(function(require, exports, module){
 					this.redirectTo({url: "/todo/"});
 					return;
 				}
-				this.listItemColection = new TodoListItemCollection({
+				this.listItemColection = new TodoListItemCollection(null, {
 					propModel: this.listModel
 				});
 				this.listItemColection.fetch().then(function(){
@@ -134,7 +135,7 @@ define(function(require, exports, module){
 					return;
 				}
 
-				this.listItemColection = new TodoListItemCollection({
+				this.listItemColection = new TodoListItemCollection(null, {
 					propModel: this.listModel
 				});
 				this.listItemColection.fetch();

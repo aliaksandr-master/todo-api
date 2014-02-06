@@ -14,6 +14,10 @@ define(function(require, exports, module){
 
 	var UserSession = utils.BackboneClass({
 
+		model: function () {
+			return session ? session.clone() : null;
+		},
+
 		logged: function () {
 			return !_.isEmpty(session);
 		},
