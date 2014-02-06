@@ -1,10 +1,11 @@
 @import url('../base/base.less');
 
-.todo-list-li { overflow: hidden; border: 1px solid transparent; border-bottom-color: #ccc; }
+.todo-list-li { overflow: hidden; border: 1px solid transparent; border-bottom-color: #ccc; display: block; }
 .todo-list-li.ui-sortable-helper { border: 1px solid #ccc; background: #fff; border-left: none; border-right: none;  width: 100%; }
 .todo-list-li-placeholder { height: 36px; }
 .todo-list-li:first-child { border-top-color: #ccc; }
-.todo-list-li-move { float: left; display: block; text-align: center; width: 20px; height: 36px; line-height: 36px + 6px; cursor: pointer; }
-.todo-list-li-move:hover { background: orange; }
+.todo-list-li .chk + label { float: right; position: relative; z-index: 1; margin: 10px 10px 0; }
+.todo-list-li-move { float: left; display: block; text-align: center; width: 20px !important; height: 36px; line-height: 36px + 6px  !important; cursor: pointer; }
+.todo-list-li-move:hover { background: #eee; }
 .todo-list-li-link { display: block; ._text(16px); ._text_overflow(); padding: 8px; height: 36px; }
 .todo-list-li.-done .todo-list-li-link { text-decoration: line-through; color: #aaa; }

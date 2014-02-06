@@ -1,0 +1,84 @@
+@import "../base/base.less";
+
+.ToggleElement () {
+	@sqSize: 16px;
+	@offset: 5px;
+	@borderWidth: 1px;
+	@border: @borderWidth solid #dedede;
+	@borderColor-hover: #66afe9;
+	@checkColor: #555;
+
+	input.chk,
+	input[type="radio"].chk,
+	input[type="checkbox"].chk {
+		display: block;
+		opacity: 0;
+		position: absolute;
+		width: 0;
+		overflow: hidden;
+		height: 0;
+	}
+	input.chk + label {
+		padding-left: @offset + @sqSize;
+		position: relative;
+		cursor: pointer;
+		min-height: 1em;
+	}
+	input[type="radio"].chk:checked + label {
+		cursor: default;
+	}
+	input.chk + label:before,
+	input.chk + .chk-label:before {
+		content: "";
+		position: absolute;
+		display: block;
+		box-sizing: border-box;
+		._size(@sqSize);
+		margin-top: 0 - (@sqSize / 2);
+		top: 50%;
+		left: 0;
+		border: @border;
+		box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+		transition: border-color ease-in-out 0.3s,box-shadow ease-in-out 0.3s;
+	}
+	input.chk:focus + label:before
+	input.chk + label:focus:before
+	input.chk + label:hover:before {
+		border-color: @borderColor-hover;
+		box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(102, 175, 233, 0.6);
+	}
+	input[type="radio"].chk + label:before {
+		border-radius: 100%;
+	}
+	input[type="radio"].chk:checked + label:after {
+		content: "";
+		display: block;
+		position: absolute;
+		box-sizing: border-box;
+		width: @sqSize / 2;
+		height: @sqSize / 2;
+		top: 50%;
+		left: @sqSize / 4;
+		margin-top: 0 - (@sqSize / 4);
+		background: @checkColor;
+		border-radius: 100%;
+	}
+	input[type="checkbox"].chk:checked + label:after {
+		position: absolute;
+		top: 50%;
+		font-family: Verdana, @font;
+		margin-left: 0 - @sqSize;
+		margin-top: 0 - (@sqSize / 2);
+		left: @sqSize / 2;
+		width: ceil(@sqSize * 2);
+		height: @sqSize;
+		line-height: @sqSize;
+		text-align: center;
+		font-size: @sqSize + @borderWidth * 2;
+		color: @checkColor;
+		font-weight: normal;
+		content: "✔";
+	}
+}
+
+.ToggleElement();

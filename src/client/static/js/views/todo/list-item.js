@@ -8,7 +8,31 @@ define(function(require){
 
     var ListItemView = BaseView.extend({
 
-		initialize: function(){
+		events: {
+			'change .chk': 'toggleDone'
+		},
+
+		listen: {
+			'change:done model': 'updateDone'
+		},
+
+		updateDone: function () {
+			if (this.model.get('done')) {
+				this.$el.addClass('-done');
+				this.$('.chk').attr('checked', true).prop('checked', true);
+			} else {
+				this.$el.removeClass('-done');
+				this.$('.chk').attr('checked', false).prop('checked', false);
+			}
+		},
+
+		toggleDone: function () {
+			this.model.save({
+				done: this.$('.chk').is(':checked')
+			});
+		},
+
+		initialize: function () {
 			ListItemView.__super__.initialize.apply(this, arguments);
 			this.listenTo(this.model, "sync", function(){
 				var listId = this.model.get("listId");
