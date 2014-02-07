@@ -1,5 +1,5 @@
 module.exports = [
-	'install-all',
-	'build-all',
+	'install',
+	'build',
 	'copy:env-dev'
 ];

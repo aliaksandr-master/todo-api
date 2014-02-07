@@ -4,7 +4,7 @@ module.exports = function(grunt){
 	var _ = require('underscore');
 
 	var incOptions = {
-		cwd: 'client/js',
+		cwd: 'build/client/static/js',
 		rename: function(base, path) {
 			return path.replace(/\.js$/, '');
 		}
@@ -13,11 +13,11 @@ module.exports = function(grunt){
 	var include = _(grunt.file.expandMapping(['controllers/**/*.js', 'controllers/*.js'], '', incOptions)).pluck('dest');
 
 	return {
-		compile: {
+		'client-compile': {
 			options: {
-				appDir: 'build/client',
+				appDir: 'deploy/client/static',
 				baseUrl: 'js',
-				dir: 'build/_temp/client',
+				dir: 'deploy/_temp/client/static',
 				modules: [
 					{
 						name: 'main',
@@ -25,7 +25,7 @@ module.exports = function(grunt){
 						insertRequire: ['main']
 					}
 				],
-				mainConfigFile: 'build/client/js/config.js',
+				mainConfigFile: 'deploy/client/static/js/config.js',
 				almond: true,
 				optimize: 'uglify2',
 				useStrict: true,
@@ -35,7 +35,7 @@ module.exports = function(grunt){
 				inlineText: false,
 //				generateSourceMaps: true,
 //				cssIn: 'styles/index.css',
-//				out: 'build/client/styles/main.css',
+//				out: 'deploy/client/static/styles/main.css',
 //				optimizeCss: 'standard.keepLines',
 //				cssImportIgnore: null,
 //				uglify2: {
@@ -76,10 +76,10 @@ module.exports = function(grunt){
 		}
 //		css: {
 //			options: {
-//				out: 'build/client/styles/main.css',
+//				out: 'deploy/client/static/styles/main.css',
 //				optimizeCss: 'standard.keepLines',
 //				cssImportIgnore: null,
-//				cssIn: 'client/styles/index.css'
+//				cssIn: 'client/static/styles/index.css'
 //			}
 //		}
 	};
