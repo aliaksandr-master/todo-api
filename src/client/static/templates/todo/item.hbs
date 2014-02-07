@@ -1,29 +1,19 @@
-<div class="todo-list-item">
-
-    <div class="todo-list-item-header clearfix">
-        <a href="/todo/{{listId}}/item/" class="btn btn-default todo-list-item-back-btn">
-            <span class="glyphicon glyphicon-arrow-left"></span>
-            <span class="glyphicon glyphicon-list-alt"></span>
-        </a>
+<div class="modal-content">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title">
+            <input id="todo-list-item-chk" class="chk todo-list-item-done-chk" type="checkbox" value="1"{{#if done}} checked="checked"{{/if}}/>
+            <label for="todo-list-item-chk" class="todo-list-item-done">Done</label>
+        </h4>
     </div>
-
-
-    <div class="todo-list-item-head">
-
-        <button class="todo-li-btn-remove btn btn-default">
+    <div class="modal-body">
+        <textarea placeholder="Comment" class="todo-list-item-title form-control">{{title}}</textarea>
+    </div>
+    <div class="modal-footer clearfix">
+        <button class="todo-li-btn-remove pull-left btn btn-default" data-dismiss="modal">
             <span class="glyphicon glyphicon-remove"></span>
             &nbsp;&nbsp;Remove
         </button>
-
-        <button class="btn btn-success todo-list-item-save">Save</button>
-
-        <input id="todo-list-item-chk" class="chk todo-list-item-done-chk" type="checkbox" value="1"{{#if done}} checked="checked"{{/if}}/>
-        <label for="todo-list-item-chk" class="todo-list-item-done">Done</label>
-
+        <button class="btn btn-danger pull-right todo-list-item-save" data-dismiss="modal">Close</button>
     </div>
-
-    <div class="todo-list-item-body">
-        <textarea placeholder="Comment" class="todo-list-item-title form-control">{{title}}</textarea>
-    </div>
-
 </div>

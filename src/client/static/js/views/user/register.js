@@ -8,13 +8,12 @@ define(function(require, exports, module){
 
 	var UserLoginPageView = BaseView.extend({
 
-		initialize: function(){
-			var that = this;
-			BaseView.prototype.initialize.apply(this,arguments);
+		render: function(){
+			BaseView.prototype.render.apply(this,arguments);
 			this.formSubmit({
 				success: function(data){
-					that.trigger('registered', data);
-				}
+					this.trigger('registered', data);
+				}.bind(this)
 			});
 		},
 

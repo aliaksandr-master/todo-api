@@ -4,6 +4,8 @@ define(function(require, exports, module){
 
 	var $ = require("jquery");
 	var BaseCollectionView = require('views/base/collection-view');
+	var TodoItemView = require('views/todo/item');
+
 	require("jqueryui");
 	require("jquery-ui-touch-punch");
 	require('jquery.swipe');
@@ -14,11 +16,104 @@ define(function(require, exports, module){
 
 	var TodoLists = BaseCollectionView.extend({
 
+		events: {
+			'click .todo-list-filter-btn': 'onFilter',
+			"click .todo-list-input-add-submit": "onAadBtnClick",
+			'click .todo-list-li-link': 'openPopup',
+			"change .todo-list-title": "saveTitle",
+			"keypress .todo-list-title": "toAddInput",
+			"keypress .todo-list-input-add": "createOnEnter"
+		},
+
+		listen: {
+			'change collection': 'renderAllItems'
+		},
+
 		listSelector: '.todo-list-l',
 		itemSelector: '.todo-list-li',
 		template: template,
 		autoRender: false,
 		itemView: ListItemView,
+
+		openPopup: function (e) {
+			var that = this;
+			var $li = this.$(e.currentTarget);
+			var modelId = $li.closest('.todo-list-li').attr('data-itemId');
+
+			var model = this.collection.get(modelId);
+
+			var $modal = this.$('.modal');
+			var $mBody = $modal.find('.modal-dialog').eq(0).html('');
+
+			var modalView = new TodoItemView({
+				container: $mBody,
+				model: model
+			});
+
+			this.subview('item-' + modelId, modalView);
+
+			this.listenTo(modalView, 'save', function () {
+				model.save();
+				$modal.modal('hide');
+			});
+
+			this.listenTo(modalView, 'remove', function () {
+				if(confirm("Are You Sure To Remove ?")){
+					$modal.modal('hide');
+					setTimeout(function(){
+						modalView.remove();
+						model.destroy();
+					}, 500);
+				}
+			});
+
+			$modal.modal('show');
+		},
+
+		filterer: function (model, index) {
+			var done = model.get('done');
+			var result = true;
+			var filter = this.collection.propModel.get('filter') || {};
+			if (filter.done) {
+				result = !!done;
+			} else if (filter.active) {
+				result = !done;
+			}
+			return result;
+		},
+
+		onFilter: function ( e ) {
+			this.$('.todo-list-filter-btn').parent().removeClass('active');
+
+			var $filter = this.$(e.currentTarget);
+			$filter.parent().addClass('active');
+
+			var filter = $filter.attr('data-filter');
+			var _done = false;
+			var _active = false;
+			var $mainBtn = this.$('.todo-list-filter-main-btn');
+			switch (filter) {
+				case 'done':
+					_done = true;
+					$mainBtn.addClass('active');
+					break;
+				case 'active':
+					_active = true;
+					$mainBtn.addClass('active');
+					break;
+				default:
+					$mainBtn.removeClass('active');
+			}
+
+			var _filter = {
+				done: _done,
+				active: _active
+			};
+
+			this.trigger('filter:change', _filter);
+			this.collection.propModel.set('filter', _filter);
+			this.renderAllItems();
+		},
 
 		initialize: function(){
 			TodoLists.__super__.initialize.apply(this, arguments);
@@ -27,13 +122,6 @@ define(function(require, exports, module){
 
 		regions: {
 			"todo-list/paginator": ".todo-list-line"
-		},
-
-		events: {
-			"click .todo-list-input-add-submit": "onAadBtnClick",
-			"change .todo-list-title": "saveTitle",
-			"keypress .todo-list-title": "toAddInput",
-			"keypress .todo-list-input-add": "createOnEnter"
 		},
 
 		attach: function(){
@@ -76,10 +164,14 @@ define(function(require, exports, module){
 				return;
 			}
 
-			this.collection.create({
+			var model = this.collection.create({
 				sortOrder: this.collection.length,
 				listId: this.collection.propModel.get("listId"),
 				title: title
+			});
+
+			this.listenTo(model, 'sync', function () {
+				this.renderAllItems();
 			});
 
 			$input.val('');

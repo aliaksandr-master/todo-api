@@ -18,12 +18,15 @@ define(function(require, exports, module){
 
 	require('jquery.swipe');
 
+	var filter = {
+		done: false,
+		active: false
+	};
 
 	var TodoController = UserRelController.extend({
 
 		initialize: function(){
 			TodoController.__super__.initialize.apply(this, arguments);
-			$(document).off('.mainSwipe');
 		},
 
 		create: function () {
@@ -48,81 +51,11 @@ define(function(require, exports, module){
 			}.bind(this), function () {
 				console.error(this, arguments);
 			});
-		},
-
-		shared: function(params){
-//			params.listId
-
-//			this.listShareView = new TodoListShareView({
-//				model: this.listModel,
-//				region: "main"
-//			});
-		},
-
-		share: function(params){
-			this.todoListsCollection = new TodoListsCollection();
-			this.todoListsCollection.fetch().then(function(){
-
-				this.listModel = this.todoListsCollection.get(params.listId);
-
-				if(!this.listModel){
-					this.redirectTo({
-						url: "/todo/"
-					});
-					return;
-				}
-
-				this.listShareView = new TodoListShareView({
-					model: this.listModel,
-					region: "main"
-				});
-
-				this.listenTo(this.listShareView, "modelWasSaved", function(){
-					this.redirectTo({
-						url: "/todo/"
-					});
-				}, this);
-
-			}.bind(this));
-		},
-
-		item: function(params){
-			this.todoListsCollection = new TodoListsCollection();
-			this.todoListsCollection.fetch().then(function(){
-				this.listModel = this.todoListsCollection.get(params.listId);
-				if(!this.listModel){
-					this.redirectTo({url: "/todo/"});
-					return;
-				}
-				this.listItemColection = new TodoListItemCollection(null, {
-					propModel: this.listModel
-				});
-				this.listItemColection.fetch().then(function(){
-					this.itemModel = this.listItemColection.get(params.itemId);
-
-					if(!this.itemModel){
-						this.redirectTo({url: "/todo/" + params.listId + "/item/"});
-						return;
-					}
-
-					this.todoItemView = new TodoItemView({
-						model: this.itemModel,
-						region: 'main'
-					});
-
-					this.listenTo(this.todoItemView, "modelWasRemoved", function(){
-						this.redirectTo({url: "/todo/" + params.listId + "/item/"});
-					}, this);
-
-					this.listenTo(this.todoItemView, "modelWasSaved", function(){
-						this.redirectTo({url: "/todo/" + params.listId + "/item/"});
-					}, this);
-
-				}.bind(this));
-			}.bind(this));
+			this.initMenu();
 		},
 
 		list: function(params){
+			this.initMenu();
 			this.todoListsCollection = new TodoListsCollection();
 
 			this.todoListsCollection.fetch().then(function(){
@@ -134,6 +67,10 @@ define(function(require, exports, module){
 					});
 					return;
 				}
+
+				this.listModel.set({
+					filter: filter
+				});
 
 				this.listItemColection = new TodoListItemCollection(null, {
 					propModel: this.listModel
@@ -144,6 +81,10 @@ define(function(require, exports, module){
 					collection: this.listItemColection,
 					collectionModel: this.listModel,
 					region: 'main'
+				});
+
+				this.listenTo(this.todoListView, 'filter:change', function (_filter) {
+					filter = _filter;
 				});
 
 				this.TodoPaginator = new TodoPaginatorView({

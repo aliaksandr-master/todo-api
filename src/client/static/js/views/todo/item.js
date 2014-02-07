@@ -18,18 +18,11 @@ define(function(require, exports, module){
 		},
 
 		saveModel: function(){
-			this.model.save().then(function(){
-				this.remove();
-				this.trigger("modelWasSaved");
-			}.bind(this));
+			this.trigger('save');
 		},
 
 		removeModel: function(){
-			if(confirm("Are You Sure To Remove ?")){
-				this.model.destroy();
-				this.remove();
-				this.trigger("modelWasRemoved");
-			}
+			this.trigger('remove');
 		},
 
 		autoRender: true,

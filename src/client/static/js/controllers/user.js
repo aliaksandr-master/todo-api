@@ -17,20 +17,16 @@ define(function(require, exports, module){
 			this.listenTo(userSession, 'user:login', function () {
 				this.redirectTo({url:'/todo/'});
 			});
-
-			this.listenTo(userSession, 'user:logout', function () {
-				this.redirectTo({url: '/'});
-			});
 		},
 
-		login: function (params) {
+		login: function () {
 			this.view = new PageUserLoginView({
 				region: "main"
 			});
 
-			this.listenTo(this.view, 'logged', function (data) {
-				var user = new UserModel(data.data, {parse: true});
-				userSession.login(user);
+			this.listenTo(this.view, 'trigger:login', function (data) {
+				this.user = new UserModel(data.data, {parse: true});
+				userSession.login(this.user);
 			});
 		},
 
@@ -43,16 +39,13 @@ define(function(require, exports, module){
 				model: userSession.model(),
 				region: "main"
 			});
+			this.initMenu();
 		},
 
 		register: function(params){
 			this.view = new PageUserRegisterView({region: "main"});
 			this.listenTo(this.view, 'registered', function(data){
-				var user = new UserModel(data, {parse: true});
-				if(user.isValid()){
-					userSession.login(user);
-				}
-				this.redirectTo({url:'/todo/'});
+				this.redirectTo({url:'/user/login/'});
 			});
 		}
 

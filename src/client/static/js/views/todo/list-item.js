@@ -13,8 +13,14 @@ define(function(require){
 		},
 
 		listen: {
+			'change:title model': 'updateTittle',
 			'change:done model': 'updateDone',
 			'change:itemId model': 'updateId'
+		},
+
+		updateTittle: function (){
+			var tittle = this.model.get('title');
+			this.$('.todo-list-li-link').html((tittle == null ? "" : tittle).replace(/^\s+/, "").split(/[\n\r]+/).shift());
 		},
 
 		updateId: function () {

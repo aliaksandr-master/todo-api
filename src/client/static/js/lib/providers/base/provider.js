@@ -141,7 +141,7 @@ define(function(require, exports, module){
 				});
 			}
 
-			return deferred ? deferred : this.ajax(opt);
+			return deferred || this.ajax(opt);
 		},
 
 		getCacheKey: function (opt) {

@@ -1,35 +1,7 @@
 <div class="user-profile">
-    <div class="user-profile-head clearfix">
-        <a href="/todo/" class="btn btn-default pull-right">
-            <span class="glyphicon glyphicon-list-alt"></span>
-            &nbsp;&nbsp;Todo
+    <div class="text-center user-profile-logout-wr">
+        <a href="/user/logout/" class="btn btn-default btn-lg user-profile-logout">
+            <span class="glyphicon glyphicon-remove-circle"></span>&nbsp;&nbsp;LOG OUT
         </a>
-        <a href="/user/logout/" class="btn btn-default pull-left">
-            <span class="glyphicon glyphicon-remove-circle"></span>
-            &nbsp;&nbsp;LOG OUT
-        </a>
-    </div>
-    <div class="user-profile-body">
-        <form action="/user/{{id}}/" method="PUT">
-            <div class="form-group">
-                <label>Username</label>
-                <input type="text" value="{{username}}" name="username" placeholder="" class="form-control input-lg">
-            </div>
-            <div class="form-group">
-                <label>Email</label>
-                <input type="text" value="{{email}}" name="email" class="form-control input-lg">
-            </div>
-            <div class="form-group">
-                <label>Password</label>
-                <input type="password" name="password" class="form-control input-lg">
-            </div>
-            <div class="form-group">
-                <label>Confirm Password</label>
-                <input type="password" name="confirm_password" class="form-control input-lg">
-            </div>
-            <div class="form-group text-right form-submits">
-                <button type="submit" class="btn btn-warning btn-lg">Save</button>
-            </div>
-        </form>
     </div>
 </div>

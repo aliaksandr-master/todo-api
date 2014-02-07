@@ -1,27 +1,22 @@
 define(function(require, exports, module){
-    "use strict";
+	"use strict";
 
 	var $ = require('jquery');
 
-	var template = require('templates/layouts/simple');
+	var template = require('templates/elements/main-menu');
 	var BaseView = require('views/base/view');
 	var sessionUser = require('lib/session');
+
 	require('css!styles/index');
 	require('css!styles/layouts/simple');
 
-    var LayoutView = BaseView.extend({
+	var MainMenuView = BaseView.extend({
 
-		container: 'body',
-
-		regions:{
-			'main': '.main-content',
-			'main/menu': '.main-menu-wr'
-		},
+		autoRender: true,
 
 		template: template
 
 	});
 
-	template = null;
-    return LayoutView;
+	return MainMenuView;
 });

@@ -8,9 +8,6 @@ define(function(require, exports, module){
 		User = require('models/user');
 
     var session;
-    request.load('/user/current', 'api', true).then(function (data) {
-        session = new User(data.data, {parse: true});
-    });
 
 	var UserSession = utils.BackboneClass({
 
@@ -22,21 +19,32 @@ define(function(require, exports, module){
 			return !_.isEmpty(session);
 		},
 
+		current: function () {
+			var that = this;
+			request.load('/user/current', 'api', true).then(function (data) {
+				that.login(new User(data.data, {parse: true}));
+			});
+		},
+
 		login: function (model) {
-			if(model.isValid()){
-				session = model;
-				this.user = model;
-				this.trigger('user:login');
-			}
+			session = this.user = model.clone();
+			this.trigger('user:login');
 		},
 
 		logout: function () {
-			session = {};
-			this.user = null;
+			session = this.user = null;
 			request.load('/user/logout', 'api');
 			this.trigger('user:logout');
+
+			setTimeout(function(){
+				window.location.href = '/';
+			}, 500);
 		}
 	});
 
-	return new UserSession();
+	var user = new UserSession();
+
+	user.current();
+
+	return user;
 });

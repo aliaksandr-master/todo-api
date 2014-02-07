@@ -20,11 +20,11 @@ define(function(require, exports, module){
 			TodoListPaginator.__super__.render.apply(this, arguments);
 			var length = this.collection.length;
 			if(length > 1){
-				this.$el.show();
+				this.$el.removeClass('-one');
 				this.$(".todo-paginator-li").width((Math.round(100*10/length)/10)+"%");
 				this.$("#todo-paginator-li-"+this.collectionModel.get("listId")).addClass("-active");
 			}else{
-				this.$el.hide();
+				this.$el.addClass('-one');
 			}
 		},
 
