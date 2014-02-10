@@ -11,6 +11,10 @@ define(function(require, exports, module){
 
 		noWrap: true,
 
+		useCssAnimation: true,
+		animationStartClass: '-animation-start',
+		animationEndClass: '-animation-end',
+
 		getTemplateFunction: BaseView.prototype.getTemplateFunction,
 
 		filterCallback: function(view, included) {

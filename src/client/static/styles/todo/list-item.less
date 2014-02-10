@@ -1,13 +1,16 @@
 @import url('../base/base.less');
 
-@listItemHeight: 16px + 20px;
-.todo-list-li { overflow: hidden; margin-bottom: 5px; border: 1px solid #ccc; ._grad_v(#ffffff, #eeeeee); display: block; list-style: none; border-radius: 4px; }
+@listItemHeight: 32px;
+@listItemFontSize: 16px;
+@listItemLiPad: 5px;
+.todo-list-li { overflow: hidden; margin-bottom: @listItemLiPad; border: 1px solid #ccc; ._grad_v(#ffffff, #eeeeee); display: block; list-style: none; border-radius: 4px; }
 .todo-list-li:hover { ._grad_v(#ffffff, #dddddd); }
-.todo-list-li.ui-sortable-helper { border: 1px solid #ccc; background: #fff; border-left: none; border-right: none; width: 100%; }
-.todo-list-li-placeholder { height: @listItemHeight; }
+.todo-list-li.ui-sortable-helper { width: 100%; }
+.todo-list-li-placeholder { height: @listItemHeight + @listItemLiPad + 2px; }
 .todo-list-li:first-child { border-top-color: #ccc; }
-.todo-list-li .chk + label { float: right; position: relative; z-index: 1; margin: 4px 0px 0; font-size: 24px; }
-.todo-list-li-move { float: left; display: block; text-align: center; width: 20px !important; height: @listItemHeight; line-height: @listItemHeight + 4px  !important; cursor: pointer; color: #777; }
+.todo-list-li .chk + label { float: right; position: relative; z-index: 1; margin: 4px 2px 0; font-size: 20px; }
+.todo-list-li-move { float: left; display: block; text-align: center; width: 20px !important; height: @listItemHeight; line-height: @listItemHeight + 7px  !important; cursor: pointer; color: #777; border-radius: 4px; top: 0 !important; }
 .todo-list-li-move:hover { background: #eee; color: #000; }
-.todo-list-li-link { display: block; color: #428bca; ._text(22px, @listItemHeight); font-weight: normal; ._text_overflow(); padding: 0 10px; height: @listItemHeight; }
+.todo-list-li-link { display: block; color: #428bca; ._text(@listItemFontSize, @listItemHeight); font-weight: normal; ._text_overflow(); padding: 0 10px; height: @listItemHeight; }
 .todo-list-li.-done .todo-list-li-link { text-decoration: line-through; color: #aaa; }
+.todo-list-li.-done { ._grad_v(#ffffff, #f6f6f6); border-color: #efefef; }

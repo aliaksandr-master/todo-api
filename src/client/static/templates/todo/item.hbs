@@ -1,19 +1,11 @@
-<div class="modal-content">
-    <div class="modal-header">
+<div class="modal-content todo-item{{#if done}} -done{{/if}}">
+    <div class="modal-header clearfix">
+        <button class="todo-li-btn-remove btn btn-sm btn-default" data-dismiss="modal">
+            <span class="glyphicon glyphicon-remove"></span>&nbsp;&nbsp;Remove
+        </button>
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-        <h4 class="modal-title">
-            <input id="todo-list-item-chk" class="chk todo-list-item-done-chk" type="checkbox" value="1"{{#if done}} checked="checked"{{/if}}/>
-            <label for="todo-list-item-chk" class="todo-list-item-done">Done</label>
-        </h4>
     </div>
     <div class="modal-body">
         <textarea placeholder="Comment" class="todo-list-item-title form-control">{{title}}</textarea>
-    </div>
-    <div class="modal-footer clearfix">
-        <button class="todo-li-btn-remove pull-left btn btn-default" data-dismiss="modal">
-            <span class="glyphicon glyphicon-remove"></span>
-            &nbsp;&nbsp;Remove
-        </button>
-        <button class="btn btn-danger pull-right todo-list-item-save" data-dismiss="modal">Close</button>
     </div>
 </div>
