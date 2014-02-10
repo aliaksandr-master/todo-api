@@ -15,9 +15,9 @@ module.exports = function(grunt){
 	return {
 		'client-compile': {
 			options: {
-				appDir: 'deploy/client/static',
+				appDir: 'build/client/static',
 				baseUrl: 'js',
-				dir: 'deploy/_temp/client/static',
+				dir: 'deploy/client/static',
 				modules: [
 					{
 						name: 'main',
