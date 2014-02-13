@@ -1,0 +1,79 @@
+[
+	{
+		"name": "user-register",
+		"route": "user/register",
+		"controller": "user",
+		"action": "register",
+		"params": {}
+	},
+	{
+		"name": "user-profile",
+		"route": "user/profile",
+		"controller": "user",
+		"action": "index",
+		"params": {}
+	},
+	{
+		"name": "user-login",
+		"route": "user/login",
+		"controller": "user",
+		"action": "login",
+		"params": {}
+	},
+	{
+		"name": "user-logout",
+		"route": "user/logout",
+		"controller": "user",
+		"action": "logout",
+		"params": {}
+	},
+	{
+		"name": "todo-lists",
+		"route": "todo",
+		"controller": "todo",
+		"action": "index",
+		"params": {}
+	},
+	{
+		"name": "todo-list-create",
+		"route": "todo/create",
+		"controller": "todo",
+		"action": "create",
+		"params": {}
+	},
+	{
+		"name": "todo-list-share",
+		"route": "todo/:listId",
+		"controller": "todo",
+		"action": "share",
+		"params": {}
+	},
+	{
+		"name": "todo-list-share",
+		"route": "todo/:listId/share",
+		"controller": "todo",
+		"action": "share",
+		"params": {}
+	},
+	{
+		"name": "todo-list",
+		"route": "todo/:listId/item",
+		"controller": "todo",
+		"action": "list",
+		"params": {}
+	},
+	{
+		"name": "home",
+		"route": "",
+		"controller": "static",
+		"action": "home",
+		"params": {}
+	},
+	{
+		"name": "about",
+		"route": "about",
+		"controller": "static",
+		"action": "about",
+		"params": {}
+	}
+]

@@ -6,5 +6,6 @@ module.exports = [
 	'compile-client-html',
 	'compile-client-scripts',
 	'compile-client-templates',
-	'compile-client-content'
+	'compile-client-content',
+	'compile-client-routing'
 ];
