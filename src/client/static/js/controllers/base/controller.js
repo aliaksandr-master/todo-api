@@ -11,7 +11,7 @@ define(function(require, exports, module){
 	var BaseController = Chaplin.Controller.extend({
 
 		beforeAction: function(){
-			this.compose("site", SimpleLayoutView);
+			this.reuse("site", SimpleLayoutView);
 			BaseController.__super__.beforeAction.apply(this, arguments);
 		},
 

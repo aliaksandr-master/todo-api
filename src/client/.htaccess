@@ -199,10 +199,10 @@ AddDefaultCharset utf-8
 # | 301 redirect - add ending slash           |
 # ------------------------------------------------------------------------------
 
-<ifModule mod_rewrite.c>
-    RewriteCond %{REQUEST_URI} (.*/[^/.]+)($|\?)
-    RewriteRule .* %1/ [R=301,L]
-</ifModule>
+#<ifModule mod_rewrite.c>
+#    RewriteCond %{REQUEST_URI} (.*/[^/.]+)($|\?)
+#    RewriteRule .* %1/ [R=301,L]
+#</ifModule>
 
 
 # ------------------------------------------------------------------------------
