@@ -3,10 +3,10 @@
     <button class="btn todo-lists-li-remove btn-default">
         <span class="glyphicon glyphicon-trash"></span>
     </button>
-    <a href="/todo/{{listId}}/share/" class="btn btn-default todo-lists-li-share">
+    <a href="{{url 'todo-list-share' listId}}" class="btn btn-default todo-lists-li-share">
         <span class="glyphicon glyphicon-share-alt"></span>
     </a>
-    <a href="/todo/{{listId}}/item/" class="todo-lists-li-link">
+    <a href="{{url 'todo-list' listId}}" class="todo-lists-li-link">
         {{title}}
     </a>
 </li>

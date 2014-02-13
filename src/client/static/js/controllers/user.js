@@ -15,7 +15,7 @@ define(function(require, exports, module){
 			UserController.__super__.initialize.apply(this, arguments);
 
 			this.listenTo(userSession, 'user:login', function () {
-				this.redirectTo({url:'/todo/'});
+				this.redirectTo('todo-lists');
 			});
 		},
 
@@ -45,7 +45,7 @@ define(function(require, exports, module){
 		register: function(params){
 			this.view = new PageUserRegisterView({region: "main"});
 			this.listenTo(this.view, 'registered', function(data){
-				this.redirectTo({url:'/user/login/'});
+				this.redirectTo('user-login');
 			});
 		}
 

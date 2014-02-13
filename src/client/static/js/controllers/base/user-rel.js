@@ -10,7 +10,7 @@ define(function(require, exports, module){
 			if (userSession.logged()) {
 				return UserRelController.__super__.constructor.apply(this, arguments);
 			}
-			this.redirectTo({url: '/user/login/'});
+			this.redirectTo('user-login');
 		}
 
 	});

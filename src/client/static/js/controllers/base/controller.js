@@ -10,8 +10,14 @@ define(function(require, exports, module){
 
 	var BaseController = Chaplin.Controller.extend({
 
-		beforeAction: function(){
-			this.reuse("site", SimpleLayoutView);
+		layoutView: SimpleLayoutView,
+
+		getLayout: function () {
+			return this.layoutView;
+		},
+
+		beforeAction: function () {
+			this.reuse("site", this.getLayout());
 			BaseController.__super__.beforeAction.apply(this, arguments);
 		},
 

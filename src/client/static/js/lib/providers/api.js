@@ -43,7 +43,7 @@ define(function(require, exports, module){
 					standard = false === _error.call(this, jqXHR, textStatus, errorThrown);
 				}
 				if (standard && (jqXHR.status === 401 || resp.status === 401)) {
-					Chaplin.utils.redirectTo({url: 'user/login/'});
+					Chaplin.utils.redirectTo('login');
 				}
 			};
 			return opt;

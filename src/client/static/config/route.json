@@ -10,7 +10,7 @@
 		"name": "user-profile",
 		"route": "user/profile",
 		"controller": "user",
-		"action": "index",
+		"action": "profile",
 		"params": {}
 	},
 	{
@@ -63,14 +63,14 @@
 		"params": {}
 	},
 	{
-		"name": "home",
+		"name": "static-home",
 		"route": "",
 		"controller": "static",
 		"action": "home",
 		"params": {}
 	},
 	{
-		"name": "about",
+		"name": "static-about",
 		"route": "about",
 		"controller": "static",
 		"action": "about",

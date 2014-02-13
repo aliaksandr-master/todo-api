@@ -10,7 +10,7 @@ define(function(require, exports, module){
 
 		home: function(){
 			if(Session.logged()){
-				this.redirectTo({url: '/todo/'});
+				this.redirectTo('todo-lists');
 			}else{
 				this.view = new PageHomeView({
 					region: "main"

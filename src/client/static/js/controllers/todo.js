@@ -35,8 +35,8 @@ define(function(require, exports, module){
 			var listModel = this.todoListsCollection.create();
 
 			this.listenTo(listModel, "sync", function () {
-				this.redirectTo({
-					url: "/todo/" + listModel.get("listId") + "/item/"
+				this.redirectTo('todo-list',{
+					listId: listModel.get("listId")
 				});
 			});
 		},
@@ -62,9 +62,7 @@ define(function(require, exports, module){
 				this.listModel = this.todoListsCollection.get(params.listId);
 
 				if(!this.listModel){
-					this.redirectTo({
-						url: "/todo/"
-					});
+					this.redirectTo('todo-lists');
 					return;
 				}
 
@@ -102,7 +100,9 @@ define(function(require, exports, module){
 
 						var prevListId = that.todoListsCollection.at(index > firstIndex ? index - 1 : lastIndex).get("listId");
 						$(this).off(".mainSwipe");
-						that.redirectTo({url: "/todo/" + prevListId + "/item/"});
+						that.redirectTo('todo-list',{
+							listId: prevListId
+						});
 					}, 200))
 					.on('swiperight.mainSwipe', _.throttle(function(e) {
 						var firstIndex = 0,
@@ -111,7 +111,9 @@ define(function(require, exports, module){
 
 						var nextListId = that.todoListsCollection.at(index < lastIndex ? index + 1 : firstIndex).get("listId");
 						$(this).off(".mainSwipe");
-						that.redirectTo({url: "/todo/" + nextListId + "/item/"});
+						that.redirectTo('todo-list',{
+							listId: nextListId
+						});
 					}, 200));
 			}.bind(this));
 		}
