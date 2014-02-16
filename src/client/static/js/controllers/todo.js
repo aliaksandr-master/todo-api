@@ -4,13 +4,10 @@ define(function(require, exports, module){
     var _ = require("underscore"),
 		$ = require("jquery");
 
-	var userSession = require("lib/session");
 	var UserRelController = require('controllers/base/user-rel');
 
 	var TodoListCollectionView = require('views/todo/list');
 	var TodoListsCollectionView = require('views/todo/lists');
-	var TodoItemView = require('views/todo/item');
-	var TodoListShareView = require('views/todo/list-share');
 	var TodoPaginatorView = require('views/todo/paginator');
 
 	var TodoListItemCollection = require('collections/todo/list-item');
@@ -46,16 +43,14 @@ define(function(require, exports, module){
 			this.todoListsCollection.fetch().then(function () {
 				this.todoListsView = new TodoListsCollectionView({
 					collection: this.todoListsCollection,
-					region: "main"
+					region: "main/content"
 				});
 			}.bind(this), function () {
 				console.error(this, arguments);
 			});
-			this.initMenu();
 		},
 
 		list: function(params){
-			this.initMenu();
 			this.todoListsCollection = new TodoListsCollection();
 
 			this.todoListsCollection.fetch().then(function(){
@@ -78,17 +73,17 @@ define(function(require, exports, module){
 				this.todoListView = new TodoListCollectionView({
 					collection: this.listItemColection,
 					collectionModel: this.listModel,
-					region: 'main'
+					region: 'main/content'
 				});
 
 				this.listenTo(this.todoListView, 'filter:change', function (_filter) {
 					filter = _filter;
 				});
 
-				this.TodoPaginator = new TodoPaginatorView({
+				this.todoPaginator = new TodoPaginatorView({
 					collection: this.todoListsCollection,
 					collectionModel: this.listModel,
-					region: "todo-list/paginator"
+					region: "main/footer"
 				});
 
 				var that = this;

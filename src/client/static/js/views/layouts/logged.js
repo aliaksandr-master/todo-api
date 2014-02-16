@@ -3,11 +3,11 @@ define(function(require, exports, module){
 
 	var $ = require('jquery');
 
-	var template = require('templates/layouts/simple');
+	var template = require('templates/layouts/logged');
 	var BaseView = require('views/base/view');
-	var sessionUser = require('lib/session');
+
 	require('css!styles/index');
-	require('css!styles/layouts/simple');
+	require('css!styles/layouts/logged');
 
     var LayoutView = BaseView.extend({
 

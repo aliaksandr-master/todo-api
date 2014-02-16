@@ -8,23 +8,27 @@ require.config({
 
 	paths: {
 
-		'bootstrap': '../vendor/bootstrap/custom/js/bootstrap.min',
 		'styles': '../styles',
 		'vendor': '../vendor',
 		'templates': '../templates',
+
 		'jquery': '../vendor/jquery/jquery',
-		'jquery-ui-touch-punch': '../vendor/jquery-ui-touch-punch-amd/jquery.ui.touch-punch',
-		'jqueryui': '../vendor/jqueryui/jquery-ui-1.10.3.custom/js/jquery-ui-1.10.3.custom.min',
 		'underscore': '../vendor/underscore/underscore',
+		'bootstrap': '../vendor/bootstrap/custom/js/bootstrap.min',
 		'backbone': '../vendor/backbone/backbone',
-		'backbone.shim': 'shim/backbone.shim',
 		'backbone.dualStorage': '../vendor/backbone.dualstorage/backbone.dualstorage.amd',
 		'backbone.stickit': '../vendor/backbone.stickit/backbone.stickit',
 		'handlebars': '../vendor/handlebars/handlebars',
 		'chaplin': '../vendor/chaplin/chaplin',
-		'jquery.swipe': '../vendor/jquery.event.swipe/jquery.event.swipe',
-		'jquery.move':  '../vendor/jquery.event.move/jquery.event.move'
 
+		'jquery-ui': '../vendor/jquery-ui-amd',
+
+		'jquery.swipe': '../vendor/jquery.event.swipe/jquery.event.swipe',
+		'jquery.move':  '../vendor/jquery.event.move/jquery.event.move',
+
+		'jquery-ui-touch-punch': '../vendor/jquery-ui-touch-punch-amd/jquery.ui.touch-punch',
+
+		'backbone.shim': 'shim/backbone.shim'
 	},
 
 	map:{
@@ -38,18 +42,18 @@ require.config({
 	shim: {
 		jquery: {
 			init: function(){
-				var _rq = window.require;
-				var _df = window.define;
-
-				window.require = function () {
-					window.$(document.body).removeClass("-preloader-inactive");
-					return _rq.apply(this, arguments);
-				};
-
-				window.define = function () {
-					window.$(document.body).addClass("-preloader-inactive");
-					return _df.apply(this, arguments);
-				};
+//				var _rq = window.require;
+//				var _df = window.define;
+//
+//				window.require = function () {
+//					window.$(document.body).removeClass("-preloader-inactive");
+//					return _rq.apply(this, arguments);
+//				};
+//
+//				window.define = function () {
+//					window.$(document.body).addClass("-preloader-inactive");
+//					return _df.apply(this, arguments);
+//				};
 
 				return window.jQuery;
 			}

@@ -1629,6 +1629,27 @@
                             ]
                         }
                     },
+                    "sort_order": {
+                        "name": "sort_order",
+                        "type": "decimal",
+                        "filters": {
+                            "before": [],
+                            "after": []
+                        },
+                        "validation": {
+                            "required": false,
+                            "rules": [
+                                {
+                                    "decimal": []
+                                },
+                                {
+                                    "max_length": [
+                                        11
+                                    ]
+                                }
+                            ]
+                        }
+                    },
                     "is_active": {
                         "name": "is_active",
                         "type": "boolean",

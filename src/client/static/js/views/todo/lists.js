@@ -5,7 +5,7 @@ define(function(require, exports, module){
 	var BaseCollectionView = require('views/base/collection-view');
 	var TodoListsItem = require('views/todo/lists-item');
 	var template = require('templates/todo/lists');
-	require("jqueryui");
+	require("jquery-ui/sortable");
 	require("jquery-ui-touch-punch");
 	require('css!styles/todo/lists');
 

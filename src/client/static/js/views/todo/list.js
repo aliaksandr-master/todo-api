@@ -3,10 +3,11 @@ define(function(require, exports, module){
 
 
 	var $ = require("jquery");
+	var _ = require("underscore");
 	var BaseCollectionView = require('views/base/collection-view');
 	var TodoItemView = require('views/todo/item');
 
-	require("jqueryui");
+	require("jquery-ui/sortable");
 	require("jquery-ui-touch-punch");
 	require('jquery.swipe');
 	require('css!styles/todo/list');
@@ -139,20 +140,29 @@ define(function(require, exports, module){
 				placeholder: "todo-list-li-placeholder",
 
 				update: function(event, ui){
-
+					var seq = [];
 					$l.children(".todo-list-li").each(function(i){
 						var $e = $(this);
 						var m = that.collection.get($e.attr("data-itemId"));
 						if(m != null){
-							m.save({
-								sortOrder: i
-							});
+							seq.push(m);
 						}
 					});
-
-					that.collection.sort();
+					that.updateSortOrder(seq);
+					seq = [];
 				}
 			});
+		},
+
+		updateSortOrder: function (seq) {
+			_.each(seq, function(model, index){
+				var order = +model.get('sortOrder');
+				if (order !== index) {
+					model.set('sortOrder', index);
+					model.save();
+				}
+			});
+			this.collection.sort();
 		},
 
 		//Создание элемента

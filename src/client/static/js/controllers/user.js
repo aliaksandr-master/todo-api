@@ -4,7 +4,6 @@ define(function(require, exports, module){
 	var $ = require('jquery');
     var BaseController = require('controllers/base/controller'),
 		UserModel = require('models/user'),
-		userSession = require('lib/session'),
 		PageUserRegisterView = require('views/user/register'),
 		PageUserLoginView = require('views/user/login'),
 		PageUserProfileView = require('views/user/profile');
@@ -13,37 +12,34 @@ define(function(require, exports, module){
 
 		initialize: function () {
 			UserController.__super__.initialize.apply(this, arguments);
-
-			this.listenTo(userSession, 'user:login', function () {
+			this.listenTo(this.user, 'user:login', function () {
 				this.redirectTo('todo-lists');
 			});
 		},
 
 		login: function () {
 			this.view = new PageUserLoginView({
-				region: "main"
+				region: "main/content"
 			});
-
 			this.listenTo(this.view, 'trigger:login', function (data) {
-				this.user = new UserModel(data.data, {parse: true});
-				userSession.login(this.user);
+				this.userModel = new UserModel(data.data, {parse: true});
+				this.user.login(this.userModel);
 			});
 		},
 
 		logout: function () {
-			userSession.logout();
+			this.user.logout();
 		},
 
-		profile: function(params){
+		profile: function(){
 			this.view = new PageUserProfileView({
-				model: userSession.model(),
-				region: "main"
+				model: this.user.model(),
+				region: "main/content"
 			});
-			this.initMenu();
 		},
 
-		register: function(params){
-			this.view = new PageUserRegisterView({region: "main"});
+		register: function(){
+			this.view = new PageUserRegisterView({region: "main/content"});
 			this.listenTo(this.view, 'registered', function(data){
 				this.redirectTo('user-login');
 			});

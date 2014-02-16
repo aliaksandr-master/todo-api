@@ -13,7 +13,7 @@ define(function(require, exports, module){
 				this.redirectTo('todo-lists');
 			}else{
 				this.view = new PageHomeView({
-					region: "main"
+					region: "main/content"
 				});
 				this.preloader.off();
 			}
@@ -21,7 +21,7 @@ define(function(require, exports, module){
 
 		about: function(){
 			this.view = new PageAboutView({
-				region: "main"
+				region: "main/content"
 			});
 			this.preloader.off();
 		}

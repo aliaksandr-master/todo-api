@@ -53,6 +53,7 @@
 			"$todo_id:decimal": "required",
 			"$id:decimal": "required",
 			"name:string": "optional",
+			"sort_order:decimal": "optional",
 			"is_active:boolean": "optional"
 		},
 		"response": [

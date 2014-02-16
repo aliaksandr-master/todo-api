@@ -11,9 +11,9 @@ define(function(require, exports, module){
 
     var TodoPaginatorItemView = BaseView.extend({
 
-		bindings: {
-			".todo-paginator-li-link": "title"
-		},
+//		bindings: {
+//			".todo-paginator-li-link": "title"
+//		},
 
 		autoRender: true,
 		template: template

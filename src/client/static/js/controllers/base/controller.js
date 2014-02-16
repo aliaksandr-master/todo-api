@@ -4,30 +4,27 @@ define(function(require, exports, module){
     var Chaplin = require('chaplin');
     var $ = require('jquery');
     var SimpleLayoutView = require('views/layouts/simple');
+    var LoggedLayoutView = require('views/layouts/logged');
 	var preloader = require('lib/preloader');
 
-	var MainMenuView = require('views/elements/main-menu');
+	var user = require('lib/session');
+	var request = require('lib/request');
 
 	var BaseController = Chaplin.Controller.extend({
 
-		layoutView: SimpleLayoutView,
+		user: user,
+
+		request: request,
 
 		getLayout: function () {
-			return this.layoutView;
+			var layout =  this.user.logged() ? LoggedLayoutView : SimpleLayoutView;
+			console.log(this.user.logged());
+			return layout;
 		},
 
 		beforeAction: function () {
 			this.reuse("site", this.getLayout());
 			BaseController.__super__.beforeAction.apply(this, arguments);
-		},
-
-		initMenu: function () {
-			if (!this.mainMenu) {
-				this.mainMenu = new MainMenuView({
-					autoRender: true,
-					region: 'main/menu'
-				});
-			}
 		},
 
 		initialize: function(){

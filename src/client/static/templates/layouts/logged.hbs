@@ -1,13 +1,15 @@
-<div class="main -simple">
+<div class="main -logged">
     <nav class="main-header navbar navbar-default navbar-fixed-top">
         <div class="container main-menu-wr clearfix">
             <div class="navbar-header pull-left">
                 <div class="navbar-brand main-header-title">
-                    <a href="{{url 'static-about'}}">ListSlider</a>
+                    <a href="{{url 'static-about'}}" class="">
+                        <span class="glyphicon glyphicon-list"></span>
+                    </a>
                 </div>
             </div>
             <ul class="nav navbar-nav pull-right">
-                <li class="pull-left">
+                <li class="pull-left -new-list">
                     <a href="{{url 'todo-list-create'}}">
                         <span class="glyphicon glyphicon-plus"></span>&nbsp;&nbsp;New List
                     </a>
@@ -23,5 +25,8 @@
     </nav>
     <div class="main-wrapper">
         <div class="main-content container"></div>
+    </div>
+    <div class="navbar navbar-default navbar-fixed-bottom">
+        <div class="container main-footer"></div>
     </div>
 </div>
