@@ -7,7 +7,7 @@
         <div class="input-group todo-list-task-input-wr">
             <div class="input-group-btn">
                 <button type="button" class="btn btn-default todo-list-filter-main-btn dropdown-toggle{{#if _prop.filter.done}} active{{else}}{{#if _prop.filter.active}} active{{/if}}{{/if}}" data-toggle="dropdown">
-                    <span class="glyphicon glyphicon-filter"></span>&nbsp;&nbsp;<span class="caret"></span>
+                    <span class="glyphicon glyphicon-filter"></span>
                 </button>
                 <ul class="dropdown-menu" role="menu">
                     <li{{#if _prop.filter.active}} class="active"{{/if}}>
@@ -24,14 +24,17 @@
             </div>
             <input type="text" class="form-control todo-list-input-add"  placeholder="Add new task here...">
             <div class="input-group-btn">
-                <button type="button" class="btn btn-primary todo-list-input-add-submit">
-                    <span class="glyphicon glyphicon-plus"></span>&nbsp;ADD
+                <button type="button" class="btn btn-success todo-list-input-add-submit">
+                    <span class="glyphicon glyphicon-plus"></span>
                 </button>
             </div>
         </div>
     </div>
     <div class="todo-list-body">
         <ul class="todo-list-l"></ul>
+        <div class="todo-list-trash">
+            <span class="glyphicon glyphicon-trash"></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Move to remove
+        </div>
     </div>
     <div class="modal fade">
         <div class="modal-dialog"></div>

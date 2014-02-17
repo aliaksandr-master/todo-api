@@ -18,7 +18,7 @@ define(function(require, exports, module){
 
 		getLayout: function () {
 			var layout =  this.user.logged() ? LoggedLayoutView : SimpleLayoutView;
-			console.log(this.user.logged());
+//			console.log(this.user.logged());
 			return layout;
 		},
 

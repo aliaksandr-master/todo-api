@@ -9,6 +9,7 @@ define(function(require, exports, module){
 	var TodoListCollectionView = require('views/todo/list');
 	var TodoListsCollectionView = require('views/todo/lists');
 	var TodoPaginatorView = require('views/todo/paginator');
+	var TodoNav = require('views/todo/list-nav');
 
 	var TodoListItemCollection = require('collections/todo/list-item');
 	var TodoListsCollection = require('collections/todo/lists');
@@ -79,6 +80,18 @@ define(function(require, exports, module){
 				this.listenTo(this.todoListView, 'filter:change', function (_filter) {
 					filter = _filter;
 				});
+
+				var index = this.todoListsCollection.indexOf(this.listModel);
+
+				this.todoNav = new TodoNav({
+					region: "main/footer"
+				});
+
+				this.todoNav.currId = this.listModel.id;
+				this.todoNav.prevId = index === 0 ? this.todoListsCollection.at(this.todoListsCollection.length - 1).id : this.todoListsCollection.at(index - 1).id;
+				this.todoNav.nextId = index === this.todoListsCollection.length - 1 ? this.todoListsCollection.at(0).id : this.todoListsCollection.at(index + 1).id;
+
+				this.todoNav.render();
 
 				this.todoPaginator = new TodoPaginatorView({
 					collection: this.todoListsCollection,

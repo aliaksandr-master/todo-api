@@ -6,16 +6,27 @@ define(function(require, exports, module){
 	var _ = require("underscore");
 	var BaseCollectionView = require('views/base/collection-view');
 	var TodoItemView = require('views/todo/item');
+	var ListItemView = require("views/todo/list-item");
+	var template = require("templates/todo/list");
 
 	require("jquery-ui/sortable");
+	require("jquery-ui/draggable");
+	require("jquery-ui/droppable");
 	require("jquery-ui-touch-punch");
 	require('jquery.swipe');
 	require('css!styles/todo/list');
 
-	var ListItemView = require("views/todo/list-item");
-	var template = require("templates/todo/list");
-
 	var TodoLists = BaseCollectionView.extend({
+
+		listSelector: '.todo-list-l',
+
+		itemSelector: '.todo-list-li',
+
+		template: template,
+
+		autoRender: false,
+
+		itemView: ListItemView,
 
 		events: {
 			'click .todo-list-filter-btn': 'onFilter',
@@ -29,12 +40,6 @@ define(function(require, exports, module){
 		listen: {
 			'change collection': 'renderAllItems'
 		},
-
-		listSelector: '.todo-list-l',
-		itemSelector: '.todo-list-li',
-		template: template,
-		autoRender: false,
-		itemView: ListItemView,
 
 		openPopup: function (e) {
 			var that = this;
@@ -125,19 +130,30 @@ define(function(require, exports, module){
 			"todo-list/paginator": ".todo-list-line"
 		},
 
-		attach: function(){
+		attach: function () {
 			ListItemView.__super__.attach.apply(this, arguments);
+
 			var that = this;
 
 			this.$('.todo-list-title').val(this.collection.propModel.get("title"));
 			this._initTitleInputStatus();
 
 			var $l = this.$(".todo-list-l");
+			var $trash = $l.parent().children('.todo-list-trash');
+
 			$l.sortable({
 
 				handle: ".todo-list-li-move",
 
 				placeholder: "todo-list-li-placeholder",
+
+				start: function () {
+					$trash.addClass('active');
+				},
+
+				stop: function () {
+					$trash.removeClass('active');
+				},
 
 				update: function(event, ui){
 					var seq = [];
@@ -150,6 +166,14 @@ define(function(require, exports, module){
 					});
 					that.updateSortOrder(seq);
 					seq = [];
+				}
+			});
+			$trash.droppable({
+				accept: ".todo-list-li",
+				hoverClass: "hover",
+				drop: function( event, ui ) {
+					var id = $(ui.helper[0]).attr('data-itemId');
+					var m = that.collection.get(id).destroy();
 				}
 			});
 		},
