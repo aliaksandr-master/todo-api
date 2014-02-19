@@ -101,15 +101,15 @@ define(function(require, exports, module){
 		});
 	};
 
-	var defaultMessage = lang.rules['default'] || '';
+	var defaultMessage = lang.translates.rules['default'] || '';
 	var messageMap = {};
 
 	var message = function (ruleName, fieldName, value, params) {
 		if(!messageMap.hasOwnProperty(ruleName)){
 			var _message = '';
-			if (lang.rules && lang.rules[ruleName]) {
-				_message = lang.rules[ruleName];
-			} else if (lang.rules && lang.rules['default']) {
+			if (lang.translates.rules && lang.translates.rules[ruleName]) {
+				_message = lang.translates.rules[ruleName];
+			} else if (lang.translates.rules && lang.translates.rules['default']) {
 				_message = defaultMessage;
 				window.console && console.error('undefined message for rule "' + ruleName + '"');
 			} else {
@@ -137,7 +137,7 @@ define(function(require, exports, module){
 
 		$formGroup.addClass('has-error');
 		var name = $form.attr('data-name');
-		var names = lang.forms[name] || {};
+		var names = lang.translates.forms[name] || {};
 
 		$error.html(message(ruleName, names[fieldName] || fieldName, value, params));
 	};
@@ -164,6 +164,31 @@ define(function(require, exports, module){
 
 	Handlebars.registerHelper('firstRow', function() {
 		return (arguments[0] == null ? "" : arguments[0]).replace(/^\s+/, "").split(/[\n\r]+/).shift();
+	});
+
+	Handlebars.registerHelper('t', function(key) {
+		var translate;
+
+		var segments = key.split('.');
+
+		var lg = lang.translates;
+		for (var i = 0; i < segments.length; i++) {
+			lg = lg[segments[i]];
+			if (lg == null) {
+				break;
+			}
+		}
+
+		if (_.isString(lg)) {
+			translate = lg;
+		}
+
+		if (!translate) {
+			window.console && console.error('undefined translate for "' + key + '"');
+			translate = segments[segments.length - 1].replace(/_+/g, ' ');
+		}
+
+		return translate;
 	});
 
 	Handlebars.registerHelper('plus', function() {

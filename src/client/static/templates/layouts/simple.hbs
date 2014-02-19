@@ -3,20 +3,17 @@
         <div class="container main-menu-wr clearfix">
             <div class="navbar-header pull-left">
                 <div class="navbar-brand main-header-title">
-                    <a href="{{url 'static-about'}}">ListSlider</a>
+                    <a href="{{url 'static-about'}}" class="">
+                        <span class="glyphicon glyphicon-list"></span>
+                    </a>
                 </div>
             </div>
             <ul class="nav navbar-nav pull-right">
                 <li class="pull-left">
-                    <a href="{{url 'todo-list-create'}}">
-                        <span class="glyphicon glyphicon-plus"></span>&nbsp;&nbsp;New List
-                    </a>
+                    <a href="{{url 'user-login'}}">{{{t 'layout.login'}}}</a>
                 </li>
                 <li class="pull-left">
-                    <a href="{{url 'todo-lists'}}"><span class="glyphicon glyphicon-list-alt"></span>&nbsp;&nbsp;Lists</a>
-                </li>
-                <li class="pull-left">
-                    <a href="{{url 'user-profile'}}"><span class="glyphicon glyphicon-user"></span>&nbsp;&nbsp;Profile</a>
+                    <a href="{{url 'user-register'}}">{{{t 'layout.register'}}}</a>
                 </li>
             </ul>
         </div>

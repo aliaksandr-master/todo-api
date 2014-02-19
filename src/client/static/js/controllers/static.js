@@ -15,7 +15,6 @@ define(function(require, exports, module){
 				this.view = new PageHomeView({
 					region: "main/content"
 				});
-				this.preloader.off();
 			}
 		},
 
@@ -23,7 +22,6 @@ define(function(require, exports, module){
 			this.view = new PageAboutView({
 				region: "main/content"
 			});
-			this.preloader.off();
 		}
 
 	});

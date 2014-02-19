@@ -1,12 +1,12 @@
 define(function(require, exports, module){
     "use strict";
 
+	var _ = require('underscore');
 	var Handlebars = require('handlebars');
 	var Chaplin = require('chaplin');
-	var $ = require('jquery');
-	var _ = require('underscore');
 	var preloader = require('lib/preloader');
 	var sessionUser = require('lib/session');
+	var lang = require('lib/lang');
 
 	require('lib/view-helper');
 
@@ -49,6 +49,7 @@ define(function(require, exports, module){
 		getTemplateData: function () {
 			var data = BaseView.__super__.getTemplateData.apply(this, arguments);
 			data._user = (sessionUser.model() || {}).attributes;
+			data._lang = lang.translates;
 			return data;
 		},
 

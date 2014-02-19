@@ -15,6 +15,14 @@ module.exports = function(grunt, options){
 			tasks: 'compile-client-scripts'
 		},
 
+		'client-langs': {
+			files: [
+				this.SRC+'/client/lang/**/*.json',
+				this.SRC+'/client/lang/*.json'
+			],
+			tasks: 'compile-client-langs'
+		},
+
 		'client-env': {
 			files: [
 				this.SRC+'/client/.htaccess',
