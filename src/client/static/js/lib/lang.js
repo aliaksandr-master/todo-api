@@ -2,6 +2,7 @@ define(function(require, exports, module){
     "use strict";
 
 	var request = require('lib/request');
+	var DEFAULT_LANG = 'ru';
 
 	var lang;
 	location.pathname.replace(/^\/(en|ru)\//, function ($0, $1) {
@@ -9,7 +10,7 @@ define(function(require, exports, module){
 	});
 
 	if (!lang) {
-		location.href = '/en/' + location.pathname.replace(/^\/+/, '');
+		location.href = '/' + DEFAULT_LANG + '/' + location.pathname.replace(/^\/+/, '');
 	}
 
 	var translates = {};

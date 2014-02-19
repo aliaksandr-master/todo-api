@@ -49,7 +49,7 @@ define(function(require, exports, module){
 		getTemplateData: function () {
 			var data = BaseView.__super__.getTemplateData.apply(this, arguments);
 			data._user = (sessionUser.model() || {}).attributes;
-			data._lang = lang.translates;
+			data._lang = lang;
 			return data;
 		},
 

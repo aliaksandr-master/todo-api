@@ -7,6 +7,14 @@ define(function(require, exports, module){
 
 	var UserProfilePageView = BaseView.extend({
 
+		template: template,
+
+		autoRender: true,
+
+		events: {
+			'change .user-profile-lang-select': 'changeLang'
+		},
+
 		initialize: function(){
 			var that = this;
 			BaseView.prototype.initialize.apply(this,arguments);
@@ -17,10 +25,17 @@ define(function(require, exports, module){
 			});
 		},
 
-		template: template,
+		getTemplateData: function () {
+			var data = UserProfilePageView.__super__.getTemplateData.apply(this, arguments);
+			data.langIsEn = data._lang.lang === "en";
+			data.langIsRu = data._lang.lang === "ru";
+			return data;
+		},
 
-		autoRender: true
-
+		changeLang: function (e) {
+			var lang = this.$(e.currentTarget).val();
+			location.href = '/' + lang + '/';
+		}
 	});
 
 	template = null;
