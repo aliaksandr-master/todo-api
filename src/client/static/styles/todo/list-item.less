@@ -51,3 +51,9 @@
 .todo-list-li-link { display: block; color: #428bca; ._text(@listItemFontSize, @listItemHeight); font-weight: normal; ._text_overflow(); padding: 0 10px; height: @listItemHeight; }
 .todo-list-li.-done .todo-list-li-link { text-decoration: line-through; color: #aaa; }
 .todo-list-li.-done { opacity: 0.5; }
+
+@media (max-width: 700px) {
+	.todo-list-li-move {
+		opacity: 1 !important;
+	}
+}

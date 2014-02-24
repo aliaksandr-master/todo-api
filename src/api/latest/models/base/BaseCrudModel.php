@@ -49,7 +49,7 @@ abstract class BaseCrudModel implements ICrudMoldel {
                 $status = false;
             }
         }
-        if (!$api->valid()){
+        if ($api->hasError()){
             $api->output->send();
         }
         return $status;

@@ -271,6 +271,8 @@
 				if($format.val() === "json" && pararms.type != "GET"){
 					resultParams = jsonParam;
 					resultParamsStr = JSON.stringify(resultParams);
+					pararms.contentType = 'json';
+					pararms.dataType = 'json';
 				}
 
 				$("#requestParams").html(window.jsonFormat(jsonParam));

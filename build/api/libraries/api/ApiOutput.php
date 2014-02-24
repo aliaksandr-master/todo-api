@@ -1,31 +1,15 @@
 <?php
 
-class ApiOutput {
-
-
-    /**
-     * @var ApiShuttle
-     */
-    private $_shuttle;
-
-    private $_data = array();
-    private $_meta = array();
+class ApiOutput extends ApiPartAbstract {
 
     const DEFAULT_STATUS = 200;
-
     const RESPONSE_TYPE_ONE = 'one';
     const RESPONSE_TYPE_ALL = 'many';
 
-    const RESPONSE_FORMAT_QUERY_KEY = 'api_format';
+    protected $_data = array();
+    protected $_meta = array();
 
-    const RESPONSE_FORMAT_JSON = 'json';
-    const RESPONSE_FORMAT_XML  = 'xml';
-
-    private $_status = null;
-
-    function __construct(ApiShuttle &$shuttle){
-        $this->_shuttle = $shuttle;
-    }
+    protected $_status = null;
 
     function statusChanged(){
         return !is_null($this->_status);
@@ -39,12 +23,12 @@ class ApiOutput {
         $response = $this->response();
         $hasData = !empty($response['data']);
 
-        if (!$this->_shuttle->api->hasError()) {
+        if ($this->api->valid()) {
             if ($method == "POST") {
                 if ($hasData) {
                     $this->status(201); // created new resource
                 } else {
-                    if(!$this->_shuttle->api->hasError()){
+                    if($this->api->valid()){
                         $this->status(500); // empty GET result
                     }
                 }
@@ -52,7 +36,7 @@ class ApiOutput {
                 if($hasData){
                     $this->status(200); // updated resource
                 }else{
-                    if(!$this->_shuttle->api->hasError()){
+                    if($this->api->valid()){
                         $this->status(400); // empty GET result
                     }
                 }
@@ -60,7 +44,7 @@ class ApiOutput {
                 // ONLY 200 or SOMETHING CUSTOM
             }else if($method == "DELETE"){
                 // ONLY 200 or SOMETHING CUSTOM
-                if(!$this->_shuttle->api->hasError()){
+                if($this->api->valid()){
                     if(!$hasData){
                         $this->status(500); // you must send Boolean response
                     }
@@ -69,7 +53,7 @@ class ApiOutput {
         }
 
         // SEND RESPONSE
-        if($this->_shuttle->api->hasError()){
+        if(!$this->api->valid()){
             $response["data"] = array();
         }else{
             if(isset($response["data"])){
@@ -96,21 +80,28 @@ class ApiOutput {
                 'method' => $method,
                 'time' => (round((gettimeofday(true) - START_TIME) * 100000) / 100000),
                 'input' => array(
-                    "URL"    => $this->_shuttle->input->url(),
-                    "QUERY"  => $this->_shuttle->input->query(),
-                    "BODY"   => $this->_shuttle->input->body(),
+                    "URL"    => $this->api->input->url(),
+                    "QUERY"  => $this->api->input->query(),
+                    "BODY"   => $this->api->input->body(),
                     "BODY:source" => INPUT_DATA
                 ),
-                "API" => $this->_shuttle->api->get()
+                "API" => $this->api->get()
             );
         }
-        $this->_shuttle->context->response($response, $this->status());
-        exit;
+        $this->_sendResponse($response, $this->status());
     }
 
-    function error($code){
-        $this->status($code);
-        return $this;
+    public function _sendResponse($data = null, $http_code = null) {
+
+        $http_code = is_numeric($http_code) ? $http_code : 200;
+        $data = (string) $this->api->format->applyFormat($data, $this->api->server->outputFormat);
+
+        header('HTTP/1.1: ' . $http_code);
+        header('Status: ' . $http_code);
+        header('Content-Length: ' . strlen($data));
+        header('Content-Type: '.$this->api->server->outputMime);
+
+        $this->api->context->response($data);
     }
 
     function status($code = null){
@@ -150,20 +141,7 @@ class ApiOutput {
             'meta' => $this->_meta
         );
 
-        $inputErrors = $this->_shuttle->input->errors();
-        if (!empty($inputErrors)) {
-            $response['errors']['input'] = $inputErrors;
-        }
-
-        $accessErrors = $this->_shuttle->access->errors();
-        if (!empty($accessErrors)) {
-            $response['errors']['access'] = $accessErrors;
-        }
-
-        $systemErrors = $this->_shuttle->errors();
-        if (!empty($systemErrors)) {
-            $response['errors']['system'] = $systemErrors;
-        }
+        $response['errors'] = $this->api->getErrors();
 
         return $response;
     }
@@ -196,15 +174,15 @@ class ApiOutput {
     private function _prepareData (&$_data, $data, $param, $strict = true) {
         $name = $param["name"];
         if (isset($data[$name])) {
-            $_data[$name] = $this->_shuttle->toType($data[$name], $param["type"]);
+            $_data[$name] = $this->api->format->toType($data[$name], $param["type"]);
         } else if ($strict) {
-            trigger_error("Api '".$this->_shuttle->api->get(Api::NAME)."': invalid response. '".$name."' is undefined!");
+            trigger_error("Api '".$this->api->get(Api::NAME)."': invalid response. '".$name."' is undefined!");
         }
     }
 
     function prepareResponseData ($data, $keyName = 'data') {
         $_data = array();
-        $response = $this->_shuttle->api->get(Api::RESPONSE);
+        $response = $this->api->get(Api::RESPONSE);
         $type = $response['type'];
 
         if($type == self::RESPONSE_TYPE_ONE){

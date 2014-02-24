@@ -9,7 +9,7 @@ class User extends ApiController {
         $this->load->helper('url');
     }
 
-    public function logout_get () {
+    public function GET_logout () {
         $id = $this->user->current('id');
         $this->user->logout();
         return array(
@@ -17,7 +17,7 @@ class User extends ApiController {
         );
     }
 
-    public function login_post () {
+    public function POST_login () {
         $password = $this->user->cryptPassword($this->input('password'));
         $user = $this->user->read(array(
             'username' => $this->input("username"),
@@ -39,7 +39,7 @@ class User extends ApiController {
         return $user[0];
     }
 
-    public function current_get () {
+    public function GET_current () {
         $user = $this->user->current();
         if (empty($user)) {
             $this->api->output->error(404);
@@ -55,11 +55,11 @@ class User extends ApiController {
         return $this->user->read();
     }
 
-    public function index_get ($userId = null) {
+    public function GET_index ($userId = null) {
         return is_null($userId) ? $this->getAll() : $this->getOne($userId);
     }
 
-    public function index_put ($id) {
+    public function PUT_index ($id) {
         $data = $this->api->input->pipe($this->user->safeFieldsMap());
         if($this->input('password_new')){
             $data['password'] = $this->input('password_new');
@@ -68,7 +68,7 @@ class User extends ApiController {
         return $this->getOne($id);
     }
 
-    public function index_delete ($id) {
+    public function DELETE_index ($id) {
         $user = $this->user->read($id);
         if(empty($user)){
             $this->api->output->error(404);
@@ -80,7 +80,7 @@ class User extends ApiController {
         );
     }
 
-    public function index_post () {
+    public function POST_index () {
         $data = $this->api->input->pipe($this->user->safeFieldsMap());
         $data['password'] = $this->user->cryptPassword($data['password']);
         $data['date_register'] = date("Y-m-d H:i:s", gettimeofday(true));

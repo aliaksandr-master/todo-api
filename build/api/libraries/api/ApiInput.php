@@ -1,33 +1,19 @@
 <?php
 
 
-class ApiInput {
-
-
-    /**
-     * @var ApiShuttle
-     */
-    private $_shuttle;
+class ApiInput extends ApiPartAbstract {
 
     private $_input = array();
+    private $format = null;
     private $_URL = array();
     private $_QUERY = array();
     private $_BODY = array();
 
-    private $_errors = array();
-
-    function __construct (ApiShuttle &$shuttle) {
-        $this->_shuttle = $shuttle;
-    }
-
-    function error ($inputParamName, $ruleName, array $ruleParams = array(), $statusCode = null) {
+    function ruleError ($inputParamName, $ruleName, array $ruleParams = array(), $statusCode = null) {
         $this->_errors[$inputParamName][$ruleName] = $ruleParams;
-        $this->_shuttle->output->status($statusCode);
-        return $this;
-    }
+        $this->api->output->status($statusCode);
 
-    function errors () {
-        return $this->_errors;
+        return $this;
     }
 
     function pipe (array $names, array $nameMap = array(), $withoutEmpty = true) {
@@ -97,50 +83,64 @@ class ApiInput {
         return $default;
     }
 
-    function init ($input, $url, $QUERY){
-        $request = $this->_shuttle->api->get(Api::REQUEST);
-
-        if (!empty($request['input']['URL'])) {
-            foreach ($request['input']['URL'] as  $index => $param) {
-                $value = isset($url[$index]) ? $url[$index] : null;
-                if (!is_null($value)) {
-                    foreach ($param['filters']['before'] as $filter) {
-                        $value = $this->_shuttle->applyFilter($value, key($filter), $filter[key($filter)], $param["name"]);
-                    }
-                    $this->_URL[$param["name"]] = $this->_shuttle->toType($value, $param["type"], $param);
-                }
-            }
-        }
-
+    function _initBody () {
+        $input = $this->api->server->body;
+        $request = $this->api->api->get(Api::REQUEST);
         if (!empty($request['input']['BODY'])) {
             foreach ($request['input']['BODY'] as $param) {
                 $value = isset($input[$param['name']]) ? $input[$param['name']] : null;
                 if (!is_null($value)) {
                     foreach ($param['filters']['before'] as $filter) {
-                        $value = $this->_shuttle->applyFilter($value, key($filter), $filter[key($filter)], $param['name']);
+                        $value = $this->api->filter->applyFilter($value, key($filter), $filter[key($filter)], $param['name']);
                     }
-                    $this->_BODY[$param["name"]] = $this->_shuttle->toType($value, $param["type"], $param);
+                    $this->_BODY[$param["name"]] = $this->api->format->toType($value, $param["type"], $param);
                 }
             }
         }
+    }
 
+    function _initQuery () {
+        $QUERY = $this->api->server->query;
+        $request = $this->api->api->get(Api::REQUEST);
         if (!empty($request['input']['QUERY'])) {
             foreach ($request['input']['QUERY'] as $param) {
                 $value = isset($QUERY[$param['name']]) ? $QUERY[$param['name']] : null;
                 if (!is_null($value)) {
                     foreach ($param['filters']['before'] as $filter) {
-                        $value = $this->_shuttle->applyFilter($value, key($filter), $filter[key($filter)], $param['name']);
+                        $value = $this->api->filter->applyFilter($value, key($filter), $filter[key($filter)], $param['name']);
                     }
-                    $this->_QUERY[$param["name"]] = $this->_shuttle->toType($value, $param["type"], $param);
+                    $this->_QUERY[$param["name"]] = $this->api->format->toType($value, $param["type"], $param);
                 }
             }
         }
+    }
+
+    function _initUrl () {
+        $url = $this->api->server->url;
+        $request = $this->api->api->get(Api::REQUEST);
+        if (!empty($request['input']['URL'])) {
+            foreach ($request['input']['URL'] as  $index => $param) {
+                $value = isset($url[$index]) ? $url[$index] : null;
+                if (!is_null($value)) {
+                    foreach ($param['filters']['before'] as $filter) {
+                        $value = $this->api->filter->applyFilter($value, key($filter), $filter[key($filter)], $param["name"]);
+                    }
+                    $this->_URL[$param["name"]] = $this->api->format->toType($value, $param["type"], $param);
+                }
+            }
+        }
+    }
+
+    function init (){
+        $this->_initBody();
+        $this->_initQuery();
+        $this->_initUrl();
         $this->_input = array_merge($this->_input, $this->_QUERY, $this->_URL, $this->_BODY);
     }
 
     function check () {
         $valid = 1;
-        $request = $this->_shuttle->api->get(Api::REQUEST);
+        $request = $this->api->api->get(Api::REQUEST);
         if (!empty($request['input']['URL'])) {
             foreach ($request['input']['URL'] as $param) {
                 $value = isset($this->_URL[$param['name']]) ? $this->_URL[$param['name']] : null;
@@ -166,20 +166,20 @@ class ApiInput {
             }
         }
         if (!$valid) {
-            $this->_shuttle->output->send();
+            $this->api->output->send();
         }
     }
 
     function applyAfterFilters () {
-        $request = $this->_shuttle->api->get(Api::REQUEST);
+        $request = $this->api->api->get(Api::REQUEST);
         if (!empty($request['input']['QUERY'])) {
             foreach ($request['input']['QUERY'] as $param) {
                 $value = isset($QUERY[$param['name']]) ? $QUERY[$param['name']] : null;
                 if (!is_null($value)) {
                     foreach ($param['filters']['before'] as $filter) {
-                        $value = $this->_shuttle->applyFilter($value, key($filter), $filter[key($filter)], $param['name']);
+                        $value = $this->api->applyFilter($value, key($filter), $filter[key($filter)], $param['name']);
                     }
-                    $this->_QUERY[$param["name"]] = $this->_shuttle->toType($value, $param["type"], $param);
+                    $this->_QUERY[$param["name"]] = $this->api->toType($value, $param["type"], $param);
                 }
             }
         }
@@ -192,9 +192,9 @@ class ApiInput {
         $rules = $validation['rules'];
         $required = !empty($validation["required"]);
 
-        if($required && !$this->_shuttle->applyValidationRule($value, 'required')){
+        if($required && !$this->api->validation->applyRule($value, 'required')){
             if ($setError) {
-                $this->error($fieldName, 'required', array(), 400);
+                $this->ruleError($fieldName, 'required', array(), 400);
             }
             $error = true;
         }
@@ -203,9 +203,9 @@ class ApiInput {
             foreach ($rules as $rule) {
                 $ruleName = key($rule);
                 $ruleParams = $rule[$ruleName];
-                if (!$this->_shuttle->applyValidationRule($value, $ruleName, $ruleParams, $fieldName)) {
+                if (!$this->api->validation->applyRule($value, $ruleName, $ruleParams, $fieldName)) {
                     if ($setError) {
-                        $this->error($fieldName, $ruleName, $ruleParams, 400);
+                        $this->ruleError($fieldName, $ruleName, $ruleParams, 400);
                     }
                     $error = true;
                     break;

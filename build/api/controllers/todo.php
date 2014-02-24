@@ -37,7 +37,7 @@ class Todo extends ApiController {
 
 
     // READ LIST
-    public function list_get($id = null){
+    public function GET_list($id = null){
         if (is_null($id)) {
             return $this->_getAllLists();
         }
@@ -46,7 +46,7 @@ class Todo extends ApiController {
 
 
     // CREATE LIST
-    public function list_post(){
+    public function POST_list(){
         $data = $this->api->input->pick('name', 'is_shared', 'sort_order');
         $data['user_id']     = $this->user->current("id");
         $data['date_create'] = date("Y-m-d H:i:s", gettimeofday(true));
@@ -57,7 +57,7 @@ class Todo extends ApiController {
 
 
     // UPDATE LIST
-    public function list_put($listId){
+    public function PUT_list($listId){
         $data = $this->api->input->pick('name', 'is_shared', 'sort_order');
         $this->todoList->update($data, array(
             "id" => $listId,
@@ -68,7 +68,7 @@ class Todo extends ApiController {
 
 
     // DELETE LIST
-    public function list_delete($id){
+    public function DELETE_list($id){
         $todoResult = $this->todoList->delete(array(
             "id" => $id,
             'user_id'=> $this->user->current("id")
@@ -97,7 +97,7 @@ class Todo extends ApiController {
 
 
     // READ ITEM
-    public function item_get($todoId, $id = null){
+    public function GET_item($todoId, $id = null){
         if (is_null($id)) {
             return $this->_getAllTodoListItem($todoId);
         } else {
@@ -107,7 +107,7 @@ class Todo extends ApiController {
 
 
     // CREATE ITEM
-    public function item_post($todoId){
+    public function POST_item($todoId){
         $data = array(
             "todo_id" => $todoId,
             "name" => $this->input('name', ""),
@@ -119,7 +119,7 @@ class Todo extends ApiController {
 
 
     // UPDATE ITEM
-    public function item_put($todoId, $id){
+    public function PUT_item($todoId, $id){
         $data['name']       = $this->input('name', "");
         $data['is_active']  = $this->input('is_active', 0);
         $data['sort_order'] = $this->input('sort_order', 0);
@@ -130,7 +130,7 @@ class Todo extends ApiController {
 
 
     // DELETE ITEM
-    public function item_delete($todoId, $id){
+    public function DELETE_item($todoId, $id){
         $result = $this->todoItem->delete($id);
         return array("status" => $result);
     }

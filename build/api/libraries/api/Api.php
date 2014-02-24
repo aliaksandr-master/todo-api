@@ -1,8 +1,6 @@
 <?php
 
-class Api {
-
-    private $_config = array();
+class Api extends  ApiAbstract {
 
     const REQUEST_URI_ROOT  = API_ROOT_URL; // '/server'
 
@@ -20,80 +18,165 @@ class Api {
     const TYPE_FLOAT        = 'float';
     const TYPE_BOOLEAN      = 'boolean';
 
-    private static $_apiParsed  = array();
     private static $_singletons = array();
 
-    /**
-     * @var ApiInput
-     */
+    /** @var string */
+    public $actionName;
+
+    /** @var array */
+    public $arguments;
+
+    /** @var ApiController */
+    public $context;
+
+    /** @var Api */
+    public $api;
+
+    /** @var ApiInput */
     public $input;
 
-    /**
-     * @var ApiOutput
-     */
+    /** @var ApiOutput */
     public $output;
 
-    /**
-     * @var ApiAccess
-     */
+    /** @var ApiAccess */
     public $access;
 
-    /**
-     * @var ApiShuttle
-     */
-    private $_shuttle;
+    /** @var ApiServer */
+    public $server;
+
+    /** @var ApiFilter */
+    public $filter;
+
+    /** @var ApiFormat */
+    public $format;
+
+    /** @var ApiValidation */
+    public $validation;
+
+    public $errorPref = 'Api ';
+
+    protected $_parts = array();
+
+    public $apiData = array();
+
+    private $_launched = false;
 
     function __construct (array $apiData, ApiController &$context) {
-        $this->_apiData = $apiData;
-        $this->_shuttle = new ApiShuttle($this, $context);
 
-        $this->input  = $this->_shuttle->input;
-        $this->output = $this->_shuttle->output;
-        $this->access = $this->_shuttle->access;
+        $this->apiData      = $apiData;
+
+        $this->api           = $this;
+        $this->context       = $context;
+
+        $this->errorPref .= $this->get(Api::NAME).': ';
     }
 
-    function check($actionName, $args, $urlParams, $filters){
-        $this->_shuttle->access->checkApi($this->_apiData);
-        $this->_shuttle->access->checkNeedLogin();
-        $this->_shuttle->access->checkContextToCall($actionName);
+    private function _initParts () {
+        foreach ($this->_parts as $part) {
+            /** @var ApiPartAbstract $part */
+            $part->init();
+        }
+    }
 
-        $this->_shuttle->input->init($args, $urlParams, $filters);
+    private function _checkParts () {
+        foreach ($this->_parts as $part) {
+            /** @var ApiPartAbstract $part */
+            $part->check();
+        }
+    }
 
-        $this->_shuttle->input->check();
+    protected function &_part ($name, &$part) {
+        $this->_parts[$name] = &$part;
+        return $part;
+    }
+
+    function launch ($actionName, $arguments) {
+
+        if ($this->_launched) {
+            throw new Exception("api mustn't exec twice");
+        }
+        $this->_launched = true;
+
+        $this->api->arguments  = $arguments;
+
+        $this->input      = $this->_part('input',      new ApiInput($this));
+        $this->filter     = $this->_part('filter',     new ApiFilter($this));
+        $this->output     = $this->_part('output',     new ApiOutput($this));
+        $this->access     = $this->_part('access',     new ApiAccess($this));
+        $this->validation = $this->_part('validation', new ApiValidation($this));
+        $this->format     = $this->_part('format',     new ApiFormat($this));
+        $this->server     = $this->_part('server',     new ApiServer($this));
+
+        $actionName = $this->api->server->method.'_'.$actionName;
+
+        $this->api->actionName = $actionName;
+
+        $this->_initParts();
+
+        // Sure it exists, but can they do anything with it?
+        if (!method_exists($this->context, $actionName)) {
+            $this->error('Unknown method', 404, true);
+            return;
+        }
+
+        $call = array($this->context, $actionName);
+
+        $this->api->_checkParts();
+
+        $result = call_user_func_array($call, $arguments);
+
+        if (isset($result)) {
+            $this->api->output->data($result);
+        }
+
+        $this->api->output->send();
+    }
+
+    function getErrors () {
+        $errors = array();
+        foreach ($this->_parts as $name => $part) {
+
+            /** @var ApiPartAbstract $part */
+
+            $err = $part->getErrors();
+            if (!empty($err)) {
+                $errors[$name] = $err;
+            }
+        }
+
+        $err = parent::getErrors();
+        if (!empty($err)) {
+            $errors['api'] = $err;
+        }
+
+        return $errors;
+    }
+
+    function valid () {
+
+        $vars = get_object_vars($this);
+
+        foreach ($vars as $var) {
+            if ($var instanceof ApiPartAbstract) {
+                if (!$var->valid()) {
+                    return false;
+                }
+            }
+        }
+
+        if ($this->getErrors()) {
+            return false;
+        }
+
+        return true;
     }
 
     function get ($name = null, $default = null) {
         if (is_null($name)){
-            return $this->_apiData;
+            return $this->apiData;
         }
-        return isset($this->_apiData[$name]) ? $this->_apiData[$name] : $default;
+        return isset($this->apiData[$name]) ? $this->apiData[$name] : $default;
     }
-
-    function config ($name) {
-        if(isset($this->_config[$name])){
-            return $this->_config[$name];
-        }
-        trigger_error($this->_shuttle->errorPref.'bad config name "'.$name.'"');
-        return null;
-    }
-
-    public function hasError(){
-        if((bool)$this->_shuttle->input->errors()){
-            return true;
-        }
-        if((bool)$this->_shuttle->access->errors()){
-            return true;
-        }
-        if((bool)$this->_shuttle->errors()){
-            return true;
-        }
-        if($this->_shuttle->output->status() >= 400){
-            return true;
-        }
-        return false;
-    }
-
-
 
     /**
      * @param ApiController $context
@@ -116,15 +199,17 @@ class Api {
         $uriCall = str_replace('\\', '/', $uriCall);
         $uriCall = preg_replace('#(/+)$#', '', $uriCall);
 
-        $uriR = $uriCall;
-        $implArgs = implode('|', $arguments);
-        $uriR = preg_replace('#^('.$implArgs.')$#', '<param>', $uriR);
-        $uriR = preg_replace('#^('.$implArgs.')/#', '<param>/', $uriR);
-        $uriR = preg_replace('#/('.$implArgs.')/#', '/<param>/', $uriR);
-        $uriR = preg_replace('#/('.$implArgs.')$#', '/<param>', $uriR);
+        if ($arguments) {
+            $implArgs = implode('|', $arguments);
+            $uriCall = preg_replace('#^('.$implArgs.')$#', '<param>', $uriCall);
+            $uriCall = preg_replace('#^('.$implArgs.')/#', '<param>/', $uriCall);
+            $uriCall = preg_replace('#/('.$implArgs.')/#', '/<param>/', $uriCall);
+            $uriCall = preg_replace('#/('.$implArgs.')$#', '/<param>', $uriCall);
+        }
+        $uriCall = preg_replace('/^\/+/i', '', $uriCall);
 
         // CELL NAME
-        $cellName = $method.":".$uriR;
+        $cellName = $method.":".$uriCall;
         $cellName = sha1($cellName);
 
         if (!empty(self::$_singletons[$cellName])) {

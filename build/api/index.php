@@ -18,6 +18,7 @@ define("INDEX_DIR_NAME", array_pop(explode(DS, SERVER_DIR)));
 
 define('API_ROOT_URL', pathinfo(str_replace(SD, DS, $_SERVER['SCRIPT_NAME']), PATHINFO_DIRNAME));
 
+$_SERVER['REQUEST_URI'] = str_replace(API_ROOT_URL, '', $_SERVER['REQUEST_URI']);
 
 /*
  * -------------------------------------------------------------------
