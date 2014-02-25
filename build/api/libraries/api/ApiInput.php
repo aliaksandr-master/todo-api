@@ -4,15 +4,170 @@
 class ApiInput extends ApiPartAbstract {
 
     private $_input = array();
-    private $format = null;
+
     private $_URL = array();
     private $_QUERY = array();
     private $_BODY = array();
 
-    function ruleError ($inputParamName, $ruleName, array $ruleParams = array(), $statusCode = 400) {
-        $this->_errors[$inputParamName][$ruleName] = $ruleParams;
-        $this->api->output->status($statusCode);
-        return $this;
+    private $_URL_SOURCE = array();
+    private $_QUERY_SOURCE = array();
+    private $_BODY_SOURCE = array();
+
+    private $_additionalQueryParams = array(
+        array(
+            'name' => '_debug',
+            'type' => 'boolean'
+        ),
+        array(
+            'name' => '_testing',
+            'type' => 'boolean'
+        )
+    );
+    private $_additionalBodyParams = array();
+
+    function init (){
+        $requestInput = ApiUtils::get($this->api->api->get(Api::REQUEST), 'input', array());
+
+        // QUERY
+        $param = $this->_initParam($this->api->server->query, ApiUtils::get($requestInput, 'QUERY', array()), $this->_additionalQueryParams, false);
+        $this->_QUERY = $param['data'];
+        $this->_QUERY_SOURCE = $param['source'];
+
+        // BODY
+        $param = $this->_initParam($this->api->server->body, ApiUtils::get($requestInput, 'BODY', array()), $this->_additionalBodyParams, false);
+        $this->_BODY = $param['data'];
+        $this->_BODY_SOURCE = $param['source'];
+
+        // URL
+        $param = $this->_initParam($this->api->server->url, ApiUtils::get($requestInput, 'URL', array()), array(), true);
+        $this->_URL = $param['data'];
+        $this->_URL_SOURCE = $param['source'];
+
+        $this->_input = array_merge($this->_input, $this->_QUERY, $this->_URL, $this->_BODY);
+    }
+
+    function prepare () {
+        $requestInput = ApiUtils::get($this->api->api->get(Api::REQUEST), 'input', array());
+        $this->_applyAfterFiltersToParam(ApiUtils::get($requestInput, 'QUERY', array()), $this->_QUERY);
+        $this->_applyAfterFiltersToParam(ApiUtils::get($requestInput, 'BODY', array()), $this->_BODY);
+        $this->_applyAfterFiltersToParam(ApiUtils::get($requestInput, 'URL', array()), $this->_URL);
+    }
+
+    function body ($name = null, $default = null) {
+        if (is_null($name)) return $this->_BODY;
+        return ApiUtils::get($this->_BODY, $name, $default);
+    }
+
+    function url ($name = null, $default = null) {
+        if (is_null($name)) return $this->_URL;
+        return ApiUtils::get($this->_URL, $name, $default);
+    }
+
+    function query ($name = null, $default = null) {
+        if (is_null($name)) return $this->_QUERY;
+        return ApiUtils::get($this->_QUERY, $name, $default);
+    }
+
+    function get ($name = null, $default = null) {
+        if (is_null($name)) return $this->_input;
+        return ApiUtils::get($this->_input, $name, $default);
+    }
+
+    function _initParam ($pData, $apiData, $additional = array(), $byIndex = false) {
+        $data = array();
+        $source = array();
+
+        $_apiData = array();
+        $_apiData = array_merge($_apiData, $apiData, $additional);
+        if ($_apiData) {
+            foreach ($_apiData as $index => $param) {
+
+                $fieldName = $param["name"];
+                $by = $byIndex ? $index : $fieldName;
+
+                $value = ApiUtils::get($pData, $by, null);
+
+                if (!is_null($value)) {
+                    $source[$fieldName] = $value;
+                    if (!empty($param['filters']['before'])) {
+                        $value = $this->api->filter->applyFilters($value, $param['filters']['before'], $fieldName);
+                    }
+                    $data[$fieldName] = $this->api->format->toType($value, $param["type"], $param);
+                }
+            }
+        }
+        return array(
+            'data' => $data,
+            'source' => $source
+        );
+    }
+
+    function _applyAfterFiltersToParam ($requestInputData, &$data) {
+        foreach ($requestInputData as $param) {
+            $fieldName = $param['name'];
+            $value = ApiUtils::get($data, $fieldName, null);
+            if (!is_null($value)) {
+                if (!empty($param['filters']['after'])) {
+                    $value = $this->api->filter->applyFilters($value, $param['filters']['after'], $fieldName);
+                }
+                $data[$fieldName] = $value;
+            }
+        }
+    }
+
+    private function _checkParam ($requestInputData, $data) {
+        $valid = 1;
+        foreach ($requestInputData as $param) {
+            $value = ApiUtils::get($data, $param['name'], null);
+            if (!empty($param['validation'])) {
+                $valid *= $this->api->validation->validate($param["name"], $value, $param['validation'], true);
+            }
+        }
+        return $valid;
+    }
+
+    function check () {
+        $valid = 1;
+        $requestInput = ApiUtils::get($this->api->api->get(Api::REQUEST), 'input', array());
+        $valid *= $this->_checkParam(ApiUtils::get($requestInput, 'URL', array()), $this->_URL);
+        $valid *= $this->_checkParam(ApiUtils::get($requestInput, 'BODY', array()), $this->_BODY);
+        $valid *= $this->_checkParam(ApiUtils::get($requestInput, 'QUERY', array()), $this->_QUERY);
+        if (!$valid) {
+            $this->api->output->send();
+        }
+    }
+
+    function pick () {
+        $copy = array();
+        $keys = func_get_args();
+        foreach ($keys as $key) {
+            if (!is_array($key)){
+                $key = array($key);
+            }
+            foreach ($key as $k) {
+                if (isset($this->_input[$k])) {
+                    $copy[$k] = $this->_input[$k];
+                }
+            }
+        }
+        return $copy;
+    }
+
+    function omit () {
+        $copy = array();
+        foreach ($this->_input as $k => $v) {
+            $copy[$k] = $v;
+        }
+        $keys = func_get_args();
+        foreach ($keys as $key) {
+            if (!is_array($key)){
+                $key = array($key);
+            }
+            foreach ($key as $k) {
+                unset($copy[$k]);
+            }
+        }
+        return $copy;
     }
 
     function pipe (array $names, array $nameMap = array(), $withoutEmpty = true) {
@@ -40,213 +195,6 @@ class ApiInput extends ApiPartAbstract {
             }
         }
         return $data;
-    }
-
-    function body ($name = null, $default = null) {
-        if (is_null($name)) {
-            return $this->_BODY;
-        }
-        if (isset($this->_BODY[$name])) {
-            return $this->_BODY[$name];
-        }
-        return $default;
-    }
-
-    function url ($name = null, $default = null) {
-        if (is_null($name)) {
-            return $this->_URL;
-        }
-        if (isset($this->_URL[$name])) {
-            return $this->_URL[$name];
-        }
-        return $default;
-    }
-
-    function query ($name = null, $default = null) {
-        if (is_null($name)) {
-            return $this->_QUERY;
-        }
-        if (isset($this->_QUERY[$name])) {
-            return $this->_QUERY[$name];
-        }
-        return $default;
-    }
-
-    function get ($name = null, $default = null) {
-        if (is_null($name)) {
-            return $this->_input;
-        }
-        if (isset($this->_input[$name])) {
-            return $this->_input[$name];
-        }
-        return $default;
-    }
-
-    function _initBody () {
-        $input = $this->api->server->body;
-        $request = $this->api->api->get(Api::REQUEST);
-        if (!empty($request['input']['BODY'])) {
-            foreach ($request['input']['BODY'] as $param) {
-                $value = isset($input[$param['name']]) ? $input[$param['name']] : null;
-                if (!is_null($value)) {
-                    foreach ($param['filters']['before'] as $filter) {
-                        $value = $this->api->filter->applyFilter($value, key($filter), $filter[key($filter)], $param['name']);
-                    }
-                    $this->_BODY[$param["name"]] = $this->api->format->toType($value, $param["type"], $param);
-                }
-            }
-        }
-    }
-
-    function _initQuery () {
-        $QUERY = $this->api->server->query;
-        $request = $this->api->api->get(Api::REQUEST);
-        if (!empty($request['input']['QUERY'])) {
-            foreach ($request['input']['QUERY'] as $param) {
-                $value = isset($QUERY[$param['name']]) ? $QUERY[$param['name']] : null;
-                if (!is_null($value)) {
-                    foreach ($param['filters']['before'] as $filter) {
-                        $value = $this->api->filter->applyFilter($value, key($filter), $filter[key($filter)], $param['name']);
-                    }
-                    $this->_QUERY[$param["name"]] = $this->api->format->toType($value, $param["type"], $param);
-                }
-            }
-        }
-    }
-
-    function _initUrl () {
-        $url = $this->api->server->url;
-        $request = $this->api->api->get(Api::REQUEST);
-        if (!empty($request['input']['URL'])) {
-            foreach ($request['input']['URL'] as  $index => $param) {
-                $value = isset($url[$index]) ? $url[$index] : null;
-                if (!is_null($value)) {
-                    foreach ($param['filters']['before'] as $filter) {
-                        $value = $this->api->filter->applyFilter($value, key($filter), $filter[key($filter)], $param["name"]);
-                    }
-                    $this->_URL[$param["name"]] = $this->api->format->toType($value, $param["type"], $param);
-                }
-            }
-        }
-    }
-
-    function init (){
-        $this->_initBody();
-        $this->_initQuery();
-        $this->_initUrl();
-        $this->_input = array_merge($this->_input, $this->_QUERY, $this->_URL, $this->_BODY);
-    }
-
-    function check () {
-        $valid = 1;
-        $request = $this->api->api->get(Api::REQUEST);
-        if (!empty($request['input']['URL'])) {
-            foreach ($request['input']['URL'] as $param) {
-                $value = isset($this->_URL[$param['name']]) ? $this->_URL[$param['name']] : null;
-                if (!empty($param['validation'])) {
-                    $valid *= $this->validate($param["name"], $value, $param['validation'], true);
-                }
-            }
-        }
-        if (!empty($request['input']['BODY'])) {
-            foreach ($request['input']['BODY'] as $param) {
-                $value = isset($this->_BODY[$param['name']]) ? $this->_BODY[$param['name']] : null;
-                if (!empty($param['validation'])) {
-                    $valid *= $this->validate($param["name"], $value, $param['validation'], true);
-                }
-            }
-        }
-        if (!empty($request['input']['QUERY'])) {
-            foreach ($request['input']['QUERY'] as $param) {
-                $value = isset($this->_QUERY[$param['name']]) ? $this->_QUERY[$param['name']] : null;
-                if (!empty($param['validation'])) {
-                    $valid *= $this->validate($param["name"], $value, $param['validation'], true);
-                }
-            }
-        }
-        if (!$valid) {
-            $this->api->output->send();
-        }
-    }
-
-    function applyAfterFilters () {
-        $request = $this->api->api->get(Api::REQUEST);
-        if (!empty($request['input']['QUERY'])) {
-            foreach ($request['input']['QUERY'] as $param) {
-                $value = isset($QUERY[$param['name']]) ? $QUERY[$param['name']] : null;
-                if (!is_null($value)) {
-                    foreach ($param['filters']['before'] as $filter) {
-                        $value = $this->api->applyFilter($value, key($filter), $filter[key($filter)], $param['name']);
-                    }
-                    $this->_QUERY[$param["name"]] = $this->api->toType($value, $param["type"], $param);
-                }
-            }
-        }
-    }
-
-
-    function validate ($fieldName, $value, array $validation, $setError = false) {
-        $error = false;
-
-        $rules = $validation['rules'];
-        $required = !empty($validation["required"]);
-
-        if($required && !$this->api->validation->applyRule($value, 'required')){
-            if ($setError) {
-                $this->ruleError($fieldName, 'required', array(), 400);
-            }
-            $error = true;
-        }
-
-        if (!$error && isset($value) && (strlen((string)$value) || $value === false)) {
-            foreach ($rules as $rule) {
-                $ruleName = key($rule);
-                $ruleParams = $rule[$ruleName];
-                if (!$this->api->validation->applyRule($value, $ruleName, $ruleParams, $fieldName)) {
-                    if ($setError) {
-                        $this->ruleError($fieldName, $ruleName, $ruleParams, 400);
-                    }
-                    $error = true;
-                    break;
-                }
-            }
-        }
-        return !$error;
-    }
-
-    function pick () {
-        $copy = array();
-
-        $keys = func_get_args();
-        foreach ($keys as $key) {
-            if (!is_array($key)){
-                $key = array($key);
-            }
-            foreach ($key as $k) {
-                if (isset($this->_input[$k])) {
-                    $copy[$k] = $this->_input[$k];
-                }
-            }
-        }
-
-        return $copy;
-    }
-
-    function omit () {
-        $copy = array();
-        foreach ($this->_input as $k => $v) {
-            $copy[$k] = $v;
-        }
-        $keys = func_get_args();
-        foreach ($keys as $key) {
-            if (!is_array($key)){
-                $key = array($key);
-            }
-            foreach ($key as $k) {
-                unset($copy[$k]);
-            }
-        }
-        return $copy;
     }
 
     function __get($name){

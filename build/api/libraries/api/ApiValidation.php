@@ -12,6 +12,41 @@ class ApiValidation extends ApiPartAbstract {
         return $this->$method($value, $params, $contextName);
     }
 
+    function ruleError ($inputParamName, $ruleName, array $ruleParams = array(), $statusCode = 400) {
+        $this->_errors[$inputParamName][$ruleName] = $ruleParams;
+        $this->api->output->status($statusCode);
+        return $this;
+    }
+
+    function validate ($fieldName, $value, array $validation, $setError = false) {
+        $error = false;
+
+        $rules = $validation['rules'];
+        $required = !empty($validation["required"]);
+
+        if($required && !$this->api->validation->applyRule($value, 'required')){
+            if ($setError) {
+                $this->ruleError($fieldName, 'required', array(), 400);
+            }
+            $error = true;
+        }
+
+        if (!$error && isset($value) && (strlen((string)$value) || $value === false)) {
+            foreach ($rules as $rule) {
+                $ruleName = key($rule);
+                $ruleParams = $rule[$ruleName];
+                if (!$this->api->validation->applyRule($value, $ruleName, $ruleParams, $fieldName)) {
+                    if ($setError) {
+                        $this->ruleError($fieldName, $ruleName, $ruleParams, 400);
+                    }
+                    $error = true;
+                    break;
+                }
+            }
+        }
+        return !$error;
+    }
+
     /*---------------------------------------------- VALIDATION RULES ----------------------------*/
 
     private function _rule__valid_ip ($value, array $params = array(), $name = null) {

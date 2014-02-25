@@ -17,6 +17,7 @@ class ApiServer extends ApiPartAbstract {
 
     public $accept;
     public $language;
+    public $encoding;
     public $userAgent;
     public $inputFormat;
     public $outputFormat;
@@ -25,6 +26,8 @@ class ApiServer extends ApiPartAbstract {
     public $body;
     public $query;
     public $url;
+
+    public $zlib_oc;
 
     const DEFAULT_OUTPUT_FORMAT = 'json';
     const DEFAULT_INPUT_FORMAT  = 'form';
@@ -61,10 +64,11 @@ class ApiServer extends ApiPartAbstract {
     );
 
     function construct () {
+
         $this->_initHttps();
         $this->_initHeaders();
-        $this->_initIpByParams();
-        $this->_initMethodByParams();
+        $this->_initIp();
+        $this->_initMethod();
         $this->_initInputFormat();
         $this->_initOutputFormat();
 
@@ -162,9 +166,9 @@ class ApiServer extends ApiPartAbstract {
 //                $altMime1 = preg_replace('#^([^/]+)/.+#', '$1/*', $mime);
                 if (isset($headersAccept[$mime])/* || isset($headersAccept[$altMime1])*/) {
                     if ($format == 'html' || $format == 'xml') {
-                        if ($format == 'html' AND strpos($headersAcceptStr, 'xml') === FALSE) {
+                        if ($format == 'html' && strpos($headersAcceptStr, 'xml') === false) {
                             return $format; // true HTML, it wont want any XML
-                        } elseif ($format == 'xml' AND strpos($headersAcceptStr, 'html') === FALSE) {
+                        } elseif ($format == 'xml' && strpos($headersAcceptStr, 'html') === false) {
                             return $format; // true XML, it wont want any HTML
                         }
                     } else {
@@ -197,6 +201,7 @@ class ApiServer extends ApiPartAbstract {
 
         $this->accept      = $this->_detectSomeByQualityString($this->get('HTTP_ACCEPT'));
         $this->language    = $this->_detectSomeByQualityString($this->get('HTTP_ACCEPT_LANGUAGE'));
+        $this->encoding    = $this->_detectSomeByQualityString($this->get('HTTP_ACCEPT_ENCODING'));
 
         $this->userAgent   = $this->get('HTTP_USER_AGENT', '');
 
@@ -218,9 +223,8 @@ class ApiServer extends ApiPartAbstract {
         foreach (preg_split('/\s*,\s*/', $str) as $segment) {
             preg_match('/^\s*([^\;]+)\s*;?\s*/', $segment, $matchName);
             preg_match('/q\s*=\s*([\d\.]+)\s*/', $segment, $matchQ);
-            $some[ApiUtils::get($matchName, 1)] = ApiUtils::get($matchQ, 1, 1);
+            $some[ApiUtils::get($matchName, 1)] = (float)ApiUtils::get($matchQ, 1, 1);
         }
-        arsort($some, SORT_NUMERIC);
         return $some;
     }
 
@@ -288,7 +292,7 @@ class ApiServer extends ApiPartAbstract {
         $this->ssl = $this->get('HTTPS') === 'on';
     }
 
-    private function _initMethodByParams () {
+    private function _initMethod () {
 
         $method = $this->get('REQUEST_METHOD');
         $method = strtoupper($method);
@@ -300,7 +304,7 @@ class ApiServer extends ApiPartAbstract {
         $this->method = $method;
     }
 
-    private function _initIpByParams () {
+    private function _initIp () {
 
         $ip = $this->get('REMOTE_ADDR', $this->ip);
 

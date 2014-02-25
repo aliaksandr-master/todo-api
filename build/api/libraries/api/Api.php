@@ -60,6 +60,8 @@ class Api extends  ApiAbstract {
     public $apiData = array();
 
     private $_launched = false;
+    private $_testing = false;
+    private $_debugging = false;
 
     function __construct (array $apiData, ApiController &$context) {
 
@@ -85,9 +87,24 @@ class Api extends  ApiAbstract {
         }
     }
 
+    private function _prepareParts () {
+        foreach ($this->_parts as $part) {
+            /** @var ApiPartAbstract $part */
+            $part->prepare();
+        }
+    }
+
     protected function &_part ($name, &$part) {
         $this->_parts[$name] = &$part;
         return $part;
+    }
+
+    public function testMode(){
+        return $this->_testing;
+    }
+
+    public function debugMode(){
+        return $this->_debugging;
     }
 
     function launch ($actionName, $arguments) {
@@ -113,6 +130,9 @@ class Api extends  ApiAbstract {
 
         $this->_initParts();
 
+        $this->_testing = (ENVIRONMENT === "development" || ENVIRONMENT === "testing") && $this->input->query('_testing');
+        $this->_debugging = (ENVIRONMENT === "development" || ENVIRONMENT === "testing") && $this->input->query('_debug');
+
         // Sure it exists, but can they do anything with it?
         if (!method_exists($this->context, $actionName)) {
             $this->error('Unknown method', 404, true);
@@ -122,6 +142,7 @@ class Api extends  ApiAbstract {
         $call = array($this->context, $actionName);
 
         $this->api->_checkParts();
+        $this->api->_prepareParts();
 
         $result = call_user_func_array($call, $arguments);
 

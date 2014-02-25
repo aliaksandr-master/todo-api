@@ -2,6 +2,8 @@
 
 class ApiOutput extends ApiPartAbstract {
 
+    const COMPRESSING = true;
+
     const DEFAULT_STATUS = 200;
     const RESPONSE_TYPE_ONE = 'one';
     const RESPONSE_TYPE_ALL = 'many';
@@ -11,16 +13,25 @@ class ApiOutput extends ApiPartAbstract {
 
     protected $_status = null;
 
-    function statusChanged(){
-        return !is_null($this->_status);
-    }
-
     public function send ($status = null) {
         $this->status($status);
 
         $method  = strtoupper($_SERVER["REQUEST_METHOD"]);
 
-        $response = $this->response();
+        $response = array(
+            'status' => $this->status(),
+            'data' => $this->_data
+        );
+
+        if ($this->_meta) {
+            $response['meta'] = $this->_meta;
+        }
+
+        $errors = $this->api->getErrors();
+        if ($errors) {
+            $response['errors'] = $errors;
+        }
+
         $hasData = !empty($response['data']);
 
         if ($this->api->valid()) {
@@ -29,7 +40,7 @@ class ApiOutput extends ApiPartAbstract {
                     $this->status(201); // created new resource
                 } else {
                     if($this->api->valid()){
-                        $this->status(500); // empty GET result
+                        $this->status(404); // empty GET result
                     }
                 }
             }else if($method == "PUT"){
@@ -37,15 +48,15 @@ class ApiOutput extends ApiPartAbstract {
                     $this->status(200); // updated resource
                 }else{
                     if($this->api->valid()){
-                        $this->status(400); // empty GET result
+                        $this->status(500); // empty GET result
                     }
                 }
             }else if($method == "GET"){
                 // ONLY 200 or SOMETHING CUSTOM
             }else if($method == "DELETE"){
                 // ONLY 200 or SOMETHING CUSTOM
-                if($this->api->valid()){
-                    if(!$hasData){
+                if(!$hasData){
+                    if($this->api->valid()){
                         $this->status(500); // you must send Boolean response
                     }
                 }
@@ -53,12 +64,12 @@ class ApiOutput extends ApiPartAbstract {
         }
 
         // SEND RESPONSE
-        if(!$this->api->valid()){
+        if (!$this->api->valid()) {
             $response["data"] = array();
-        }else{
-            if(isset($response["data"])){
+        } else {
+            if (isset($response["data"])) {
                 $data = $this->prepareResponseData($response["data"], 'data');
-                if(is_null($data)){
+                if (is_null($data)) {
                     $response["data"] = array();
                 } else {
                     $response["data"] = $data;
@@ -74,34 +85,58 @@ class ApiOutput extends ApiPartAbstract {
         }
 
         // DEBUG DATA (only for development and testing mode)
-        if(ENVIRONMENT == "development" || ENVIRONMENT == "testing"){
+        if ($this->api->debugMode()) {
             $response["debug"] = array(
                 'url' => $_SERVER['REQUEST_URI'],
                 'method' => $method,
                 'time' => (round((gettimeofday(true) - START_TIME) * 100000) / 100000),
                 'input' => array(
-                    "URL"    => $this->api->input->url(),
-                    "QUERY"  => $this->api->input->query(),
-                    "BODY"   => $this->api->input->body(),
-                    "BODY:source" => INPUT_DATA
+                    'headers' => array(
+                        'accept' => $this->api->server->accept,
+                        'encoding' => $this->api->server->encoding,
+                        'language' => $this->api->server->language,
+                        'inputFormat' => $this->api->server->inputFormat,
+                        'outputFormat' => $this->api->server->outputFormat,
+                        'outputMime' => $this->api->server->outputMime,
+                    ),
+                    'server' => array (
+                        'ip' => $this->api->server->ip,
+                        'host' => $this->api->server->host,
+                        'hostname' => $this->api->server->hostname,
+                        'port' => $this->api->server->port,
+                        'path' => $this->api->server->path,
+                        'pathname' => $this->api->server->pathname,
+                        'search' => $this->api->server->search,
+                        'scheme' => $this->api->server->scheme,
+                        'protocol' => $this->api->server->protocol,
+                    ),
+                    "url"    => $this->api->input->url(),
+                    "query"  => $this->api->input->query(),
+                    "body"   => $this->api->input->body(),
+                    "body:source" => INPUT_DATA
                 ),
-                "API" => $this->api->get()
+                "api" => $this->api->get()
             );
         }
-        $this->_sendResponse($response, $this->status());
-    }
 
-    public function _sendResponse($data = null, $http_code = null) {
-
-        $http_code = is_numeric($http_code) ? $http_code : 200;
-        $data = (string) $this->api->format->applyFormat($data, $this->api->server->outputFormat);
+        $http_code = $this->status();
+        $response = (string) $this->api->format->applyFormat($response, $this->api->server->outputFormat);
 
         header('HTTP/1.1: ' . $http_code);
         header('Status: ' . $http_code);
-        header('Content-Length: ' . strlen($data));
+        header('Content-Length: ' . strlen($response));
         header('Content-Type: '.$this->api->server->outputMime);
 
-        $this->api->context->response($data);
+        $zlibOc = @ini_get('zlib.output_compression');
+        $compressing = self::COMPRESSING && !$zlibOc && extension_loaded('zlib') && ApiUtils::get($this->api->server->encoding, 'gzip', false);
+
+        if (!$zlibOc && !$compressing) {
+            header('Content-Length: ' . strlen($response));
+        } else if ($compressing) {
+            ob_start('ob_gzhandler');
+        }
+
+        $this->api->context->response($response);
     }
 
     function status($code = null){
@@ -111,7 +146,7 @@ class ApiOutput extends ApiPartAbstract {
             }
             $this->_status = $code;
         }
-        return empty($this->_status) ? self::DEFAULT_STATUS : $this->_status;
+        return empty($this->_status) ? ApiOutput::DEFAULT_STATUS : $this->_status;
     }
 
     function data($name = null, $value = null){
@@ -132,23 +167,6 @@ class ApiOutput extends ApiPartAbstract {
             }
         }
         return $this->_data;
-    }
-
-    public function response(){
-        $response = array(
-            'status' => $this->status(),
-            'data' => $this->_data,
-            'meta' => $this->_meta
-        );
-
-        $response['errors'] = $this->api->getErrors();
-
-        return $response;
-    }
-
-    public function clearData(){
-        $this->_data = array();
-        return $this;
     }
 
     function meta($name = null, $value = null){
@@ -185,7 +203,7 @@ class ApiOutput extends ApiPartAbstract {
         $response = $this->api->get(Api::RESPONSE);
         $type = $response['type'];
 
-        if($type == self::RESPONSE_TYPE_ONE){
+        if($type == ApiOutput::RESPONSE_TYPE_ONE){
             if (isset($data[0]) && is_array($data[0])) {
                 $data = $data[0];
             }
@@ -198,7 +216,7 @@ class ApiOutput extends ApiPartAbstract {
                     }
                 }
             }
-        } else if ($type == self::RESPONSE_TYPE_ALL) {
+        } else if ($type == ApiOutput::RESPONSE_TYPE_ALL) {
             if (!empty($data) && (!isset($data[0]) || !is_array($data[0]))) {
                 $data = array($data);
             }

@@ -24,4 +24,8 @@ abstract class ApiPartAbstract extends ApiAbstract {
 
     }
 
+    function prepare () {
+
+    }
+
 }

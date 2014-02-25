@@ -34,7 +34,7 @@
 				content: ''
 			}));
 			$requestPanels.append(tplPanel({
-				label: "Send <b>Info</b>",
+				label: "<b>Info</b>",
 				type: 'default',
 				id: 'sendInfo',
 				content: ''
@@ -294,7 +294,9 @@
 							$("#responseHTML").html(response);
 						}
 						$('#sendInfo').html(window.jsonFormat({
-							time: (Date.now() - time)/1000
+							time: (Date.now() - time)/1000,
+							encoding: jqXHR.getResponseHeader('Content-Encoding'),
+							compress: (100 - Math.round((+jqXHR.getResponseHeader('Content-Length') / jqXHR.responseText.length)*100)) + '%'
 						}));
 					},
 					error: function(jqXHR, status){
