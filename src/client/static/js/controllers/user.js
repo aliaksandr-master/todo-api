@@ -24,7 +24,7 @@ define(function(require, exports, module){
 			this.listenTo(this.view, 'trigger:login', function (data) {
 				this.userModel = new UserModel(data.data, {parse: true});
 				this.user.login(this.userModel);
-//				window.location.href = '/';
+				window.location.href = '/';
 			});
 		},
 
