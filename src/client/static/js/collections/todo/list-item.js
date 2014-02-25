@@ -1,6 +1,7 @@
 define(function(require){
     "use strict";
 
+	var _ = require('underscore');
 	var BaseCollection = require('collections/base/collection');
 	var TodoListItemModel = require('models/todo/list-item');
 
@@ -19,7 +20,19 @@ define(function(require){
 
         comparator: function (model) {
             return model.get("sortOrder");
-        }
+        },
+
+		create: function (model, options) {
+			model = model || {};
+			var sortOrders = this.map(function (mdl) {
+				return mdl.get('sortOrder');
+			});
+
+			model.sortOrder = _.max(sortOrders) + 1;
+			console.log(sortOrders, model.sortOrder);
+
+			return ListItemCollection.__super__.create.call(this, model, options);
+		}
 
     });
 

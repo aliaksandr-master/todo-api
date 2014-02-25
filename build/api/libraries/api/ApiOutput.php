@@ -107,7 +107,7 @@ class ApiOutput extends ApiPartAbstract {
     function status($code = null){
         if(!is_null($code)){
             if(!is_numeric($code)){
-                trigger_error('Status code must be numeric type!', E_USER_ERROR);
+                trigger_error('Status code "'.$code.'" must be numeric type!', E_USER_ERROR);
             }
             $this->_status = $code;
         }

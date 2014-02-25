@@ -9,8 +9,8 @@ body:after {
 	content: "";
 	._size(30px);
 	position: absolute;
-	top: 11px;
-	left: 13px;
+	top: 2px;
+	left: 8px;
 	z-index: 9999;
 	box-sizing: border-box;
 	display: block;
@@ -19,7 +19,7 @@ body:after {
 	border-right-color: #888;
 	opacity: 0.9;
 	animation: spinner 1s infinite linear;
-	transition: opacity 0.1s linear;
+	transition: all 0.1s linear;
 	transition-delay: 0.3s;
 }
 
@@ -34,4 +34,5 @@ body:after {
 
 body.-preloader-inactive:after {
 	opacity: 0;
+	left: -100px;
 }

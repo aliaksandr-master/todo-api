@@ -107,19 +107,23 @@ class Todo extends ApiController {
 
 
     // CREATE ITEM
-    public function POST_item($todoId){
+    public function POST_item ($todoId) {
         $data = array(
             "todo_id" => $todoId,
-            "name" => $this->input('name', ""),
             "date_create" => date("Y-m-d H:i:s", gettimeofday(true))
         );
+
+        $data['name']       = $this->input('name', "");
+        $data['is_active']  = $this->input('is_active', 0);
+        $data['sort_order'] = $this->input('sort_order', 0);
+
         $itemId = $this->todoItem->create($data);
         return $this->_getOneTodoListItem($todoId, $itemId);
     }
 
 
     // UPDATE ITEM
-    public function PUT_item($todoId, $id){
+    public function PUT_item ($todoId, $id) {
         $data['name']       = $this->input('name', "");
         $data['is_active']  = $this->input('is_active', 0);
         $data['sort_order'] = $this->input('sort_order', 0);

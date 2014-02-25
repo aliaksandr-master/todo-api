@@ -30,8 +30,8 @@ class User extends ApiController {
             ));
         }
         if(empty($user[0])){
-            $this->api->input->error('username', 'incorrect');
-            $this->api->input->error('password', 'incorrect');
+            $this->api->input->ruleError('username', 'login_incorrect');
+            $this->api->input->ruleError('password', 'login_incorrect');
             return null;
         }else{
             $this->user->login($user[0]);
@@ -42,7 +42,7 @@ class User extends ApiController {
     public function GET_current () {
         $user = $this->user->current();
         if (empty($user)) {
-            $this->api->output->error(404);
+            $this->api->output->error(null, 404);
         }
         return $user;
     }

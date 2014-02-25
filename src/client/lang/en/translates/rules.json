@@ -1,5 +1,6 @@
 {
 	"default": "Incorrect format",
+	"login_incorrect": "Login or password incorrect",
 	"required" : "Field is required",
 	"need" : "Field \"{{param.0.value}}\" is required",
 	"matches" : "Must matches with \"{{param.0.value}}\"",

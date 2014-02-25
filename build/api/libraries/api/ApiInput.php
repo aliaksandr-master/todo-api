@@ -9,10 +9,9 @@ class ApiInput extends ApiPartAbstract {
     private $_QUERY = array();
     private $_BODY = array();
 
-    function ruleError ($inputParamName, $ruleName, array $ruleParams = array(), $statusCode = null) {
+    function ruleError ($inputParamName, $ruleName, array $ruleParams = array(), $statusCode = 400) {
         $this->_errors[$inputParamName][$ruleName] = $ruleParams;
         $this->api->output->status($statusCode);
-
         return $this;
     }
 
