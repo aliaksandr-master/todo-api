@@ -21,7 +21,7 @@ define(function(require, exports, module){
 
 		current: function () {
 			var that = this;
-			request.load('/user/current', 'api', true).then(function (data) {
+			request.load('/session/user', 'api', { method: 'GET' }, true).then(function (data) {
 				that.login(new User(data.data, {parse: true}));
 			});
 		},
@@ -33,7 +33,7 @@ define(function(require, exports, module){
 
 		logout: function () {
 			session = this.user = null;
-			request.load('/user/logout', 'api');
+			request.load('/session/user', 'api', { method: 'DELETE' });
 			this.trigger('user:logout');
 
 			setTimeout(function(){

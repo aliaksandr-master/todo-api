@@ -1,4 +1,5 @@
 {
+    "Session": "../api/controllers/session.php",
     "Todo": "../api/controllers/todo.php",
     "User": "../api/controllers/user.php",
     "BaseController": "../api/controllers/base/BaseController.php",

@@ -135,7 +135,7 @@ class Api extends  ApiAbstract {
 
         // Sure it exists, but can they do anything with it?
         if (!method_exists($this->context, $actionName)) {
-            $this->error('Unknown method', 404, true);
+            $this->error('Unknown method', 405, true);
             return;
         }
 

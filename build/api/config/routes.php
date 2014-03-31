@@ -44,8 +44,8 @@
 //USER
 $route['user'] = 'user/index';
 $route['user/(\d+)'] = 'user/index/$1';
-$route['login'] = 'user/login';
-$route['logout'] = 'user/logout';
+
+$route['session'] = 'session/user';
 
 //TO DO
 $route['todo'] = "todo/list";

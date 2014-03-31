@@ -1,4 +1,212 @@
 {
+    "GET:session/user": {
+        "url": "session/user",
+        "title": "GET session/user",
+        "name": "GET session/user",
+        "request": {
+            "input": {},
+            "method": "GET"
+        },
+        "response": {
+            "type": "one",
+            "output": {
+                "data": {
+                    "id": {
+                        "name": "id",
+                        "type": "decimal",
+                        "filters": {
+                            "before": [],
+                            "after": []
+                        }
+                    },
+                    "username": {
+                        "name": "username",
+                        "type": "string",
+                        "filters": {
+                            "before": [],
+                            "after": []
+                        }
+                    },
+                    "email": {
+                        "name": "email",
+                        "type": "string",
+                        "filters": {
+                            "before": [],
+                            "after": []
+                        }
+                    }
+                },
+                "meta": {}
+            }
+        },
+        "access": {
+            "need_login": false,
+            "only_owner": false
+        }
+    },
+    "POST:session/user": {
+        "url": "session/user",
+        "title": "POST session/user",
+        "name": "POST session/user",
+        "request": {
+            "input": {
+                "BODY": {
+                    "username": {
+                        "name": "username",
+                        "type": "string",
+                        "filters": {
+                            "before": [],
+                            "after": [
+                                {
+                                    "xss": []
+                                },
+                                {
+                                    "trim": []
+                                }
+                            ]
+                        },
+                        "validation": {
+                            "required": true,
+                            "rules": [
+                                {
+                                    "max_length": [
+                                        255
+                                    ]
+                                },
+                                {
+                                    "max_length": [
+                                        50
+                                    ]
+                                },
+                                {
+                                    "min_length": [
+                                        3
+                                    ]
+                                }
+                            ]
+                        }
+                    },
+                    "password": {
+                        "name": "password",
+                        "type": "string",
+                        "filters": {
+                            "before": [],
+                            "after": [
+                                {
+                                    "xss": []
+                                },
+                                {
+                                    "trim": []
+                                }
+                            ]
+                        },
+                        "validation": {
+                            "required": true,
+                            "rules": [
+                                {
+                                    "max_length": [
+                                        255
+                                    ]
+                                },
+                                {
+                                    "max_length": [
+                                        50
+                                    ]
+                                },
+                                {
+                                    "min_length": [
+                                        6
+                                    ]
+                                }
+                            ]
+                        }
+                    },
+                    "remember": {
+                        "name": "remember",
+                        "type": "boolean",
+                        "filters": {
+                            "before": [],
+                            "after": [
+                                {
+                                    "to_bool": []
+                                }
+                            ]
+                        },
+                        "validation": {
+                            "required": false,
+                            "rules": []
+                        }
+                    }
+                }
+            },
+            "method": "POST"
+        },
+        "response": {
+            "type": "one",
+            "output": {
+                "data": {
+                    "id": {
+                        "name": "id",
+                        "type": "decimal",
+                        "filters": {
+                            "before": [],
+                            "after": []
+                        }
+                    },
+                    "username": {
+                        "name": "username",
+                        "type": "string",
+                        "filters": {
+                            "before": [],
+                            "after": []
+                        }
+                    },
+                    "email": {
+                        "name": "email",
+                        "type": "string",
+                        "filters": {
+                            "before": [],
+                            "after": []
+                        }
+                    }
+                },
+                "meta": {}
+            }
+        },
+        "access": {
+            "need_login": false,
+            "only_owner": false
+        }
+    },
+    "DELETE:session/user": {
+        "url": "session/user",
+        "title": "DELETE session/user",
+        "name": "DELETE session/user",
+        "request": {
+            "input": {},
+            "method": "DELETE"
+        },
+        "response": {
+            "type": "one",
+            "output": {
+                "data": {
+                    "status": {
+                        "name": "status",
+                        "type": "boolean",
+                        "filters": {
+                            "before": [],
+                            "after": []
+                        }
+                    }
+                },
+                "meta": {}
+            }
+        },
+        "access": {
+            "need_login": false,
+            "only_owner": false
+        }
+    },
     "GET:todo/<param>/item": {
         "url": "todo/$todo_id/item",
         "title": "GET todo/$todo_id/item",
@@ -1690,214 +1898,6 @@
                     "email": {
                         "name": "email",
                         "type": "string",
-                        "filters": {
-                            "before": [],
-                            "after": []
-                        }
-                    }
-                },
-                "meta": {}
-            }
-        },
-        "access": {
-            "need_login": false,
-            "only_owner": false
-        }
-    },
-    "GET:user/current": {
-        "url": "user/current",
-        "title": "GET user/current",
-        "name": "GET user/current",
-        "request": {
-            "input": {},
-            "method": "GET"
-        },
-        "response": {
-            "type": "one",
-            "output": {
-                "data": {
-                    "id": {
-                        "name": "id",
-                        "type": "decimal",
-                        "filters": {
-                            "before": [],
-                            "after": []
-                        }
-                    },
-                    "username": {
-                        "name": "username",
-                        "type": "string",
-                        "filters": {
-                            "before": [],
-                            "after": []
-                        }
-                    },
-                    "email": {
-                        "name": "email",
-                        "type": "string",
-                        "filters": {
-                            "before": [],
-                            "after": []
-                        }
-                    }
-                },
-                "meta": {}
-            }
-        },
-        "access": {
-            "need_login": false,
-            "only_owner": false
-        }
-    },
-    "POST:user/login": {
-        "url": "user/login",
-        "title": "POST user/login",
-        "name": "POST user/login",
-        "request": {
-            "input": {
-                "BODY": {
-                    "username": {
-                        "name": "username",
-                        "type": "string",
-                        "filters": {
-                            "before": [],
-                            "after": [
-                                {
-                                    "xss": []
-                                },
-                                {
-                                    "trim": []
-                                }
-                            ]
-                        },
-                        "validation": {
-                            "required": true,
-                            "rules": [
-                                {
-                                    "max_length": [
-                                        255
-                                    ]
-                                },
-                                {
-                                    "max_length": [
-                                        50
-                                    ]
-                                },
-                                {
-                                    "min_length": [
-                                        3
-                                    ]
-                                }
-                            ]
-                        }
-                    },
-                    "password": {
-                        "name": "password",
-                        "type": "string",
-                        "filters": {
-                            "before": [],
-                            "after": [
-                                {
-                                    "xss": []
-                                },
-                                {
-                                    "trim": []
-                                }
-                            ]
-                        },
-                        "validation": {
-                            "required": true,
-                            "rules": [
-                                {
-                                    "max_length": [
-                                        255
-                                    ]
-                                },
-                                {
-                                    "max_length": [
-                                        50
-                                    ]
-                                },
-                                {
-                                    "min_length": [
-                                        6
-                                    ]
-                                }
-                            ]
-                        }
-                    },
-                    "remember": {
-                        "name": "remember",
-                        "type": "boolean",
-                        "filters": {
-                            "before": [],
-                            "after": [
-                                {
-                                    "to_bool": []
-                                }
-                            ]
-                        },
-                        "validation": {
-                            "required": false,
-                            "rules": []
-                        }
-                    }
-                }
-            },
-            "method": "POST"
-        },
-        "response": {
-            "type": "one",
-            "output": {
-                "data": {
-                    "id": {
-                        "name": "id",
-                        "type": "decimal",
-                        "filters": {
-                            "before": [],
-                            "after": []
-                        }
-                    },
-                    "username": {
-                        "name": "username",
-                        "type": "string",
-                        "filters": {
-                            "before": [],
-                            "after": []
-                        }
-                    },
-                    "email": {
-                        "name": "email",
-                        "type": "string",
-                        "filters": {
-                            "before": [],
-                            "after": []
-                        }
-                    }
-                },
-                "meta": {}
-            }
-        },
-        "access": {
-            "need_login": false,
-            "only_owner": false
-        }
-    },
-    "GET:user/logout": {
-        "url": "user/logout",
-        "title": "GET user/logout",
-        "name": "GET user/logout",
-        "request": {
-            "input": {},
-            "method": "GET"
-        },
-        "response": {
-            "type": "one",
-            "output": {
-                "data": {
-                    "status": {
-                        "name": "status",
-                        "type": "boolean",
                         "filters": {
                             "before": [],
                             "after": []

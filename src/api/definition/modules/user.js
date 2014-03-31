@@ -67,40 +67,5 @@ module.exports = {
 			"username:string",
 			"email:string"
 		]
-	},
-
-
-	"GET user/current": {
-        "access": {
-            "need_login": false
-        },
-        "response": [
-            "id:decimal",
-            "username:string",
-            "email:string"
-        ]
-    },
-
-
-	"POST user/login": {
-		"request": {
-			"username:string{3,50}": "required",
-			"password:string{6,50}": "required",
-			"remember:boolean": "optional"
-		},
-		"response": [
-			"id:decimal",
-			"username:string",
-			"email:string"
-		],
-		"errors": {
-			"password": "incorrect"
-		}
-	},
-
-	"GET user/logout": {
-		"response": [
-			"status:boolean"
-		]
 	}
 };
