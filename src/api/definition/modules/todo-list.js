@@ -1,10 +1,12 @@
-{
+
+
+module.exports = {
 	"GET todo": {
 		"access": {
 			"need_login": true,
 			"only_owner": true
 		},
-		"response:many": [
+		"response < 255": [
 			"id:decimal",
 			"link:string",
 			"name:string",
@@ -76,4 +78,4 @@
 			"status:boolean"
 		]
 	}
-}
+};

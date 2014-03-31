@@ -1,12 +1,14 @@
-{
+
+
+module.exports = {
+
 	"GET user": {
-		"response:many({255})": [
+		"response < 255": [
 			"id:decimal",
 			"username:string",
 			"email:string"
 		]
 	},
-
 
 	"GET user/$id": {
 		"request": {
@@ -18,7 +20,6 @@
 			"email:string"
 		]
 	},
-
 
 	"DELETE user/$id": {
 		"access": {
@@ -32,7 +33,6 @@
 			"status:boolean"
 		]
 	},
-
 
 	"PUT user/$id": {
 		"access": {
@@ -98,10 +98,9 @@
 		}
 	},
 
-
 	"GET user/logout": {
 		"response": [
 			"status:boolean"
 		]
 	}
-}
+};

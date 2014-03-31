@@ -1,9 +1,12 @@
-{
+
+
+module.exports = {
 	"GET todo/$todo_id/item": {
+		"handler": "todo#item",
 		"request": {
 			"$todo_id:decimal": "required"
 		},
-		"response:many": [
+		"response < 255": [
 			"id:decimal",
 			"todo_id:decimal",
 			"sort_order:decimal",
@@ -79,4 +82,4 @@
 			"status:boolean"
 		]
 	}
-}
+};
