@@ -2,7 +2,7 @@
 
 
 
-class User extends ApiController {
+class User extends BaseController {
 
 	public function __construct () {
 		parent::__construct();

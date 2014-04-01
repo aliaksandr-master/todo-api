@@ -2,7 +2,7 @@
 
 
 
-class Session extends ApiController {
+class Session extends BaseController {
 
 	public function DELETE_user () {
 		$id = $this->user->current('id');

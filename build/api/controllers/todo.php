@@ -2,7 +2,7 @@
 
 
 
-class Todo extends ApiController {
+class Todo extends BaseController {
 
 	/** @var TodoModel */
 	public $todoList;

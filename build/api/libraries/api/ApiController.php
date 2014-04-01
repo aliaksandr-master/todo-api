@@ -1,18 +1,14 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
-abstract class ApiController extends BaseController {
+abstract class ApiController extends CI_Controller {
 
     /** @var UserModel */
     public $user;
-
-    /** @var string */
-    public $actionName;
 
     /** @var Api */
     protected $api = null;
 
     public function __construct () {
-
         parent::__construct();
         $this->user = UserModel::instance();
     }
@@ -29,20 +25,6 @@ abstract class ApiController extends BaseController {
 
     function input ($name = null, $default = null) {
         return $this->api->input->get($name, $default);
-    }
-
-    protected function _fire_method ($call, $arguments) {
-
-        $actionName = $call[1];
-
-        $this->api->check($actionName, $this->_args, $arguments, $_GET);
-
-        // parent::_fire_method
-        $result = call_user_func_array($call, $arguments);
-        if (isset($result)) {
-            $this->api->output->data($result);
-        }
-        $this->api->output->send();
     }
 
     public function hasAccess($method, $controllerName, $actionName){
@@ -65,14 +47,6 @@ abstract class ApiController extends BaseController {
         return true;
     }
 
-    /**
-     * Response
-     *
-     * Takes pure data and optionally a status code, then creates the response.
-     *
-     * @param array $data
-     * @param null|int $http_code
-     */
     function response ($sendData) {
         exit($sendData);
     }
