@@ -1,6 +1,7 @@
 {
     "Session": "../api/controllers/session.php",
-    "Todo": "../api/controllers/todo.php",
+    "Todo_Item": "../api/controllers/todo_item.php",
+    "Todo_List": "../api/controllers/todo_list.php",
     "User": "../api/controllers/user.php",
     "BaseController": "../api/controllers/base/BaseController.php",
     "Format": "../api/libraries/Format.php",

@@ -41,12 +41,10 @@
 //$route['default_controller'] = "";
 //$route['404_override'] = '';
 
-//USER
+//TO DO LIST
+$route['todo']       = "todo_list/index";
+$route['todo/(\d+)'] = "todo_list/index/$1";
 
-$route['session'] = 'session/user';
-
-//TO DO
-$route['todo'] = "todo/list";
-$route['todo/(\d+)'] = "todo/list/$1";
-$route['todo/(\d+)/item'] = "todo/item/$1";
-$route['todo/(\d+)/item/(\d+)'] = 'todo/item/$1/$2';
+//TO DO LIST ITEM
+$route['todo/(\d+)/item']       = "todo_item/index/$1";
+$route['todo/(\d+)/item/(\d+)'] = 'todo_item/index/$1/$2';

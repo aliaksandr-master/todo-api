@@ -1,252 +1,302 @@
 <?php
 
-class Api extends  ApiAbstract {
+$apiAvl = ENVIRONMENT === "development" || ENVIRONMENT === "testing";
+define('_API_TESTING_MODE_', $apiAvl && !empty($_GET['_testing']));
+define('_API_DEBUG_MODE_', $apiAvl && !empty($_GET['_debug']));
 
-    const REQUEST_URI_ROOT  = API_ROOT_URL; // '/server'
 
-    const NAME              = 'name';
-    const VERSION           = 'version';
-    const URL               = 'url';
-    const RESPONSE          = 'response';
-    const REQUEST           = 'request';
-    const ACCESS            = "access";
 
-    const TYPE_TEXT         = 'text';
-    const TYPE_DECIMAL      = 'decimal';
-    const TYPE_STRING       = 'string';
-    const TYPE_INTEGER      = 'integer';
-    const TYPE_FLOAT        = 'float';
-    const TYPE_BOOLEAN      = 'boolean';
+class Api extends ApiAbstract {
 
-    private static $_singletons = array();
+	const TEST_MODE = _API_TESTING_MODE_;
 
-    /** @var string */
-    public $actionName;
+	const DEBUG_MODE = _API_DEBUG_MODE_;
 
-    /** @var array */
-    public $arguments;
+	const REQUEST_URI_ROOT = API_ROOT_URL; // '/server'
 
-    /** @var ApiController */
-    public $context;
+	const NAME = 'name';
 
-    /** @var Api */
-    public $api;
+	const VERSION = 'version';
 
-    /** @var ApiInput */
-    public $input;
+	const URL = 'url';
 
-    /** @var ApiOutput */
-    public $output;
+	const RESPONSE = 'response';
 
-    /** @var ApiAccess */
-    public $access;
+	const REQUEST = 'request';
 
-    /** @var ApiServer */
-    public $server;
+	const ACCESS = "access";
 
-    /** @var ApiFilter */
-    public $filter;
+	const TYPE_TEXT = 'text';
 
-    /** @var ApiFormat */
-    public $format;
+	const TYPE_DECIMAL = 'decimal';
 
-    /** @var ApiValidation */
-    public $validation;
+	const TYPE_STRING = 'string';
 
-    public $errorPref = 'Api ';
+	const TYPE_INTEGER = 'integer';
 
-    protected $_parts = array();
+	const TYPE_FLOAT = 'float';
 
-    public $apiData = array();
+	const TYPE_BOOLEAN = 'boolean';
 
-    private $_launched = false;
-    private $_testing = false;
-    private $_debugging = false;
+	private static $_singletons = array();
 
-    function __construct (array $apiData, ApiController &$context) {
+	/** @var string */
+	public $actionName;
 
-        $this->apiData      = $apiData;
+	/** @var array */
+	public $arguments;
 
-        $this->api           = $this;
-        $this->context       = $context;
+	/** @var ApiController */
+	public $context;
 
-        $this->errorPref .= $this->get(Api::NAME).': ';
-    }
+	/** @var Api */
+	public $api;
 
-    private function _initParts () {
-        foreach ($this->_parts as $part) {
-            /** @var ApiPartAbstract $part */
-            $part->init();
-        }
-    }
+	/** @var ApiInput */
+	public $input;
 
-    private function _checkParts () {
-        foreach ($this->_parts as $part) {
-            /** @var ApiPartAbstract $part */
-            $part->check();
-        }
-    }
+	/** @var ApiOutput */
+	public $output;
 
-    private function _prepareParts () {
-        foreach ($this->_parts as $part) {
-            /** @var ApiPartAbstract $part */
-            $part->prepare();
-        }
-    }
+	/** @var ApiAccess */
+	public $access;
 
-    protected function &_part ($name, &$part) {
-        $this->_parts[$name] = &$part;
-        return $part;
-    }
+	/** @var ApiServer */
+	public $server;
 
-    public function testMode(){
-        return $this->_testing;
-    }
+	/** @var ApiFilter */
+	public $filter;
 
-    public function debugMode(){
-        return $this->_debugging;
-    }
+	/** @var ApiFormat */
+	public $format;
 
-    function launch ($actionName, $arguments) {
+	/** @var ApiValidation */
+	public $validation;
 
-        if ($this->_launched) {
-            throw new Exception("api mustn't exec twice");
-        }
-        $this->_launched = true;
+	public $errorPref = 'Api ';
 
-        $this->api->arguments  = $arguments;
+	protected $_parts = array();
 
-        $this->input      = $this->_part('input',      new ApiInput($this));
-        $this->filter     = $this->_part('filter',     new ApiFilter($this));
-        $this->output     = $this->_part('output',     new ApiOutput($this));
-        $this->access     = $this->_part('access',     new ApiAccess($this));
-        $this->validation = $this->_part('validation', new ApiValidation($this));
-        $this->format     = $this->_part('format',     new ApiFormat($this));
-        $this->server     = $this->_part('server',     new ApiServer($this));
-
-        $actionName = $this->api->server->method.'_'.$actionName;
-
-        $this->api->actionName = $actionName;
-
-        $this->_initParts();
-
-        $this->_testing = (ENVIRONMENT === "development" || ENVIRONMENT === "testing") && $this->input->query('_testing');
-        $this->_debugging = (ENVIRONMENT === "development" || ENVIRONMENT === "testing") && $this->input->query('_debug');
-
-        // Sure it exists, but can they do anything with it?
-        if (!method_exists($this->context, $actionName)) {
-            $this->error('Unknown method', 405, true);
-            return;
-        }
-
-        $call = array($this->context, $actionName);
-
-        $this->api->_checkParts();
-        $this->api->_prepareParts();
-
-        $result = call_user_func_array($call, $arguments);
-
-        if (isset($result)) {
-            $this->api->output->data($result);
-        }
-
-        $this->api->output->send();
-    }
-
-    function getErrors () {
-        $errors = array();
-        foreach ($this->_parts as $name => $part) {
-
-            /** @var ApiPartAbstract $part */
-
-            $err = $part->getErrors();
-            if (!empty($err)) {
-                $errors[$name] = $err;
-            }
-        }
-
-        $err = parent::getErrors();
-        if (!empty($err)) {
-            $errors['api'] = $err;
-        }
-
-        return $errors;
-    }
-
-    function valid () {
-
-        $vars = get_object_vars($this);
-
-        foreach ($vars as $var) {
-            if ($var instanceof ApiPartAbstract) {
-                if (!$var->valid()) {
-                    return false;
-                }
-            }
-        }
-
-        if ($this->getErrors()) {
-            return false;
-        }
-
-        return true;
-    }
-
-    function get ($name = null, $default = null) {
-        if (is_null($name)){
-            return $this->apiData;
-        }
-        return isset($this->apiData[$name]) ? $this->apiData[$name] : $default;
-    }
-
-    /**
-     * @param ApiController $context
-     * @param string $method
-     * @param string $uriCall
-     * @param array $arguments
-     *
-     * @return Api
-     */
-    static function instanceBy (ApiController &$context, $method, $uriCall, array $arguments = array()) {
-
-        $parsedFile = VAR_DIR.DS."api.parsed.json";
-
-        $method = strtoupper($method);
-        if (is_null($uriCall)) {
-            $uriCall = $_SERVER["REQUEST_URI"];
-        }
-        $uriCall = str_replace(self::REQUEST_URI_ROOT.'/', '', $uriCall); // TODO: remove valid base URI
-        $uriCall = preg_replace('/\?(.+)$/', '', $uriCall);
-        $uriCall = str_replace('\\', '/', $uriCall);
-        $uriCall = preg_replace('#(/+)$#', '', $uriCall);
-
-        if ($arguments) {
-            $implArgs = implode('|', $arguments);
-            $uriCall = preg_replace('#^('.$implArgs.')$#', '<param>', $uriCall);
-            $uriCall = preg_replace('#^('.$implArgs.')/#', '<param>/', $uriCall);
-            $uriCall = preg_replace('#/('.$implArgs.')/#', '/<param>/', $uriCall);
-            $uriCall = preg_replace('#/('.$implArgs.')$#', '/<param>', $uriCall);
-        }
-        $uriCall = preg_replace('/^\/+/i', '', $uriCall);
-
-        // CELL NAME
-        $cellName = $method.":".$uriCall;
-        $cellName = sha1($cellName);
-
-        if (!empty(self::$_singletons[$cellName])) {
-            return self::$_singletons[$cellName];
-        }
-
-        $apiData = array();
-
-        $apiFile = VAR_DIR.DS.'system'.DS.$cellName.'.php';
-        if (is_file($apiFile)) {
-            $apiData = include($apiFile);
-        }
-
-        self::$_singletons[$cellName] = new Api($apiData, $context);
-
-        return self::$_singletons[$cellName];
-    }
+	public $apiData = array();
 
+	public $methodsMap = array();
+
+	private $_launched = false;
+
+	private $_testing = false;
+
+	private $_debugging = false;
+
+
+	function __construct (array $apiData, ApiController &$context, array $methodsMap) {
+
+		$this->apiData = $apiData;
+		$this->methodsMap = $methodsMap;
+
+		$this->api = $this;
+		$this->context = $context;
+
+		$this->errorPref .= $this->get(Api::NAME).': ';
+	}
+
+
+	private function _initParts () {
+		foreach ($this->_parts as $part) {
+			/** @var ApiPartAbstract $part */
+			$part->init();
+		}
+	}
+
+
+	private function _checkParts () {
+		foreach ($this->_parts as $part) {
+			/** @var ApiPartAbstract $part */
+			$part->check();
+		}
+	}
+
+
+	private function _prepareParts () {
+		foreach ($this->_parts as $part) {
+			/** @var ApiPartAbstract $part */
+			$part->prepare();
+		}
+	}
+
+
+	protected function &_part ($name, &$part) {
+		$this->_parts[$name] = & $part;
+
+		return $part;
+	}
+
+
+	public function testMode () {
+		return $this->_testing;
+	}
+
+
+	public function debugMode () {
+		return $this->_debugging;
+	}
+
+
+	function launch ($actionName, $arguments) {
+
+		if ($this->_launched) {
+			throw new Exception("api mustn't exec twice");
+		}
+		$this->_launched = true;
+
+		$this->api->arguments = $arguments;
+
+		$this->input = $this->_part('input', new ApiInput($this));
+		$this->filter = $this->_part('filter', new ApiFilter($this));
+		$this->output = $this->_part('output', new ApiOutput($this));
+		$this->access = $this->_part('access', new ApiAccess($this));
+		$this->validation = $this->_part('validation', new ApiValidation($this));
+		$this->format = $this->_part('format', new ApiFormat($this));
+		$this->server = $this->_part('server', new ApiServer($this));
+
+		$response = $this->api->get(self::RESPONSE);
+
+		if ($actionName) {
+			$actionName = '_'.$actionName;
+		}
+
+		$methodRew = ApiUtils::get($this->methodsMap, strtoupper($this->api->server->method), $this->api->server->method);
+
+		$this->api->actionName = strtoupper($methodRew).'_'.strtoupper($response['type']).$actionName;
+
+		$this->_initParts();
+
+		$this->_testing = (ENVIRONMENT === "development" || ENVIRONMENT === "testing") && $this->input->query('_testing');
+		$this->_debugging = (ENVIRONMENT === "development" || ENVIRONMENT === "testing") && $this->input->query('_debug');
+
+		// Sure it exists, but can they do anything with it?
+		if (!method_exists($this->context, $this->api->actionName)) {
+			$this->error('Method Not Allowed', 405, true);
+			return;
+		}
+
+		$call = array($this->context, $this->api->actionName);
+
+		$this->api->_checkParts();
+		$this->api->_prepareParts();
+
+		$result = call_user_func_array($call, $arguments);
+
+		if (isset($result)) {
+			$this->api->output->data($result);
+		}
+
+		$this->api->output->send();
+	}
+
+
+	function getErrors () {
+		$errors = array();
+		foreach ($this->_parts as $name => $part) {
+
+			/** @var ApiPartAbstract $part */
+
+			$err = $part->getErrors();
+			if (!empty($err)) {
+				$errors[$name] = $err;
+			}
+		}
+
+		$err = parent::getErrors();
+		if (!empty($err)) {
+			$errors['api'] = $err;
+		}
+
+		return $errors;
+	}
+
+
+	function valid () {
+
+		$vars = get_object_vars($this);
+
+		foreach ($vars as $var) {
+			if ($var instanceof ApiPartAbstract) {
+				if (!$var->valid()) {
+					return false;
+				}
+			}
+		}
+
+		if ($this->getErrors()) {
+			return false;
+		}
+
+		return true;
+	}
+
+
+	function get ($name = null, $default = null) {
+		if (is_null($name)) {
+			return $this->apiData;
+		}
+
+		return isset($this->apiData[$name]) ? $this->apiData[$name] : $default;
+	}
+
+
+	/**
+	 * @param ApiController $context
+	 * @param string        $method
+	 * @param string        $uriCall
+	 * @param array         $arguments
+	 *
+	 * @return Api
+	 */
+	static function instanceBy (ApiController &$context, $method, $uriCall, array $arguments = array()) {
+
+		$parsedFile = VAR_DIR.DS."api.parsed.json";
+
+		$method = strtoupper($method);
+		if (is_null($uriCall)) {
+			$uriCall = $_SERVER["REQUEST_URI"];
+		}
+		$uriCall = str_replace(self::REQUEST_URI_ROOT.'/', '', $uriCall); // TODO: remove valid base URI
+		$uriCall = preg_replace('/\?(.+)$/', '', $uriCall);
+		$uriCall = str_replace('\\', '/', $uriCall);
+		$uriCall = preg_replace('#(/+)$#', '', $uriCall);
+
+		if ($arguments) {
+			$implArgs = implode('|', $arguments);
+			$uriCall = preg_replace('#^('.$implArgs.')$#', '<param>', $uriCall);
+			$uriCall = preg_replace('#^('.$implArgs.')/#', '<param>/', $uriCall);
+			$uriCall = preg_replace('#/('.$implArgs.')/#', '/<param>/', $uriCall);
+			$uriCall = preg_replace('#/('.$implArgs.')$#', '/<param>', $uriCall);
+		}
+		$uriCall = preg_replace('/^\/+/i', '', $uriCall);
+
+		// CELL NAME
+		$cellName = $method.":".$uriCall;
+		$cellName = sha1($cellName);
+
+		if (!empty(self::$_singletons[$cellName])) {
+			return self::$_singletons[$cellName];
+		}
+
+		$apiData = array();
+
+		$apiFile = VAR_DIR.DS.'system'.DS.$cellName.'.php';
+		if (is_file($apiFile)) {
+			$apiData = include($apiFile);
+		}
+
+		$methodsFile = VAR_DIR.DS.'system'.DS.sha1('methods').'.php';
+		$methods = array();
+		if (is_file($methodsFile)) {
+			$methods = include($methodsFile);
+		}
+
+		self::$_singletons[$cellName] = new Api($apiData, $context, $methods);
+
+		return self::$_singletons[$cellName];
+	}
 }

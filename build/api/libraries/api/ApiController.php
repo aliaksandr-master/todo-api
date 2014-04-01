@@ -15,9 +15,7 @@ abstract class ApiController extends CI_Controller {
 
     public function _remap ($object_called, $arguments) {
 		if ($object_called === 'index') {
-			$className = get_class($this);
-			$className = preg_replace('/(|_?controller$)/i', '', $className);
-			$object_called = strtolower($className);
+			$object_called = '';
 		}
         $this->api = Api::instanceBy($this, $_SERVER["REQUEST_METHOD"], $_SERVER["REQUEST_URI"], $arguments);
         $this->api->launch($object_called, $arguments);

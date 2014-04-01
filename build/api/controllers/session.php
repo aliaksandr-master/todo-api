@@ -4,7 +4,7 @@
 
 class Session extends BaseController {
 
-	public function DELETE_user () {
+	public function DELETE_ONE_user () {
 		$id = $this->user->current('id');
 		$this->user->logout();
 
@@ -12,7 +12,7 @@ class Session extends BaseController {
 	}
 
 
-	public function POST_user () {
+	public function CREATE_ONE_user () {
 		$password = $this->user->cryptPassword($this->input('password'));
 
 		$user = $this->user->read(array('username' => $this->input("username"), 'password' => $password));
@@ -34,7 +34,7 @@ class Session extends BaseController {
 	}
 
 
-	public function GET_user () {
+	public function GET_ONE_user () {
 		$user = $this->user->current();
 		if (empty($user)) {
 			$this->api->output->error(null, 404);

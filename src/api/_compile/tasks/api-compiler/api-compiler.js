@@ -43,6 +43,10 @@ module.exports = function(grunt){
 			grunt.log.ok(value.name + ', file: ' + file);
 		});
 
+		var methodsFile  = mainOptions.destDir + sha1('methods') +'.php';
+		grunt.file.write(methodsFile, '<?php \nreturn ' + json2phpArray(options.methods) + ';');
+		grunt.log.ok('file of methods : ' + methodsFile,' was created');
+
 		grunt.file.write(mainOptions.destSourceJsonFile, JSON.stringify(source, null, mainOptions.jsonSpaces));
 		grunt.file.write(mainOptions.destParsedJsonFile, JSON.stringify(parsed, null, mainOptions.jsonSpaces));
 
