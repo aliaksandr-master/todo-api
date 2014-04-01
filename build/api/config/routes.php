@@ -42,8 +42,6 @@
 //$route['404_override'] = '';
 
 //USER
-$route['user'] = 'user/index';
-$route['user/(\d+)'] = 'user/index/$1';
 
 $route['session'] = 'session/user';
 
@@ -52,6 +50,3 @@ $route['todo'] = "todo/list";
 $route['todo/(\d+)'] = "todo/list/$1";
 $route['todo/(\d+)/item'] = "todo/item/$1";
 $route['todo/(\d+)/item/(\d+)'] = 'todo/item/$1/$2';
-
-/* End of file routes.php */
-/* Location: ./application/config/routes.php */

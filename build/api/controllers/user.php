@@ -22,12 +22,12 @@ class User extends ApiController {
 	}
 
 
-	public function GET_index ($userId = null) {
+	public function GET_user ($userId = null) {
 		return is_null($userId) ? $this->getAll() : $this->getOne($userId);
 	}
 
 
-	public function PUT_index ($id) {
+	public function PUT_user ($id) {
 		$data = $this->api->input->pipe($this->user->safeFieldsMap());
 		if ($this->input('password_new')) {
 			$data['password'] = $this->input('password_new');
@@ -38,7 +38,7 @@ class User extends ApiController {
 	}
 
 
-	public function DELETE_index ($id) {
+	public function DELETE_user ($id) {
 		$user = $this->user->read($id);
 		if (empty($user)) {
 			$this->api->output->error(404);
@@ -50,7 +50,7 @@ class User extends ApiController {
 	}
 
 
-	public function POST_index () {
+	public function POST_user () {
 		$data = $this->api->input->pipe($this->user->safeFieldsMap());
 		$data['password'] = $this->user->cryptPassword($data['password']);
 		$data['date_register'] = date("Y-m-d H:i:s", gettimeofday(true));
