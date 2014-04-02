@@ -41,6 +41,8 @@
 //$route['default_controller'] = "";
 //$route['404_override'] = '';
 
+$route['user/(\d+)']       = "user/index/$1";
+
 //TO DO LIST
 $route['todo']       = "todo_list/index";
 $route['todo/(\d+)'] = "todo_list/index/$1";

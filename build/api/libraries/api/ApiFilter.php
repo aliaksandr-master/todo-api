@@ -33,4 +33,20 @@ class ApiFilter extends ApiPartAbstract {
         return trim((string)$value);
     }
 
+    function _filter__to_int ($value, $params = array(), $name) {
+        return (int) $value;
+    }
+
+    function _filter__abs ($value, $params = array(), $name) {
+        return abs($value);
+    }
+
+    function _filter__to_bool ($value, $params = array(), $name) {
+        return (bool) $value;
+    }
+
+    function _filter__to_float ($value, $params = array(), $name) {
+        return (float) $value;
+    }
+
 }

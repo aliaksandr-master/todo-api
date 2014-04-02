@@ -15,12 +15,16 @@ class ApiInput extends ApiPartAbstract {
 
     private $_additionalQueryParams = array(
         array(
-            'name' => '_debug',
+            'name' => '_virtual',
             'type' => 'boolean'
         ),
         array(
-            'name' => '_testing',
-            'type' => 'boolean'
+            'name' => 'limit',
+            'type' => 'decimal'
+        ),
+        array(
+            'name' => 'offset',
+            'type' => 'decimal'
         )
     );
     private $_additionalBodyParams = array();

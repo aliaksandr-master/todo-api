@@ -240,7 +240,7 @@
         },
         "response": {
             "type": "many",
-            "limit": "255",
+            "limit": 255,
             "output": {
                 "data": {
                     "id": {
@@ -816,7 +816,7 @@
         },
         "response": {
             "type": "many",
-            "limit": "255",
+            "limit": 255,
             "output": {
                 "data": {
                     "id": {
@@ -1316,7 +1316,7 @@
         },
         "response": {
             "type": "many",
-            "limit": "255",
+            "limit": 255,
             "output": {
                 "data": {
                     "id": {

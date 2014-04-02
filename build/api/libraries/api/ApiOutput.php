@@ -4,14 +4,42 @@ class ApiOutput extends ApiPartAbstract {
 
     const COMPRESSING = true;
 
+    const VIRTUAL_STATUS = 200;
     const DEFAULT_STATUS = 200;
     const RESPONSE_TYPE_ONE = 'one';
-    const RESPONSE_TYPE_ALL = 'many';
+    const RESPONSE_TYPE_MANY = 'many';
 
     protected $_data = array();
     protected $_meta = array();
 
     protected $_status = null;
+
+	private $_virtualStatus = false;
+
+	private $_response;
+	private $_type;
+	private $_limit = 1;
+	private $_offset = 0;
+	private $_fields = array();
+	private $_responseOutput = array();
+
+	public function init () {
+		parent::init();
+
+
+		$this->_response = $this->api->get(Api::RESPONSE);
+		$this->_responseOutput = ApiUtils::get($this->_response, 'output', array());
+		$this->_type = ApiUtils::get($this->_response, 'type', self::RESPONSE_TYPE_ONE);
+		$this->_limit = ApiUtils::get($this->_response, 'limit', 1);
+		$this->_fields = array_keys(ApiUtils::get($this->_responseOutput, 'data', array()));
+		$this->_offset = $this->api->input->query('offset', 0);
+
+		$_limit  = $this->api->input->query('limit', $this->_limit);
+		$this->_limit = $_limit < $this->_limit ? $_limit : $this->_limit;
+
+
+		$this->_virtualStatus = (bool) $this->api->input->query('_virtual', false);
+	}
 
     public function send ($status = null) {
         $this->status($status);
@@ -51,8 +79,10 @@ class ApiOutput extends ApiPartAbstract {
                         $this->status(500); // empty GET result
                     }
                 }
-            }else if($method == "GET"){
-                // ONLY 200 or SOMETHING CUSTOM
+            }else if ($method == "GET") {
+				if (!$hasData) {
+					$this->status(404);
+				}
             }else if($method == "DELETE"){
                 // ONLY 200 or SOMETHING CUSTOM
                 if(!$hasData){
@@ -77,27 +107,40 @@ class ApiOutput extends ApiPartAbstract {
             } else {
                 $response["data"] = array();
             }
-        }
+
+		}
 
         // SEND RESPONSE
-        if (isset($response["meta"])) {
+        if (!empty($response["meta"])) {
             $response["meta"] = $this->prepareResponseData($response["meta"], 'meta');
         }
 
+		if ($this->_type == self::RESPONSE_TYPE_MANY) {
+			$response["meta"]['count'] = count($response["data"]);
+			$response["meta"]['limit'] = $this->_limit;
+			$response["meta"]['offset'] = $this->_offset;
+		}
+		$response['meta']['fields'] = $this->_fields;
+
+		$response['success'] = $this->status() < 400;
+
         // DEBUG DATA (only for development and testing mode)
-        if ($this->api->debugMode()) {
+        if (Api::DEBUG_MODE) {
             $response["debug"] = array(
                 'url' => $_SERVER['REQUEST_URI'],
                 'method' => $method,
                 'time' => (round((gettimeofday(true) - START_TIME) * 100000) / 100000),
                 'input' => array(
                     'headers' => array(
-                        'accept' => $this->api->server->accept,
-                        'encoding' => $this->api->server->encoding,
-                        'language' => $this->api->server->language,
-                        'inputFormat' => $this->api->server->inputFormat,
-                        'outputFormat' => $this->api->server->outputFormat,
-                        'outputMime' => $this->api->server->outputMime,
+						'raw' => getallheaders(),
+						'parsed' => array (
+							'accept' => $this->api->server->accept,
+							'encoding' => $this->api->server->encoding,
+							'language' => $this->api->server->language,
+							'inputFormat' => $this->api->server->inputFormat,
+							'outputFormat' => $this->api->server->outputFormat,
+							'outputMime' => $this->api->server->outputMime,
+						)
                     ),
                     'server' => array (
                         'ip' => $this->api->server->ip,
@@ -113,17 +156,18 @@ class ApiOutput extends ApiPartAbstract {
                     "url"    => $this->api->input->url(),
                     "query"  => $this->api->input->query(),
                     "body"   => $this->api->input->body(),
-                    "body:source" => INPUT_DATA
+                    "body:raw" => INPUT_DATA
                 ),
                 "api" => $this->api->get()
             );
         }
 
-        $http_code = $this->status();
+		$http_code = $this->status();
+        $public_http_code = $this->_virtualStatus && $http_code >= 400 ? self::VIRTUAL_STATUS : $this->status();
         $response = (string) $this->api->format->applyFormat($response, $this->api->server->outputFormat);
 
-        header('HTTP/1.1: ' . $http_code);
-        header('Status: ' . $http_code);
+        header('HTTP/1.1: ' . $public_http_code);
+        header('Status: ' . $public_http_code);
         header('Content-Length: ' . strlen($response));
         header('Content-Type: '.$this->api->server->outputMime);
 
@@ -200,34 +244,35 @@ class ApiOutput extends ApiPartAbstract {
 
     function prepareResponseData ($data, $keyName = 'data') {
         $_data = array();
-        $response = $this->api->get(Api::RESPONSE);
-        $type = $response['type'];
 
-        if($type == ApiOutput::RESPONSE_TYPE_ONE){
+        if($this->_type == ApiOutput::RESPONSE_TYPE_ONE){
             if (isset($data[0]) && is_array($data[0])) {
                 $data = $data[0];
             }
             if (empty($data)) {
                 return null;
             } else {
-                if (!empty($response['output'][$keyName])) {
-                    foreach ($response['output'][$keyName] as $param) {
+                if (!empty($this->_responseOutput[$keyName])) {
+                    foreach ($this->_responseOutput[$keyName] as $param) {
                         $this->_prepareData($_data, $data, $param, true);
                     }
                 }
             }
-        } else if ($type == ApiOutput::RESPONSE_TYPE_ALL) {
+        } else if ($this->_type == ApiOutput::RESPONSE_TYPE_MANY) {
             if (!empty($data) && (!isset($data[0]) || !is_array($data[0]))) {
                 $data = array($data);
             }
-            if (!empty($response['output'][$keyName])) {
+            if (!empty($this->_responseOutput[$keyName])) {
                 foreach ($data as $k => $_d) {
                     $_data[$k] = array();
-                    foreach ($response['output'][$keyName] as $param) {
+                    foreach ($this->_responseOutput[$keyName] as $param) {
                         $this->_prepareData($_data[$k], $_d, $param, true);
                     }
                 }
             }
+			if ($this->_limit) {
+				$_data = array_slice($_data, 0, $this->_limit);
+			}
         }
 
         return $_data;

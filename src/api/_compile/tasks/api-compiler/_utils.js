@@ -291,7 +291,7 @@ module.exports = function (options, mainOptions) {
 		directive.replace(/^response(?:\s*<\s*([1-9][0-9]*))?$/, function (word, limit) {
 			response = {
 				type: limit ? 'many' : 'one',
-				limit: limit || undefined
+				limit: limit ? +limit : undefined
 			};
 			return '';
 		});

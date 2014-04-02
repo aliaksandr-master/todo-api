@@ -2,7 +2,7 @@
 
 $apiAvl = ENVIRONMENT === "development" || ENVIRONMENT === "testing";
 define('_API_TESTING_MODE_', $apiAvl && !empty($_GET['_testing']));
-define('_API_DEBUG_MODE_', $apiAvl && !empty($_GET['_debug']));
+define('_API_DEBUG_MODE_', _API_TESTING_MODE_ || ($apiAvl && !empty($_GET['_debug'])));
 
 
 
@@ -15,6 +15,8 @@ class Api extends ApiAbstract {
 	const REQUEST_URI_ROOT = API_ROOT_URL; // '/server'
 
 	const NAME = 'name';
+
+	const ERROR_CELL = 'system';
 
 	const VERSION = 'version';
 
@@ -83,14 +85,10 @@ class Api extends ApiAbstract {
 
 	private $_launched = false;
 
-	private $_testing = false;
-
-	private $_debugging = false;
-
-
 	function __construct (array $apiData, ApiController &$context, array $methodsMap) {
 
 		$this->apiData = $apiData;
+
 		$this->methodsMap = $methodsMap;
 
 		$this->api = $this;
@@ -131,16 +129,6 @@ class Api extends ApiAbstract {
 	}
 
 
-	public function testMode () {
-		return $this->_testing;
-	}
-
-
-	public function debugMode () {
-		return $this->_debugging;
-	}
-
-
 	function launch ($actionName, $arguments) {
 
 		if ($this->_launched) {
@@ -170,11 +158,8 @@ class Api extends ApiAbstract {
 
 		$this->_initParts();
 
-		$this->_testing = (ENVIRONMENT === "development" || ENVIRONMENT === "testing") && $this->input->query('_testing');
-		$this->_debugging = (ENVIRONMENT === "development" || ENVIRONMENT === "testing") && $this->input->query('_debug');
-
 		// Sure it exists, but can they do anything with it?
-		if (!method_exists($this->context, $this->api->actionName)) {
+		if (!method_exists($this->context, $this->api->actionName) || !$this->apiData) {
 			$this->error('Method Not Allowed', 405, true);
 			return;
 		}
@@ -208,7 +193,7 @@ class Api extends ApiAbstract {
 
 		$err = parent::getErrors();
 		if (!empty($err)) {
-			$errors['api'] = $err;
+			$errors[self::ERROR_CELL] = $err;
 		}
 
 		return $errors;
@@ -276,7 +261,6 @@ class Api extends ApiAbstract {
 
 		// CELL NAME
 		$cellName = $method.":".$uriCall;
-		$cellName = sha1($cellName);
 
 		if (!empty(self::$_singletons[$cellName])) {
 			return self::$_singletons[$cellName];
@@ -284,7 +268,7 @@ class Api extends ApiAbstract {
 
 		$apiData = array();
 
-		$apiFile = VAR_DIR.DS.'system'.DS.$cellName.'.php';
+		$apiFile = VAR_DIR.DS.'system'.DS.sha1($cellName).'.php';
 		if (is_file($apiFile)) {
 			$apiData = include($apiFile);
 		}
