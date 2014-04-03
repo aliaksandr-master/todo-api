@@ -60,7 +60,8 @@ abstract class ApiAbstract implements IApiError {
         $this->api->output->status($code);
 
         if ($fatal) {
-            $this->api->output->send($code);
+			$this->api->output->status($code);
+            $this->api->output->send();
         }
     }
 

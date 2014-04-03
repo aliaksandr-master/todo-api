@@ -61,12 +61,14 @@ class Api extends ApiAbstract {
 	function __construct ($method, $uri, array $callParams = array(), array $inputData = array()) {
 		$this->api = $this;
 
+		$this->_launchParams['debug/start_timestamp'] = ApiUtils::get($inputData, 'debug/start_timestamp', gettimeofday(true));
 		$this->_launchParams['method'] = strtoupper($method);
 
 		if (!preg_match('/^GET|HEAD|OPTIONS|POST|PUT|DELETE|TRACE|PATCH$/', $this->_launchParams['method'])) {
 			throw new Exception('invalid method name "'.$method.'" !');
 		}
 
+		// todo: change to PATH key
 		$this->_launchParams['uri']    = preg_replace('/^([^\?]+)\?(.*)$/', '$1', $uri);
 		$this->_launchParams['search'] = preg_replace('/^([^\?]+)\?(.*)$/', '$2', $uri);
 
@@ -140,7 +142,7 @@ class Api extends ApiAbstract {
 
 	function launch () {
 		if ($this->_launched) {
-			return;
+			return null;
 		}
 		$this->_launched = true;
 
@@ -160,7 +162,7 @@ class Api extends ApiAbstract {
 
 		if (!method_exists($this->context, $this->getLaunchParam('action_to_call')) || !$this->apiData) {
 			$this->error('Method Not Allowed', 405, true);
-			return;
+			return null;
 		}
 
 		// CHECK
@@ -181,7 +183,11 @@ class Api extends ApiAbstract {
 			$this->api->output->data($result);
 		}
 
-		$this->api->output->send();
+		return $this->api->output->compile();
+	}
+
+	public function send($compress){
+		$this->api->output->send($compress);
 	}
 
 	protected function &setPart ($name, &$part) {

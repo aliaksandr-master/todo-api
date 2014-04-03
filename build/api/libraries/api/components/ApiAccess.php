@@ -38,7 +38,7 @@ class ApiAccess extends ApiComponentAbstract {
             $ip = trim($ip);
         }
         if (!in_array($this->api->server->ip, $whiteList)) {
-            $this->api->output->send(401);
+			$this->api->output->status(401);
         }
     }
 
@@ -78,9 +78,8 @@ class ApiAccess extends ApiComponentAbstract {
     }
 
     function checkContextToCall () {
-        $method = strtoupper($_SERVER["REQUEST_METHOD"]);
         $controllerName = get_class($this->api->context);
-        $hasAccess = $this->api->context->hasAccess($method, $controllerName, $this->api->getLaunchParam('action_to_call'));
+        $hasAccess = $this->api->context->hasAccess($this->api->getLaunchParam('method'), $controllerName, $this->api->getLaunchParam('action_to_call'));
         if(!$hasAccess){
             $this->error(ApiAccess::ACTION, 403);
             $this->api->output->send();

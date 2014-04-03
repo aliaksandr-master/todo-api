@@ -41,79 +41,83 @@ class ApiOutput extends ApiComponentAbstract {
 		$this->_virtualStatus = (bool) $this->api->input->query('_virtual', false);
 	}
 
-    public function send ($status = null) {
-        $this->status($status);
+	private $_compiled = null;
 
-        $method  = strtoupper($_SERVER["REQUEST_METHOD"]);
+	public function compile () {
+		if (!is_null($this->_compiled)) {
+			return $this->_compiled;
+		}
 
-        $response = array(
-            'status' => $this->status(),
-            'data' => $this->_data
-        );
+		$method  = $this->api->getLaunchParam('method');
 
-        if ($this->_meta) {
-            $response['meta'] = $this->_meta;
-        }
+		$response = array(
+			'status' => $this->status(),
+			'data' => $this->_data
+		);
 
-        $errors = $this->api->getErrors();
-        if ($errors) {
-            $response['errors'] = $errors;
-        }
+		if ($this->_meta) {
+			$response['meta'] = $this->_meta;
+		}
 
-        $hasData = !empty($response['data']);
+		$errors = $this->api->getErrors();
+		if ($errors) {
+			$response['errors'] = $errors;
+		}
 
-        if ($this->api->valid()) {
-            if ($method == "POST") {
-                if ($hasData) {
-                    $this->status(201); // created new resource
-                } else {
-                    if($this->api->valid()){
-                        $this->status(404); // empty GET result
-                    }
-                }
-            }else if($method == "PUT"){
-                if($hasData){
-                    $this->status(200); // updated resource
-                }else{
-                    if($this->api->valid()){
-                        $this->status(500); // empty GET result
-                    }
-                }
-            }else if ($method == "GET") {
+		$hasData = !empty($response['data']);
+
+		if ($this->api->valid()) {
+			if ($method == "POST") {
+				if ($hasData) {
+					$this->status(201); // created new resource
+				} else {
+					if($this->api->valid()){
+						$this->status(404); // empty GET result
+					}
+				}
+			}else if($method == "PUT"){
+				if($hasData){
+					$this->status(200); // updated resource
+				}else{
+					if($this->api->valid()){
+						$this->status(500); // empty GET result
+					}
+				}
+			}else if ($method == "GET") {
 				if (!$hasData) {
 					$this->status(404);
 				}
-            }else if($method == "DELETE"){
-                // ONLY 200 or SOMETHING CUSTOM
-                if(!$hasData){
-                    if($this->api->valid()){
-                        $this->status(500); // you must send Boolean response
-                    }
-                }
-            }
-        }
+			}else if($method == "DELETE"){
+				// ONLY 200 or SOMETHING CUSTOM
+				if(!$hasData){
+					if($this->api->valid()){
+						$this->status(500); // you must send Boolean response
+					}
+				}
+			}
+		}
 
-        // SEND RESPONSE
-        if (!$this->api->valid()) {
-            $response["data"] = array();
-        } else {
-            if (isset($response["data"])) {
-                $data = $this->prepareResponseData($response["data"], 'data');
-                if (is_null($data)) {
-                    $response["data"] = array();
-                } else {
-                    $response["data"] = $data;
-                }
-            } else {
-                $response["data"] = array();
-            }
+		// SEND RESPONSE
+		if (!$this->api->valid()) {
+			$response["data"] = array();
+		} else {
+			if (isset($response["data"])) {
+				$data = $this->prepareResponseData($response["data"], 'data');
+				if (is_null($data)) {
+					$response["data"] = array();
+				} else {
+					$response["data"] = $data;
+				}
+			} else {
+				$response["data"] = array();
+			}
 
 		}
 
-        // SEND RESPONSE
-        if (!empty($response["meta"])) {
-            $response["meta"] = $this->prepareResponseData($response["meta"], 'meta');
-        }
+		// SEND RESPONSE
+		if (!empty($response["meta"])) {
+			$response["meta"] = $this->prepareResponseData($response["meta"], 'meta');
+		}
 
 		if ($this->_type == self::RESPONSE_TYPE_MANY) {
 			$response["meta"]['count'] = count($response["data"]);
@@ -124,15 +128,15 @@ class ApiOutput extends ApiComponentAbstract {
 
 		$response['success'] = $this->status() < 400;
 
-        // DEBUG DATA (only for development and testing mode)
-        if (Api::DEBUG_MODE) {
-            $response["debug"] = array(
-                'url' => $_SERVER['REQUEST_URI'],
-                'method' => $method,
-                'time' => (round((gettimeofday(true) - $_SERVER['REQUEST_TIME']) * 100000) / 100000),
-                'input' => array(
-                    'headers' => array(
-						'raw' => getallheaders(),
+		// DEBUG DATA (only for development and testing mode)
+		if (Api::DEBUG_MODE) {
+			$response["debug"] = array(
+				'uri' => $this->api->getLaunchParam('uri'),
+				'method' => $method,
+				'time' => (round((gettimeofday(true) - $this->api->getLaunchParam('debug/start_timestamp')) * 100000) / 100000),
+				'input' => array(
+					'headers' => array(
+						'raw' => $this->api->getLaunchParam('input/headers'),
 						'parsed' => array (
 							'accept' => $this->api->server->accept,
 							'encoding' => $this->api->server->encoding,
@@ -141,44 +145,92 @@ class ApiOutput extends ApiComponentAbstract {
 							'outputFormat' => $this->api->server->outputFormat,
 							'outputMime' => $this->api->server->outputMime,
 						)
-                    ),
-                    'server' => array (
-                        'ip' => $this->api->server->ip,
-                        'host' => $this->api->server->host,
-                        'hostname' => $this->api->server->hostname,
-                        'port' => $this->api->server->port,
-                        'path' => $this->api->server->path,
-                        'pathname' => $this->api->server->pathname,
-                        'search' => $this->api->server->search,
-                        'scheme' => $this->api->server->scheme,
-                        'protocol' => $this->api->server->protocol,
-                    ),
-                    "url"    => $this->api->input->url(),
-                    "query"  => $this->api->input->query(),
-                    "body"   => $this->api->input->body(),
-                    "body:raw" => INPUT_DATA
-                ),
-                "api" => $this->api->get()
-            );
-        }
+					),
+					'server' => array (
+						'ip' => $this->api->server->ip,
+						'host' => $this->api->server->host,
+						'hostname' => $this->api->server->hostname,
+						'port' => $this->api->server->port,
+						'path' => $this->api->server->path,
+						'pathname' => $this->api->server->pathname,
+						'search' => $this->api->server->search,
+						'scheme' => $this->api->server->scheme,
+						'protocol' => $this->api->server->protocol,
+					),
+					"url"    => $this->api->input->url(),
+					"query"  => $this->api->input->query(),
+					"body"   => $this->api->input->body(),
+					"body:raw" => INPUT_DATA
+				),
+				"api" => $this->api->get()
+			);
+		}
 
 		$http_code = $this->status();
-        $public_http_code = $this->_virtualStatus && $http_code >= 400 ? self::VIRTUAL_STATUS : $this->status();
-        $response = (string) $this->api->format->applyFormat($response, $this->api->server->outputFormat);
 
-        header('HTTP/1.1: ' . $public_http_code);
-        header('Status: ' . $public_http_code);
-        header('Content-Length: ' . strlen($response));
-        header('Content-Type: '.$this->api->server->outputMime);
+		$response['status'] = $http_code;
 
-        $zlibOc = @ini_get('zlib.output_compression');
-        $compressing = self::COMPRESSING && !$zlibOc && extension_loaded('zlib') && ApiUtils::get($this->api->server->encoding, 'gzip', false);
+		$public_http_code = $this->_virtualStatus && $http_code >= 400 ? self::VIRTUAL_STATUS : $this->status();
 
-        if (!$zlibOc && !$compressing) {
-            header('Content-Length: ' . strlen($response));
-        } else if ($compressing) {
-            ob_start('ob_gzhandler');
-        }
+		$this->setHeader('Content-Type', $this->api->server->outputMime);
+
+		$this->_compiled = array(
+			'response' => $response,
+			'status' => $public_http_code,
+			'headers' => $this->getHeaders()
+		);
+
+		return $this->_compiled;
+	}
+
+
+	private $_headers = array();
+
+	public function setHeader ($name, $value) {
+		$this->_headers[$name] = $value;
+	}
+
+	public function removeHeader ($name) {
+		unset($this->_headers[$name]);
+	}
+
+	public function getHeaders () {
+		return $this->_headers;
+	}
+
+	public function getHeader ($name, $default = null) {
+		return ApiUtils::get($this->_headers, $name, $default);
+	}
+
+    public function send ($compress = false) {
+
+		$_response = $this->compile();
+		$response = $_response['response'];
+
+		$headers = $_response['headers'];
+		$status = $_response['status'];
+
+        header('HTTP/1.1: '.$status);
+        header('Status: '.$status);
+		foreach($headers as $headerName => $headerValue) {
+			header($headerName.': '.$headerValue);
+		}
+
+		$response = (string) $this->api->format->applyFormat($response, $this->api->server->outputFormat);
+
+		if ($compress) {
+			$zlibOc = @ini_get('zlib.output_compression');
+			$compressing = self::COMPRESSING && !$zlibOc && extension_loaded('zlib') && ApiUtils::get($this->api->server->encoding, 'gzip', false);
+
+
+			if (!$zlibOc && !$compressing) {
+				header('Content-Length: ' . strlen($response));
+			} else if ($compressing) {
+				ob_start('ob_gzhandler');
+			}
+		} else {
+			header('Content-Length: ' . strlen($response));
+		}
 
         exit($response);
     }

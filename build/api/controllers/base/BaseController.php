@@ -33,9 +33,11 @@ class BaseController extends CI_Controller implements IApiController {
 			'ssl' => ApiUtils::get($_SERVER, 'HTTPS') === 'on',
 			'scheme' => ApiUtils::get($_SERVER, 'REQUEST_SCHEME'),
 			'port' => ApiUtils::get($_SERVER, 'SERVER_PORT'),
+			'debug/start_timestamp' => ApiUtils::get($_SERVER, 'REQUEST_TIME', gettimeofday(true))
 		));
 
 		$this->api->launch();
+		$this->api->send(true);
 	}
 
 	function compileMethodName ($action, $method, $methodAliasesMap, $responseType) {
