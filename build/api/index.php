@@ -4,8 +4,6 @@
  *   DEFINE MAIN
  * -------------------------------------------------------------------
  */
-define("START_TIME", gettimeofday(true));
-
 define('DS', '/');
 define('SD', '\\');
 
@@ -17,8 +15,6 @@ define("SESSION_DIR", CACHE_DIR.DS."session");
 define("INDEX_DIR_NAME", array_pop(explode(DS, SERVER_DIR)));
 
 define('API_ROOT_URL', pathinfo(str_replace(SD, DS, $_SERVER['SCRIPT_NAME']), PATHINFO_DIRNAME));
-
-$_SERVER['REQUEST_URI'] = str_replace(API_ROOT_URL, '', $_SERVER['REQUEST_URI']);
 
 /*
  * -------------------------------------------------------------------
@@ -52,7 +48,7 @@ spl_autoload_register(function ($className) {
 });
 
 
-
+require_once('helpers/dump_helper.php');
 
 
 /*
@@ -61,15 +57,6 @@ spl_autoload_register(function ($className) {
  * -------------------------------------------------------------------
  */
 define("INPUT_DATA", file_get_contents("php://input"));
-$exploded = explode('&', INPUT_DATA);
-$_INPUT = array();
-foreach($exploded as $pair) {
-    $item = explode('=', $pair);
-    if(count($item) == 2) {
-        $_INPUT[urldecode($item[0])] = urldecode($item[1]);
-    }
-}
-$GLOBALS["_INPUT_"] = $_INPUT;
 
 
 

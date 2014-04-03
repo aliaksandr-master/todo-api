@@ -14,12 +14,37 @@ abstract class ApiController extends CI_Controller {
     }
 
     public function _remap ($object_called, $arguments) {
-		if ($object_called === 'index') {
-			$object_called = '';
-		}
-        $this->api = Api::instanceBy($this, $_SERVER["REQUEST_METHOD"], $_SERVER["REQUEST_URI"], $arguments);
-        $this->api->launch($object_called, $arguments);
+		$query = array();
+		parse_str($_SERVER['QUERY_STRING'], $query);
+
+		$url = str_replace(API_ROOT_URL, '', $_SERVER['REQUEST_URI']);
+
+		$this->api = new Api($_SERVER["REQUEST_METHOD"], $url, array(
+			'controller' => $this,
+			'action' => $object_called
+		), array(
+			'body' => INPUT_DATA,
+			'args' => $arguments,
+			'query' => $query,
+			'headers' => getallheaders(),
+			'ip' => $_SERVER['REMOTE_ADDR']
+		));
+
+		$this->api->launch();
     }
+
+	function compileMethodName ($action, $method, $methodAliasesMap, $responseType) {
+		if ($action === 'index') {
+			$action = '';
+		}
+		$action = strtoupper(ApiUtils::get($methodAliasesMap, $method, $method)).'_'.strtoupper($responseType).($action || strlen($action) ? '_'.$action : '');
+		return $action;
+	}
+
+	function callMethod ($actionName) {
+		$call = array($this, $actionName);
+		return call_user_func_array($call, $this->api->getLaunchParam('input/args'));
+	}
 
     function input ($name = null, $default = null) {
         return $this->api->input->get($name, $default);

@@ -129,7 +129,7 @@ class ApiOutput extends ApiPartAbstract {
             $response["debug"] = array(
                 'url' => $_SERVER['REQUEST_URI'],
                 'method' => $method,
-                'time' => (round((gettimeofday(true) - START_TIME) * 100000) / 100000),
+                'time' => (round((gettimeofday(true) - $_SERVER['REQUEST_TIME']) * 100000) / 100000),
                 'input' => array(
                     'headers' => array(
 						'raw' => getallheaders(),
@@ -238,7 +238,7 @@ class ApiOutput extends ApiPartAbstract {
         if (isset($data[$name])) {
             $_data[$name] = $this->api->format->toType($data[$name], $param["type"]);
         } else if ($strict) {
-            trigger_error("Api '".$this->api->get(Api::NAME)."': invalid response. '".$name."' is undefined!");
+            trigger_error("Api '".$this->api->get('name')."': invalid response. '".$name."' is undefined!");
         }
     }
 

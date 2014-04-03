@@ -64,7 +64,6 @@ class ApiServer extends ApiPartAbstract {
     );
 
     function construct () {
-
         $this->_initHttps();
         $this->_initHeaders();
         $this->_initIp();
@@ -96,7 +95,7 @@ class ApiServer extends ApiPartAbstract {
     }
 
     function _initUrlArguments () {
-        $this->url = $this->api->arguments;
+        $this->url = $this->api->getLaunchParam('input/args');
     }
 
     private function parseFormUriEncodedParams ($input) {

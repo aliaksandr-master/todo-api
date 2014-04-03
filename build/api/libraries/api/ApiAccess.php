@@ -15,7 +15,7 @@ class ApiAccess extends ApiPartAbstract {
     private $_accesses = array();
 
     function init(){
-        $this->_accesses = $this->api->get(Api::ACCESS);
+        $this->_accesses = $this->api->get('access');
     }
 
     function check () {
@@ -80,7 +80,7 @@ class ApiAccess extends ApiPartAbstract {
     function checkContextToCall () {
         $method = strtoupper($_SERVER["REQUEST_METHOD"]);
         $controllerName = get_class($this->api->context);
-        $hasAccess = $this->api->context->hasAccess($method, $controllerName, $this->api->actionName);
+        $hasAccess = $this->api->context->hasAccess($method, $controllerName, $this->api->getLaunchParam('action_to_call'));
         if(!$hasAccess){
             $this->error(ApiAccess::ACTION, 403);
             $this->api->output->send();
