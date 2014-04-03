@@ -156,7 +156,7 @@ class Api extends ApiAbstract {
 
 		// INIT
 		foreach ($this->_parts as $part) {
-			/** @var ApiComponentAbstract $part */
+			/** @var ApiComponent $part */
 			$part->init();
 		}
 
@@ -167,13 +167,13 @@ class Api extends ApiAbstract {
 
 		// CHECK
 		foreach ($this->_parts as $part) {
-			/** @var ApiComponentAbstract $part */
+			/** @var ApiComponent $part */
 			$part->check();
 		}
 
 		// PREPARE
 		foreach ($this->_parts as $part) {
-			/** @var ApiComponentAbstract $part */
+			/** @var ApiComponent $part */
 			$part->prepare();
 		}
 
@@ -200,7 +200,7 @@ class Api extends ApiAbstract {
 		$errors = array();
 		foreach ($this->_parts as $name => $part) {
 
-			/** @var ApiComponentAbstract $part */
+			/** @var ApiComponent $part */
 
 			$err = $part->getErrors();
 			if (!empty($err)) {
@@ -217,7 +217,7 @@ class Api extends ApiAbstract {
 	function valid () {
 		$vars = get_object_vars($this);
 		foreach ($vars as $var) {
-			if ($var instanceof ApiComponentAbstract) {
+			if ($var instanceof ApiComponent) {
 				if (!$var->valid()) {
 					return false;
 				}

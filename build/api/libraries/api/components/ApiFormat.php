@@ -1,6 +1,6 @@
 <?php
 
-class ApiFormat extends ApiComponentAbstract {
+class ApiFormat extends ApiComponent {
 
 	const TYPE_TEXT = 'text';
 	const TYPE_DECIMAL = 'decimal';

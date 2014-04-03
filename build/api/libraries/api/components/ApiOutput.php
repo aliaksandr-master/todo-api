@@ -1,6 +1,6 @@
 <?php
 
-class ApiOutput extends ApiComponentAbstract {
+class ApiOutput extends ApiComponent {
 
     const COMPRESSING = true;
 

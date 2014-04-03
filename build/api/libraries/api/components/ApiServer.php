@@ -1,6 +1,6 @@
 <?php
 
-class ApiServer extends ApiComponentAbstract {
+class ApiServer extends ApiComponent {
 
     public $ip;
     public $method;

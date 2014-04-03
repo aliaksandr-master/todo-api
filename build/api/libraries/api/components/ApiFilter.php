@@ -1,6 +1,6 @@
 <?php
 
-class ApiFilter extends ApiComponentAbstract {
+class ApiFilter extends ApiComponent {
 
     function init () {}
 

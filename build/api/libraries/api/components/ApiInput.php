@@ -1,7 +1,7 @@
 <?php
 
 
-class ApiInput extends ApiComponentAbstract {
+class ApiInput extends ApiComponent {
 
     private $_input = array();
 
