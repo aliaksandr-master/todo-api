@@ -1,6 +1,6 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
-abstract class ApiController extends CI_Controller {
+abstract class ApiController extends CI_Controller implements IApiController {
 
     /** @var UserModel */
     public $user;
@@ -8,14 +8,7 @@ abstract class ApiController extends CI_Controller {
     /** @var Api */
     protected $api = null;
 
-    public function __construct () {
-        parent::__construct();
-        $this->user = UserModel::instance();
-    }
-
     public function _remap ($object_called, $arguments) {
-		$query = array();
-		parse_str($_SERVER['QUERY_STRING'], $query);
 
 		$url = str_replace(API_ROOT_URL, '', $_SERVER['REQUEST_URI']);
 
@@ -25,9 +18,12 @@ abstract class ApiController extends CI_Controller {
 		), array(
 			'body' => INPUT_DATA,
 			'args' => $arguments,
-			'query' => $query,
+			'query' => array(),
 			'headers' => getallheaders(),
-			'ip' => $_SERVER['REMOTE_ADDR']
+			'ip' => $_SERVER['REMOTE_ADDR'],
+			'ssl' => ApiUtils::get($_SERVER, 'HTTPS') === 'on',
+			'scheme' => ApiUtils::get($_SERVER, 'REQUEST_SCHEME'),
+			'port' => ApiUtils::get($_SERVER, 'SERVER_PORT'),
 		));
 
 		$this->api->launch();
@@ -51,12 +47,10 @@ abstract class ApiController extends CI_Controller {
     }
 
     public function hasAccess($method, $controllerName, $actionName){
-        $actionName = preg_replace('/_(put|get|delete|option|post|head)$/i', '', $actionName);
-        $controllerName = strtolower($controllerName);
-        $actionName = strtolower($actionName);
-        $method = strtolower($method);
-        $callName = $method.":".$controllerName."/".$actionName;
-        $callNameAny = "ANY:".$controllerName."/".$actionName;
+		$handler = strtolower($controllerName)."#".$actionName;
+
+        $callName = strtoupper($method).":".$handler;
+        $callNameAny = "ANY:".$handler;
 
         // TODO: must use ACCESS MODEL and USER MODEL to create Access-array
         $accesses = array();
@@ -68,10 +62,6 @@ abstract class ApiController extends CI_Controller {
             return false;
         }
         return true;
-    }
-
-    function response ($sendData) {
-        exit($sendData);
     }
 
 }

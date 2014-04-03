@@ -1,6 +1,6 @@
 <?php
 
-class ApiOutput extends ApiPartAbstract {
+class ApiOutput extends ApiComponentAbstract {
 
     const COMPRESSING = true;
 
@@ -180,7 +180,7 @@ class ApiOutput extends ApiPartAbstract {
             ob_start('ob_gzhandler');
         }
 
-        $this->api->context->response($response);
+        exit($response);
     }
 
     function status($code = null){

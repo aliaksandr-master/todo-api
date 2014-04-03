@@ -1,7 +1,7 @@
 <?php
 
 
-class ApiAccess extends ApiPartAbstract {
+class ApiAccess extends ApiComponentAbstract {
 
     const ONLY_OWNER = 'only_owner';
     const NEED_LOGIN = 'need_login';

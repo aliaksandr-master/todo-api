@@ -72,5 +72,4 @@ abstract class ApiAbstract implements IApiError {
         return empty($this->_errors);
     }
 
-
 }

@@ -1,10 +1,10 @@
 <?php
 
-class ApiServer extends ApiPartAbstract {
+class ApiServer extends ApiComponentAbstract {
 
-    public $ip = '0.0.0.0';
-    public $method = 'GET';
-    public $ssl = false;
+    public $ip;
+    public $method;
+    public $ssl;
 
     public $pathname;
     public $path;
@@ -26,6 +26,7 @@ class ApiServer extends ApiPartAbstract {
     public $body;
     public $query;
     public $url;
+    public $headers;
 
     public $zlib_oc;
 
@@ -64,6 +65,9 @@ class ApiServer extends ApiPartAbstract {
     );
 
     function construct () {
+
+		$this->headers = $this->api->getLaunchParam('input/headers');
+
         $this->_initHttps();
         $this->_initHeaders();
         $this->_initIp();
@@ -81,17 +85,31 @@ class ApiServer extends ApiPartAbstract {
     }
 
     function _initBody () {
-        switch ($this->inputFormat) {
-            case 'form':
-                $this->body = $this->parseFormUriEncodedParams(INPUT_DATA);
-                break;
-            case 'json':
-                $this->body = json_decode(INPUT_DATA, true);
-        }
+		$body = $this->api->getLaunchParam('input/body');
+		if (is_array($body)) {
+			$this->body = $body;
+			return;
+		}
+
+		if (is_string($body)) {
+			switch ($this->inputFormat) {
+				case 'form':
+					$this->body = $this->parseFormUriEncodedParams($body);
+					break;
+				case 'json':
+					$this->body = json_decode(INPUT_DATA, true);
+			}
+		}
+
+		$this->body = array();
     }
 
     function _initQuery(){
-        $this->query = $_GET;
+
+		$search = array();
+		parse_str($this->search, $search);
+
+        $this->query = array_replace_recursive($search, $this->api->getLaunchParam('input/query'));
     }
 
     function _initUrlArguments () {
@@ -102,7 +120,7 @@ class ApiServer extends ApiPartAbstract {
         $a_data = array();
 
         // grab multipart boundary from content type header
-        preg_match('/boundary=(.*)$/u', $this->get('CONTENT_TYPE'), $matches);
+        preg_match('/boundary=(.*)$/u', ApiUtils::get($this->headers, 'Content-Type'), $matches);
 
         // content type is probably regular form-encoded
         if (!count($matches)) {
@@ -197,23 +215,22 @@ class ApiServer extends ApiPartAbstract {
     }
 
     private function _initHeaders () {
+        $this->accept      = $this->_detectSomeByQualityString(ApiUtils::get($this->headers, 'Accept'));
+        $this->language    = $this->_detectSomeByQualityString(ApiUtils::get($this->headers, 'Accept-Language'));
+        $this->encoding    = $this->_detectSomeByQualityString(ApiUtils::get($this->headers, 'Accept-Encoding'));
 
-        $this->accept      = $this->_detectSomeByQualityString($this->get('HTTP_ACCEPT'));
-        $this->language    = $this->_detectSomeByQualityString($this->get('HTTP_ACCEPT_LANGUAGE'));
-        $this->encoding    = $this->_detectSomeByQualityString($this->get('HTTP_ACCEPT_ENCODING'));
+        $this->userAgent   = ApiUtils::get($this->headers, 'User-Agent');
 
-        $this->userAgent   = $this->get('HTTP_USER_AGENT', '');
-
-        preg_match('/^([^\?]*)\??(.*)$/i', $this->get('REQUEST_URI'), $match);
+        preg_match('/^([^\?]*)$/i', $this->api->getLaunchParam('uri'), $match);
 
         $this->pathname = preg_replace('#^/*(.+)$#', '/$1', $match[1]);
         $this->pathname = str_replace('\\', '/', $this->pathname);
-        $this->search = $match[2];
+        $this->search = $this->api->getLaunchParam('search');
         $this->path = $this->pathname.($this->search ? '?'.$this->search : '');
-        $this->hostname = $this->get('HTTP_HOST', 'localhost');
-        $this->port = $this->get('SERVER_PORT', 80);
+        $this->hostname = $this->api->getLaunchParam('host');
+        $this->port = $this->api->getLaunchParam('port');
         $this->host = $this->hostname.':'.$this->port;
-        $this->scheme = $this->get('REQUEST_SCHEME', 'http');
+        $this->scheme = $this->api->getLaunchParam('scheme');
         $this->protocol = $this->scheme.':';
     }
 
@@ -260,7 +277,7 @@ class ApiServer extends ApiPartAbstract {
 
         $format = null;
 
-        $contentType = $this->get('CONTENT_TYPE', '');
+        $contentType = ApiUtils::get($this->headers, 'Content-Type');
         $contentType = trim($contentType);
         $contentType = preg_replace('/;.+/', '', $contentType);
 
@@ -288,25 +305,15 @@ class ApiServer extends ApiPartAbstract {
     }
 
     private function _initHttps () {
-        $this->ssl = $this->get('HTTPS') === 'on';
+        $this->ssl = $this->api->getLaunchParam('ssl');
     }
 
     private function _initMethod () {
-
-        $method = $this->get('REQUEST_METHOD');
-        $method = strtoupper($method);
-
-        if (!preg_match('/^GET|HEAD|OPTIONS|POST|PUT|DELETE|TRACE|PATCH$/', $method)) {
-            throw new Exception('invalid method name "'.$method.'" !');
-        }
-
-        $this->method = $method;
+        $this->method = $this->api->getLaunchParam('method');
     }
 
     private function _initIp () {
-
-        $ip = $this->get('REMOTE_ADDR', $this->ip);
-
+        $ip = $this->api->getLaunchParam('ip');
         $this->ip = $this->api->validation->applyRule($ip, 'valid_ip') ? $ip : $this->ip;
     }
 }

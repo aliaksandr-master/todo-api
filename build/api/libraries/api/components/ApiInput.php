@@ -1,7 +1,7 @@
 <?php
 
 
-class ApiInput extends ApiPartAbstract {
+class ApiInput extends ApiComponentAbstract {
 
     private $_input = array();
 
@@ -27,6 +27,7 @@ class ApiInput extends ApiPartAbstract {
             'type' => 'decimal'
         )
     );
+
     private $_additionalBodyParams = array();
 
     function init (){

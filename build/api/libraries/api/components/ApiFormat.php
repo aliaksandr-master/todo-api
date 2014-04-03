@@ -1,6 +1,13 @@
 <?php
 
-class ApiFormat extends ApiPartAbstract {
+class ApiFormat extends ApiComponentAbstract {
+
+	const TYPE_TEXT = 'text';
+	const TYPE_DECIMAL = 'decimal';
+	const TYPE_STRING = 'string';
+	const TYPE_INTEGER = 'integer';
+	const TYPE_FLOAT = 'float';
+	const TYPE_BOOLEAN = 'boolean';
 
     public function applyFormat ($value, $formatName, array $params = array(), $contextName = null) {
         $method = '_format__'.$formatName;
@@ -20,12 +27,12 @@ class ApiFormat extends ApiPartAbstract {
 
     public function toType ($var, $type, $param = null) {
         switch ($type) {
-            case Api::TYPE_DECIMAL:
-            case Api::TYPE_INTEGER:
+            case ApiFormat::TYPE_DECIMAL:
+            case ApiFormat::TYPE_INTEGER:
                 return intval(trim((string) $var));
-            case Api::TYPE_FLOAT:
+            case ApiFormat::TYPE_FLOAT:
                 return floatval(trim((string) $var));
-            case Api::TYPE_BOOLEAN:
+            case ApiFormat::TYPE_BOOLEAN:
                 return (bool) $var;
         }
         return trim((string) $var); // default type = string

@@ -21,13 +21,6 @@ class Api extends ApiAbstract {
 
 	const REQUEST = 'request';
 
-	const TYPE_TEXT = 'text';
-	const TYPE_DECIMAL = 'decimal';
-	const TYPE_STRING = 'string';
-	const TYPE_INTEGER = 'integer';
-	const TYPE_FLOAT = 'float';
-	const TYPE_BOOLEAN = 'boolean';
-
 	/** @var ApiController */
 	public $context;
 
@@ -69,9 +62,19 @@ class Api extends ApiAbstract {
 		$this->api = $this;
 
 		$this->_launchParams['method'] = strtoupper($method);
-		$this->_launchParams['uri']    = preg_replace('/^([^\?]+)?.+$/', '$1', $uri);
 
-		$this->_launchParams['ip']            = ApiUtils::get($inputData, 'ip', null);
+		if (!preg_match('/^GET|HEAD|OPTIONS|POST|PUT|DELETE|TRACE|PATCH$/', $this->_launchParams['method'])) {
+			throw new Exception('invalid method name "'.$method.'" !');
+		}
+
+		$this->_launchParams['uri']    = preg_replace('/^([^\?]+)\?(.*)$/', '$1', $uri);
+		$this->_launchParams['search'] = preg_replace('/^([^\?]+)\?(.*)$/', '$2', $uri);
+
+		$this->_launchParams['ip']            = ApiUtils::get($inputData, 'ip', '0.0.0.0');
+		$this->_launchParams['ssl']           = (bool) ApiUtils::get($inputData, 'ssl', false);
+		$this->_launchParams['port']          = ApiUtils::get($inputData, 'port', 80);
+		$this->_launchParams['scheme']        = ApiUtils::get($inputData, 'shcme', 'http');
+		$this->_launchParams['host']          = ApiUtils::get($inputData, 'host', 'localhost');
 		$this->_launchParams['input/body']    = ApiUtils::get($inputData, 'body', array());
 		$this->_launchParams['input/args']    = ApiUtils::get($inputData, 'args', array());
 		$this->_launchParams['input/query']   = ApiUtils::get($inputData, 'query', array());
@@ -91,7 +94,7 @@ class Api extends ApiAbstract {
 		$apiData = array();
 		$methodsMap = array();
 
-		$apiFile = VAR_DIR.DS.'system'.DS.sha1($cellName).'.php';
+		$apiFile =     VAR_DIR.DS.'system'.DS.sha1($cellName).'.php';
 		$methodsFile = VAR_DIR.DS.'system'.DS.sha1('methods').'.php';
 
 		if (is_file($apiFile)) {

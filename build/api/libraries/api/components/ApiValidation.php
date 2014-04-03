@@ -1,6 +1,6 @@
 <?php
 
-class ApiValidation extends ApiPartAbstract {
+class ApiValidation extends ApiComponentAbstract {
 
     public function applyRule ($value, $ruleName, array $params = array(), $contextName = null) {
         $method = '_rule__'.$ruleName;

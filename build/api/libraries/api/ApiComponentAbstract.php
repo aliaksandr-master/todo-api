@@ -1,6 +1,6 @@
 <?php
 
-abstract class ApiPartAbstract extends ApiAbstract {
+abstract class ApiComponentAbstract extends ApiAbstract {
 
     /** @var array */
     protected $_initParams;
