@@ -98,10 +98,14 @@ class ApiServer extends ApiComponentAbstract {
 					break;
 				case 'json':
 					$this->body = json_decode(INPUT_DATA, true);
+					break;
+				default:
+				$this->body = array();
 			}
+		} else {
+			$this->body = array();
 		}
 
-		$this->body = array();
     }
 
     function _initQuery(){

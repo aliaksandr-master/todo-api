@@ -21,7 +21,7 @@ class Api extends ApiAbstract {
 
 	const REQUEST = 'request';
 
-	/** @var ApiController */
+	/** @var IApiController */
 	public $context;
 
 	/** @var Api */
@@ -154,7 +154,7 @@ class Api extends ApiAbstract {
 
 		// INIT
 		foreach ($this->_parts as $part) {
-			/** @var ApiPartAbstract $part */
+			/** @var ApiComponentAbstract $part */
 			$part->init();
 		}
 
@@ -165,13 +165,13 @@ class Api extends ApiAbstract {
 
 		// CHECK
 		foreach ($this->_parts as $part) {
-			/** @var ApiPartAbstract $part */
+			/** @var ApiComponentAbstract $part */
 			$part->check();
 		}
 
 		// PREPARE
 		foreach ($this->_parts as $part) {
-			/** @var ApiPartAbstract $part */
+			/** @var ApiComponentAbstract $part */
 			$part->prepare();
 		}
 
@@ -194,7 +194,7 @@ class Api extends ApiAbstract {
 		$errors = array();
 		foreach ($this->_parts as $name => $part) {
 
-			/** @var ApiPartAbstract $part */
+			/** @var ApiComponentAbstract $part */
 
 			$err = $part->getErrors();
 			if (!empty($err)) {
@@ -211,7 +211,7 @@ class Api extends ApiAbstract {
 	function valid () {
 		$vars = get_object_vars($this);
 		foreach ($vars as $var) {
-			if ($var instanceof ApiPartAbstract) {
+			if ($var instanceof ApiComponentAbstract) {
 				if (!$var->valid()) {
 					return false;
 				}
