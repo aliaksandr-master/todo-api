@@ -75,6 +75,35 @@ class BaseController extends CI_Controller implements IApiController {
 		return true;
 	}
 
+	public function prepareStatusByMethod ($status, $response, $method) {
+
+		$hasData = !empty($response['data']);
+
+		if ($method == "POST") {
+			if ($hasData) {
+				return 201; // created new element
+			} else {
+				return 404; // empty GET result
+			}
+		} else if ($method == "PUT") {
+			if($hasData){
+				return 200; // updated resource
+			}else{
+				return 500; // empty GET result
+			}
+		} else if ($method == "GET") {
+			if (!$hasData) {
+				return 404;
+			}
+		} else if ($method == "DELETE") {
+			if(!$hasData){
+				return 500; // you must send Boolean response
+			}
+		}
+
+		return $status;
+	}
+
 
 }
 

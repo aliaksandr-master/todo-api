@@ -31,7 +31,7 @@ class ApiInput extends ApiComponent {
     private $_additionalBodyParams = array();
 
     function init (){
-        $requestInput = ApiUtils::get($this->api->api->get(Api::REQUEST), 'input', array());
+        $requestInput = ApiUtils::get($this->api->getSpec('request'), 'input', array());
 
         // QUERY
         $param = $this->_initParam($this->api->server->query, ApiUtils::get($requestInput, 'QUERY', array()), $this->_additionalQueryParams, false);
@@ -52,7 +52,7 @@ class ApiInput extends ApiComponent {
     }
 
     function prepare () {
-        $requestInput = ApiUtils::get($this->api->api->get(Api::REQUEST), 'input', array());
+        $requestInput = ApiUtils::get($this->api->getSpec('request'), 'input', array());
         $this->_applyAfterFiltersToParam(ApiUtils::get($requestInput, 'QUERY', array()), $this->_QUERY);
         $this->_applyAfterFiltersToParam(ApiUtils::get($requestInput, 'BODY', array()), $this->_BODY);
         $this->_applyAfterFiltersToParam(ApiUtils::get($requestInput, 'URL', array()), $this->_URL);
@@ -133,7 +133,7 @@ class ApiInput extends ApiComponent {
 
     function check () {
         $valid = 1;
-        $requestInput = ApiUtils::get($this->api->api->get(Api::REQUEST), 'input', array());
+        $requestInput = ApiUtils::get($this->api->getSpec('request'), 'input', array());
         $valid *= $this->_checkParam(ApiUtils::get($requestInput, 'URL', array()), $this->_URL);
         $valid *= $this->_checkParam(ApiUtils::get($requestInput, 'BODY', array()), $this->_BODY);
         $valid *= $this->_checkParam(ApiUtils::get($requestInput, 'QUERY', array()), $this->_QUERY);

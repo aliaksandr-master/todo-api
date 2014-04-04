@@ -15,12 +15,6 @@ class Api extends ApiAbstract {
 
 	const DEBUG_MODE = _API_DEBUG_MODE_;
 
-	const ERROR_CELL = 'system';
-
-	const RESPONSE = 'response';
-
-	const REQUEST = 'request';
-
 	/** @var IApiController */
 	public $context;
 
@@ -48,7 +42,7 @@ class Api extends ApiAbstract {
 	/** @var ApiValidation */
 	public $validation;
 
-	protected $_parts = array();
+	protected $_components = array();
 
 	public $apiData = array();
 
@@ -111,7 +105,7 @@ class Api extends ApiAbstract {
 
 		$this->context = $this->_launchParams['controller'];
 
-		$response = $this->api->get(self::RESPONSE);
+		$response = $this->api->getSpec('response');
 
 		$this->_launchParams['action_to_call'] = $this->context->compileMethodName($this->_launchParams['action'], $this->_launchParams['method'], $this->methodsMap, $response['type']);
 
@@ -155,7 +149,7 @@ class Api extends ApiAbstract {
 		$this->setPart('server',     new ApiServer($this));
 
 		// INIT
-		foreach ($this->_parts as $part) {
+		foreach ($this->_components as $part) {
 			/** @var ApiComponent $part */
 			$part->init();
 		}
@@ -166,13 +160,13 @@ class Api extends ApiAbstract {
 		}
 
 		// CHECK
-		foreach ($this->_parts as $part) {
+		foreach ($this->_components as $part) {
 			/** @var ApiComponent $part */
 			$part->check();
 		}
 
 		// PREPARE
-		foreach ($this->_parts as $part) {
+		foreach ($this->_components as $part) {
 			/** @var ApiComponent $part */
 			$part->prepare();
 		}
@@ -186,19 +180,19 @@ class Api extends ApiAbstract {
 		return $this->api->output->compile();
 	}
 
-	public function send($compress){
+	public function send ($compress) {
 		$this->api->output->send($compress);
 	}
 
 	protected function &setPart ($name, &$part) {
 		$this->$name = $part;
-		$this->_parts[$name] = & $part;
+		$this->_components[$name] = & $part;
 		return $part;
 	}
 
 	function getErrors () {
 		$errors = array();
-		foreach ($this->_parts as $name => $part) {
+		foreach ($this->_components as $name => $part) {
 
 			/** @var ApiComponent $part */
 
@@ -209,31 +203,28 @@ class Api extends ApiAbstract {
 		}
 		$err = parent::getErrors();
 		if (!empty($err)) {
-			$errors[self::ERROR_CELL] = $err;
+			$errors['system'] = $err;
 		}
 		return $errors;
 	}
 
 	function valid () {
-		$vars = get_object_vars($this);
-		foreach ($vars as $var) {
-			if ($var instanceof ApiComponent) {
-				if (!$var->valid()) {
-					return false;
-				}
+		foreach ($this->_components as $component) {
+			/** @var ApiComponent $component */
+			if (!$component->valid()) {
+				return false;
 			}
 		}
-		if ($this->getErrors()) {
+		if ($this->getErrors() || $this->output->status() >= 400) {
 			return false;
 		}
 		return true;
 	}
 
-	function get ($name = null, $default = null) {
+	function getSpec ($name = null, $default = null) {
 		if (is_null($name)) {
 			return $this->apiData;
 		}
-
 		return isset($this->apiData[$name]) ? $this->apiData[$name] : $default;
 	}
 

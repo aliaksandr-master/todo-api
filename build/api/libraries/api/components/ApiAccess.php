@@ -15,7 +15,7 @@ class ApiAccess extends ApiComponent {
     private $_accesses = array();
 
     function init(){
-        $this->_accesses = $this->api->get('access');
+        $this->_accesses = $this->api->getSpec('access');
     }
 
     function check () {

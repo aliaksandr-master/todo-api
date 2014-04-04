@@ -64,7 +64,8 @@ class ApiServer extends ApiComponent {
         )
     );
 
-    function construct () {
+    function __construct (Api &$api) {
+		parent::__construct ($api);
 
 		$this->headers = $this->api->getLaunchParam('input/headers');
 
