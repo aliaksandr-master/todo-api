@@ -36,9 +36,6 @@ class Api extends ApiAbstract {
 	/** @var ApiFilter */
 	public $filter;
 
-	/** @var ApiFormat */
-	public $format;
-
 	/** @var ApiValidation */
 	public $validation;
 
@@ -113,6 +110,10 @@ class Api extends ApiAbstract {
 
 	public function getLaunchParam ($name) {
 		return $this->_launchParams[$name];
+	}
+
+	public function getLaunchParams () {
+		return $this->_launchParams;
 	}
 
 	protected function _compileCellName ($method, $uriCall, array $arguments) {

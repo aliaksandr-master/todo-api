@@ -107,6 +107,7 @@ class ApiOutput extends ApiComponent {
 				'effective_uri' => $this->api->getLaunchParam('uri'),
 				'method' => $this->api->getLaunchParam('method'),
 				'time' => 0,
+//				'params' => $this->api->getLaunchParams(),
 				'input' => array(
 					'headers' => array(
 						'raw' => $this->api->getLaunchParam('input/headers'),
@@ -119,19 +120,8 @@ class ApiOutput extends ApiComponent {
 							'outputMime' => $this->api->server->outputMime,
 						)
 					),
-					'server' => array (
-						'ip' => $this->api->server->ip,
-						'host' => $this->api->server->host,
-						'hostname' => $this->api->server->hostname,
-						'port' => $this->api->server->port,
-						'path' => $this->api->server->path,
-						'pathname' => $this->api->server->pathname,
-						'search' => $this->api->server->search,
-						'scheme' => $this->api->server->scheme,
-						'protocol' => $this->api->server->protocol,
-					),
-					"url"    => $this->api->input->url(),
 					"query"  => $this->api->input->query(),
+					"args"    => $this->api->input->url(),
 					"body"   => $this->api->input->body(),
 					"body:raw" => INPUT_DATA
 				),

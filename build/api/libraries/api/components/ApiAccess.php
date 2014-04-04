@@ -44,7 +44,7 @@ class ApiAccess extends ApiComponent {
 		foreach ($whiteList as &$ip) {
 			$ip = trim($ip);
 		}
-		if (!in_array($this->api->server->ip, $whiteList)) {
+		if (!in_array($this->api->getLaunchParam('ip'), $whiteList)) {
 			$this->api->output->status(401);
 		}
 	}
