@@ -145,7 +145,6 @@ class Api extends ApiAbstract {
 		$this->setPart('output',     new ApiOutput($this));
 		$this->setPart('access',     new ApiAccess($this));
 		$this->setPart('validation', new ApiValidation($this));
-		$this->setPart('format',     new ApiFormat($this));
 		$this->setPart('server',     new ApiServer($this));
 
 		// INIT
@@ -165,16 +164,17 @@ class Api extends ApiAbstract {
 			$part->check();
 		}
 
-		// PREPARE
 		foreach ($this->_components as $part) {
 			/** @var ApiComponent $part */
-			$part->prepare();
+			$part->prepareCallAction();
 		}
 
-		$result = $this->context->callMethod($this->getLaunchParam('action_to_call'));
+		if ($this->valid()) {
+			$result = $this->context->callMethod($this->getLaunchParam('action_to_call'));
 
-		if (isset($result)) {
-			$this->api->output->data($result);
+			if (isset($result)) {
+				$this->api->output->data($result);
+			}
 		}
 
 		return $this->api->output->compile();

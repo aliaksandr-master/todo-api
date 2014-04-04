@@ -104,9 +104,9 @@ class ApiOutput extends ApiComponent {
 		// DEBUG DATA (only for development and testing mode)
 		if (Api::DEBUG_MODE) {
 			$response["debug"] = array(
-				'uri' => $this->api->getLaunchParam('uri'),
+				'effective_uri' => $this->api->getLaunchParam('uri'),
 				'method' => $this->api->getLaunchParam('method'),
-				'time' => (round((gettimeofday(true) - $this->api->getLaunchParam('debug/start_timestamp')) * 100000) / 100000),
+				'time' => 0,
 				'input' => array(
 					'headers' => array(
 						'raw' => $this->api->getLaunchParam('input/headers'),
@@ -191,7 +191,14 @@ class ApiOutput extends ApiComponent {
 			header($headerName.': '.$headerValue);
 		}
 
-		$response = (string) $this->api->format->applyFormat($response, $this->api->server->outputFormat);
+		if (isset($response['debug'])) {
+			$nowTimestamp = gettimeofday(true);
+			$startTimestamp = $this->api->getLaunchParam('debug/start_timestamp');
+			$precession = 1000;
+			$response['debug']['time'] = (round(($nowTimestamp - $startTimestamp) * $precession) / $precession);
+		}
+
+		$response = (string) $this->api->filter->apply($response, 'to_'.$this->api->server->outputFormat);
 
 		if ($compress) {
 			$zlibOc = @ini_get('zlib.output_compression');
@@ -277,7 +284,7 @@ class ApiOutput extends ApiComponent {
 	private function _prepareData (&$_data, $data, $param, $strict = true) {
 		$name = $param["name"];
 		if (isset($data[$name])) {
-			$_data[$name] = $this->api->format->toType($data[$name], $param["type"]);
+			$_data[$name] = $this->api->context->toType($data[$name], $param["type"]);
 		} else {
 			if ($strict) {
 				trigger_error("Api '".$this->api->getSpec('name')."': invalid response. '".$name."' is undefined!");

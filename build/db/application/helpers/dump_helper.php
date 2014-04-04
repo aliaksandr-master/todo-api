@@ -1,6 +1,6 @@
 <?php
 
-function dump($var, $showFullData = false, $escapeTags = false, $cover = true){
+function dump ($var, $showFullData = false, $escapeTags = false, $cover = true) {
     if($cover){
         print '<div class="_dump_">';
         print '<span class="_dump_close_" title="Hide this DUMP" onclick="_dump_close_click(this);">&times;</span>';

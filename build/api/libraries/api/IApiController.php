@@ -10,4 +10,12 @@ interface IApiController {
 
 	public function prepareStatusByMethod ($status, $response, $method);
 
+	public function hasAuth ();
+
+	public function applyValidationRule ($value, $ruleName, $params, $contextName);
+
+	public function applyFilter ($value, $filterName, $params, $contextName);
+
+	public function toType ($value, $type, $param = null);
+
 }

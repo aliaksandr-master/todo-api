@@ -4,6 +4,8 @@
  *   DEFINE MAIN
  * -------------------------------------------------------------------
  */
+define('START_TIMESTAMP', gettimeofday(true));
+
 define('DS', '/');
 define('SD', '\\');
 

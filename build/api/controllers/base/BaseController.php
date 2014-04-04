@@ -33,7 +33,7 @@ class BaseController extends CI_Controller implements IApiController {
 			'ssl' => ApiUtils::get($_SERVER, 'HTTPS') === 'on',
 			'scheme' => ApiUtils::get($_SERVER, 'REQUEST_SCHEME'),
 			'port' => ApiUtils::get($_SERVER, 'SERVER_PORT'),
-			'debug/start_timestamp' => ApiUtils::get($_SERVER, 'REQUEST_TIME', gettimeofday(true))
+			'debug/start_timestamp' => defined('START_TIMESTAMP') ? START_TIMESTAMP : gettimeofday(true)
 		));
 
 		$this->api->launch();
@@ -46,6 +46,10 @@ class BaseController extends CI_Controller implements IApiController {
 		}
 		$action = strtoupper(ApiUtils::get($methodAliasesMap, $method, $method)).'_'.strtoupper($responseType).($action || strlen($action) ? '_'.$action : '');
 		return $action;
+	}
+
+	function hasAuth () {
+		return $this->user->isLogged();
 	}
 
 	function callMethod ($actionName) {
@@ -102,6 +106,35 @@ class BaseController extends CI_Controller implements IApiController {
 		}
 
 		return $status;
+	}
+
+	public function applyValidationRule ($value, $ruleName, $params, $contextName) {
+		$method = '_rule__'.$ruleName;
+		if (method_exists($this->api->context, $method)) {
+			return $this->api->context->$method($value, $params, $contextName);
+		}
+		return null;
+	}
+
+	public function applyFilter ($value, $filterName, $params, $contextName) {
+		$method = '_filter__'.$filterName;
+		if (method_exists($this->api->context, $method)) {
+			return $this->api->context->$method($value, $params, $contextName);
+		}
+		return null;
+	}
+
+	public function toType ($value, $type, $param = null) {
+		switch ($type) {
+			case 'decimal':
+			case 'integer':
+				return intval(trim((string) $value));
+			case 'float':
+				return floatval(trim((string) $value));
+			case 'boolean':
+				return (bool) $value;
+		}
+		return trim((string) $value); // default type = string
 	}
 
 

@@ -51,7 +51,7 @@ class ApiInput extends ApiComponent {
         $this->_input = array_merge($this->_input, $this->_QUERY, $this->_URL, $this->_BODY);
     }
 
-    function prepare () {
+    function prepareCallAction () {
         $requestInput = ApiUtils::get($this->api->getSpec('request'), 'input', array());
         $this->_applyAfterFiltersToParam(ApiUtils::get($requestInput, 'QUERY', array()), $this->_QUERY);
         $this->_applyAfterFiltersToParam(ApiUtils::get($requestInput, 'BODY', array()), $this->_BODY);
@@ -97,7 +97,7 @@ class ApiInput extends ApiComponent {
                     if (!empty($param['filters']['before'])) {
                         $value = $this->api->filter->applyFilters($value, $param['filters']['before'], $fieldName);
                     }
-                    $data[$fieldName] = $this->api->format->toType($value, $param["type"], $param);
+                    $data[$fieldName] = $this->api->context->toType($value, $param["type"], $param);
                 }
             }
         }

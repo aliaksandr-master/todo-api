@@ -12,12 +12,8 @@ abstract class ApiComponent extends ApiAbstract {
         $this->api = $api;
     }
 
-    public function init () {
+    public function init () {}
 
-    }
-
-    function prepare () {
-
-    }
+    function prepareCallAction () {}
 
 }

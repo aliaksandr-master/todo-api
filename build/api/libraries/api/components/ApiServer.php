@@ -319,6 +319,6 @@ class ApiServer extends ApiComponent {
 
     private function _initIp () {
         $ip = $this->api->getLaunchParam('ip');
-        $this->ip = $this->api->validation->applyRule($ip, 'valid_ip') ? $ip : $this->ip;
+        $this->ip = $this->api->validation->apply($ip, 'valid_ip') ? $ip : $this->ip;
     }
 }
