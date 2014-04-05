@@ -1,6 +1,6 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
-class BaseController extends CI_Controller implements IApiController {
+abstract class BaseController extends CI_Controller implements IApiController, IApiDebugStatistic {
 
     /** @var CI_Loader */
     public $load;
@@ -40,7 +40,7 @@ class BaseController extends CI_Controller implements IApiController {
 		$this->api->send(true);
 	}
 
-	function compileMethodName ($action, $method, $methodAliasesMap, $responseType) {
+	function compileMethodName ($action, $method, $responseType, array $methodAliasesMap) {
 		if ($action === 'index') {
 			$action = '';
 		}
@@ -52,9 +52,8 @@ class BaseController extends CI_Controller implements IApiController {
 		return $this->user->isLogged();
 	}
 
-	function callMethod ($actionName) {
-		$call = array($this, $actionName);
-		return call_user_func_array($call, $this->api->getLaunchParam('input/args'));
+	function getActionArgs ($actionName, $method, $actionMethodName, ApiInput &$input) {
+		return $input->url();
 	}
 
 	function input ($name = null, $default = null) {
@@ -137,6 +136,27 @@ class BaseController extends CI_Controller implements IApiController {
 		return trim((string) $value); // default type = string
 	}
 
+	public function debug_DbStatistic () {
+
+		$dbs = BaseCrudModel::getAllArDb();
+
+		$queries = array();
+
+		foreach ($dbs as $db) {
+			if (!empty($db->queries)) {
+				foreach ($db->queries as $key => $query) {
+					$queries[] = array(
+						'query' => $query,
+						'time'  => $db->query_times[$key]
+					);
+				}
+			}
+		}
+
+		return array(
+			'queries' => $queries
+		);
+	}
 
 }
 

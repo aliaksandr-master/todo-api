@@ -4,7 +4,7 @@
 
 
 
-abstract class BaseCrudModel implements ICrudMoldel {
+abstract class BaseCrudModel implements ICrudMoldel  {
 
 	private static $_instances = array();
 
@@ -109,7 +109,7 @@ abstract class BaseCrudModel implements ICrudMoldel {
 		$this->db = self::$_dbConnection[$dbName];
 
 		if (is_null($this->_tableName)) {
-			$this->_tableName = Utils::underscoreCase(get_class($this));
+			$this->_tableName = ApiUtils::underscoreCase(get_class($this));
 			$this->_tableName = preg_replace('/[_]*model(.*)$/i', '', $this->_tableName);
 		}
 
@@ -257,4 +257,9 @@ abstract class BaseCrudModel implements ICrudMoldel {
 		// TODO return boolean
 		return true;
 	}
+
+	static function getAllArDb () {
+		return self::$_dbConnection;
+	}
+
 }

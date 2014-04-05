@@ -14,6 +14,6 @@ abstract class ApiComponent extends ApiAbstract {
 
     public function init () {}
 
-    function prepareCallAction () {}
+    function beforeActionCall () {}
 
 }

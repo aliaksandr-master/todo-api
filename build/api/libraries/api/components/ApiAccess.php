@@ -26,27 +26,8 @@ class ApiAccess extends ApiComponent {
 
 
 	function check () {
-		$this->checkIpWhiteList();
-		$this->checkApi();
 		$this->checkNeedLogin();
 		$this->checkContextToCall();
-	}
-
-
-	function checkIpWhiteList () {
-		if (empty($this->_accesses[ApiAccess::IP_WHITE_LIST])) {
-			return;
-		}
-
-		$whiteList = isset($this->_accesses[ApiAccess::IP_WHITE_LIST]) ? $this->_accesses[ApiAccess::IP_WHITE_LIST] : array();
-		$whiteList[] = '0.0.0.0';
-		$whiteList[] = '127.0.0.1';
-		foreach ($whiteList as &$ip) {
-			$ip = trim($ip);
-		}
-		if (!in_array($this->api->getLaunchParam('ip'), $whiteList)) {
-			$this->api->output->status(401);
-		}
 	}
 
 
@@ -59,16 +40,8 @@ class ApiAccess extends ApiComponent {
 		foreach ($blacklist as &$ip) {
 			$ip = trim($ip);
 		}
-		if (in_array($this->api->server->ip, $blacklist)) {
+		if (in_array($this->api->getLaunchParam('ip'), $blacklist)) {
 			$this->error(null, 401, true);
-		}
-	}
-
-
-	function checkApi () {
-		if (empty($this->api->apiData)) {
-			$this->error(ApiAccess::UNDEFINED, 405, true);
-			$this->api->output->send();
 		}
 	}
 

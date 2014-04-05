@@ -18,6 +18,15 @@ module.exports = function(grunt){
                         "**/*"
                     ],
                     dest: "build/opt/codeigniter"
+                },
+                {
+                    expand: true,
+                    cwd: "src/opt/helpers",
+                    src: [
+                        "*",
+                        "**/*"
+                    ],
+                    dest: "build/opt/helpers"
                 }
             ]
         }

@@ -8,10 +8,11 @@ abstract class ApiAbstract implements IApiError {
     /** @var Api */
     protected $api;
 
-    public function check () {}
+    public function check () {
+		return $this->valid();
+	}
 
     function error ($message = null, $code = 500, $fatal = false) {
-
         if (is_null($message)) {
             $message = ApiUtils::getMessageByCode($code);
 			if (is_null($message)) {
@@ -23,7 +24,6 @@ abstract class ApiAbstract implements IApiError {
         $this->api->output->status($code);
 
         if ($fatal) {
-			$this->api->output->status($code);
             $this->api->output->send();
         }
     }

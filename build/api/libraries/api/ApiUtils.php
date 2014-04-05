@@ -6,6 +6,10 @@ class ApiUtils {
         return isset($obj[$param]) ? $obj[$param] : $default;
     }
 
+    static function getArr ($obj, $param = null, $default = null) {
+        return is_null($param) ? $obj : (isset($obj[$param]) ? $obj[$param] : $default);
+    }
+
 	static function getMessageByCode ($code) {
 		$_messageByCodeMap = array (
 			100 => 'Continue',
@@ -201,6 +205,26 @@ class ApiUtils {
 		}
 
 		return $defaultValue;
+	}
+
+
+	/**
+	 * Converts bytes into readable format ex. 4534344 bytes => 4.2 M
+	 *
+	 * @param $bytes
+	 * @param int $precision
+	 * @return string
+	 */
+	static function formatBytes ($bytes, $precision = 2) {
+		$units = array('B', 'KB', 'MB', 'GB', 'TB');
+
+		$bytes = max($bytes, 0);
+		$pow = floor(($bytes ? log($bytes) : 0) / log(1024));
+		$pow = min($pow, count($units) - 1);
+
+		$bytes /= pow(1024, $pow);
+
+		return round($bytes, $precision) . ' ' . $units[$pow];
 	}
 
 

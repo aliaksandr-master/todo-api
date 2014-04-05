@@ -104,10 +104,12 @@ class ApiOutput extends ApiComponent {
 		// DEBUG DATA (only for development and testing mode)
 		if (Api::DEBUG_MODE) {
 			$response["debug"] = array(
-				'effective_uri' => $this->api->getLaunchParam('uri'),
+				'uri' => $this->api->getLaunchParam('uri'),
 				'method' => $this->api->getLaunchParam('method'),
 				'time' => 0,
-//				'params' => $this->api->getLaunchParams(),
+				'memory' => ApiUtils::formatBytes(memory_get_peak_usage()),
+				'db' => null,
+				//				'params' => $this->api->getLaunchParams(),
 				'input' => array(
 					'headers' => array(
 						'raw' => $this->api->getLaunchParam('input/headers'),
@@ -127,6 +129,10 @@ class ApiOutput extends ApiComponent {
 				),
 				"api" => $this->api->getSpec()
 			);
+
+			if ($this->api->context instanceof IApiDebugStatistic) {
+				$response['debug']['db'] = $this->api->context->debug_DbStatistic();
+			}
 		}
 
 		$http_code = $this->status();
@@ -184,8 +190,7 @@ class ApiOutput extends ApiComponent {
 		if (isset($response['debug'])) {
 			$nowTimestamp = gettimeofday(true);
 			$startTimestamp = $this->api->getLaunchParam('debug/start_timestamp');
-			$precession = 1000;
-			$response['debug']['time'] = (round(($nowTimestamp - $startTimestamp) * $precession) / $precession);
+			$response['debug']['time'] = $nowTimestamp - $startTimestamp;
 		}
 
 		$response = (string) $this->api->filter->apply($response, 'to_'.$this->api->server->outputFormat);

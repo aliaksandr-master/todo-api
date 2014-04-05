@@ -104,7 +104,7 @@ class Api extends ApiAbstract {
 
 		$response = $this->api->getSpec('response');
 
-		$this->_launchParams['action_to_call'] = $this->context->compileMethodName($this->_launchParams['action'], $this->_launchParams['method'], $this->methodsMap, $response['type']);
+		$this->_launchParams['action_to_call'] = $this->context->compileMethodName($this->_launchParams['action'], $this->_launchParams['method'], $response['type'], $this->methodsMap);
 
 	}
 
@@ -154,26 +154,37 @@ class Api extends ApiAbstract {
 			$part->init();
 		}
 
-		if (!method_exists($this->context, $this->getLaunchParam('action_to_call')) || !$this->apiData) {
+		if (!$this->apiData) {
 			$this->error('Method Not Allowed', 405, true);
 			return null;
 		}
 
-		// CHECK
+		if (!method_exists($this->context, $this->getLaunchParam('action_to_call'))) {
+			$this->error('Method Not Allowed', 405, true);
+			return null;
+		}
+
 		foreach ($this->_components as $part) {
 			/** @var ApiComponent $part */
 			$part->check();
 		}
 
+		if (!$this->valid()) {
+			return null;
+		}
+
 		foreach ($this->_components as $part) {
 			/** @var ApiComponent $part */
-			$part->prepareCallAction();
+			$part->beforeActionCall();
 		}
 
 		if ($this->valid()) {
-			$result = $this->context->callMethod($this->getLaunchParam('action_to_call'));
+			$actionMethod = $this->getLaunchParam('action_to_call');
+			$call = array($this->context, $actionMethod);
+			$callArgs = $this->context->getActionArgs($this->getLaunchParam('action'), $this->getLaunchParam('method'), $actionMethod, $this->input);
+			$result = call_user_func_array($call, $callArgs);
 
-			if (isset($result)) {
+			if (!is_null($result)) {
 				$this->api->output->data($result);
 			}
 		}
