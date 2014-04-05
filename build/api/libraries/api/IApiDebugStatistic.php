@@ -3,7 +3,7 @@
 
 interface IApiDebugStatistic {
 
-	public function debug_DbStatistic ();
+	public function debugStatistic ();
 
 
 }

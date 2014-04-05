@@ -2,11 +2,15 @@
 
 class ApiFilter extends ApiComponent {
 
-    public function apply ($value, $filterName, array $params = array(), $contextName = null) {
+    public function apply ($value, $filterName, array $params = array(), $contextName = null, $strictObj = 'filter', $strictMessage = 'Undefined filter', $strictCode = 500) {
         $result = $this->api->context->applyFilter ($value, $filterName, $params, $contextName);
 
         if (is_null($result)) {
-            return $this->{'filter__'.$filterName}($value, $params, $contextName);
+			$method = 'filter__'.$filterName;
+			if (method_exists($this, $method)) {
+				return $this->$method($value, $params, $contextName);
+			}
+			$this->api->$strictObj->error($strictMessage, $strictCode);
         }
 
         return $result;
@@ -40,6 +44,12 @@ class ApiFilter extends ApiComponent {
 				$data[] = array_combine($headings, $data_fields);
 			}
 		}
+		return $data;
+	}
+
+	protected function filter__parse_form ($string) {
+		$data = array();
+		parse_str($string, $_body);
 		return $data;
 	}
 

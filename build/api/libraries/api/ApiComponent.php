@@ -1,19 +1,14 @@
 <?php
 
-abstract class ApiComponent extends ApiAbstract {
 
-    /** @var array */
-    protected $_initParams;
 
-    /** @var bool */
-    protected $_initDefaults = true;
+class ApiComponent extends ApiAbstract {
 
-    public function __construct (Api &$api) {
-        $this->api = $api;
-    }
 
-    public function init () {}
+	public function __construct (Api &$api) {
+		$this->api = $api;
+	}
 
-    function beforeActionCall () {}
-
+	function beforeActionCall () {
+	}
 }

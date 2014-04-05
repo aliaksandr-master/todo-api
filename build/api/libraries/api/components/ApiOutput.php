@@ -14,6 +14,8 @@ class ApiOutput extends ApiComponent {
 
 	const RESPONSE_TYPE_MANY = 'many';
 
+	const DEFAULT_FORMAT  = 'json';
+
 	protected $_data = array();
 
 	protected $_meta = array();
@@ -38,9 +40,12 @@ class ApiOutput extends ApiComponent {
 
 	private $_compiled = null;
 
+	private $_encoding = null;
+	private $_mime = null;
+	private $_format = null;
 
-	public function init () {
-		parent::init();
+	public function __construct ($api) {
+		parent::__construct($api);
 
 		$this->_response = $this->api->getSpec('response');
 		$this->_responseOutput = ApiUtils::get($this->_response, 'output', array());
@@ -106,20 +111,20 @@ class ApiOutput extends ApiComponent {
 			$response["debug"] = array(
 				'uri' => $this->api->getLaunchParam('uri'),
 				'method' => $this->api->getLaunchParam('method'),
-				'time' => 0,
-				'memory' => ApiUtils::formatBytes(memory_get_peak_usage()),
+				'scriptTime' => 0,
+				'compileTime' => 0,
+				'memoryPeak' => ApiUtils::formatBytes(memory_get_peak_usage()),
 				'db' => null,
 				//				'params' => $this->api->getLaunchParams(),
 				'input' => array(
 					'headers' => array(
 						'raw' => $this->api->getLaunchParam('input/headers'),
 						'parsed' => array (
-							'accept' => $this->api->server->accept,
-							'encoding' => $this->api->server->encoding,
-							'language' => $this->api->server->language,
-							'inputFormat' => $this->api->server->inputFormat,
-							'outputFormat' => $this->api->server->outputFormat,
-							'outputMime' => $this->api->server->outputMime,
+							'encoding' => $this->getEncoding(),
+							'language' => $this->api->input->getLanguage(),
+							'inputFormat' => $this->api->input->getFormat(),
+							'outputFormat' => $this->getFormat(),
+							'outputMime' => $this->getMime(),
 						)
 					),
 					"query"  => $this->api->input->query(),
@@ -131,7 +136,7 @@ class ApiOutput extends ApiComponent {
 			);
 
 			if ($this->api->context instanceof IApiDebugStatistic) {
-				$response['debug']['db'] = $this->api->context->debug_DbStatistic();
+				$response['debug'] = array_merge($response['debug'], $this->api->context->debugStatistic());
 			}
 		}
 
@@ -141,7 +146,7 @@ class ApiOutput extends ApiComponent {
 
 		$public_http_code = $this->_virtualStatus && $http_code >= 400 ? self::VIRTUAL_STATUS : $http_code;
 
-		$this->setHeader('Content-Type', $this->api->server->outputMime);
+		$this->setHeader('Content-Type', $this->getMime());
 
 		$this->_compiled = array(
 			'response' => $response,
@@ -189,15 +194,20 @@ class ApiOutput extends ApiComponent {
 
 		if (isset($response['debug'])) {
 			$nowTimestamp = gettimeofday(true);
-			$startTimestamp = $this->api->getLaunchParam('debug/start_timestamp');
-			$response['debug']['time'] = $nowTimestamp - $startTimestamp;
+			$startTimestamp = $this->api->getLaunchParam('launch_timestamp');
+			$response['debug']['compileTime'] = $nowTimestamp - $startTimestamp;
+			if (defined('START_TIMESTAMP')) {
+				$response['debug']['scriptTime'] = $nowTimestamp - START_TIMESTAMP;
+			}
+			$response['debug']['memoryPeak'] = ApiUtils::formatBytes(memory_get_peak_usage(true));
+
 		}
 
-		$response = (string) $this->api->filter->apply($response, 'to_'.$this->api->server->outputFormat);
+		$response = (string) $this->api->filter->apply($response, 'to_'.$this->getFormat());
 
 		if ($compress) {
 			$zlibOc = @ini_get('zlib.output_compression');
-			$compressing = self::COMPRESSING && !$zlibOc && extension_loaded('zlib') && ApiUtils::get($this->api->server->encoding, 'gzip', false);
+			$compressing = self::COMPRESSING && !$zlibOc && extension_loaded('zlib') && ApiUtils::get($this->getEncoding(), 'gzip', false);
 
 			if (!$zlibOc && !$compressing) {
 				header('Content-Length: '.strlen($response));
@@ -327,5 +337,37 @@ class ApiOutput extends ApiComponent {
 		}
 
 		return $_data;
+	}
+
+	function getEncoding () {
+		if (is_null($this->_encoding)) {
+			$this->_encoding = ApiUtils::parseQualityString($this->api->input->header('Accept-Encoding'));
+		}
+		return $this->_encoding;
+	}
+
+	function getMime () {
+		if (is_null($this->_mime)) {
+			$this->_mime = $this->api->formats[$this->getFormat()]['outputMime'];
+		}
+		return $this->_mime;
+	}
+
+	function getFormat () {
+		if (is_null($this->_format)) {
+			$accept = ApiUtils::parseQualityString($this->api->input->header('Accept', ''));
+			$format = ApiUtils::getFileFormatByFileExt(parse_url($this->api->getLaunchParam('uri'), PHP_URL_PATH), $this->api->formats, null);
+
+			if (!is_null($format)) {
+				$format = ApiUtils::getFormatByHeadersAccept($accept, $this->api->formats, null);
+			}
+
+			if (is_null($format)) {
+				$format = self::DEFAULT_FORMAT;
+			}
+
+			$this->_format = $format;
+		}
+		return $this->_format;
 	}
 }

@@ -20,9 +20,9 @@ interface IApiController {
 
 
 	/**
-	 * @param string $actionName
-	 * @param string $method
-	 * @param string $actionMethodName
+	 * @param string   $actionName
+	 * @param string   $method
+	 * @param string   $actionMethodName
 	 * @param ApiInput $input
 	 *
 	 * @return array
@@ -31,13 +31,15 @@ interface IApiController {
 
 
 	/**
-	 * @param $method
-	 * @param $controllerName
-	 * @param $actionName
+	 * @param ApiComponent $api
+	 * @param array        $accessSpec
+	 * @param string       $method
+	 * @param string       $actionName
+	 * @param string       $methodName
 	 *
 	 * @return boolean
 	 */
-	public function hasAccess ($method, $controllerName, $actionName);
+	public function hasAccess (ApiComponent &$api, array $accessSpec, $method, $actionName, $methodName);
 
 
 	/**
@@ -48,12 +50,6 @@ interface IApiController {
 	 * @return number|null
 	 */
 	public function prepareStatusByMethod ($status, $response, $method);
-
-
-	/**
-	 * @return boolean
-	 */
-	public function hasAuth ();
 
 
 	/**
