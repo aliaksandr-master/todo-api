@@ -26,7 +26,10 @@ class Todo_Item extends BaseController {
 
 	// CREATE ITEM
 	public function CREATE_ONE ($todoId) {
-		$data = array("todo_id" => $todoId, "date_create" => date("Y-m-d H:i:s", gettimeofday(true)));
+		$data = array(
+			"todo_id" => $todoId,
+			"date_create" => date("Y-m-d H:i:s", gettimeofday(true))
+		);
 
 		$data['name'] = $this->input('name', "");
 		$data['is_active'] = $this->input('is_active', 0);

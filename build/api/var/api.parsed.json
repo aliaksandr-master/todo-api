@@ -50,7 +50,7 @@
         "name": "POST session/user",
         "request": {
             "input": {
-                "BODY": {
+                "body": {
                     "username": {
                         "name": "username",
                         "type": "string",
@@ -213,7 +213,7 @@
         "name": "GET todo/$todo_id/item",
         "request": {
             "input": {
-                "URL": [
+                "args": [
                     {
                         "name": "todo_id",
                         "type": "decimal",
@@ -306,7 +306,7 @@
         "name": "GET todo/$todo_id/item/$id",
         "request": {
             "input": {
-                "URL": [
+                "args": [
                     {
                         "name": "todo_id",
                         "type": "decimal",
@@ -410,7 +410,7 @@
         "name": "POST todo/$todo_id/item",
         "request": {
             "input": {
-                "URL": [
+                "args": [
                     {
                         "name": "todo_id",
                         "type": "decimal",
@@ -432,7 +432,7 @@
                         }
                     }
                 ],
-                "BODY": {
+                "body": {
                     "name": {
                         "name": "name",
                         "type": "string",
@@ -565,7 +565,7 @@
         "name": "PUT todo/$todo_id/item/$id",
         "request": {
             "input": {
-                "URL": [
+                "args": [
                     {
                         "name": "todo_id",
                         "type": "decimal",
@@ -607,7 +607,7 @@
                         }
                     }
                 ],
-                "BODY": {
+                "body": {
                     "name": {
                         "name": "name",
                         "type": "string",
@@ -740,7 +740,7 @@
         "name": "DELETE todo/$todo_id/item/$id",
         "request": {
             "input": {
-                "URL": [
+                "args": [
                     {
                         "name": "todo_id",
                         "type": "decimal",
@@ -874,7 +874,7 @@
         "name": "GET todo/$id",
         "request": {
             "input": {
-                "URL": [
+                "args": [
                     {
                         "name": "id",
                         "type": "decimal",
@@ -958,7 +958,7 @@
         "name": "POST todo",
         "request": {
             "input": {
-                "BODY": {
+                "body": {
                     "name": {
                         "name": "name",
                         "type": "string",
@@ -1083,7 +1083,7 @@
         "name": "PUT todo/$id",
         "request": {
             "input": {
-                "URL": [
+                "args": [
                     {
                         "name": "id",
                         "type": "decimal",
@@ -1105,7 +1105,7 @@
                         }
                     }
                 ],
-                "BODY": {
+                "body": {
                     "name": {
                         "name": "name",
                         "type": "string",
@@ -1250,7 +1250,7 @@
         "name": "DELETE todo/$todo_id",
         "request": {
             "input": {
-                "URL": [
+                "args": [
                     {
                         "name": "todo_id",
                         "type": "decimal",
@@ -1358,7 +1358,7 @@
         "name": "GET user/$id",
         "request": {
             "input": {
-                "URL": [
+                "args": [
                     {
                         "name": "id",
                         "type": "decimal",
@@ -1426,7 +1426,7 @@
         "name": "DELETE user/$id",
         "request": {
             "input": {
-                "URL": [
+                "args": [
                     {
                         "name": "id",
                         "type": "decimal",
@@ -1478,7 +1478,7 @@
         "name": "PUT user/$id",
         "request": {
             "input": {
-                "URL": [
+                "args": [
                     {
                         "name": "id",
                         "type": "decimal",
@@ -1503,7 +1503,7 @@
                         }
                     }
                 ],
-                "BODY": {
+                "body": {
                     "username": {
                         "name": "username",
                         "type": "string",
@@ -1718,7 +1718,7 @@
         "name": "POST user",
         "request": {
             "input": {
-                "BODY": {
+                "body": {
                     "username": {
                         "name": "username",
                         "type": "string",

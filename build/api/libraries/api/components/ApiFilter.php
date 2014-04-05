@@ -58,11 +58,11 @@ class ApiFilter extends ApiComponent {
 	}
 
 	private function filter__to_jsonp ($data, array $params = array(), $contextName = null) {
-		return $params[0].'('.$this->filter_array2json($data).');';
+		return $params[0].'('.$this->filter__to_json($data).');';
 	}
 
 	private function filter__parse_json ($string) {
-		return json_decode(trim($string));
+		return json_decode(trim($string), true);
 	}
 
 	private function filter__parse_serialized ($string) {
@@ -79,6 +79,11 @@ class ApiFilter extends ApiComponent {
 
     function filter__to_int ($value, $params = array(), $name) {
         return (int) $value;
+    }
+
+    function filter__default ($value, $params = array(), $name) {
+		$default = $params[0];
+        return is_null($value) ? $default : 0;
     }
 
     function filter__abs ($value, $params = array(), $name) {

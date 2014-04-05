@@ -5,5 +5,4 @@ interface IApiDebugStatistic {
 
 	public function debugStatistic ();
 
-
 }

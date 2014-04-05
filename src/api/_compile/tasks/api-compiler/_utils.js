@@ -111,7 +111,7 @@ module.exports = function (options, mainOptions) {
 	})();
 
 	var categoryFormat = function (category) {
-		return category === '$' ? 'URL' : (category === '?' ? 'QUERY' : 'BODY');
+		return category === '$' ? 'args' : (category === '?' ? 'query' : 'body');
 	};
 
 	var typeFormat = (function () {
@@ -370,8 +370,8 @@ module.exports = function (options, mainOptions) {
 			});
 			request.input = _requestInput;
 
-			if (request.input.URL) {
-				_.each(request.input.URL, function (params, name) {
+			if (request.input.args) {
+				_.each(request.input.args, function (params, name) {
 					var existsInUrl =
 						apiName.indexOf(' $' + name + ' ') !== -1 ||
 							apiName.indexOf(' $' + name + '/') !== -1 ||
@@ -381,41 +381,7 @@ module.exports = function (options, mainOptions) {
 						throw new Error('"' + apiName + '" param "' + name + '" was not attach to url string');
 					}
 				});
-				request.input.URL = _.sortBy(request.input.URL, "url_index");
-			}
-
-
-
-			var hasError = false;
-			if (response.paginator) {
-				if (response.paginator.limit_param_category){
-					if (!request.input[response.paginator.limit_param_category]){
-						throw new Error('"' + apiName + '" :  hasn\'t input param of "' + response.paginator.limit_param_category + '" category for LIMIT param of RESPONSE;');
-					}
-					if (response.paginator.limit_param_category === 'URL') {
-						hasError = !_.contains(_.pluck(request.input.URL, 'name'), response.paginator.limit_param_name);
-					} else {
-						hasError = !!request.input[response.paginator.limit_param_category] && !!request.input[response.paginator.limit_param_category][response.paginator.limit_param_name];
-					}
-
-					if (hasError) {
-						throw new Error('"' + apiName + '" :  hasn\'t input param name "' + response.paginator.limit_param_name + '" of "' + response.paginator.limit_param_category + '" category for LIMIT param of RESPONSE;');
-					}
-				}
-				hasError = false;
-				if (response.paginator.page_param_category){
-					if (!request.input[response.paginator.page_param_category]){
-						throw new Error('"' + apiName + '" :  hasn\'t input param of "' + response.paginator.page_param_category+ '" category for PAGE_NUMBER param of RESPONSE;');
-					}
-					if (response.paginator.page_param_category === 'URL') {
-						hasError = !_.contains(_.pluck(request.input.URL, 'name'), response.paginator.page_param_category);
-					} else {
-						hasError = !!request.input[response.paginator.page_param_category] && !!request.input[response.paginator.page_param_category][response.paginator.page_param_category];
-					}
-					if (hasError) {
-						throw new Error('"' + apiName + '" :  hasn\'t input param name "' + response.paginator.page_param_name + '" of "' + response.paginator.page_param_category + '" category for LIMIT param of RESPONSE;');
-					}
-				}
+				request.input.args = _.sortBy(request.input.args, "url_index");
 			}
 
 			var parseApi = utils.parse.apiName(apiName);

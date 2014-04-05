@@ -16,6 +16,9 @@ abstract class BaseController extends CI_Controller implements IApiController, I
 	/** @var Api */
 	protected $api = null;
 
+	const ACCESS_ONLY_OWNER = 'only_owner';
+
+	const ACCESS_NEED_LOGIN = 'need_login';
 
 	public function __construct () {
 		parent::__construct();
@@ -24,13 +27,18 @@ abstract class BaseController extends CI_Controller implements IApiController, I
 	}
 
 
-	public function _remap ($object_called, $arguments) {
+	public function _remap ($action, $arguments) {
 
 		$url = str_replace(API_ROOT_URL, '', $_SERVER['REQUEST_URI']);
 
-		$this->api = new Api($_SERVER["REQUEST_METHOD"], $url, array('controller' => $this, 'action' => $object_called), array('body' => INPUT_DATA, 'args' => $arguments, 'query' => array(), 'headers' => getallheaders(), 'ip' => $_SERVER['REMOTE_ADDR'], 'ssl' => ApiUtils::get($_SERVER, 'HTTPS') === 'on', 'scheme' => ApiUtils::get($_SERVER, 'REQUEST_SCHEME'), 'port' => ApiUtils::get($_SERVER, 'SERVER_PORT'), 'debug/start_timestamp' => defined('START_TIMESTAMP') ? START_TIMESTAMP : gettimeofday(true)));
+		$this->api = new Api($_SERVER["REQUEST_METHOD"], $url, array(
+			'input/body' => INPUT_DATA,
+			'input/args' => $arguments,
+			'input/query' => array(),
+			'input/headers' => getallheaders()
+		));
 
-		$this->api->launch();
+		$this->api->launch($this, $action);
 		$this->api->send(true);
 	}
 
@@ -46,22 +54,13 @@ abstract class BaseController extends CI_Controller implements IApiController, I
 
 
 	function getActionArgs ($actionName, $method, $actionMethodName, ApiInput &$input) {
-		return $input->url();
+		return $input->arg();
 	}
 
 
 	function input ($name = null, $default = null) {
 		return $this->api->input->get($name, $default);
 	}
-
-
-	function checkNeedLogin () {
-	}
-
-
-	const ACCESS_ONLY_OWNER = 'only_owner';
-
-	const ACCESS_NEED_LOGIN = 'need_login';
 
 
 	public function hasAccess (ApiComponent &$apiAccess, array $accessSpec, $method, $actionName, $methodName) {
@@ -104,7 +103,7 @@ abstract class BaseController extends CI_Controller implements IApiController, I
 	}
 
 
-	public function prepareStatusByMethod ($status, $response, $method) {
+	public function prepareResponseStatusByMethod ($status, $response, $method) {
 
 		$hasData = !empty($response['data']);
 
@@ -179,18 +178,34 @@ abstract class BaseController extends CI_Controller implements IApiController, I
 		$dbs = BaseCrudModel::getAllArDb();
 
 		$queries = array();
+		$error = array();
+		$time = 0;
 
 		foreach ($dbs as $db) {
 			if (!empty($db->queries)) {
 				foreach ($db->queries as $key => $query) {
-					$queries[] = array('query' => $query, 'time' => $db->query_times[$key]);
+					if ($db->query_times[$key]) {
+						$queries[] = array(
+							'query' => $query,
+							'time' => $db->query_times[$key]
+						);
+					} else {
+						$error[] = array(
+							'query' => $query,
+							'time' => $db->query_times[$key]
+						);
+					}
+					$time += $db->query_times[$key];
 				}
 			}
 		}
 
 		return array(
-			'db' => array (
-				'queries' => $queries
+			'db' => array(
+				'queriesCount' => count($queries) + count($error),
+				'totalTime' => $time,
+				'errorQueries' => $error,
+				'NormalQueries' => $queries
 			)
 		);
 	}

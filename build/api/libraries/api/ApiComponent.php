@@ -9,6 +9,11 @@ class ApiComponent extends ApiAbstract {
 		$this->api = $api;
 	}
 
-	function beforeActionCall () {
+
+	public function init () {
+	}
+
+
+	public function beforeActionCall () {
 	}
 }

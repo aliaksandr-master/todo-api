@@ -5,16 +5,15 @@
 class ApiInput extends ApiComponent {
 
 	const DEFAULT_FORMAT = 'form';
-	const DEFAULT_LANGUAGE = 'en';
 
 	private $_input = array();
 
-	private $_url = array();
+	private $_args = array();
 	private $_query = array();
 	private $_body = array();
 	private $_headers = array();
 
-	private $_urlSource = null;
+	private $_argsSource = null;
 	private $_querySource = null;
 	private $_bodySource = null;
 	private $_headersSource = null;
@@ -39,104 +38,88 @@ class ApiInput extends ApiComponent {
 	private $_format = null;
 	private $_language = null;
 
-	public function __construct ($api) {
-		parent::__construct($api);
+	public function init () {
+		parent::init();
 
 		$requestInput = ApiUtils::get($this->api->getSpec('request'), 'input', array());
 
-		// HEADERS
 		$this->_headers = $this->getHeadersSrc();
+		$this->_query = $this->_initParam($this->getQuerySrc(), ApiUtils::get($requestInput, 'query', array()), $this->_additionalQueryParams, false);
+		$this->_body = $this->_initParam($this->getBodySrc(), ApiUtils::get($requestInput, 'body', array()), $this->_additionalBodyParams, false);
+		$this->_args = $this->_initParam($this->getArgsSrc(), ApiUtils::get($requestInput, 'args', array()), array(), true);
 
-		// QUERY
-		$query = $this->getQuerySrc();
-		$this->_query = $this->_initParam($query, ApiUtils::get($requestInput, 'QUERY', array()), $this->_additionalQueryParams, false);
-
-		// BODY
-		$body = $this->getBodySrc();
-		$this->_body = $this->_initParam($body, ApiUtils::get($requestInput, 'BODY', array()), $this->_additionalBodyParams, false);
-
-		// URL
-		$urlArgs = $this->getArgsSrc();
-		$this->_url = $this->_initParam($urlArgs, ApiUtils::get($requestInput, 'URL', array()));
-
-		$this->_input = array_merge(array(), $this->_input, $this->_query, $this->_url, $this->_body);
+		$this->_input = array_merge($this->_input, $this->_query, $this->_args, $this->_body);
 	}
 
 	function getHeadersSrc () {
-		if (!is_null($this->_headersSource)) {
-			return $this->_headersSource;
+		if (is_null($this->_headersSource)) {
+			$this->_headersSource = $this->api->param('input/headers');
 		}
-		$this->_headersSource = $this->api->getLaunchParam('input/headers');
 		return $this->_headersSource;
 	}
 
 	function getBodySrc () {
-		if (!is_null($this->_bodySource)) {
-			return $this->_bodySource;
+		if (is_null($this->_bodySource)) {
+			$body = $this->api->param('input/body');
+			if (is_string($body)) {
+				$body = $this->api->filter->apply($body, 'parse_'.$this->getFormat(), array(), null, 'input', 'Invalid input format', 400);
+			}
+			$this->_bodySource = is_array($body) ? $body : array();
 		}
-		$body = $this->api->getLaunchParam('input/body');
-		if (is_string($body)) {
-			$body = $this->api->filter->apply($body, 'parse_'.$this->getFormat(), array(), null, 'input', 'Invalid input format', 400);
-		}
-		$this->_bodySource = is_array($body) ? $body : array();
 		return $this->_bodySource;
 	}
 
 	function getQuerySrc () {
-		if (!is_null($this->_querySource)) {
-			return $this->_querySource;
+		if (is_null($this->_querySource)) {
+			$query = $this->api->param('input/query');
+			if (is_string($query)) {
+				parse_str($query, $query);
+			}
+			$urlQuery = array();
+			if ($this->api->param('search')) {
+				parse_str($this->api->param('search'), $urlQuery);
+			}
+			$this->_querySource = is_array($query) && $query ? array_replace_recursive($urlQuery, $query) : $urlQuery;
 		}
-		$query = $this->api->getLaunchParam('input/query');
-		if (is_string($query)) {
-			parse_str($query, $query);
-		}
-		$urlQuery = array();
-		if ($this->api->getLaunchParam('search')) {
-			parse_str($this->api->getLaunchParam('search'), $urlQuery);
-		}
-		$this->_querySource = is_array($query) && $query ? array_replace_recursive($urlQuery, $query) : $urlQuery;
 		return $this->_querySource;
 	}
 
 	function getArgsSrc () {
-		if (!is_null($this->_urlSource)) {
-			return $this->_urlSource;
+		if (is_null($this->_argsSource)) {
+			$this->_argsSource = $this->api->param('input/args');
 		}
-		$this->_urlSource = $this->api->getLaunchParam('input/args');
-		return $this->_urlSource;
+		return $this->_argsSource;
 	}
 
 
 	public function getFormat () {
-		if (!is_null($this->_format)) {
-			return $this->_format;
-		}
+		if (is_null($this->_format)) {
+			$format = null;
 
-		$format = null;
+			$contentType = ApiUtils::get($this->_headers, 'Content-Type');
+			$contentType = trim($contentType);
+			$contentType = preg_replace('/;.+/', '', $contentType);
 
-		$contentType = ApiUtils::get($this->_headers, 'Content-Type');
-		$contentType = trim($contentType);
-		$contentType = preg_replace('/;.+/', '', $contentType);
-
-		if ($contentType) {
-			foreach ($this->api->formats as $_format => $data) {
-				$mimes = $data['inputMimes'];
-				if ($format) {
-					break;
-				}
-
-				$mimes = is_array($mimes) ? $mimes : array($mimes);
-
-				foreach ($mimes as $mime) {
-					if ($contentType === $mime) {
-						$format = $_format;
+			if ($contentType) {
+				foreach ($this->api->formats as $_format => $data) {
+					$mimes = $data['inputMimes'];
+					if ($format) {
 						break;
+					}
+
+					$mimes = is_array($mimes) ? $mimes : array($mimes);
+
+					foreach ($mimes as $mime) {
+						if ($contentType === $mime) {
+							$format = $_format;
+							break;
+						}
 					}
 				}
 			}
-		}
 
-		$this->_format = $format ? $format : self::DEFAULT_FORMAT;
+			$this->_format = $format ? $format : self::DEFAULT_FORMAT;
+		}
 		return $this->_format;
 	}
 
@@ -150,9 +133,9 @@ class ApiInput extends ApiComponent {
 	function beforeActionCall () {
 		$requestInput = ApiUtils::get($this->api->getSpec('request'), 'input', array());
 
-		$this->_applyAfterFiltersToParam(ApiUtils::get($requestInput, 'QUERY', array()), $this->_query);
-		$this->_applyAfterFiltersToParam(ApiUtils::get($requestInput, 'BODY',  array()), $this->_body);
-		$this->_applyAfterFiltersToParam(ApiUtils::get($requestInput, 'URL',   array()), $this->_url);
+		$this->_applyAfterFiltersToParam(ApiUtils::get($requestInput, 'query', array()), $this->_query);
+		$this->_applyAfterFiltersToParam(ApiUtils::get($requestInput, 'body',  array()), $this->_body);
+		$this->_applyAfterFiltersToParam(ApiUtils::get($requestInput, 'args',  array()), $this->_args);
 	}
 
 
@@ -161,8 +144,8 @@ class ApiInput extends ApiComponent {
 	}
 
 
-	function url ($name = null, $default = null) {
-		return ApiUtils::getArr($this->_url, $name, $default);
+	function arg ($name = null, $default = null) {
+		return ApiUtils::getArr($this->_args, $name, $default);
 	}
 
 
@@ -205,7 +188,7 @@ class ApiInput extends ApiComponent {
 			}
 		}
 
-		return array('data' => $data, 'source' => $source);
+		return $data;
 	}
 
 
@@ -239,9 +222,9 @@ class ApiInput extends ApiComponent {
 	function check () {
 		$valid = 1;
 		$requestInput = ApiUtils::get($this->api->getSpec('request'), 'input', array());
-		$valid *= $this->_checkParam(ApiUtils::get($requestInput, 'URL', array()), $this->_url);
-		$valid *= $this->_checkParam(ApiUtils::get($requestInput, 'BODY', array()), $this->_body);
-		$valid *= $this->_checkParam(ApiUtils::get($requestInput, 'QUERY', array()), $this->_query);
+		$valid *= $this->_checkParam(ApiUtils::get($requestInput, 'args', array()), $this->_args);
+		$valid *= $this->_checkParam(ApiUtils::get($requestInput, 'body', array()), $this->_body);
+		$valid *= $this->_checkParam(ApiUtils::get($requestInput, 'query', array()), $this->_query);
 		if (!$valid) {
 			$this->api->output->send();
 		}

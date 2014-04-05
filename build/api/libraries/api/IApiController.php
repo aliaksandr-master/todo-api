@@ -31,7 +31,7 @@ interface IApiController {
 
 
 	/**
-	 * @param ApiComponent $api
+	 * @param ApiComponent $apiAccess
 	 * @param array        $accessSpec
 	 * @param string       $method
 	 * @param string       $actionName
@@ -39,7 +39,7 @@ interface IApiController {
 	 *
 	 * @return boolean
 	 */
-	public function hasAccess (ApiComponent &$api, array $accessSpec, $method, $actionName, $methodName);
+	public function hasAccess (ApiComponent &$apiAccess, array $accessSpec, $method, $actionName, $methodName);
 
 
 	/**
@@ -49,7 +49,7 @@ interface IApiController {
 	 *
 	 * @return number|null
 	 */
-	public function prepareStatusByMethod ($status, $response, $method);
+	public function prepareResponseStatusByMethod ($status, $response, $method);
 
 
 	/**

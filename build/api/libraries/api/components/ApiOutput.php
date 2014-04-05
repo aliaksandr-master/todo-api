@@ -44,8 +44,8 @@ class ApiOutput extends ApiComponent {
 	private $_mime = null;
 	private $_format = null;
 
-	public function __construct ($api) {
-		parent::__construct($api);
+	public function init () {
+		parent::init();
 
 		$this->_response = $this->api->getSpec('response');
 		$this->_responseOutput = ApiUtils::get($this->_response, 'output', array());
@@ -81,9 +81,9 @@ class ApiOutput extends ApiComponent {
 
 		$status = $this->status();
 		if ($this->api->valid()) {
-			$status = $this->api->context->prepareStatusByMethod($status, $response, $this->api->getLaunchParam('method'));
+			$status = $this->api->context->prepareResponseStatusByMethod($status, $response, $this->api->param('method'));
 			if ($status >= 500) {
-				$this->api->error('Incorrect api implementation', $status);
+				$this->api->error(null, $status);
 			}
 			$this->status($status);
 		}
@@ -109,16 +109,20 @@ class ApiOutput extends ApiComponent {
 		// DEBUG DATA (only for development and testing mode)
 		if (Api::DEBUG_MODE) {
 			$response["debug"] = array(
-				'uri' => $this->api->getLaunchParam('uri'),
-				'method' => $this->api->getLaunchParam('method'),
+				'uri' => $this->api->param('uri'),
+				'method' => $this->api->param('method'),
 				'scriptTime' => 0,
 				'compileTime' => 0,
 				'memoryPeak' => ApiUtils::formatBytes(memory_get_peak_usage()),
+				'controller' => get_class($this->api->context),
+				'methodName' => $this->api->param('action_to_call'),
+				'action' => $this->api->param('action'),
 				'db' => null,
+				'stackTrace' => $this->api->getStackTrace(),
 				//				'params' => $this->api->getLaunchParams(),
 				'input' => array(
 					'headers' => array(
-						'raw' => $this->api->getLaunchParam('input/headers'),
+						'raw' => $this->api->param('input/headers'),
 						'parsed' => array (
 							'encoding' => $this->getEncoding(),
 							'language' => $this->api->input->getLanguage(),
@@ -128,7 +132,7 @@ class ApiOutput extends ApiComponent {
 						)
 					),
 					"query"  => $this->api->input->query(),
-					"args"    => $this->api->input->url(),
+					"args"    => $this->api->input->arg(),
 					"body"   => $this->api->input->body(),
 					"body:raw" => INPUT_DATA
 				),
@@ -194,7 +198,7 @@ class ApiOutput extends ApiComponent {
 
 		if (isset($response['debug'])) {
 			$nowTimestamp = gettimeofday(true);
-			$startTimestamp = $this->api->getLaunchParam('launch_timestamp');
+			$startTimestamp = $this->api->param('launch_timestamp');
 			$response['debug']['compileTime'] = $nowTimestamp - $startTimestamp;
 			if (defined('START_TIMESTAMP')) {
 				$response['debug']['scriptTime'] = $nowTimestamp - START_TIMESTAMP;
@@ -356,7 +360,7 @@ class ApiOutput extends ApiComponent {
 	function getFormat () {
 		if (is_null($this->_format)) {
 			$accept = ApiUtils::parseQualityString($this->api->input->header('Accept', ''));
-			$format = ApiUtils::getFileFormatByFileExt(parse_url($this->api->getLaunchParam('uri'), PHP_URL_PATH), $this->api->formats, null);
+			$format = ApiUtils::getFileFormatByFileExt(parse_url($this->api->param('uri'), PHP_URL_PATH), $this->api->formats, null);
 
 			if (!is_null($format)) {
 				$format = ApiUtils::getFormatByHeadersAccept($accept, $this->api->formats, null);

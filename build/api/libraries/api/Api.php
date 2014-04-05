@@ -35,14 +35,15 @@ class Api extends ApiAbstract {
 
 	protected $_components = array();
 
-	public $apiData = array();
+	protected $apiData = array();
 
-	public $methodsMap = array();
+	protected $_params = array();
 
-	private $_launched = false;
+	protected $_stackTrace = array();
 
-	private $_launchParams = array();
+	protected $_specName = null;
 
+	protected $_configs = array();
 
 	public $formats = array(
 		'xml'  => array(
@@ -76,111 +77,124 @@ class Api extends ApiAbstract {
 	);
 
 
-	function __construct ($method, $uri, array $callParams = array(), array $inputData = array()) {
+	function __construct ($method, $uri, array $params = array()) {
 		$this->api = $this;
 
-		$this->_launchParams['method'] = strtoupper($method);
+		// INIT CONFIG
+		$this->_configs['methods'] = include(VAR_DIR.DS.'system'.DS.sha1('methods').'.php');
 
-		if (!preg_match('/^GET|HEAD|OPTIONS|POST|PUT|DELETE|TRACE|PATCH$/', $this->_launchParams['method'])) {
-			throw new Exception('invalid method name "'.$method.'" !');
+		// NEW COMPONENTS
+		$this->setComponent('access', new ApiComponent($this));
+		$this->setComponent('filter', new ApiFilter($this));
+		$this->setComponent('validation', new ApiValidation($this));
+		$this->setComponent('input', new ApiInput($this));
+		$this->setComponent('output', new ApiOutput($this));
+
+		// SAVE INIT PARAMS
+		if (!preg_match('/^'.implode('|', array_keys($this->config('methods'))).'$/i', $method)) {
+			$this->error(400, true, array($method));
 		}
+
+		$this->_params['method']        = strtoupper($method);
 
 		// todo: change to PATH key
-		$this->_launchParams['uri'] = preg_replace('/^([^\?]+)\?(.*)$/', '$1', $uri);
-		$this->_launchParams['search'] = preg_replace('/^([^\?]+)\?(.*)$/', '$2', $uri);
+		$this->_params['uri']           = preg_replace('/^([^\?]+)\?(.*)$/', '$1', $uri);
+		$this->_params['search']        = preg_replace('/^([^\?]+)\?(.*)$/', '$2', $uri);
 
-		$this->_launchParams['input/body'] = ApiUtils::get($inputData, 'body', array());
-		$this->_launchParams['input/args'] = ApiUtils::get($inputData, 'args', array());
-		$this->_launchParams['input/query'] = ApiUtils::get($inputData, 'query', array());
-		$this->_launchParams['input/headers'] = ApiUtils::get($inputData, 'headers', array());
+		$this->_params['input/body']    = ApiUtils::get($params, 'input/body',    array());
+		$this->_params['input/args']    = ApiUtils::get($params, 'input/args',    array());
+		$this->_params['input/query']   = ApiUtils::get($params, 'input/query',   array());
+		$this->_params['input/headers'] = ApiUtils::get($params, 'input/headers', array());
 
-		$this->_launchParams['controller'] = ApiUtils::get($callParams, 'controller', null);
-		$this->_launchParams['action'] = ApiUtils::get($callParams, 'action', null);
+		$cellName = $this->getSpecName($this->_params['method'], $this->_params['uri'], $this->_params['input/args']);
 
-		$this->_launchParams['uri_insensitive_case'] = ApiUtils::get($callParams, 'uri_insensitive_case', false);
-
-		if ($this->_launchParams['uri_insensitive_case']) {
-			$this->_launchParams['uri'] = strtolower($this->_launchParams['uri']);
-		}
-
-		$cellName = $this->_compileCellName($this->_launchParams['method'], $this->_launchParams['uri'], $this->_launchParams['input/args']);
-
-		$apiData = array();
-		$methodsMap = array();
+		$this->trace('Create spec name', $cellName);
 
 		$apiFile = VAR_DIR.DS.'system'.DS.sha1($cellName).'.php';
-		$methodsFile = VAR_DIR.DS.'system'.DS.sha1('methods').'.php';
 
 		if (is_file($apiFile)) {
-			$apiData = include($apiFile);
+			$this->apiData = include($apiFile);
 		}
-		if (is_file($methodsFile)) {
-			$methodsMap = include($methodsFile);
+	}
+
+	public function config ($name, $default = null, $strict = true) {
+		if ((!is_null($default) || $strict) && !isset($this->_configs[$name])) {
+			$this->error('Eternal Server Error', 500, true);
 		}
-
-		$this->apiData = $apiData;
-		$this->methodsMap = $methodsMap;
-
-		$this->context = $this->_launchParams['controller'];
-
-		$response = $this->api->getSpec('response');
-
-		$this->_launchParams['action_to_call'] = $this->context->compileMethodName($this->_launchParams['action'], $this->_launchParams['method'], $response['type'], $this->methodsMap);
+		return ApiUtils::get($this->_configs, $name, $default);
 	}
 
 
-	public function getLaunchParam ($name) {
-		return $this->_launchParams[$name];
+	public function param ($name) {
+		return $this->_params[$name];
 	}
 
 
 	public function getLaunchParams () {
-		return $this->_launchParams;
+		return $this->_params;
 	}
 
 
-	protected function _compileCellName ($method, $uriCall, array $arguments) {
-		$uriCall = preg_replace('/\?(.+)$/', '', $uriCall);
-		$uriCall = str_replace('\\', '/', $uriCall);
-		$uriCall = preg_replace('#(/+)$#', '', $uriCall);
+	protected function getSpecName ($method, $uriCall, array $arguments) {
+		if (is_null($this->_specName)) {
+			$uriCall = preg_replace('/\?(.+)$/', '', $uriCall);
+			$uriCall = str_replace('\\', '/', $uriCall);
+			$uriCall = preg_replace('#(/+)$#', '', $uriCall);
 
-		if ($arguments) {
-			$implArgs = implode('|', $arguments);
-			$uriCall = preg_replace('#^('.$implArgs.')$#', '<param>', $uriCall);
-			$uriCall = preg_replace('#^('.$implArgs.')/#', '<param>/', $uriCall);
-			$uriCall = preg_replace('#/('.$implArgs.')/#', '/<param>/', $uriCall);
-			$uriCall = preg_replace('#/('.$implArgs.')$#', '/<param>', $uriCall);
+			if ($arguments) {
+				$implArgs = implode('|', $arguments);
+				$uriCall = preg_replace('#^('.$implArgs.')$#', '<param>', $uriCall);
+				$uriCall = preg_replace('#^('.$implArgs.')/#', '<param>/', $uriCall);
+				$uriCall = preg_replace('#/('.$implArgs.')/#', '/<param>/', $uriCall);
+				$uriCall = preg_replace('#/('.$implArgs.')$#', '/<param>', $uriCall);
+			}
+
+			$uriCall = preg_replace('/^\/+/i', '', $uriCall);
+			$this->_specName = $method.":".$uriCall;
 		}
 
-		$uriCall = preg_replace('/^\/+/i', '', $uriCall);
-		$cellName = $method.":".$uriCall;
-
-		return $cellName;
+		return $this->_specName;
 	}
 
 
-	function launch () {
-		if ($this->_launched) {
+	function launch ($controller, $action) {
+
+		$this->_params['launch_timestamp'] = gettimeofday(true);
+
+		$this->context = $this->_params['controller'] = $controller;
+		$this->_params['action'] = $action;
+
+		$this->trace('Launch width  '.get_class($controller).'->'.$action);
+
+		if (!$this->apiData) {
+			$this->error('Method %0% Not Allowed', 405, true, array (
+				'(\''.$this->param('action').'\')',
+			));
 			return null;
 		}
-		$this->_launched = true;
 
-		$this->_launchParams['launch_timestamp'] = gettimeofday(true);
 
-		if (!$this->apiData || !method_exists($this->context, $this->getLaunchParam('action_to_call'))) {
-			$this->error('Method Not Allowed', 405, true);
+		$response = $this->api->getSpec('response');
+		$this->_params['action_to_call'] = $this->context->compileMethodName($this->param('action'), $this->param('method'), $response['type'], $this->config('methods'));
 
+		$this->trace('Compile launch method name', $this->param('action_to_call'));
+
+		if (!method_exists($this->context, $this->param('action_to_call'))) {
+			$this->error('Method %0% Not Allowed', 405, true, array (
+				'(\''.$this->param('action_to_call').'\')',
+			));
 			return null;
 		}
 
-		$this->setComponent('access', new ApiComponent($this));
-		$this->setComponent('filter', new ApiFilter($this));
-		$this->setComponent('validation', new ApiValidation($this));
+		foreach ($this->_components as $componentName => $component) {
+			$this->trace('Init component', $componentName);
+			/** @var ApiComponent $component */
+			$component->init();
+		}
 
-		$this->setComponent('input', new ApiInput($this));
-		$this->setComponent('output', new ApiOutput($this));
 
-		foreach ($this->_components as $component) {
+		foreach ($this->_components as $componentName => $component) {
+			$this->trace('Check component', $componentName);
 			/** @var ApiComponent $component */
 			$component->check();
 		}
@@ -189,7 +203,8 @@ class Api extends ApiAbstract {
 			return null;
 		}
 
-		$hasAccess = $this->api->context->hasAccess($this->access, $this->getSpec('access'), $this->getLaunchParam('method'), $this->getLaunchParam('action'), $this->getLaunchParam('action_to_call'));
+		$hasAccess = $this->api->context->hasAccess($this->access, $this->getSpec('access'), $this->param('method'), $this->param('action'), $this->param('action_to_call'));
+		$this->trace('Has Access', $hasAccess);
 		if (!$hasAccess) {
 			if ($this->access->valid()) {
 				$this->access->error(null, 403);
@@ -201,16 +216,22 @@ class Api extends ApiAbstract {
 			return null;
 		}
 
-		foreach ($this->_components as $part) {
-			/** @var ApiComponent $part */
-			$part->beforeActionCall();
+		foreach ($this->_components as $componentName => $component) {
+			$this->trace('BeforeActionCall component', $componentName);
+			/** @var ApiComponent $component */
+			$component->beforeActionCall();
 		}
 
 		if ($this->valid()) {
-			$actionMethod = $this->getLaunchParam('action_to_call');
+			$actionMethod = $this->param('action_to_call');
 			$call = array($this->context, $actionMethod);
-			$callArgs = $this->context->getActionArgs($this->getLaunchParam('action'), $this->getLaunchParam('method'), $actionMethod, $this->input);
+			$callArgs = $this->context->getActionArgs($this->param('action'), $this->param('method'), $actionMethod, $this->input);
+
+			$this->trace('Call controller method \''.$actionMethod.'\' with ', $callArgs);
+
 			$result = call_user_func_array($call, $callArgs);
+
+			$this->trace('Result call', $result);
 
 			if (!is_null($result)) {
 				$this->api->output->data($result);
@@ -266,6 +287,28 @@ class Api extends ApiAbstract {
 		}
 
 		return true;
+	}
+
+	function trace ($markName, $data = null) {
+		if (Api::DEBUG_MODE) {
+			if (!is_object($data) && !is_array($data) && !is_null($data)) {
+				$markName .= ': '.$data;
+				$data = null;
+			}
+			if (is_null($data)) {
+				$this->_stackTrace[] = $markName;
+			} else {
+				$this->_stackTrace[][$markName] = $data;
+			}
+		}
+	}
+
+
+	function getStackTrace () {
+		if (Api::DEBUG_MODE) {
+			return $this->_stackTrace;
+		}
+		return array();
 	}
 
 
