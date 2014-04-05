@@ -10,7 +10,6 @@
     "ApiUtils": "../api/libraries/api/ApiUtils.php",
     "IApiController": "../api/libraries/api/IApiController.php",
     "IApiDebugStatistic": "../api/libraries/api/IApiDebugStatistic.php",
-    "IApiError": "../api/libraries/api/IApiError.php",
     "ApiFilter": "../api/libraries/api/components/ApiFilter.php",
     "ApiInput": "../api/libraries/api/components/ApiInput.php",
     "ApiOutput": "../api/libraries/api/components/ApiOutput.php",

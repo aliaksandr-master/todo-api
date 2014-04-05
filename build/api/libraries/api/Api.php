@@ -35,6 +35,14 @@ class Api extends ApiAbstract {
 
 	protected $_components = array();
 
+	protected $_componentsMap = array(
+		'access' => 'ApiComponent',
+		'filter' => 'ApiFilter',
+		'validation' => 'ApiValidation',
+		'input' => 'ApiInput',
+		'output' => 'ApiOutput'
+	);
+
 	protected $apiData = array();
 
 	protected $_params = array();
@@ -81,14 +89,12 @@ class Api extends ApiAbstract {
 		$this->api = $this;
 
 		// INIT CONFIG
-		$this->_configs['methods'] = include(VAR_DIR.DS.'system'.DS.sha1('methods').'.php');
+		$this->_configs['methods'] = include(VAR_DIR.DS.'configs'.DS.sha1('methods').'.php');
 
 		// NEW COMPONENTS
-		$this->setComponent('access', new ApiComponent($this));
-		$this->setComponent('filter', new ApiFilter($this));
-		$this->setComponent('validation', new ApiValidation($this));
-		$this->setComponent('input', new ApiInput($this));
-		$this->setComponent('output', new ApiOutput($this));
+		foreach ($this->_componentsMap as $componentName => $Component) {
+			$this->_components[$componentName] = $this->$componentName = new $Component($this);
+		}
 
 		// SAVE INIT PARAMS
 		if (!preg_match('/^'.implode('|', array_keys($this->config('methods'))).'$/i', $method)) {
@@ -244,14 +250,6 @@ class Api extends ApiAbstract {
 
 	public function send ($compress) {
 		$this->api->output->send($compress);
-	}
-
-
-	protected function &setComponent ($name, &$part) {
-		$this->$name = $part;
-		$this->_components[$name] = & $part;
-
-		return $part;
 	}
 
 

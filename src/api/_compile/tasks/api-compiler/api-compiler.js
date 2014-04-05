@@ -17,7 +17,9 @@ module.exports = function(grunt){
 		verbose: false,
 		destSourceJsonFile: 'build/api/var/api.source.json',
 		destParsedJsonFile: 'build/api/var/api.parsed.json',
-		destDir: 'build/api/var/system/'
+		varDir: 'build/api/var/',
+		configDir: 'configs/',
+		sysDir: 'system/'
 	};
 
 	var utils = require('./_utils.js')(options, mainOptions);
@@ -38,12 +40,12 @@ module.exports = function(grunt){
 		var parsed = utils.compile(source);
 
 		_.each(parsed, function (value, name) {
-			var file = mainOptions.destDir + sha1(name) +'.php';
+			var file = mainOptions.varDir + mainOptions.sysDir + sha1(name) +'.php';
 			grunt.file.write(file, '<?php \nreturn ' + json2phpArray(value) + ';');
 			grunt.log.ok(value.name + ', file: ' + file);
 		});
 
-		var methodsFile  = mainOptions.destDir + sha1('methods') +'.php';
+		var methodsFile  = mainOptions.varDir + mainOptions.configDir + sha1('methods') +'.php';
 		grunt.file.write(methodsFile, '<?php \nreturn ' + json2phpArray(options.methods) + ';');
 		grunt.log.ok('file of methods : ' + methodsFile,' was created');
 
