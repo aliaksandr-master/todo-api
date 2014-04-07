@@ -1,4 +1,13 @@
+"use strict";
 
+var stdResponse = [
+	"id:decimal",
+	"todo_id:decimal",
+	"sort_order:decimal",
+	"name:string",
+	"date_create:string",
+	"is_active:boolean"
+];
 
 module.exports = {
 	"GET todo/$todo_id/item": {
@@ -6,27 +15,14 @@ module.exports = {
 		"request": {
 			"$todo_id:decimal": "required"
 		},
-		"response < 255": [
-			"id:decimal",
-			"todo_id:decimal",
-			"sort_order:decimal",
-			"name:string",
-			"date_create:string",
-			"is_active:boolean"
-		]
+		"response < 255": stdResponse
 	},
 	"GET todo/$todo_id/item/$id": {
 		"request": {
 			"$todo_id:decimal": "required",
 			"$id:decimal": "required"
 		},
-		"response": [
-			"id:decimal",
-			"name:string",
-			"date_create:string",
-			"sort_order:decimal",
-			"is_active:boolean"
-		]
+		"response": stdResponse
 	},
 	"POST todo/$todo_id/item": {
 		"access": {
@@ -39,14 +35,7 @@ module.exports = {
 			"sort_order:decimal": "optional",
 			"is_active:boolean": "optional"
 		},
-		"response": [
-			"id:decimal",
-			"todo_id:decimal",
-			"sort_order:decimal",
-			"name:string",
-			"date_create:string",
-			"is_active:boolean"
-		]
+		"response": stdResponse
 	},
 	"PUT todo/$todo_id/item/$id": {
 		"access": {
@@ -60,14 +49,7 @@ module.exports = {
 			"sort_order:decimal": "optional",
 			"is_active:boolean": "optional"
 		},
-		"response": [
-			"id:decimal",
-			"todo_id:decimal",
-			"sort_order:decimal",
-			"name:string",
-			"date_create:string",
-			"is_active:boolean"
-		]
+		"response": stdResponse
 	},
 	"DELETE todo/$todo_id/item/$id": {
 		"access": {

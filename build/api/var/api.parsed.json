@@ -14,26 +14,17 @@
                     "id": {
                         "name": "id",
                         "type": "decimal",
-                        "filters": {
-                            "before": [],
-                            "after": []
-                        }
+                        "filters": []
                     },
                     "username": {
                         "name": "username",
                         "type": "string",
-                        "filters": {
-                            "before": [],
-                            "after": []
-                        }
+                        "filters": []
                     },
                     "email": {
                         "name": "email",
                         "type": "string",
-                        "filters": {
-                            "before": [],
-                            "after": []
-                        }
+                        "filters": []
                     }
                 },
                 "meta": {}
@@ -50,29 +41,21 @@
         "name": "POST session/user",
         "request": {
             "input": {
-                "body": {
+                "BODY": {
                     "username": {
                         "name": "username",
                         "type": "string",
-                        "filters": {
-                            "before": [],
-                            "after": [
-                                {
-                                    "xss": []
-                                },
-                                {
-                                    "trim": []
-                                }
-                            ]
-                        },
+                        "filters": [
+                            {
+                                "xss": []
+                            },
+                            {
+                                "trim": []
+                            }
+                        ],
                         "validation": {
                             "required": true,
                             "rules": [
-                                {
-                                    "max_length": [
-                                        255
-                                    ]
-                                },
                                 {
                                     "max_length": [
                                         50
@@ -89,25 +72,17 @@
                     "password": {
                         "name": "password",
                         "type": "string",
-                        "filters": {
-                            "before": [],
-                            "after": [
-                                {
-                                    "xss": []
-                                },
-                                {
-                                    "trim": []
-                                }
-                            ]
-                        },
+                        "filters": [
+                            {
+                                "xss": []
+                            },
+                            {
+                                "trim": []
+                            }
+                        ],
                         "validation": {
                             "required": true,
                             "rules": [
-                                {
-                                    "max_length": [
-                                        255
-                                    ]
-                                },
                                 {
                                     "max_length": [
                                         50
@@ -124,14 +99,11 @@
                     "remember": {
                         "name": "remember",
                         "type": "boolean",
-                        "filters": {
-                            "before": [],
-                            "after": [
-                                {
-                                    "to_bool": []
-                                }
-                            ]
-                        },
+                        "filters": [
+                            {
+                                "to_bool": []
+                            }
+                        ],
                         "validation": {
                             "required": false,
                             "rules": []
@@ -148,26 +120,17 @@
                     "id": {
                         "name": "id",
                         "type": "decimal",
-                        "filters": {
-                            "before": [],
-                            "after": []
-                        }
+                        "filters": []
                     },
                     "username": {
                         "name": "username",
                         "type": "string",
-                        "filters": {
-                            "before": [],
-                            "after": []
-                        }
+                        "filters": []
                     },
                     "email": {
                         "name": "email",
                         "type": "string",
-                        "filters": {
-                            "before": [],
-                            "after": []
-                        }
+                        "filters": []
                     }
                 },
                 "meta": {}
@@ -193,10 +156,7 @@
                     "status": {
                         "name": "status",
                         "type": "boolean",
-                        "filters": {
-                            "before": [],
-                            "after": []
-                        }
+                        "filters": []
                     }
                 },
                 "meta": {}
@@ -217,14 +177,11 @@
                     {
                         "name": "todo_id",
                         "type": "decimal",
-                        "filters": {
-                            "before": [],
-                            "after": [
-                                {
-                                    "to_int": []
-                                }
-                            ]
-                        },
+                        "filters": [
+                            {
+                                "to_int": []
+                            }
+                        ],
                         "validation": {
                             "required": true,
                             "rules": [
@@ -246,50 +203,32 @@
                     "id": {
                         "name": "id",
                         "type": "decimal",
-                        "filters": {
-                            "before": [],
-                            "after": []
-                        }
+                        "filters": []
                     },
                     "todo_id": {
                         "name": "todo_id",
                         "type": "decimal",
-                        "filters": {
-                            "before": [],
-                            "after": []
-                        }
+                        "filters": []
                     },
                     "sort_order": {
                         "name": "sort_order",
                         "type": "decimal",
-                        "filters": {
-                            "before": [],
-                            "after": []
-                        }
+                        "filters": []
                     },
                     "name": {
                         "name": "name",
                         "type": "string",
-                        "filters": {
-                            "before": [],
-                            "after": []
-                        }
+                        "filters": []
                     },
                     "date_create": {
                         "name": "date_create",
                         "type": "string",
-                        "filters": {
-                            "before": [],
-                            "after": []
-                        }
+                        "filters": []
                     },
                     "is_active": {
                         "name": "is_active",
                         "type": "boolean",
-                        "filters": {
-                            "before": [],
-                            "after": []
-                        }
+                        "filters": []
                     }
                 },
                 "meta": {}
@@ -310,14 +249,11 @@
                     {
                         "name": "todo_id",
                         "type": "decimal",
-                        "filters": {
-                            "before": [],
-                            "after": [
-                                {
-                                    "to_int": []
-                                }
-                            ]
-                        },
+                        "filters": [
+                            {
+                                "to_int": []
+                            }
+                        ],
                         "validation": {
                             "required": true,
                             "rules": [
@@ -330,14 +266,11 @@
                     {
                         "name": "id",
                         "type": "decimal",
-                        "filters": {
-                            "before": [],
-                            "after": [
-                                {
-                                    "to_int": []
-                                }
-                            ]
-                        },
+                        "filters": [
+                            {
+                                "to_int": []
+                            }
+                        ],
                         "validation": {
                             "required": true,
                             "rules": [
@@ -358,42 +291,32 @@
                     "id": {
                         "name": "id",
                         "type": "decimal",
-                        "filters": {
-                            "before": [],
-                            "after": []
-                        }
+                        "filters": []
                     },
-                    "name": {
-                        "name": "name",
-                        "type": "string",
-                        "filters": {
-                            "before": [],
-                            "after": []
-                        }
-                    },
-                    "date_create": {
-                        "name": "date_create",
-                        "type": "string",
-                        "filters": {
-                            "before": [],
-                            "after": []
-                        }
+                    "todo_id": {
+                        "name": "todo_id",
+                        "type": "decimal",
+                        "filters": []
                     },
                     "sort_order": {
                         "name": "sort_order",
                         "type": "decimal",
-                        "filters": {
-                            "before": [],
-                            "after": []
-                        }
+                        "filters": []
+                    },
+                    "name": {
+                        "name": "name",
+                        "type": "string",
+                        "filters": []
+                    },
+                    "date_create": {
+                        "name": "date_create",
+                        "type": "string",
+                        "filters": []
                     },
                     "is_active": {
                         "name": "is_active",
                         "type": "boolean",
-                        "filters": {
-                            "before": [],
-                            "after": []
-                        }
+                        "filters": []
                     }
                 },
                 "meta": {}
@@ -414,14 +337,11 @@
                     {
                         "name": "todo_id",
                         "type": "decimal",
-                        "filters": {
-                            "before": [],
-                            "after": [
-                                {
-                                    "to_int": []
-                                }
-                            ]
-                        },
+                        "filters": [
+                            {
+                                "to_int": []
+                            }
+                        ],
                         "validation": {
                             "required": true,
                             "rules": [
@@ -432,21 +352,18 @@
                         }
                     }
                 ],
-                "body": {
+                "BODY": {
                     "name": {
                         "name": "name",
                         "type": "string",
-                        "filters": {
-                            "before": [],
-                            "after": [
-                                {
-                                    "xss": []
-                                },
-                                {
-                                    "trim": []
-                                }
-                            ]
-                        },
+                        "filters": [
+                            {
+                                "xss": []
+                            },
+                            {
+                                "trim": []
+                            }
+                        ],
                         "validation": {
                             "required": false,
                             "rules": [
@@ -461,14 +378,11 @@
                     "sort_order": {
                         "name": "sort_order",
                         "type": "decimal",
-                        "filters": {
-                            "before": [],
-                            "after": [
-                                {
-                                    "to_int": []
-                                }
-                            ]
-                        },
+                        "filters": [
+                            {
+                                "to_int": []
+                            }
+                        ],
                         "validation": {
                             "required": false,
                             "rules": [
@@ -481,14 +395,11 @@
                     "is_active": {
                         "name": "is_active",
                         "type": "boolean",
-                        "filters": {
-                            "before": [],
-                            "after": [
-                                {
-                                    "to_bool": []
-                                }
-                            ]
-                        },
+                        "filters": [
+                            {
+                                "to_bool": []
+                            }
+                        ],
                         "validation": {
                             "required": false,
                             "rules": []
@@ -505,50 +416,32 @@
                     "id": {
                         "name": "id",
                         "type": "decimal",
-                        "filters": {
-                            "before": [],
-                            "after": []
-                        }
+                        "filters": []
                     },
                     "todo_id": {
                         "name": "todo_id",
                         "type": "decimal",
-                        "filters": {
-                            "before": [],
-                            "after": []
-                        }
+                        "filters": []
                     },
                     "sort_order": {
                         "name": "sort_order",
                         "type": "decimal",
-                        "filters": {
-                            "before": [],
-                            "after": []
-                        }
+                        "filters": []
                     },
                     "name": {
                         "name": "name",
                         "type": "string",
-                        "filters": {
-                            "before": [],
-                            "after": []
-                        }
+                        "filters": []
                     },
                     "date_create": {
                         "name": "date_create",
                         "type": "string",
-                        "filters": {
-                            "before": [],
-                            "after": []
-                        }
+                        "filters": []
                     },
                     "is_active": {
                         "name": "is_active",
                         "type": "boolean",
-                        "filters": {
-                            "before": [],
-                            "after": []
-                        }
+                        "filters": []
                     }
                 },
                 "meta": {}
@@ -569,14 +462,11 @@
                     {
                         "name": "todo_id",
                         "type": "decimal",
-                        "filters": {
-                            "before": [],
-                            "after": [
-                                {
-                                    "to_int": []
-                                }
-                            ]
-                        },
+                        "filters": [
+                            {
+                                "to_int": []
+                            }
+                        ],
                         "validation": {
                             "required": true,
                             "rules": [
@@ -589,14 +479,11 @@
                     {
                         "name": "id",
                         "type": "decimal",
-                        "filters": {
-                            "before": [],
-                            "after": [
-                                {
-                                    "to_int": []
-                                }
-                            ]
-                        },
+                        "filters": [
+                            {
+                                "to_int": []
+                            }
+                        ],
                         "validation": {
                             "required": true,
                             "rules": [
@@ -607,21 +494,18 @@
                         }
                     }
                 ],
-                "body": {
+                "BODY": {
                     "name": {
                         "name": "name",
                         "type": "string",
-                        "filters": {
-                            "before": [],
-                            "after": [
-                                {
-                                    "xss": []
-                                },
-                                {
-                                    "trim": []
-                                }
-                            ]
-                        },
+                        "filters": [
+                            {
+                                "xss": []
+                            },
+                            {
+                                "trim": []
+                            }
+                        ],
                         "validation": {
                             "required": false,
                             "rules": [
@@ -636,14 +520,11 @@
                     "sort_order": {
                         "name": "sort_order",
                         "type": "decimal",
-                        "filters": {
-                            "before": [],
-                            "after": [
-                                {
-                                    "to_int": []
-                                }
-                            ]
-                        },
+                        "filters": [
+                            {
+                                "to_int": []
+                            }
+                        ],
                         "validation": {
                             "required": false,
                             "rules": [
@@ -656,14 +537,11 @@
                     "is_active": {
                         "name": "is_active",
                         "type": "boolean",
-                        "filters": {
-                            "before": [],
-                            "after": [
-                                {
-                                    "to_bool": []
-                                }
-                            ]
-                        },
+                        "filters": [
+                            {
+                                "to_bool": []
+                            }
+                        ],
                         "validation": {
                             "required": false,
                             "rules": []
@@ -680,50 +558,32 @@
                     "id": {
                         "name": "id",
                         "type": "decimal",
-                        "filters": {
-                            "before": [],
-                            "after": []
-                        }
+                        "filters": []
                     },
                     "todo_id": {
                         "name": "todo_id",
                         "type": "decimal",
-                        "filters": {
-                            "before": [],
-                            "after": []
-                        }
+                        "filters": []
                     },
                     "sort_order": {
                         "name": "sort_order",
                         "type": "decimal",
-                        "filters": {
-                            "before": [],
-                            "after": []
-                        }
+                        "filters": []
                     },
                     "name": {
                         "name": "name",
                         "type": "string",
-                        "filters": {
-                            "before": [],
-                            "after": []
-                        }
+                        "filters": []
                     },
                     "date_create": {
                         "name": "date_create",
                         "type": "string",
-                        "filters": {
-                            "before": [],
-                            "after": []
-                        }
+                        "filters": []
                     },
                     "is_active": {
                         "name": "is_active",
                         "type": "boolean",
-                        "filters": {
-                            "before": [],
-                            "after": []
-                        }
+                        "filters": []
                     }
                 },
                 "meta": {}
@@ -744,14 +604,11 @@
                     {
                         "name": "todo_id",
                         "type": "decimal",
-                        "filters": {
-                            "before": [],
-                            "after": [
-                                {
-                                    "to_int": []
-                                }
-                            ]
-                        },
+                        "filters": [
+                            {
+                                "to_int": []
+                            }
+                        ],
                         "validation": {
                             "required": true,
                             "rules": [
@@ -764,14 +621,11 @@
                     {
                         "name": "id",
                         "type": "decimal",
-                        "filters": {
-                            "before": [],
-                            "after": [
-                                {
-                                    "to_int": []
-                                }
-                            ]
-                        },
+                        "filters": [
+                            {
+                                "to_int": []
+                            }
+                        ],
                         "validation": {
                             "required": true,
                             "rules": [
@@ -792,10 +646,7 @@
                     "status": {
                         "name": "status",
                         "type": "boolean",
-                        "filters": {
-                            "before": [],
-                            "after": []
-                        }
+                        "filters": []
                     }
                 },
                 "meta": {}
@@ -822,42 +673,27 @@
                     "id": {
                         "name": "id",
                         "type": "decimal",
-                        "filters": {
-                            "before": [],
-                            "after": []
-                        }
+                        "filters": []
                     },
                     "link": {
                         "name": "link",
                         "type": "string",
-                        "filters": {
-                            "before": [],
-                            "after": []
-                        }
+                        "filters": []
                     },
                     "name": {
                         "name": "name",
                         "type": "string",
-                        "filters": {
-                            "before": [],
-                            "after": []
-                        }
+                        "filters": []
                     },
                     "is_shared": {
                         "name": "is_shared",
                         "type": "boolean",
-                        "filters": {
-                            "before": [],
-                            "after": []
-                        }
+                        "filters": []
                     },
                     "sort_order": {
                         "name": "sort_order",
                         "type": "decimal",
-                        "filters": {
-                            "before": [],
-                            "after": []
-                        }
+                        "filters": []
                     }
                 },
                 "meta": {}
@@ -878,14 +714,11 @@
                     {
                         "name": "id",
                         "type": "decimal",
-                        "filters": {
-                            "before": [],
-                            "after": [
-                                {
-                                    "to_int": []
-                                }
-                            ]
-                        },
+                        "filters": [
+                            {
+                                "to_int": []
+                            }
+                        ],
                         "validation": {
                             "required": true,
                             "rules": [
@@ -906,42 +739,27 @@
                     "id": {
                         "name": "id",
                         "type": "decimal",
-                        "filters": {
-                            "before": [],
-                            "after": []
-                        }
+                        "filters": []
                     },
                     "link": {
                         "name": "link",
                         "type": "string",
-                        "filters": {
-                            "before": [],
-                            "after": []
-                        }
+                        "filters": []
                     },
                     "name": {
                         "name": "name",
                         "type": "string",
-                        "filters": {
-                            "before": [],
-                            "after": []
-                        }
+                        "filters": []
                     },
                     "is_shared": {
                         "name": "is_shared",
                         "type": "boolean",
-                        "filters": {
-                            "before": [],
-                            "after": []
-                        }
+                        "filters": []
                     },
                     "sort_order": {
                         "name": "sort_order",
                         "type": "decimal",
-                        "filters": {
-                            "before": [],
-                            "after": []
-                        }
+                        "filters": []
                     }
                 },
                 "meta": {}
@@ -958,21 +776,18 @@
         "name": "POST todo",
         "request": {
             "input": {
-                "body": {
+                "BODY": {
                     "name": {
                         "name": "name",
                         "type": "string",
-                        "filters": {
-                            "before": [],
-                            "after": [
-                                {
-                                    "xss": []
-                                },
-                                {
-                                    "trim": []
-                                }
-                            ]
-                        },
+                        "filters": [
+                            {
+                                "xss": []
+                            },
+                            {
+                                "trim": []
+                            }
+                        ],
                         "validation": {
                             "required": false,
                             "rules": [
@@ -987,14 +802,11 @@
                     "is_shared": {
                         "name": "is_shared",
                         "type": "boolean",
-                        "filters": {
-                            "before": [],
-                            "after": [
-                                {
-                                    "to_bool": []
-                                }
-                            ]
-                        },
+                        "filters": [
+                            {
+                                "to_bool": []
+                            }
+                        ],
                         "validation": {
                             "required": false,
                             "rules": []
@@ -1003,14 +815,11 @@
                     "sort_order": {
                         "name": "sort_order",
                         "type": "decimal",
-                        "filters": {
-                            "before": [],
-                            "after": [
-                                {
-                                    "to_int": []
-                                }
-                            ]
-                        },
+                        "filters": [
+                            {
+                                "to_int": []
+                            }
+                        ],
                         "validation": {
                             "required": false,
                             "rules": [
@@ -1031,42 +840,27 @@
                     "id": {
                         "name": "id",
                         "type": "decimal",
-                        "filters": {
-                            "before": [],
-                            "after": []
-                        }
+                        "filters": []
                     },
                     "link": {
                         "name": "link",
                         "type": "string",
-                        "filters": {
-                            "before": [],
-                            "after": []
-                        }
+                        "filters": []
                     },
                     "name": {
                         "name": "name",
                         "type": "string",
-                        "filters": {
-                            "before": [],
-                            "after": []
-                        }
+                        "filters": []
                     },
                     "is_shared": {
                         "name": "is_shared",
                         "type": "boolean",
-                        "filters": {
-                            "before": [],
-                            "after": []
-                        }
+                        "filters": []
                     },
                     "sort_order": {
                         "name": "sort_order",
                         "type": "decimal",
-                        "filters": {
-                            "before": [],
-                            "after": []
-                        }
+                        "filters": []
                     }
                 },
                 "meta": {}
@@ -1087,14 +881,11 @@
                     {
                         "name": "id",
                         "type": "decimal",
-                        "filters": {
-                            "before": [],
-                            "after": [
-                                {
-                                    "to_int": []
-                                }
-                            ]
-                        },
+                        "filters": [
+                            {
+                                "to_int": []
+                            }
+                        ],
                         "validation": {
                             "required": true,
                             "rules": [
@@ -1105,29 +896,21 @@
                         }
                     }
                 ],
-                "body": {
+                "BODY": {
                     "name": {
                         "name": "name",
                         "type": "string",
-                        "filters": {
-                            "before": [],
-                            "after": [
-                                {
-                                    "xss": []
-                                },
-                                {
-                                    "trim": []
-                                }
-                            ]
-                        },
+                        "filters": [
+                            {
+                                "xss": []
+                            },
+                            {
+                                "trim": []
+                            }
+                        ],
                         "validation": {
                             "required": false,
                             "rules": [
-                                {
-                                    "max_length": [
-                                        255
-                                    ]
-                                },
                                 {
                                     "max_length": [
                                         40
@@ -1144,14 +927,11 @@
                     "is_shared": {
                         "name": "is_shared",
                         "type": "boolean",
-                        "filters": {
-                            "before": [],
-                            "after": [
-                                {
-                                    "to_bool": []
-                                }
-                            ]
-                        },
+                        "filters": [
+                            {
+                                "to_bool": []
+                            }
+                        ],
                         "validation": {
                             "required": false,
                             "rules": []
@@ -1160,14 +940,11 @@
                     "sort_order": {
                         "name": "sort_order",
                         "type": "decimal",
-                        "filters": {
-                            "before": [],
-                            "after": [
-                                {
-                                    "to_int": []
-                                }
-                            ]
-                        },
+                        "filters": [
+                            {
+                                "to_int": []
+                            }
+                        ],
                         "validation": {
                             "required": false,
                             "rules": [
@@ -1198,42 +975,27 @@
                     "id": {
                         "name": "id",
                         "type": "decimal",
-                        "filters": {
-                            "before": [],
-                            "after": []
-                        }
+                        "filters": []
                     },
                     "link": {
                         "name": "link",
                         "type": "string",
-                        "filters": {
-                            "before": [],
-                            "after": []
-                        }
+                        "filters": []
                     },
                     "name": {
                         "name": "name",
                         "type": "string",
-                        "filters": {
-                            "before": [],
-                            "after": []
-                        }
+                        "filters": []
                     },
                     "is_shared": {
                         "name": "is_shared",
                         "type": "boolean",
-                        "filters": {
-                            "before": [],
-                            "after": []
-                        }
+                        "filters": []
                     },
                     "sort_order": {
                         "name": "sort_order",
                         "type": "decimal",
-                        "filters": {
-                            "before": [],
-                            "after": []
-                        }
+                        "filters": []
                     }
                 },
                 "meta": {}
@@ -1254,14 +1016,11 @@
                     {
                         "name": "todo_id",
                         "type": "decimal",
-                        "filters": {
-                            "before": [],
-                            "after": [
-                                {
-                                    "to_int": []
-                                }
-                            ]
-                        },
+                        "filters": [
+                            {
+                                "to_int": []
+                            }
+                        ],
                         "validation": {
                             "required": true,
                             "rules": [
@@ -1292,10 +1051,7 @@
                     "status": {
                         "name": "status",
                         "type": "boolean",
-                        "filters": {
-                            "before": [],
-                            "after": []
-                        }
+                        "filters": []
                     }
                 },
                 "meta": {}
@@ -1322,26 +1078,17 @@
                     "id": {
                         "name": "id",
                         "type": "decimal",
-                        "filters": {
-                            "before": [],
-                            "after": []
-                        }
+                        "filters": []
                     },
                     "username": {
                         "name": "username",
                         "type": "string",
-                        "filters": {
-                            "before": [],
-                            "after": []
-                        }
+                        "filters": []
                     },
                     "email": {
                         "name": "email",
                         "type": "string",
-                        "filters": {
-                            "before": [],
-                            "after": []
-                        }
+                        "filters": []
                     }
                 },
                 "meta": {}
@@ -1362,14 +1109,11 @@
                     {
                         "name": "id",
                         "type": "decimal",
-                        "filters": {
-                            "before": [],
-                            "after": [
-                                {
-                                    "to_int": []
-                                }
-                            ]
-                        },
+                        "filters": [
+                            {
+                                "to_int": []
+                            }
+                        ],
                         "validation": {
                             "required": true,
                             "rules": [
@@ -1390,26 +1134,17 @@
                     "id": {
                         "name": "id",
                         "type": "decimal",
-                        "filters": {
-                            "before": [],
-                            "after": []
-                        }
+                        "filters": []
                     },
                     "username": {
                         "name": "username",
                         "type": "string",
-                        "filters": {
-                            "before": [],
-                            "after": []
-                        }
+                        "filters": []
                     },
                     "email": {
                         "name": "email",
                         "type": "string",
-                        "filters": {
-                            "before": [],
-                            "after": []
-                        }
+                        "filters": []
                     }
                 },
                 "meta": {}
@@ -1430,14 +1165,11 @@
                     {
                         "name": "id",
                         "type": "decimal",
-                        "filters": {
-                            "before": [],
-                            "after": [
-                                {
-                                    "to_int": []
-                                }
-                            ]
-                        },
+                        "filters": [
+                            {
+                                "to_int": []
+                            }
+                        ],
                         "validation": {
                             "required": true,
                             "rules": [
@@ -1458,10 +1190,7 @@
                     "status": {
                         "name": "status",
                         "type": "boolean",
-                        "filters": {
-                            "before": [],
-                            "after": []
-                        }
+                        "filters": []
                     }
                 },
                 "meta": {}
@@ -1482,14 +1211,11 @@
                     {
                         "name": "id",
                         "type": "decimal",
-                        "filters": {
-                            "before": [],
-                            "after": [
-                                {
-                                    "to_int": []
-                                }
-                            ]
-                        },
+                        "filters": [
+                            {
+                                "to_int": []
+                            }
+                        ],
                         "validation": {
                             "required": false,
                             "rules": [
@@ -1503,21 +1229,18 @@
                         }
                     }
                 ],
-                "body": {
+                "BODY": {
                     "username": {
                         "name": "username",
                         "type": "string",
-                        "filters": {
-                            "before": [],
-                            "after": [
-                                {
-                                    "xss": []
-                                },
-                                {
-                                    "trim": []
-                                }
-                            ]
-                        },
+                        "filters": [
+                            {
+                                "xss": []
+                            },
+                            {
+                                "trim": []
+                            }
+                        ],
                         "validation": {
                             "required": false,
                             "rules": [
@@ -1540,17 +1263,14 @@
                     "email": {
                         "name": "email",
                         "type": "string",
-                        "filters": {
-                            "before": [],
-                            "after": [
-                                {
-                                    "xss": []
-                                },
-                                {
-                                    "trim": []
-                                }
-                            ]
-                        },
+                        "filters": [
+                            {
+                                "xss": []
+                            },
+                            {
+                                "trim": []
+                            }
+                        ],
                         "validation": {
                             "required": true,
                             "rules": [
@@ -1576,17 +1296,14 @@
                     "password_old": {
                         "name": "password_old",
                         "type": "string",
-                        "filters": {
-                            "before": [],
-                            "after": [
-                                {
-                                    "xss": []
-                                },
-                                {
-                                    "trim": []
-                                }
-                            ]
-                        },
+                        "filters": [
+                            {
+                                "xss": []
+                            },
+                            {
+                                "trim": []
+                            }
+                        ],
                         "validation": {
                             "required": false,
                             "rules": [
@@ -1604,17 +1321,14 @@
                     "password_new": {
                         "name": "password_new",
                         "type": "string",
-                        "filters": {
-                            "before": [],
-                            "after": [
-                                {
-                                    "xss": []
-                                },
-                                {
-                                    "trim": []
-                                }
-                            ]
-                        },
+                        "filters": [
+                            {
+                                "xss": []
+                            },
+                            {
+                                "trim": []
+                            }
+                        ],
                         "validation": {
                             "required": false,
                             "rules": [
@@ -1639,17 +1353,14 @@
                     "password_new_confirm": {
                         "name": "password_new_confirm",
                         "type": "string",
-                        "filters": {
-                            "before": [],
-                            "after": [
-                                {
-                                    "xss": []
-                                },
-                                {
-                                    "trim": []
-                                }
-                            ]
-                        },
+                        "filters": [
+                            {
+                                "xss": []
+                            },
+                            {
+                                "trim": []
+                            }
+                        ],
                         "validation": {
                             "required": false,
                             "rules": [
@@ -1682,26 +1393,17 @@
                     "id": {
                         "name": "id",
                         "type": "decimal",
-                        "filters": {
-                            "before": [],
-                            "after": []
-                        }
+                        "filters": []
                     },
                     "username": {
                         "name": "username",
                         "type": "string",
-                        "filters": {
-                            "before": [],
-                            "after": []
-                        }
+                        "filters": []
                     },
                     "email": {
                         "name": "email",
                         "type": "string",
-                        "filters": {
-                            "before": [],
-                            "after": []
-                        }
+                        "filters": []
                     }
                 },
                 "meta": {}
@@ -1718,29 +1420,21 @@
         "name": "POST user",
         "request": {
             "input": {
-                "body": {
+                "BODY": {
                     "username": {
                         "name": "username",
                         "type": "string",
-                        "filters": {
-                            "before": [],
-                            "after": [
-                                {
-                                    "xss": []
-                                },
-                                {
-                                    "trim": []
-                                }
-                            ]
-                        },
+                        "filters": [
+                            {
+                                "xss": []
+                            },
+                            {
+                                "trim": []
+                            }
+                        ],
                         "validation": {
                             "required": true,
                             "rules": [
-                                {
-                                    "max_length": [
-                                        255
-                                    ]
-                                },
                                 {
                                     "max_length": [
                                         50
@@ -1763,17 +1457,14 @@
                     "email": {
                         "name": "email",
                         "type": "string",
-                        "filters": {
-                            "before": [],
-                            "after": [
-                                {
-                                    "xss": []
-                                },
-                                {
-                                    "trim": []
-                                }
-                            ]
-                        },
+                        "filters": [
+                            {
+                                "xss": []
+                            },
+                            {
+                                "trim": []
+                            }
+                        ],
                         "validation": {
                             "required": true,
                             "rules": [
@@ -1794,25 +1485,17 @@
                     "password": {
                         "name": "password",
                         "type": "string",
-                        "filters": {
-                            "before": [],
-                            "after": [
-                                {
-                                    "xss": []
-                                },
-                                {
-                                    "trim": []
-                                }
-                            ]
-                        },
+                        "filters": [
+                            {
+                                "xss": []
+                            },
+                            {
+                                "trim": []
+                            }
+                        ],
                         "validation": {
                             "required": true,
                             "rules": [
-                                {
-                                    "max_length": [
-                                        255
-                                    ]
-                                },
                                 {
                                     "max_length": [
                                         50
@@ -1834,25 +1517,17 @@
                     "confirm_password": {
                         "name": "confirm_password",
                         "type": "string",
-                        "filters": {
-                            "before": [],
-                            "after": [
-                                {
-                                    "xss": []
-                                },
-                                {
-                                    "trim": []
-                                }
-                            ]
-                        },
+                        "filters": [
+                            {
+                                "xss": []
+                            },
+                            {
+                                "trim": []
+                            }
+                        ],
                         "validation": {
                             "required": true,
                             "rules": [
-                                {
-                                    "max_length": [
-                                        255
-                                    ]
-                                },
                                 {
                                     "max_length": [
                                         50
@@ -1882,26 +1557,17 @@
                     "id": {
                         "name": "id",
                         "type": "decimal",
-                        "filters": {
-                            "before": [],
-                            "after": []
-                        }
+                        "filters": []
                     },
                     "username": {
                         "name": "username",
                         "type": "string",
-                        "filters": {
-                            "before": [],
-                            "after": []
-                        }
+                        "filters": []
                     },
                     "email": {
                         "name": "email",
                         "type": "string",
-                        "filters": {
-                            "before": [],
-                            "after": []
-                        }
+                        "filters": []
                     }
                 },
                 "meta": {}

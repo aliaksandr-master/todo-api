@@ -6,36 +6,28 @@ module.exports = function (options, mainOptions) {
 
 	var utils;
 
-	var parseFilter = (function () {
-
-		var filtersSepMap = {
-			'before': ['^', /^\^/, /\s*\^\s*/g],
-			'after':  ['|', /^\|/, /\s*\|\s*/g]
-		};
+	var parseFilter = function (str, apiName) {
 		var formatExp = /^([\w\d]+)(.*)$/i;
-		return function (str, name, apiName) {
-			if (str) {
-				var sep = filtersSepMap[name],
-					parts = str.replace(sep[1], '').split(sep[2]);
+		if (str) {
+			var parts = str.replace(/^\|/, '').split(/\s*\|\s*/g);
 
-				return _.map(parts, function (part) {
-					var filterName   = part.replace(formatExp, '$1');
-					var filterParams = part.replace(formatExp, '$2').replace(/'/g, '"');
-					if (filterParams) {
-						try {
-							filterParams = JSON.parse(filterParams);
-						} catch (e) {
-							throw new Error('"' + apiName + '" has invalid JSON format in ' + name.toUpperCase() + '_FILTERS "' + part + '"');
-						}
+			return _.map(parts, function (part) {
+				var filterName   = part.replace(formatExp, '$1');
+				var filterParams = part.replace(formatExp, '$2').replace(/'/g, '"');
+				if (filterParams) {
+					try {
+						filterParams = JSON.parse(filterParams);
+					} catch (e) {
+						throw new Error('"' + apiName + '" has invalid JSON format in FILTERS "' + part + '"');
 					}
-					var obj = {};
-					obj[filterName] = filterParams || [];
-					return obj;
-				});
-			}
-			return [];
-		};
-	})();
+				}
+				var obj = {};
+				obj[filterName] = filterParams || [];
+				return obj;
+			});
+		}
+		return [];
+	};
 
 
 	var parseParams = function (param, apiName){
@@ -93,9 +85,10 @@ module.exports = function (options, mainOptions) {
 	};
 
 	var hasRule = function (object, ruleName) {
-		return _.any(object.rule, function (rule) {
+		var r = object.validation && _.any(object.validation.rules, function (rule) {
 			return rule[ruleName] != null;
 		});
+		return!!r;
 	};
 
 	var parseValidation = (function () {
@@ -111,7 +104,7 @@ module.exports = function (options, mainOptions) {
 	})();
 
 	var categoryFormat = function (category) {
-		return category === '$' ? 'args' : (category === '?' ? 'query' : 'body');
+		return category === '$' ? 'args' : (category === '?' ? 'query' : 'BODY');
 	};
 
 	var typeFormat = (function () {
@@ -164,16 +157,13 @@ module.exports = function (options, mainOptions) {
 		return [minLength, maxLength];
 	};
 
-	var addFilter = function (object, toEnd, type, name, params) {
+	var addFilter = function (object, toEnd, name, params) {
 		if (!object.filters) {
-			object.filters = {
-				before: [],
-				after: []
-			};
+			object.filters = [];
 		}
 		var obj = {};
 		obj[name] = params || [];
-		toEnd ? object.filters[type].push(obj) : object.filters[type].unshift(obj);
+		toEnd ? object.filters.push(obj) : object.filters.unshift(obj);
 	};
 
 	var makeCellName = function(method, url){
@@ -194,7 +184,7 @@ module.exports = function (options, mainOptions) {
 
 	var parseParamDirective = function (str, apiName) {
 		var parsed = {};
-		str.replace(/^([\?$]?)([\w][\w\d]*)(?:\:?([a-zA-Z]*))(?:\{([^\}]+)\})?(\^[^\^\|]+)*(\|[^\|]+)*$/, function (word, category, name, type, len, beforeFilters, afterFilters) {
+		str.replace(/^([\?$]?)([\w][\w\d]*)(?:\:?([a-zA-Z]*))(?:\{([^\}]+)\})?(\|[^\|]+)*$/, function (word, category, name, type, len, filters) {
 			type = typeFormat(type, 'string', apiName);
 
 			var range = rangeFormat(len, apiName);
@@ -207,10 +197,7 @@ module.exports = function (options, mainOptions) {
 					min: range[0],
 					max: range[1]
 				},
-				filters: {
-					before: parseFilter(beforeFilters, 'before', apiName),
-					after: parseFilter(afterFilters,  'after', apiName)
-				}
+				filters: parseFilter(filters, apiName)
 			};
 		});
 		return parsed;
@@ -269,11 +256,8 @@ module.exports = function (options, mainOptions) {
 		delete result.length;
 
 		if (typeOption.filters) {
-			applyTypeOptions(typeOption.filters.before, function (filterName, filterParams) {
-				utils.addFilter(result, false, 'before', filterName, filterParams);
-			});
-			applyTypeOptions(typeOption.filters.after, function (filterName, filterParams) {
-				utils.addFilter(result, false, 'after', filterName, filterParams);
+			applyTypeOptions(typeOption.filters, function (filterName, filterParams) {
+				utils.addFilter(result, false, filterName, filterParams);
 			});
 		}
 
@@ -344,8 +328,7 @@ module.exports = function (options, mainOptions) {
 					}
 					request.input = _.map(_options, function(option, optionName){
 						if (_.isObject(option)){
-							optionName += option.before ? '#' + option.before.join('#') : '';
-							optionName += option.after ? '*' + option.after.join('*') : '';
+							optionName += option.filters ? '|' + option.join('|') : '';
 							option = option.rules || '';
 						}
 						return parseRequestOption(option, optionName, apiName);

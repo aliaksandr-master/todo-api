@@ -290,6 +290,9 @@ class Api extends ApiAbstract {
 	function trace ($markName, $data = null) {
 		if (Api::DEBUG_MODE) {
 			if (!is_object($data) && !is_array($data) && !is_null($data)) {
+				if (is_bool($data)) {
+					$data = $data ? 'true' : 'false';
+				}
 				$markName .= ': '.$data;
 				$data = null;
 			}

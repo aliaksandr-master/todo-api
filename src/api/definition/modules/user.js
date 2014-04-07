@@ -1,24 +1,22 @@
+"use strict";
 
+var stdResponse = [
+	"id:decimal",
+	"username:string",
+	"email:string"
+];
 
 module.exports = {
 
 	"GET user": {
-		"response < 255": [
-			"id:decimal",
-			"username:string",
-			"email:string"
-		]
+		"response < 255": stdResponse
 	},
 
 	"GET user/$id": {
 		"request": {
 			"$id:decimal": "required"
 		},
-		"response": [
-			"id:decimal",
-			"username:string",
-			"email:string"
-		]
+		"response": stdResponse
 	},
 
 	"DELETE user/$id": {
@@ -47,11 +45,7 @@ module.exports = {
 			"password_new:string": "optional|matches['password_new_confirm']|need['password_old']",
 			"password_new_confirm:string": "optional|matches['password_new']|need['password_old']"
 		},
-		"response": [
-			"id:decimal",
-			"username:string",
-			"email:string"
-		]
+		"response": stdResponse
 	},
 
 
@@ -62,10 +56,6 @@ module.exports = {
 			"password:string{6,50}": "required|matches['confirm_password']",
 			"confirm_password:string{6,50}": "required|matches['password']"
 		},
-		"response": [
-			"id:decimal",
-			"username:string",
-			"email:string"
-		]
+		"response": stdResponse
 	}
 };

@@ -1,4 +1,13 @@
 
+var stdResponse = [
+	"id:decimal",
+	"link:string",
+	"name:string",
+	"is_shared:boolean",
+	"sort_order:decimal"
+];
+
+"use strict";
 
 module.exports = {
 	"GET todo": {
@@ -6,25 +15,13 @@ module.exports = {
 			"need_login": true,
 			"only_owner": true
 		},
-		"response < 255": [
-			"id:decimal",
-			"link:string",
-			"name:string",
-			"is_shared:boolean",
-			"sort_order:decimal"
-		]
+		"response < 255": stdResponse
 	},
 	"GET todo/$id": {
 		"request": {
 			"$id:decimal": "required"
 		},
-		"response": [
-			"id:decimal",
-			"link:string",
-			"name:string",
-			"is_shared:boolean",
-			"sort_order:decimal"
-		]
+		"response": stdResponse
 	},
 
 	"POST todo": {
@@ -37,13 +34,7 @@ module.exports = {
 			"is_shared:boolean": "optional",
 			"sort_order:decimal": "optional"
 		},
-		"response": [
-			"id:decimal",
-			"link:string",
-			"name:string",
-			"is_shared:boolean",
-			"sort_order:decimal"
-		]
+		"response": stdResponse
 	},
 
 	"PUT todo/$id": {
@@ -57,13 +48,7 @@ module.exports = {
 			"is_shared:boolean": "optional",
 			"sort_order:decimal{1,11}": "optional"
 		},
-		"response": [
-			"id:decimal",
-			"link:string",
-			"name:string",
-			"is_shared:boolean",
-			"sort_order:decimal"
-		]
+		"response": stdResponse
 	},
 
 	"DELETE todo/$todo_id": {

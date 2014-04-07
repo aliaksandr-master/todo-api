@@ -8,25 +8,27 @@
 			"?checkVar_4:string{,3}": "required",
 			"?checkVar_5:string{3}": "required",
 
+			"user optional": {
+				"id:decimal": "required",
+				"avatar:string": "/hello/world.jpg",
+				"nick": ""
+			},
+			"options < 500": {
+				"id": 12,
+				"avatar": "/hello/world.jpg",
+				"nick": ""
+			},
+
 			"?checkVar_6:string|trim": "required",
 			"?checkVar_7:string|trim|trim": "required",
 			"?checkVar_8:string|trim|trim|trim[123]": "required",
 			"?checkVar_9:string|trim|trim['123']": "required",
 			"?checkVar_10:string|trim|trim[123,'aaa']": "required",
 
-			"?checkVar_11:string^trim": "required",
-			"?checkVar_12:string^trim[123]": "required",
-			"?checkVar_13:string^trim['123']": "required",
-			"?checkVar_14:string^trim^trim['123']": "required",
-			"?checkVar_15:string^trim['123']|trim": "required",
-
-			"?checkVar_16:string^trim^trim['123']|trim|trim": "required",
-			"?checkVar_17:string^trim^trim['123']|trim[123,'aaa']|trim": "required",
-
-			"?checkVar_18:string{1,}^trim": "required",
+			"?checkVar_18:string{1,}": "required",
 			"?checkVar_19:string{1,3}|trim": "required",
-			"?checkVar_20:string{,3}^trim|trim": "required",
-			"?checkVar_21:string{3}^trim['zxc']|trim['zxc']": "required",
+			"?checkVar_20:string{,3}|trim": "required",
+			"?checkVar_21:string{3}|trim['zxc']": "required",
 
 			"$someVar:decimal": "required",
 			"$some1:float^xss^uu": "required",

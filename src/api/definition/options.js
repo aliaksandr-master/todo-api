@@ -29,12 +29,9 @@ module.exports = {
 
 		boolean: {
 			formatExp: '.+',
-			filters: {
-				before: [],
-				after: [
-					'to_bool'
-				]
-			}
+			filters: [
+				'to_bool'
+			]
 		},
 
 		decimal: {
@@ -42,12 +39,9 @@ module.exports = {
 			rules: [
 				'decimal'
 			],
-			filters: {
-				before: [],
-				after: [
-					'to_int'
-				]
-			}
+			filters: [
+				'to_int'
+			]
 		},
 
 		integer: {
@@ -56,12 +50,9 @@ module.exports = {
 				'integer',
 				{ max_length: 11 }
 			],
-			filters: {
-				before: [],
-				after: [
-					'to_int'
-				]
-			}
+			filters: [
+				'to_int'
+			]
 		},
 
 		float: {
@@ -70,12 +61,9 @@ module.exports = {
 				'float',
 				{ max_length: 65 }
 			],
-			filters: {
-				before: [],
-				after: [
-					'to_float'
-				]
-			}
+			filters: [
+				'to_float'
+			]
 		},
 
 		text: {
@@ -87,13 +75,10 @@ module.exports = {
 			rules: [
 				{ max_length: 255 }
 			],
-			filters: {
-				before: [],
-				after: [
-					'trim',
-					'xss',
-				]
-			}
+			filters:[
+				'trim',
+				'xss',
+			]
 		}
 	}
 

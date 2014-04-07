@@ -44,9 +44,10 @@
         },
         "response": [
             "id:decimal",
+            "todo_id:decimal",
+            "sort_order:decimal",
             "name:string",
             "date_create:string",
-            "sort_order:decimal",
             "is_active:boolean"
         ]
     },
