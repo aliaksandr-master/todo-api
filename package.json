@@ -16,6 +16,8 @@
 
 		"grunt-favicons": "0.6.0",
 
+		"grunt-mkdir": "latest",
+
 		"grunt-typescript": "latest",
 		"grunt-git-authors": "latest",
 		"grunt-contrib-less": "~0.8.3",
@@ -55,8 +57,5 @@
         "markdown": "latest",
 
         "handlebars": "latest"
-    },
-	"scripts": {
-		"install": "grunt install default"
-	}
+    }
 }
