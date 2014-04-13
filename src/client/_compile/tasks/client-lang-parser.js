@@ -2,7 +2,7 @@
 
 module.exports = function(grunt){
 
-    var _ = require('underscore');
+    var _ = require('lodash');
 
     return function(){
 

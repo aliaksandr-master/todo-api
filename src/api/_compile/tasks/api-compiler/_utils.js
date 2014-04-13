@@ -1,8 +1,116 @@
 "use strict";
 
-var _ = require('underscore');
+var _ = require('lodash');
 
 module.exports = function (options, mainOptions) {
+
+	function mkObject (key, value) {
+		var a = {};
+		a[key] = value;
+		return a;
+	}
+
+	function filterKeyMap (object, filterer, callback, byKey) {
+		var filter, objArr, filtered;
+		byKey = byKey == null ? true : !!byKey;
+
+		if (_.isRegExp(filterer)) {
+			filter = function (obj) {
+				return filterer.test(byKey ? obj.key : obj.value);
+			};
+		} else if (_.isString(filterer) || _.isNumber(filterer)) {
+			filter = function (obj) {
+				return (byKey ? obj.key : obj.value) === filterer;
+			};
+		} else if (_.isArray(filterer)) {
+			filter = function (obj) {
+				return _.include(byKey ? obj.key : obj.value, filterer);
+			};
+		} else if (_.isFunction(filterer)) {
+			filter = function (obj) {
+				return filterer(obj.key, obj.value, object);
+			};
+		} else {
+			throw new Error('Invalid filterer type');
+		}
+
+		objArr = _.map(object, function (v, k) {
+			return {
+				key: k,
+				value: _.isObject(v) ? _.merge({}, v) : v
+			};
+		});
+
+		filtered = _.filter(objArr, filter);
+
+		if (!callback) {
+			return filtered;
+		}
+
+		var a = _.map(filtered, function (obj, index) {
+			var args = [obj.key, obj.value];
+			if (_.isRegExp(filterer)) {
+				obj.key.replace(filterer, function () {
+					args.push(_.toArray(arguments));
+				});
+			}
+			return callback.apply(null, args);
+		});
+
+		return _.compact(a);
+	}
+
+	function cascade (objArr, main) {
+		var mainObj;
+		if (_.isObject(main)) {
+			mainObj = main;
+		} else if (_.isString(main) || _.isNumber(main)) {
+			mainObj = _.find(objArr, function (v) {
+				return v[main] != null;
+			}) || {};
+			mainObj = mainObj[_.keys(mainObj)[0]];
+		} else if (_.isFunction(main)) {
+			mainObj = _.find(objArr, main);
+		}
+
+		if (!mainObj) {
+			return _.merge({}, objArr);
+		}
+
+		return  _.map(objArr, function (obj) {
+			var main = _.merge({}, mainObj);
+			var firstKey = _.keys(obj)[0];
+			return mkObject(firstKey, _.merge(main, obj[firstKey]));
+		});
+	}
+
+	var newCompile = function (jsonData) {
+
+		var DEFAULT_OPTIONS_NAME = '_default_';
+
+		var optionsByMethod = [];
+		var optionsByUri = [];
+
+		options = filterKeyMap(jsonData, /^options(?:\s+([^\s]+))?(?:\s+\/([^\s]*))?\s*$/i, function (key, object, arg1) {
+			var name = arg1[1] || DEFAULT_OPTIONS_NAME;
+			return mkObject(name, object);
+		});
+
+		options = cascade(options, DEFAULT_OPTIONS_NAME);
+
+		var resourcesByMethod = [];
+		var resourcesByUri = [];
+
+
+		var resources = filterKeyMap(jsonData, /^resource(?:\s+([^\s]+))?(?:\s+\/([^\s]*))?\s*$/i, function (key, object, arg1) {
+			return mkObject(arg1[1], object);
+		});
+
+		return {
+			options: options,
+			resources: resources
+		};
+	};
 
 	var utils;
 

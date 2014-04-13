@@ -2,7 +2,7 @@
 
 module.exports = function(grunt){
 
-    var _ = require('underscore');
+    var _ = require('lodash');
     var markdown = require( "markdown" ).markdown;
     var handlebars = require("handlebars");
 

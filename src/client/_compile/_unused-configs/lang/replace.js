@@ -1,7 +1,7 @@
 "use strict";
 module.exports = function(grunt, options){
 
-    var _ = require('underscore');
+    var _ = require('lodash');
 
     return {
 

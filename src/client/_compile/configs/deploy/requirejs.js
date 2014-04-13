@@ -1,7 +1,7 @@
 'use strict';
 module.exports = function(grunt){
 
-	var _ = require('underscore');
+	var _ = require('lodash');
 
 	var incOptions = {
 		cwd: 'build/client/static/js',

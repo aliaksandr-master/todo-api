@@ -1,31 +1,54 @@
 'use strict';
-var W = global;
+
+var _ = require('lodash');
+
+global.ROOT   = __dirname;
+global.SRC    = global.ROOT + '/src';
+global.BUILD  = global.ROOT + '/build';
+global.DEPLOY = global.ROOT + '/deploy';
+global.LOCAL  = global.ROOT + '/_local';
+
 module.exports = function (grunt) {
-
-	var _ = require('underscore');
 	require('load-grunt-tasks')(grunt);
-
-	var utils = require('./src/_compile/utils.js');
 
 	var config = {},
 		options = require('./src/_compile/options.js')(grunt);
 
-	options.ROOT   = W.ROOT   = __dirname;
-	options.DS     = W.DS     = '/';
-	options.SD     = W.SD     = '\\';
-	options.SRC    = W.SRC    = W.ROOT + '/src';
-	options.BUILD  = W.BUILD  = W.ROOT + '/build';
-	options.DEPLOY = W.DEPLOY = W.ROOT + '/deploy';
-	options.LOCAL  = W.LOCAL  = W.ROOT + '/_local';
+	function register (srcName, callback) {
+		var cwd = './src';
 
-	utils.register(grunt, 'tasks', grunt.registerTask, options);
-	utils.register(grunt, 'aliases', grunt.registerTask, options);
-	utils.register(grunt, 'multitasks', grunt.registerMultiTask, options);
-	utils.register(grunt, 'configs', function (name, task) {
+		_.each(grunt.file.expand({ cwd:  cwd + '/' }, [
+
+			'**/_compile/'+srcName+'/**/*.{js,json}'
+
+		]), function (fpath) {
+
+			var condition = _.all(fpath.split(/[\\\/]+/), function (v) {
+				return !/^_.+$/.test(v) || /^_(compile|env)$/.test(v);
+			});
+
+			if (condition) {
+				var name = fpath.split(/[\\\/]+/).pop().replace(/\.js$/, '');
+				var module = require(cwd + '/' + fpath);
+				var task = _.isFunction(module) ? module.call(global, grunt, options) : module;
+				callback(name, task);
+			} else {
+				console.log('ignore from compile:', fpath);
+			}
+		});
+	}
+
+	register('tasks', grunt.registerTask);
+
+	register('aliases', grunt.registerTask);
+
+	register('multitasks', grunt.registerMultiTask);
+
+	register('configs', function (name, task) {
 		var taskObject = {};
 		taskObject[name] = task;
-		config = _.deepExtend(config, taskObject);
-	}, options);
+		config = _.merge(config, taskObject);
+	});
 
 	grunt.initConfig(config);
 };

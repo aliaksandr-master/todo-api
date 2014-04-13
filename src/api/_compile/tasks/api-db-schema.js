@@ -15,7 +15,7 @@ module.exports = function(grunt){
 		};
 
 		var parser = require('xml2json');
-		var _ = require('underscore');
+		var _ = require('lodash');
 		var shell = require("shelljs");
 
 		_.each(configDb, function(db, dbRefName){
