@@ -2,7 +2,7 @@
 
 
 
-class ApiInput extends ApiComponent {
+class ApiRequest extends ApiComponent {
 
 	const DEFAULT_FORMAT = 'form';
 
@@ -38,8 +38,8 @@ class ApiInput extends ApiComponent {
 	private $_format = null;
 	private $_language = null;
 
-	public function init () {
-		parent::init();
+	public function beforeLaunch () {
+		parent::beforeLaunch();
 
 		$requestInput = ApiUtils::get($this->api->getSpec('request'), 'input', array());
 
@@ -53,14 +53,14 @@ class ApiInput extends ApiComponent {
 
 	function getHeadersSrc () {
 		if (is_null($this->_headersSource)) {
-			$this->_headersSource = $this->api->param('input/headers');
+			$this->_headersSource = $this->api->getParam('input/headers');
 		}
 		return $this->_headersSource;
 	}
 
 	function getBodySrc () {
 		if (is_null($this->_bodySource)) {
-			$body = $this->api->param('input/body');
+			$body = $this->api->getParam('input/body');
 			if (is_string($body)) {
 				$body = $this->api->filter->apply($body, 'parse_'.$this->getFormat(), array(), null, 'input', 'Invalid input format', 400);
 			}
@@ -71,13 +71,13 @@ class ApiInput extends ApiComponent {
 
 	function getQuerySrc () {
 		if (is_null($this->_querySource)) {
-			$query = $this->api->param('input/query');
+			$query = $this->api->getParam('input/query');
 			if (is_string($query)) {
 				parse_str($query, $query);
 			}
 			$urlQuery = array();
-			if ($this->api->param('search')) {
-				parse_str($this->api->param('search'), $urlQuery);
+			if ($this->api->getParam('url/search')) {
+				parse_str($this->api->getParam('url/search'), $urlQuery);
 			}
 			$this->_querySource = is_array($query) && $query ? array_replace_recursive($urlQuery, $query) : $urlQuery;
 		}
@@ -86,7 +86,7 @@ class ApiInput extends ApiComponent {
 
 	function getArgsSrc () {
 		if (is_null($this->_argsSource)) {
-			$this->_argsSource = $this->api->param('input/args');
+			$this->_argsSource = $this->api->getParam('input/args');
 		}
 		return $this->_argsSource;
 	}

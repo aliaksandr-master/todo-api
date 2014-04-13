@@ -2,7 +2,7 @@
 
 
 
-class ApiOutput extends ApiComponent {
+class ApiResponse extends ApiComponent {
 
 	const COMPRESSING = true;
 
@@ -44,20 +44,20 @@ class ApiOutput extends ApiComponent {
 	private $_mime = null;
 	private $_format = null;
 
-	public function init () {
-		parent::init();
+	public function beforeLaunch () {
+		parent::beforeLaunch();
 
 		$this->_response = $this->api->getSpec('response');
 		$this->_responseOutput = ApiUtils::get($this->_response, 'output', array());
 		$this->_type = ApiUtils::get($this->_response, 'type', self::RESPONSE_TYPE_ONE);
 		$this->_limit = ApiUtils::get($this->_response, 'limit', 1);
 		$this->_fields = array_keys(ApiUtils::get($this->_responseOutput, 'data', array()));
-		$this->_offset = $this->api->input->query('offset', 0);
+		$this->_offset = $this->api->request->query('offset', 0);
 
-		$_limit = $this->api->input->query('limit', $this->_limit);
+		$_limit = $this->api->request->query('limit', $this->_limit);
 		$this->_limit = $_limit < $this->_limit ? $_limit : $this->_limit;
 
-		$this->_virtualStatus = (bool) $this->api->input->query('_virtual', false);
+		$this->_virtualStatus = (bool) $this->api->request->query('_virtual', false);
 	}
 
 
@@ -68,6 +68,7 @@ class ApiOutput extends ApiComponent {
 
 		$response = array(
 			'status' => self::DEFAULT_STATUS,
+			'message'=> '',
 			'data' => array()
 		);
 
@@ -81,7 +82,7 @@ class ApiOutput extends ApiComponent {
 
 		$status = $this->status();
 		if ($this->api->valid()) {
-			$status = $this->api->context->prepareResponseStatusByMethod($status, $response, $this->api->param('method'));
+			$status = $this->api->context->prepareResponseStatusByMethod($status, $response, $this->api->getParam('method'));
 			if ($status >= 500) {
 				$this->api->error(null, $status);
 			}
@@ -109,31 +110,31 @@ class ApiOutput extends ApiComponent {
 		// DEBUG DATA (only for development and testing mode)
 		if (Api::DEBUG_MODE) {
 			$response["debug"] = array(
-				'uri' => $this->api->param('uri'),
-				'method' => $this->api->param('method'),
-				'scriptTime' => 0,
-				'compileTime' => 0,
+				'url/pathname' => $this->api->getParam('url/pathname'),
+				'method' => $this->api->getParam('method'),
+				'time/script' => 0,
+				'time/action' => $this->api->getParam('time/action'),
+				'time/compile' => 0,
 				'memoryPeak' => ApiUtils::formatBytes(memory_get_peak_usage()),
 				'controller' => get_class($this->api->context),
-				'methodName' => $this->api->param('action_to_call'),
-				'action' => $this->api->param('action'),
+				'methodName' => $this->api->getParam('actionToCall'),
+				'action' => $this->api->getParam('action'),
 				'db' => null,
 				'stackTrace' => $this->api->getStackTrace(),
-				//				'params' => $this->api->getLaunchParams(),
 				'input' => array(
 					'headers' => array(
-						'raw' => $this->api->param('input/headers'),
+						'raw' => $this->api->getParam('input/headers'),
 						'parsed' => array (
 							'encoding' => $this->getEncoding(),
-							'language' => $this->api->input->getLanguage(),
-							'inputFormat' => $this->api->input->getFormat(),
+							'language' => $this->api->request->getLanguage(),
+							'inputFormat' => $this->api->request->getFormat(),
 							'outputFormat' => $this->getFormat(),
 							'outputMime' => $this->getMime(),
 						)
 					),
-					"query"  => $this->api->input->query(),
-					"args"    => $this->api->input->arg(),
-					"body"   => $this->api->input->body(),
+					"query"  => $this->api->request->query(),
+					"args"    => $this->api->request->arg(),
+					"body"   => $this->api->request->body(),
 					"body:raw" => INPUT_DATA
 				),
 				"api" => $this->api->getSpec()
@@ -147,6 +148,7 @@ class ApiOutput extends ApiComponent {
 		$http_code = $this->status();
 
 		$response['status'] = $http_code;
+		$response['message'] = ApiUtils::getMessageByCode($http_code);
 
 		$public_http_code = $this->_virtualStatus && $http_code >= 400 ? self::VIRTUAL_STATUS : $http_code;
 
@@ -198,10 +200,10 @@ class ApiOutput extends ApiComponent {
 
 		if (isset($response['debug'])) {
 			$nowTimestamp = gettimeofday(true);
-			$startTimestamp = $this->api->param('launch_timestamp');
-			$response['debug']['compileTime'] = $nowTimestamp - $startTimestamp;
+			$startTimestamp = $this->api->getParam('timer/launch');
+			$response['debug']['time/compile'] = $nowTimestamp - $startTimestamp;
 			if (defined('START_TIMESTAMP')) {
-				$response['debug']['scriptTime'] = $nowTimestamp - START_TIMESTAMP;
+				$response['debug']['time/script'] = $nowTimestamp - START_TIMESTAMP;
 			}
 			$response['debug']['memoryPeak'] = ApiUtils::formatBytes(memory_get_peak_usage(true));
 
@@ -236,7 +238,7 @@ class ApiOutput extends ApiComponent {
 			$this->_status = $code;
 		}
 
-		return $this->_status ? $this->_status : ApiOutput::DEFAULT_STATUS;
+		return $this->_status ? $this->_status : static::DEFAULT_STATUS;
 	}
 
 
@@ -301,11 +303,18 @@ class ApiOutput extends ApiComponent {
 		}
 	}
 
+	function valid () {
+		if ($this->status() >= 400) {
+			return false;
+		}
+		return parent::valid();
+	}
+
 
 	function prepareResponse ($data, $keyName) {
 		$_data = array();
 
-		if ($this->_type == ApiOutput::RESPONSE_TYPE_ONE) {
+		if ($this->_type == static::RESPONSE_TYPE_ONE) {
 			if (isset($data[0]) && is_array($data[0])) {
 				$data = $data[0];
 			}
@@ -319,7 +328,7 @@ class ApiOutput extends ApiComponent {
 				}
 			}
 		} else {
-			if ($this->_type == ApiOutput::RESPONSE_TYPE_MANY) {
+			if ($this->_type == static::RESPONSE_TYPE_MANY) {
 				if (!empty($data) && (!isset($data[0]) || !is_array($data[0]))) {
 					$data = array($data);
 				}
@@ -345,7 +354,7 @@ class ApiOutput extends ApiComponent {
 
 	function getEncoding () {
 		if (is_null($this->_encoding)) {
-			$this->_encoding = ApiUtils::parseQualityString($this->api->input->header('Accept-Encoding'));
+			$this->_encoding = ApiUtils::parseQualityString($this->api->request->header('Accept-Encoding'));
 		}
 		return $this->_encoding;
 	}
@@ -359,8 +368,8 @@ class ApiOutput extends ApiComponent {
 
 	function getFormat () {
 		if (is_null($this->_format)) {
-			$accept = ApiUtils::parseQualityString($this->api->input->header('Accept', ''));
-			$format = ApiUtils::getFileFormatByFileExt(parse_url($this->api->param('uri'), PHP_URL_PATH), $this->api->formats, null);
+			$accept = ApiUtils::parseQualityString($this->api->request->header('Accept', ''));
+			$format = ApiUtils::getFileFormatByFileExt(parse_url($this->api->getParam('url/pathname'), PHP_URL_PATH), $this->api->formats, null);
 
 			if (!is_null($format)) {
 				$format = ApiUtils::getFormatByHeadersAccept($accept, $this->api->formats, null);

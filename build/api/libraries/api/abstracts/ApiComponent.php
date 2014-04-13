@@ -10,7 +10,7 @@ class ApiComponent extends ApiAbstract {
 	}
 
 
-	public function init () {
+	public function beforeLaunch () {
 	}
 
 

@@ -23,11 +23,11 @@ interface IApiController {
 	 * @param string   $actionName
 	 * @param string   $method
 	 * @param string   $actionMethodName
-	 * @param ApiInput $input
+	 * @param ApiRequest $input
 	 *
 	 * @return array
 	 */
-	public function getActionArgs ($actionName, $method, $actionMethodName, ApiInput &$input);
+	public function getActionArgs ($actionName, $method, $actionMethodName, ApiRequest &$input);
 
 
 	/**

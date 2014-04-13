@@ -53,7 +53,7 @@ abstract class BaseController extends CI_Controller implements IApiController, I
 	}
 
 
-	function getActionArgs ($actionName, $method, $actionMethodName, ApiInput &$input) {
+	function getActionArgs ($actionName, $method, $actionMethodName, ApiRequest &$input) {
 		return $input->arg();
 	}
 

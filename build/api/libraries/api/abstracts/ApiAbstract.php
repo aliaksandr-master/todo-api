@@ -4,8 +4,10 @@
 
 abstract class ApiAbstract {
 
+
 	/** @var array */
 	protected $_errors = array();
+
 
 	/** @var Api */
 	protected $api;
@@ -56,5 +58,10 @@ abstract class ApiAbstract {
 
 	function valid () {
 		return empty($this->_errors);
+	}
+
+
+	protected function getSpec ($name, $default) {
+		return $this->api->getSpec($name, $default);
 	}
 }
