@@ -4,22 +4,22 @@ module.exports = function(grunt){
 
 	return function(){
 
-		var configDb = grunt.file.readJSON(global.LOCAL+'/database.json');
+		var _ = require('lodash');
+		var shell = require("shelljs");
+		var parser = require('xml2json');
+
+		var configDb = grunt.file.readJSON(global.LOCAL + '/database.json');
 
 		var config = {
 			options: {
 				beauty: true,
 				verbose: false
 			},
-			dest: global.BUILD + '/api/var/'
+			dest: global.COMPILED + '/database/'
 		};
 
-		var parser = require('xml2json');
-		var _ = require('lodash');
-		var shell = require("shelljs");
-
 		_.each(configDb, function(db, dbRefName){
-			var r = shell.exec('mysqldump -u '+db.username+' -h '+db.hostname+' --no-data --password='+db.password+' '+db.database+' --xml', {silent: true}).output;
+			var r = shell.exec('mysqldump -u ' + db.username + ' -h ' + db.hostname + ' --no-data --password=' + db.password + ' ' + db.database + ' --xml', {silent: true}).output;
 
 			r = parser.toJson(r, {
 				object: true,
@@ -80,13 +80,8 @@ module.exports = function(grunt){
 			var file;
 
 			// verbose save
-			file = config.dest + 'db.' + dbRefName + '.scheme.verbose.json';
+			file = config.dest + dbRefName + '.scheme.source.json';
 			grunt.file.write(file, JSON.stringify(verboseScheme, null, config.options.beauty ? 4 : 0));
-			grunt.log.ok(file, ' was created.');
-
-			// source save
-			file = config.dest + 'db.' + dbRefName + '.scheme.source.json';
-			grunt.file.write(file, JSON.stringify(sourceScheme, null, config.options.beauty ? 4 : 0));
 			grunt.log.ok(file, ' was created.');
 
 
@@ -97,7 +92,7 @@ module.exports = function(grunt){
 			});
 
 			// parsed save
-			file = config.dest + 'db.' + dbRefName + '.scheme.parsed.json';
+			file = config.dest + dbRefName + '.scheme.json';
 			grunt.file.write(file, JSON.stringify(parsedScheme, null, config.options.beauty ? 4 : 0));
 			grunt.log.ok(file, ' was created.');
 		});

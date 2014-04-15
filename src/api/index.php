@@ -15,15 +15,8 @@ define("CACHE_DIR", realpath(SERVER_DIR.DS.'..').DS."private.cache");
 define("SESSION_DIR", CACHE_DIR.DS."session");
 
 define("INDEX_DIR_NAME", array_pop(explode(DS, SERVER_DIR)));
-
 define('API_ROOT_URL', pathinfo(str_replace(SD, DS, $_SERVER['SCRIPT_NAME']), PATHINFO_DIRNAME));
-
-/*
- *     development
- *     testing
- *     production
- * */
-define('ENVIRONMENT',  'development');
+define('ENVIRONMENT',  'development'); /* development, testing, production */
 
 /*
  * -------------------------------------------------------------------

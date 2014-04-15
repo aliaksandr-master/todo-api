@@ -10,10 +10,10 @@ module.exports = function(grunt){
 		var json2phpArray = require(SRC + '/_compile/utils.js').json2phpArray;
 		var sha1 = require('sha1');
 
-		var options = require(SRC + '/api/specs/options.js');
+		var options = require(SRC + '/api/specs-options.js');
 
 		var mainOptions = {
-			cwd: 'src/api/specs/modules/',
+			cwd: 'src/api/specs/',
 			src: [
 				'**/*.{js,raml,json}'
 			],
@@ -29,9 +29,9 @@ module.exports = function(grunt){
 		mainOptions.cwd = mainOptions.cwd.replace(/[\\\/]*$/, '');
 
 		var parsers = {
-			json: require('./_parsers/json'),
-			js:   require('./_parsers/json'),
-			raml: require('./_parsers/raml') // not implemented
+			json: require('./_api-specs-compiler/_parsers/json'),
+			js:   require('./_api-specs-compiler/_parsers/json'),
+			raml: require('./_api-specs-compiler/_parsers/raml') // not implemented
 		};
 
 		var source = {};

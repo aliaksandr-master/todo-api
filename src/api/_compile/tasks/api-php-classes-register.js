@@ -6,26 +6,15 @@ module.exports = function(grunt){
 	var options = {
 		cwd: this.BUILD + '/',
 		src: [
-			'api/controllers/*.php',
+			'api/index.php',
 			'api/controllers/**/*.php',
-			'api/libraries/**/*.php',
-			'api/libraries/*.php',
-			'api/helpers/**/*.php',
-			'api/helpers/*.php',
-			'api/core/**/*.php',
-			'api/core/*.php',
-			'api/views/**/*.php',
-			'api/views/*.php',
 			'api/models/**/*.php',
-			'api/models/*.php',
+			'opt/helpers/**/*.php',
+			'opt/api/**/*.php',
 			'opt/codeigniter/core/**/*.php',
-			'opt/codeigniter/core/*.php',
 			'opt/codeigniter/helpers/**/*.php',
-			'opt/codeigniter/helpers/*.php',
 			'opt/codeigniter/libraries/**/*.php',
-			'opt/codeigniter/libraries/*.php',
-			'opt/codeigniter/database/**/*.php',
-			'opt/codeigniter/database/*.php'
+			'opt/codeigniter/database/**/*.php'
 		],
 		jsonSpaces: 4,
 		dest: this.BUILD + '/api/var/class-map.json'

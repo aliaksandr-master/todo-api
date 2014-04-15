@@ -7,6 +7,7 @@ global.SRC    = global.ROOT + '/src';
 global.BUILD  = global.ROOT + '/build';
 global.DEPLOY = global.ROOT + '/deploy';
 global.LOCAL  = global.ROOT + '/_local';
+global.COMPILED = global.BUILD + '/compiled.temp';
 
 module.exports = function (grunt) {
 	require('load-grunt-tasks')(grunt);

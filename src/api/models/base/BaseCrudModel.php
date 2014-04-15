@@ -89,7 +89,7 @@ abstract class BaseCrudModel implements ICrudMoldel  {
 	private function getStVarFileByName ($name) {
 
 		if (!isset(self::$_registerStFileVar[$name])) {
-			self::$_registerStFileVar[$name] = json_decode(file_get_contents(VAR_DIR.DS.$name.'.json'), true);
+			self::$_registerStFileVar[$name] = json_decode(file_get_contents(VAR_DIR.DS.'database'.DS.$name.'.json'), true);
 		}
 
 		return self::$_registerStFileVar[$name];
@@ -102,7 +102,7 @@ abstract class BaseCrudModel implements ICrudMoldel  {
 			self::$_dbConnection[$dbName] = get_instance()->load->database($dbName, true);
 		}
 		if (!isset(self::$_dbSchemes[$dbName])) {
-			self::$_dbSchemes[$dbName] = $this->getStVarFileByName('db.'.$dbName.'.scheme.parsed');
+			self::$_dbSchemes[$dbName] = $this->getStVarFileByName($dbName.'.scheme');
 		}
 
 		$this->_dbScheme = self::$_dbSchemes[$dbName];

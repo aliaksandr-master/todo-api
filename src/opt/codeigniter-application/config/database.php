@@ -48,7 +48,7 @@
 $active_group = 'default';
 $active_record = TRUE;
 
-/*{{PLACE HERE}}*/
+/*{{DB CONFIG PLACE HERE}}*/
 
 
 /* End of file database.php */

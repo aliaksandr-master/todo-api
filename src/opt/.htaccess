@@ -1,0 +1,6 @@
+RewriteEngine On
+Options +FollowSymlinks
+
+deny from all
+
+RewriteRule .* [F,L]

@@ -15,6 +15,7 @@
 /node_modules/
 /bower_components/
 /_local/
+/build/compiled.temp/
 /deploy/
 /build/client/
 /build/private.cache/

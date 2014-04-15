@@ -4,7 +4,7 @@ module.exports = function(grunt){
 
 	return {
 
-		'api-scripts': {
+		'api-realization': {
 
 			options: {
 				excludeEmpty: true
@@ -13,12 +13,14 @@ module.exports = function(grunt){
 			files: [
 				{
 					expand: true,
-					cwd: global.SRC + '/api/scripts/',
+					cwd: global.SRC + '/api/',
 					src: [
-						 '**/*.{php,inc}',
-						 '**/.htaccess'
+						'controllers/**/*.php',
+						'models/**/*.php',
+						'.htaccess',
+						'index.php'
 					],
-					dest: global.BUILD + '/api'
+					dest: global.BUILD + '/api/'
 				}
 			]
 		}
