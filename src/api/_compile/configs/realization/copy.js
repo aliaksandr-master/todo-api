@@ -23,6 +23,15 @@ module.exports = function(grunt){
 					dest: global.BUILD + '/api/'
 				}
 			]
+		},
+
+		'api-classes-realization': {
+			files: [
+				{
+					src: this.COMPILED + '/classes/api.json',
+					dest: this.BUILD + '/api/var/classes.json'
+				}
+			]
 		}
 	};
 };

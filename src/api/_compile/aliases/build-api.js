@@ -3,5 +3,6 @@ module.exports = [
 	'clean:api-realization',
 	'copy:api-realization',
 	'api-specs-compiler',
-	'api-php-classes-register'
+	'find-php-classes:api-realization',
+	'copy:api-classes-realization'
 ];
