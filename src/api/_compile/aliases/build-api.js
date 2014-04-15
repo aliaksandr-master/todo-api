@@ -4,5 +4,5 @@ module.exports = [
 	'copy:api-realization',
 	'api-specs-compiler',
 	'find-php-classes:api-realization',
-	'copy:api-classes-realization'
+	'json2php:api-realization'
 ];

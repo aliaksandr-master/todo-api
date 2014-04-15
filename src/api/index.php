@@ -41,7 +41,7 @@ ini_set('xdebug.show_exception_trace', 'On');
  *   CLASS AUTO-LOADER
  * -------------------------------------------------------------------
  */
-$_CLASS_MAP = json_decode(file_get_contents(VAR_DIR.'/classes.json'), true);
+$_CLASS_MAP = include(VAR_DIR.'/classes.php');
 spl_autoload_register(function ($className) {
     global $_CLASS_MAP;
     if (isset($_CLASS_MAP[$className])) {
