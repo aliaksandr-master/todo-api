@@ -18,6 +18,8 @@
 /deploy/
 /build/client/
 /build/private.cache/
+!/build/private.cache/.htaccess
+!/build/private.cache/session/.htaccess
 /build/opt/
 /build/api/
 /build/api-test/

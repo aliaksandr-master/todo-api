@@ -4,6 +4,5 @@ module.exports = [
     'build-api',
 	'build-api-test',
 	'build-client',
-	'build-env',
-	'build-db'
+	'build-env'
 ];

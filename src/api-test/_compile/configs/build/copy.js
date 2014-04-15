@@ -16,8 +16,8 @@ module.exports = function(grunt, options){
 					src: [
 						'!_compile/*',
 						'!_compile/**/*',
-						'*.{php,html,htaccess,hbs,js,css,eot,svg,ttf,woff,otf}',
 						'**/*.{php,html,htaccess,hbs,js,css,eot,svg,ttf,woff,otf}',
+						'**/.htaccess'
 					],
 					dest: global.BUILD + '/api-test'
 				}

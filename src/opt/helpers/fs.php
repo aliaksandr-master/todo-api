@@ -17,6 +17,27 @@ function FS_normalizePath ($dirPath, $slashStr = DIRECTORY_SEPARATOR) {
 }
 
 /**
+ * @param string $dirPath
+ * @param $permissions
+ *
+ * @return string $dirPath
+ */
+function FS_makeDir ($dirPath, $permissions = 0777) {
+	!is_dir($dirPath) && mkdir($dirPath, $permissions, true);
+	return $dirPath;
+}
+
+/**
+ * @param string $filePath
+ *
+ * @return string $filePath
+ */
+function FS_makeFile ($filePath) {
+	!is_file($filePath) && fclose(fopen($filePath, "x"));
+	return $filePath;
+}
+
+/**
  * @param string   $dir
  * @param null|int $deep
  *
@@ -34,16 +55,10 @@ function FS_expand ($dir, $deep = null) {
 				if (substr($entry, 0, 1) != '.') {
 					$path = $dir.DIRECTORY_SEPARATOR.$entry;
 					if (is_file($path)) {
-						$result["files"][] = array(
-							"path" => $path,
-							"name" => $entry
-						);
+						$result["files"][] = array("path" => $path, "name" => $entry);
 					} else {
 						if (!preg_match("/^\./", $entry)) {
-							$arr = array(
-								"name" => $entry,
-								"path" => $path
-							);
+							$arr = array("name" => $entry, "path" => $path);
 							if (is_null($deep)) {
 								$arr = getFileSystem($path, null);
 							} else {
@@ -64,11 +79,7 @@ function FS_expand ($dir, $deep = null) {
 	} else {
 		$result = array();
 	}
-	$result = array(
-		"name" => str_replace(preg_replace("/([^\/\\\]+)$/", "", $dir), "", $dir),
-		"path" => $dir,
-		"children" => $result
-	);
+	$result = array("name" => str_replace(preg_replace("/([^\/\\\]+)$/", "", $dir), "", $dir), "path" => $dir, "children" => $result);
 
 	return $result;
 }
