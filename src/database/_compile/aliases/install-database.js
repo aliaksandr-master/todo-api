@@ -1,4 +1,4 @@
 module.exports = [
 	'copy-new-files:db-config',
-	'database-schema'
+	'mysqldump-schema:database-default'
 ];
