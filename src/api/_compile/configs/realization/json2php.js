@@ -3,7 +3,7 @@
 module.exports = function (grunt) {
 
 	return {
-		'api-realization': {
+		'api-classes': {
 			options: {
 
 			},

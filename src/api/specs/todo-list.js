@@ -1,3 +1,4 @@
+"use strict";
 
 var stdResponse = [
 	"id:decimal",
@@ -6,8 +7,6 @@ var stdResponse = [
 	"is_shared:boolean",
 	"sort_order:decimal"
 ];
-
-"use strict";
 
 module.exports = {
 	"GET todo": {

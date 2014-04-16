@@ -12,7 +12,7 @@ module.exports = function(grunt, options){
 			files: [
 				{
 					expand: true,
-					cwd: global.SRC + '/api-test',
+					cwd: global.SRC + '/opt/api-test',
 					src: [
 						'!_compile/*',
 						'!_compile/**/*',

@@ -5,18 +5,15 @@ module.exports = function(grunt, options){
 	//
 
 	return {
-		'api-test-var': {
+		'api-test-specs': {
 			options: {
-				excludeEmpty: true
+				outputJSON: 'api.source.json'
 			},
 			files: [
 				{
 					expand: true,
-					cwd: global.BUILD + '/api/var',
-					src: [
-						'*.json',
-						'**/*.json',
-					],
+					cwd: global.COMPILED + '/api-specs-source',
+					src: '**/*.json',
 					dest: global.BUILD + '/api-test/var'
 				}
 			]
