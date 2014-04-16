@@ -1,5 +1,5 @@
 module.exports = [
-	'clean:install',
+	'clean:installed',
 	'install-opt',
 	'install-database',
 	'install-api',

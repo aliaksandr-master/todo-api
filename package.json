@@ -6,23 +6,12 @@
 		"shelljs": "latest",
 		"sha1": "latest",
 
-		"grunt": "~0.4",
+		"grunt": "~0.4.0",
 		"load-grunt-tasks": "latest",
 
-		"underscore": "latest",
 		"lodash": "latest",
-		"matchdep": "latest",
-		"time-grunt": "latest",
 
-		"grunt-favicons": "0.6.0",
-
-		"grunt-mkdir": "latest",
-
-		"grunt-typescript": "latest",
-		"grunt-git-authors": "latest",
-		"grunt-contrib-less": "~0.8.3",
-		"grunt-contrib-sass": "latest",
-		"grunt-contrib-coffee": "latest",
+		"grunt-contrib-less": "latest",
 		"grunt-contrib-handlebars": "latest",
 		"grunt-webfont": "latest",
 
@@ -31,17 +20,12 @@
 		"grunt-contrib-clean": "latest",
 		"grunt-contrib-concat": "latest",
 		"grunt-contrib-copy": "latest",
-		"grunt-file-creator": "latest",
 		"grunt-text-replace": "latest",
 		"grunt-contrib-requirejs": "latest",
-		"grunt-urequire": "latest",
 
 		"grunt-contrib-uglify": "latest",
 		"grunt-contrib-cssmin": "latest",
-		"grunt-contrib-htmlmin": "~0.1.3",
-		"grunt-csso": "latest",
-		"grunt-imgo": "latest",
-		"grunt-remove-logging": "latest",
+		"grunt-contrib-htmlmin": "latest",
 		"grunt-autoprefixer": "latest",
 
 		"grunt-contrib-watch": "latest",
@@ -49,13 +33,12 @@
 
 		"grunt-contrib-jshint": "latest",
 
-		"grunt-exec": "latest",
 		"grunt-bower-task": "latest",
 
 		"grunt-template": "latest",
 
-        "markdown": "latest",
+		"markdown": "latest",
 
-        "handlebars": "latest"
+		"handlebars": "latest"
     }
 }

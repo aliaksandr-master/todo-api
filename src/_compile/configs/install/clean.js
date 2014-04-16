@@ -3,7 +3,9 @@
 module.exports = function () {
 
 	return {
-		'install': this.COMPILED
+		'installed': [
+			this.COMPILED
+		]
 	};
 
 };

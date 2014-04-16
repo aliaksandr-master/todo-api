@@ -51,5 +51,7 @@ module.exports = function (grunt) {
 		config = _.merge(config, taskObject);
 	});
 
+	console.log(_.keys(config.clean));
+
 	grunt.initConfig(config);
 };
