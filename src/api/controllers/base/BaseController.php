@@ -59,7 +59,7 @@ abstract class BaseController extends CI_Controller implements IApiController, I
 
 
 	function input ($name = null, $default = null) {
-		return $this->api->input->get($name, $default);
+		return $this->api->request->get($name, $default);
 	}
 
 

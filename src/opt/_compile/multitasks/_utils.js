@@ -1,5 +1,7 @@
 "use strict";
 
+var grunt = require('grunt');
+
 module.exports = {
 
 	gruntFilterFiles: function (grunt, thisTaskObj, callback) {
@@ -19,6 +21,9 @@ module.exports = {
 				callback(fpath, file.dest, file);
 			});
 		});
+	},
+	logFileOk: function (file) {
+		file = file.replace(global.ROOT, '').replace(/^[\/]+/, '');
+		grunt.log.ok('created ' + file);
 	}
-
 };

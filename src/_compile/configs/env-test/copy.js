@@ -3,7 +3,7 @@ module.exports = function(grunt){
 
 	return {
 
-		'env-dev': {
+		'env-test': {
 			files: [
 				{
 					expand: true,
@@ -16,7 +16,7 @@ module.exports = function(grunt){
 				},
 				{
 					expand: true,
-					cwd: this.SRC + "/_env/dev/",
+					cwd: this.SRC + "/_compile/env/test/",
 					src: [
 						'**/*',
 						'*'

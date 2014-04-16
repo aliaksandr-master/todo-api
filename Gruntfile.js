@@ -12,46 +12,52 @@ global.COMPILED = global.BUILD + '/compiled.temp';
 module.exports = function (grunt) {
 	require('load-grunt-tasks')(grunt);
 
+	var pkg = grunt.file.readJSON('package.json');
 	var config = {},
-		options = require('./src/_compile/options.js')(grunt);
+		options = {
+			cacheKey: Date.now(),
+			package: pkg,
+			liveReload: {
+				port: 35729,
+				src: '//www.' + pkg.name + ':35729/livereload.js'
+			}
+		};
 
-	function register (srcName, callback) {
+	function register (src, callback) {
 		var cwd = './src';
 
-		_.each(grunt.file.expand({ cwd:  cwd + '/' }, [
-
-			'**/_compile/'+srcName+'/**/*.{js,json}'
-
-		]), function (fpath) {
+		_.each(grunt.file.expand({ cwd:  cwd + '/' }, src), function (fpath) {
 
 			var condition = _.all(fpath.split(/[\\\/]+/), function (v) {
-				return !/^_.+$/.test(v) || /^_(compile|env)$/.test(v);
+				return !/^_.+$/.test(v) || /^_compile$/.test(v);
 			});
-
 			if (condition) {
 				var name = fpath.split(/[\\\/]+/).pop().replace(/\.js$/, '');
 				var module = require(cwd + '/' + fpath);
 				var task = _.isFunction(module) ? module.call(global, grunt, options) : module;
 				callback(name, task);
-			} else {
+			} /*else {
 				console.log('ignore from compile:', fpath);
-			}
+			}*/
 		});
 	}
 
-	register('tasks', grunt.registerTask);
+	register('**/_compile/tasks/**/*.js', grunt.registerTask);
 
-	register('aliases', grunt.registerTask);
+	register('**/_compile/aliases.js', function (_1, tasks) {
+		_.each(tasks, function (task, key) {
+			grunt.log.ok('alias: ' + key);
+			grunt.registerTask(key, task);
+		});
+	});
 
-	register('multitasks', grunt.registerMultiTask);
+	register('**/_compile/multitasks/**/*.js', grunt.registerMultiTask);
 
-	register('configs', function (name, task) {
+	register('**/_compile/configs/**/*.js', function (name, task) {
 		var taskObject = {};
 		taskObject[name] = task;
 		config = _.merge(config, taskObject);
 	});
-
-	console.log(_.keys(config.clean));
 
 	grunt.initConfig(config);
 };

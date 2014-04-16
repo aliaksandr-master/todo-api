@@ -18,6 +18,10 @@ define("INDEX_DIR_NAME", array_pop(explode(DS, SERVER_DIR)));
 define('API_ROOT_URL', pathinfo(str_replace(SD, DS, $_SERVER['SCRIPT_NAME']), PATHINFO_DIRNAME));
 define('ENVIRONMENT',  'development'); /* development, testing, production */
 
+$apiAvl = ENVIRONMENT === "development" || ENVIRONMENT === "testing";
+define('_API_TESTING_MODE_', $apiAvl && !empty($_GET['_testing']));
+define('_API_DEBUG_MODE_', _API_TESTING_MODE_ || ($apiAvl && !empty($_GET['_debug'])));
+
 /*
  * -------------------------------------------------------------------
  *   X-DEBUG SETTINGS

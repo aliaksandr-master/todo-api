@@ -2,7 +2,7 @@
 
 var _ = require('lodash');
 
-module.exports = function (options, mainOptions) {
+module.exports = function (options) {
 
 	function mkObject (key, value) {
 		var a = {};
@@ -406,7 +406,7 @@ module.exports = function (options, mainOptions) {
 	var compile = function(source){
 		var resultApi = {};
 		_.each(source, function(apiData, apiName){
-			if (mainOptions.verbose) {
+			if (options.verbose) {
 				console.log(apiName);
 			}
 

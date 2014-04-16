@@ -28,7 +28,7 @@ module.exports = function (grunt, options) {
 			var files = options.process(content, fpath, dest, fileObj);
 			_.each(files, function (content, filePath) {
 				grunt.file.write(filePath, content);
-				grunt.log.ok('file ' + filePath +' create');
+				taskUtils.logFileOk(filePath);
 			});
 		});
 

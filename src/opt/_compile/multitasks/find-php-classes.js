@@ -4,6 +4,7 @@ module.exports = function (grunt) {
 
 	return function () {
 		var _ = require('lodash');
+		var taskUtils = require('./_utils');
 
 		var options = this.options({
 			cwd: null,
@@ -27,7 +28,7 @@ module.exports = function (grunt) {
 		});
 
 		grunt.file.write(options.outputJSON, JSON.stringify(classMap, null, options.beauty ? 4 : null));
-		grunt.log.ok('file: "' + options.outputJSON + '" was created');
+		taskUtils.logFileOk(options.outputJSON);
 	};
 
 };

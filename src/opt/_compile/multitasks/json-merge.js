@@ -33,7 +33,7 @@ module.exports = function (grunt) {
 		if (destDir && options.outputJSON) {
 			options.outputJSON = destDir + '/' + options.outputJSON.replace(/^\//, '');
 			grunt.file.write(options.outputJSON, JSON.stringify(result, null, options.beauty ? 4 : null));
-			grunt.log.ok('file ' + options.outputJSON + ' was created!');
+			taskUtils.logFileOk(options.outputJSON);
 		} else {
 			grunt.fail.fatal('dest or outputJSON is undefined');
 		}

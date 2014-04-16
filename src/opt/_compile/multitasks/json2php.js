@@ -10,7 +10,7 @@ module.exports = function (grunt) {
 			var json = grunt.file.readJSON(fpath);
 			var php = json2php(json);
 			grunt.file.write(dest, '<?php \nreturn ' + php + ';\n?>');
-			grunt.log.ok('file ' + dest + ' created!');
+			taskUtils.logFileOk(dest);
 		});
 	}
 };

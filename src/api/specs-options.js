@@ -1,7 +1,12 @@
-
-
+'use strict';
 
 module.exports = {
+
+	source: true,
+
+	beauty: false,
+
+	verbose: false,
 
 	methods: {
 		GET:    'GET',
@@ -77,7 +82,7 @@ module.exports = {
 			],
 			filters:[
 				'trim',
-				'xss',
+				'xss'
 			]
 		}
 	}

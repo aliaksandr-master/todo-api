@@ -6,9 +6,7 @@ module.exports = function(grunt){
 
 		'api-specs': {
 
-			options: {
-				specsOptions: this.SRC + '/api/specs-options.js'
-			},
+			options: require(this.SRC + '/api/specs-options.js'),
 
 			files: [
 				{

@@ -5,21 +5,16 @@ module.exports = function(grunt){
 		var _ = require('lodash');
 		var sha1 = require('sha1');
 		var taskUtils = require('./_utils');
+		var jsonParser = require('./_api-specs-compiler/_parsers/json');
+		var ramlParser = require('./_api-specs-compiler/_parsers/raml'); // not implemented
 
 		var parsers = {
-			js:   require('./_api-specs-compiler/_parsers/json'),
-			json: require('./_api-specs-compiler/_parsers/json'),
-			raml: require('./_api-specs-compiler/_parsers/raml') // not implemented
+			js: jsonParser,
+			json: jsonParser
+//			raml: ramlParser
 		};
 
-		var mainOptions = this.options({
-			specsOptions: '',
-			source: true,
-			beauty: false,
-			verbose: false
-		});
-
-		var options = mainOptions.specsOptions ? require(mainOptions.specsOptions) : {};
+		var options = this.options({});
 
 		taskUtils.gruntFilterFiles(grunt, this, function (fpath, dest, fileObj) {
 			var allowCondition = _.all(fpath.split(/[\\\/]+/), function (v) {
@@ -27,17 +22,17 @@ module.exports = function(grunt){
 			});
 			if (allowCondition) {
 				var ext = fpath.split('.').pop();
-				var parsedObj = parsers[ext].call(grunt, fpath, options, mainOptions);
+				var parsedObj = parsers[ext].call(grunt, fpath, options);
 
-				if (mainOptions.source) {
-					var sourceDir = fileObj.orig.dest.replace(/\/$/, '') + (_.isString(mainOptions.source) ? mainOptions.source : '-source');
+				if (options.source) {
+					var sourceDir = fileObj.orig.dest.replace(/\/$/, '') + (_.isString(options.source) ? options.source : '-source');
 					var sourceFile = sourceDir.replace(/\/$/, '') + '/' + dest.replace(fileObj.orig.dest, '').replace(/^\//, '');
-					grunt.file.write(sourceFile, JSON.stringify(parsedObj.source, null, mainOptions.beauty ? 4 : null));
-					grunt.log.ok('File ' + sourceFile + ' created');
+					grunt.file.write(sourceFile, JSON.stringify(parsedObj.source, null, options.beauty ? 4 : null));
+					taskUtils.logFileOk(sourceFile);
 				}
 
-				grunt.file.write(dest, JSON.stringify(parsedObj.parsed, null, mainOptions.beauty ? 4 : null));
-				grunt.log.ok('File ' + dest + ' created');
+				grunt.file.write(dest, JSON.stringify(parsedObj.parsed, null, options.beauty ? 4 : null));
+				taskUtils.logFileOk(dest);
 			}
 		});
 	};

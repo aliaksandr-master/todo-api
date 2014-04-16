@@ -16,7 +16,7 @@ module.exports = function(grunt){
 				},
 				{
 					expand: true,
-					cwd: this.SRC + "/_env/prod/",
+					cwd: this.SRC + "/_compile/env/prod/",
 					src: [
 						'**/*',
 						'*'

@@ -7,6 +7,7 @@ module.exports = function(grunt){
 		var _ = require('lodash');
 		var shell = require("shelljs");
 		var parser = require('xml2json');
+		var taskUtils = require('./_utils');
 
 		var options = this.options({
 			config: {
@@ -95,7 +96,7 @@ module.exports = function(grunt){
 
 		if (options.sourceJSON) {
 			grunt.file.write(options.sourceJSON, JSON.stringify(verboseScheme, null, options.beauty ? 4 : 0));
-			grunt.log.ok(options.sourceJSON, ' was created.');
+			taskUtils.logFileOk(options.sourceJSON);
 		}
 
 		// parsed compile
@@ -106,7 +107,7 @@ module.exports = function(grunt){
 
 		if (options.outputJSON) {
 			grunt.file.write(options.outputJSON, JSON.stringify(parsedScheme, null, options.beauty ? 4 : 0));
-			grunt.log.ok(options.outputJSON, ' was created.');
+			taskUtils.logFileOk(options.outputJSON);
 		}
 	};
 
