@@ -12,6 +12,7 @@ module.exports = function (grunt) {
 					cwd: "src/opt/",
 					src: [
 						"api/**/*.php",
+						"ci_active_record/**/*.php",
 						"helpers/**/*.php",
 						"router/**/*.php",
 						".htaccess"

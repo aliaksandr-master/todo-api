@@ -21,6 +21,9 @@ define('ENVIRONMENT',  'development'); /* development, testing, production */
 $apiAvl = ENVIRONMENT === "development" || ENVIRONMENT === "testing";
 define('_API_TESTING_MODE_', $apiAvl && !empty($_GET['_testing']));
 define('_API_DEBUG_MODE_', _API_TESTING_MODE_ || ($apiAvl && !empty($_GET['_debug'])));
+
+define('OPT_DIR', realpath('..'.DS.'opt'));
+
 //
 ///*
 // * -------------------------------------------------------------------
@@ -61,8 +64,8 @@ spl_autoload_register(function ($className) {
  *   HELPERS
  * -------------------------------------------------------------------
  */
-require_once('../opt/helpers/dump.php');
-require_once('../opt/helpers/fs.php');
+require_once(OPT_DIR.DS.'helpers'.DS.'dump.php');
+require_once(OPT_DIR.DS.'helpers'.DS.'fs.php');
 
 
 
@@ -152,6 +155,15 @@ if (defined('ENVIRONMENT'))
 $router = new Router(include(VAR_DIR.DS.'routes.php'));
 $routeResult = $router->match($_SERVER['REQUEST_METHOD'], $_SERVER['REQUEST_URI']);
 
+
+
+
+/*
+ * -------------------------------------------------------------------
+ *  MODELS
+ * -------------------------------------------------------------------
+ */
+require_once(OPT_DIR.DS.'ci_active_record'.DS.'ci_active_record.init.php');
 
 
 
