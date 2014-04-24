@@ -1,0 +1,68 @@
+{
+	"root": "/controllers",
+
+	"<session>": {
+		"class": "SessionController",
+		"path": "session.php",
+		"<user>": {
+			"<get>": {},
+			"<create>": {},
+			"<delete>": {}
+		}
+	},
+
+	"<todo>": {
+		"<item>": {
+			"class": "TodoItemController",
+			"path": "/todo/item.php",
+			"<get>": {
+				"<all>": {},
+				"<one>": {}
+			},
+			"<create>": {
+				"<one>": {}
+			},
+			"<update>": {
+				"<one>": {}
+			},
+			"<delete>": {
+				"<one>": {}
+			}
+		},
+		"<list>": {
+			"class": "TodoListController",
+			"path": "/todo/list.php",
+			"<get>": {
+				"<all>": {},
+				"<one>": {}
+			},
+			"<create>": {
+				"<one>": {}
+			},
+			"<update>": {
+				"<one>": {}
+			},
+			"<delete>": {
+				"<one>": {}
+			}
+		}
+	},
+
+	"<user>": {
+		"class": "UserController",
+		"path": "/user.php",
+		"<get>": {
+			"<all>": {},
+			"<one>": {}
+		},
+		"<create>": {
+			"<one>": {}
+		},
+		"<update>": {
+			"<one>": {}
+		},
+		"<delete>": {
+			"<one>": {}
+		}
+	}
+}

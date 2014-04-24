@@ -11,10 +11,10 @@ module.exports = function (grunt) {
 					expand: true,
 					cwd: "src/opt/",
 					src: [
-						"codeigniter/**/*",
-						"api/**/*",
-						"helpers/**/*",
-						".htaccess",
+						"api/**/*.php",
+						"helpers/**/*.php",
+						"router/**/*.php",
+						".htaccess"
 					],
 					dest:   "build/opt"
 				}

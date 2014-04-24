@@ -14,10 +14,7 @@ module.exports = function (grunt) {
 					'api/models/**/*.php',
 					'opt/helpers/**/*.php',
 					'opt/api/**/*.php',
-					'opt/codeigniter/core/**/*.php',
-					'opt/codeigniter/helpers/**/*.php',
-					'opt/codeigniter/libraries/**/*.php',
-					'opt/codeigniter/database/**/*.php'
+					'opt/router/**/*.php'
 				],
 				beauty: false,
 				outputJSON: this.COMPILED + '/classes/api.json'

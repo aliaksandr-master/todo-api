@@ -1,0 +1,27 @@
+#METHOD		URL_PATTERN											->		HANDLER_ID
+
+#session
+get			session/user										->		session.user.get
+post		session/user										->		session.user.create
+delete		session/user										->		session.user.delete
+
+#todo-item
+get			todo/(decimal:todo_id)/item							->		todo.item.get.all
+get			todo/(decimal:todo_id)/item/(decimal:item_id)		->		todo.item.get.one
+post		todo/(decimal:todo_id)/item							->		todo.item.create.one
+put			todo/(decimal:todo_id)/item/(decimal:item_id)		->		todo.item.update.one
+delete		todo/(decimal:todo_id)/item/(decimal:item_id)		->		todo.item.delete.one
+
+#todo-list
+get			todo												->		todo.list.get.all
+get			todo/(decimal:id)									->		todo.list.get.one
+post		todo												->		todo.list.create.one
+put			todo/(decimal:id)									->		todo.list.update.one
+delete		todo/(decimal:id)									->		todo.list.delete.one
+
+#user
+get			user												->		user.get.all
+get			user(decimal:id)									->		user.get.one
+delete		user/(decimal:id)									->		user.delete.one
+put			user/(decimal:id)									->		user.update.one
+post		user												->		user.create.one

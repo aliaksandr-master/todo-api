@@ -11,6 +11,8 @@
 
 		"lodash": "latest",
 
+		"grunt-php-router-gen": "latest",
+
 		"grunt-contrib-less": "latest",
 		"grunt-contrib-handlebars": "latest",
 		"grunt-webfont": "latest",

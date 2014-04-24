@@ -10,7 +10,10 @@ module.exports = {
 
 		"api-specs-compiler:api-specs",
 		"split-files:api-specs",
-		"split-files:api-specs-methods-config"
+		"split-files:api-specs-methods-config",
+
+		"php_router_gen:api-router",
+		"json2php:api-router"
 	],
 	
 	"install-api": [

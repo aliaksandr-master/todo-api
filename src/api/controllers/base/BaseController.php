@@ -5,7 +5,7 @@ restore_exception_handler();
 
 
 
-abstract class BaseController extends CI_Controller implements IApiController, IApiDebugStatistic {
+abstract class BaseController implements IApiController, IApiDebugStatistic {
 
 	/** @var CI_Loader */
 	public $load;
@@ -21,25 +21,8 @@ abstract class BaseController extends CI_Controller implements IApiController, I
 	const ACCESS_NEED_LOGIN = 'need_login';
 
 	public function __construct () {
-		parent::__construct();
 		// base constructor
 		$this->user = UserModel::instance();
-	}
-
-
-	public function _remap ($action, $arguments) {
-
-		$url = str_replace(API_ROOT_URL, '', $_SERVER['REQUEST_URI']);
-
-		$this->api = new Api($_SERVER["REQUEST_METHOD"], $url, array(
-			'input/body' => INPUT_DATA,
-			'input/args' => $arguments,
-			'input/query' => array(),
-			'input/headers' => getallheaders()
-		));
-
-		$this->api->launch($this, $action);
-		$this->api->send(true);
 	}
 
 
