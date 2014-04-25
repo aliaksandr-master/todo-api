@@ -107,7 +107,7 @@ module.exports = function (grunt) {
 					expand: true,
 					cwd: this.SRC + '/api/router/',
 					src: 'routes.txt',
-					dest: this.COMPILED + '/api/router/',
+					dest: this.COMPILED + '/api-router/',
 					ext: '.json'
 				}
 			]

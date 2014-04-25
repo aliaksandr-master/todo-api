@@ -9,7 +9,7 @@ module.exports = function (grunt) {
 			},
 			files: [
 				{
-					src: this.COMPILED + '/api/router/routes.json',
+					src: this.COMPILED + '/api-router/routes.json',
 					dest: this.BUILD + '/api/var/routes.php'
 				}
 			]

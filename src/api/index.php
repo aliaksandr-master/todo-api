@@ -174,7 +174,7 @@ require_once(OPT_DIR.DS.'ci_active_record'.DS.'ci_active_record.init.php');
  */
 $controllerClass = $routeResult['class'];
 $controller = new $controllerClass();
-$method = str_replace('Controller', '', get_class($controller));
+$method = !empty($routeResult['action']) ? $routeResult['action'] : str_replace('Controller', '', get_class($controller));
 
 
 /*
@@ -187,7 +187,7 @@ $url = str_replace(API_ROOT_URL, '', $_SERVER['REQUEST_URI']);
 $api = new Api($_SERVER["REQUEST_METHOD"], $url, array(
 	'input/body' => INPUT_DATA,
 	'input/args' => $routeResult['params'],
-	'input/query' => array(),
+	'input/query' => $_GET,
 	'input/headers' => getallheaders()
 ));
 $api->launch($controller, $method);
