@@ -78,9 +78,6 @@ require_once(OPT_DIR.DS.'helpers'.DS.'fs.php');
 if (!is_dir(SESSION_DIR)) {
 	FS_makeDir(CACHE_DIR, 0770);
 	FS_makeDir(SESSION_DIR, 0770);
-	FS_makeFile(CACHE_DIR.DS.'.gitkeep');
-	FS_makeFile(SESSION_DIR.DS.'.gitkeep');
-
 	FS_makeFile(CACHE_DIR.DS.'.htaccess');
 	FS_makeFile(SESSION_DIR.DS.'.htaccess');
 	file_put_contents(CACHE_DIR.DS.'.htaccess', 'DENY from all');

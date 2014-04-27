@@ -22,8 +22,12 @@ module.exports = {
 			});
 		});
 	},
-	logFileOk: function (file) {
-		file = file.replace(global.ROOT, '').replace(/^[\/]+/, '');
-		grunt.log.ok('created ' + file);
+	logFileOk: function (fpath, msgEnd, msgBegin) {
+		msgBegin = msgBegin == null ? 'File ' : msgBegin.trim() + ' ';
+		msgEnd = msgEnd == null ? ' created' : ' ' + msgEnd.trim();
+
+		fpath = fpath.replace(global.ROOT, '').replace(/^[\/]+/, '');
+
+		grunt.log.ok(msgBegin + fpath + msgEnd);
 	}
 };

@@ -2,7 +2,7 @@
 
 
 
-class UserModel extends BaseCrudModel {
+class UserModel extends DefaultDbModel {
 
 	const USER = "user";
 

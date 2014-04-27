@@ -20,6 +20,11 @@ abstract class BaseController implements IApiController, IApiDebugStatistic {
 
 	const ACCESS_NEED_LOGIN = 'need_login';
 
+	const FILTER_METHOD_PREF = 'filter_';
+
+	const VALIDATOR_METHOD_PREF = 'rule_';
+
+
 	public function __construct () {
 		// base constructor
 		$this->user = UserModel::instance();
@@ -123,9 +128,9 @@ abstract class BaseController implements IApiController, IApiDebugStatistic {
 
 
 	public function applyValidationRule ($value, $ruleName, $params, $contextName) {
-		$method = '_rule__'.$ruleName;
-		if (method_exists($this->api->context, $method)) {
-			return $this->api->context->$method($value, $params, $contextName);
+		$method = self::VALIDATOR_METHOD_PREF.$ruleName;
+		if (method_exists($this, $method)) {
+			return $this->$method($value, $params, $contextName);
 		}
 
 		return null;
@@ -133,9 +138,9 @@ abstract class BaseController implements IApiController, IApiDebugStatistic {
 
 
 	public function applyFilter ($value, $filterName, $params, $contextName) {
-		$method = '_filter__'.$filterName;
-		if (method_exists($this->api->context, $method)) {
-			return $this->api->context->$method($value, $params, $contextName);
+		$method = self::FILTER_METHOD_PREF.$filterName;
+		if (method_exists($this, $method)) {
+			return $this->$method($value, $params, $contextName);
 		}
 
 		return null;
@@ -168,15 +173,9 @@ abstract class BaseController implements IApiController, IApiDebugStatistic {
 			if (!empty($db->queries)) {
 				foreach ($db->queries as $key => $query) {
 					if ($db->query_times[$key]) {
-						$queries[] = array(
-							'query' => $query,
-							'time' => $db->query_times[$key]
-						);
+						$queries[] = array('query' => $query, 'time' => $db->query_times[$key]);
 					} else {
-						$error[] = array(
-							'query' => $query,
-							'time' => $db->query_times[$key]
-						);
+						$error[] = array('query' => $query, 'time' => $db->query_times[$key]);
 					}
 					$time += $db->query_times[$key];
 				}
@@ -185,12 +184,11 @@ abstract class BaseController implements IApiController, IApiDebugStatistic {
 
 		return array(
 			'db' => array(
-				'queriesCount' => count($queries) + count($error),
-				'totalTime' => $time,
-				'errorQueries' => $error,
+				'queriesCount'  => count($queries) + count($error),
+				'totalTime'     => $time,
+				'errorQueries'  => $error,
 				'NormalQueries' => $queries
-			)
-		);
+			));
 	}
 }
 

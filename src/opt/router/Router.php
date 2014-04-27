@@ -141,7 +141,8 @@ class Router {
 				if (preg_match($route["pattern"], $url, $params)) {
 					array_shift($params);
 					$result = array(
-						"name" => $route[self::ROUTE_NAME]
+						"name" => $route[self::ROUTE_NAME],
+						"params" => array()
 					);
 					if (!empty($route[self::ROUTE_DATA_NAME])) {
 						$result = array_replace_recursive($route[self::ROUTE_DATA_NAME], $result);
