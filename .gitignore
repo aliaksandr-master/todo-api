@@ -15,12 +15,6 @@
 /node_modules/
 /bower_components/
 /_local/
-/build/compiled.temp/
+/tmp/
 /deploy/
-/build/client/
-/build/private.cache/
-!/build/private.cache/.htaccess
-!/build/private.cache/session/.htaccess
-/build/opt/
-/build/api/
-/build/api-test/
+/build/

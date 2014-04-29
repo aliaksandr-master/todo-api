@@ -108,7 +108,7 @@ class ApiResponse extends ApiComponent {
 		}
 
 		// DEBUG DATA (only for development and testing mode)
-		if (Api::DEBUG_MODE) {
+		if (MODE === DEV) {
 			$response["debug"] = array(
 				'url/pathname' => $this->api->getParam('url/pathname'),
 				'method' => $this->api->getParam('method'),
@@ -135,7 +135,7 @@ class ApiResponse extends ApiComponent {
 					"query"  => $this->api->request->query(),
 					"args"    => $this->api->request->arg(),
 					"body"   => $this->api->request->body(),
-					"body:raw" => INPUT_DATA
+					"body:raw" => $this->api->getParam('input/body')
 				),
 				"api" => $this->api->getSpec()
 			);

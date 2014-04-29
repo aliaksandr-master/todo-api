@@ -1,62 +1,147 @@
-'use strict';
+"use strict";
 
 var _ = require('lodash');
 
-global.ROOT   = __dirname;
-global.SRC    = global.ROOT + '/src';
-global.BUILD  = global.ROOT + '/build';
-global.DEPLOY = global.ROOT + '/deploy';
-global.LOCAL  = global.ROOT + '/_local';
-global.COMPILED = global.BUILD + '/compiled.temp';
+var cwd = process.cwd();
+
+var paths = {
+	ROOT: cwd,
+	SRC: cwd + '/src',
+	DEPLOY: cwd + '/deploy',
+	LOCAL: cwd + '/_local',
+	COMPILE: cwd + '/compile',
+	BUILD: cwd + '/build',
+	TMP: cwd + '/tmp'
+};
+
+var mkLauncher = function (prefix) {
+
+	var launcher = {
+		prefix: prefix,
+		path: paths,
+		_configs: {},
+		_aliases: {},
+		_sequence: [],
+		_mainAlias: false
+	};
+
+	var TARGET_EXP = /^([^:]+):([^:]+).*$/;
+
+	launcher.config = function (name, targetObj, addPref, add2alias) {
+		var targetName = '';
+
+		if (TARGET_EXP.test(name)) {
+			targetName = name.replace(TARGET_EXP, '$2');
+			name = name.replace(TARGET_EXP, '$1');
+		}
+
+		if (addPref == null ? true : addPref) {
+			targetName = this.prefix + (targetName ? '/' : '') + targetName;
+		}
+
+		if (add2alias == null ? true : add2alias) {
+			this._sequence.push(name + ':' + targetName);
+		}
+
+		var obj = {};
+		obj[targetName] = targetObj;
+
+		if (this._configs[name] == null) {
+			this._configs[name] = {};
+		}
+
+		_.extend(this._configs[name], obj);
+
+	}.bind(launcher);
+
+	launcher.alias = function (name, tasks, addPref, add2alias) {
+		if (!_.isString(name)) {
+			add2alias = addPref;
+			addPref = tasks;
+			tasks = name;
+			name = '';
+			this._mainAlias = true;
+		}
+
+		if (addPref == null ? true : addPref) {
+			name = this.prefix + (name ? '/' : '') + name;
+		}
+
+		if (add2alias == null ? true : add2alias) {
+			if (name !== this.prefix) {
+				this._sequence.push(name);
+			}
+		}
+
+		this._aliases[name] = tasks;
+	}.bind(launcher);
+
+	return launcher;
+};
 
 module.exports = function (grunt) {
 	require('load-grunt-tasks')(grunt);
 
-	var pkg = grunt.file.readJSON('package.json');
-	var config = {},
+	var pkg = require(paths.ROOT + '/package.json');
+
+	var config = {
+			jshint: {
+				options: grunt.file.readJSON('.jshintrc')
+			}
+		},
 		options = {
-			cacheKey: Date.now(),
+			buildTimestamp: Date.now(),
 			package: pkg,
 			liveReload: {
 				port: 35729,
-				src: '//www.' + pkg.name + ':35729/livereload.js'
+				src: '//' + pkg.name + ':35729/livereload.js'
 			}
 		};
+	var cwd;
 
-	function register (src, callback) {
-		var cwd = './src';
+	cwd = paths.COMPILE + '/';
 
-		_.each(grunt.file.expand({ cwd:  cwd + '/' }, src), function (fpath) {
-
-			var condition = _.all(fpath.split(/[\\\/]+/), function (v) {
-				return !/^_.+$/.test(v) || /^_compile$/.test(v);
-			});
-			if (condition) {
-				var name = fpath.split(/[\\\/]+/).pop().replace(/\.js$/, '');
-				var module = require(cwd + '/' + fpath);
-				var task = _.isFunction(module) ? module.call(global, grunt, options) : module;
-				callback(name, task);
-			} /*else {
-				console.log('ignore from compile:', fpath);
-			}*/
-		});
-	}
-
-	register('**/_compile/tasks/**/*.js', grunt.registerTask);
-
-	register('**/_compile/aliases.js', function (_1, tasks) {
-		_.each(tasks, function (task, key) {
-			grunt.log.ok('alias: ' + key);
-			grunt.registerTask(key, task);
-		});
+	_.each(grunt.file.expand({ cwd: cwd }, 'tasks/**/*.js'), function (fpath) {
+		_.all(fpath.split(/[\\\/]+/), function (v) {
+			return !/^_.+$/.test(v) || /^_compile$/.test(v);
+		}) && require(cwd + fpath)(grunt, options);
 	});
 
-	register('**/_compile/multitasks/**/*.js', grunt.registerMultiTask);
+	cwd = paths.COMPILE + '/modules/';
 
-	register('**/_compile/configs/**/*.js', function (name, task) {
-		var taskObject = {};
-		taskObject[name] = task;
-		config = _.merge(config, taskObject);
+	_.each(grunt.file.expand({ cwd: cwd }, '**/*.js'), function (fpath) {
+		var condition = _.all(fpath.split(/[\\\/]+/), function (v) {
+			return !/^_.+$/.test(v);
+		});
+		if (condition) {
+			var prefix = fpath.replace(/\.js$/, '').replace(/([^\/]+)\/\1$/, '$1');
+
+			console.log('!!!', prefix, '!!!');
+
+			var launcher = mkLauncher(prefix);
+
+			require(cwd + fpath).call(launcher, grunt, options);
+
+			if (!launcher._mainAlias) {
+				launcher.alias(launcher._sequence);
+			}
+
+			_.each(launcher._aliases, function (tasks, aliasName) {
+				grunt.task.registerTask(aliasName, tasks);
+			});
+
+			config = _.merge(config, launcher._configs);
+
+			_.each(launcher._aliases, function (tasks, alias) {
+				grunt.log.ok(alias, '[' + tasks.join(', ') + ']');
+			});
+
+			_.each(launcher._configs, function (tasks, config) {
+				_.each(tasks, function (obj, target) {
+					grunt.log.error(config + ':' + target);
+				});
+			});
+		}
 	});
 
 	grunt.initConfig(config);

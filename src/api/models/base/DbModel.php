@@ -1,6 +1,9 @@
 <?php
 
 
+require_once(OPT_DIR.DS.'ci_active_record'.DS.'ci_active_record.init.php');
+
+
 
 /**
  * Class DbModel
@@ -59,5 +62,9 @@ abstract class DbModel {
 		}
 
 		return self::$_dbConnection[$dbName];
+	}
+
+	public static function getAllDbConnections () {
+		return self::$_dbConnection;
 	}
 }

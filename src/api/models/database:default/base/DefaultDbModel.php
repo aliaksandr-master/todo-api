@@ -8,7 +8,7 @@ abstract class DefaultDbModel extends BaseCrudModel  {
 
 	function getDbScheme () {
 		return
-			//#:injectData("build/compiled.temp/database/default.scheme.json")
+			//#:injectData("tmp/database/default.scheme.json")
 			array()
 			//injectData#
 			;
@@ -16,7 +16,7 @@ abstract class DefaultDbModel extends BaseCrudModel  {
 
 	function getConnectDbParams () {
 		return
-			//#:injectData("_local/database.json", "default")
+			//#:injectData("_local/configs/database/default.json")
 			array()
 			//injectData#
 			;

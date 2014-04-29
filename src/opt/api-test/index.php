@@ -4,7 +4,7 @@ error_reporting(E_ALL);
 
 define('ROOT', __DIR__);
 define('MY_ROOT_URL', "/api-test/");
-define('API_ROOT_URL', "/api/");
+define('ROOT_URL', "/api/");
 define('API_SOURCE_JSON_FILE', "/api-test/var/api.source.json");
 ?>
 <html>
@@ -14,7 +14,7 @@ define('API_SOURCE_JSON_FILE', "/api-test/var/api.source.json");
     <link rel="stylesheet" href="assets/api.css"/>
     <script type="text/javascript">
         window.MY_ROOT  = '<?php echo(MY_ROOT_URL); ?>';
-        window.API_ROOT = '<?php echo(API_ROOT_URL); ?>';
+        window.API_ROOT = '<?php echo(ROOT_URL); ?>';
         window.API_JSON = '<?php echo(API_SOURCE_JSON_FILE); ?>';
     </script>
     <script src="assets/underscore/underscore.js"></script>

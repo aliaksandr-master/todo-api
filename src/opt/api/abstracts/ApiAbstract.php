@@ -18,7 +18,7 @@ abstract class ApiAbstract {
 	}
 
 
-	function error ($message = null, $code = 500, $fatal = false, array $debugArgs = array()) {
+	function error ($message = null, $code = 500, $fatal = false, $debugArgs = array()) {
 		if (is_null($message)) {
 			$message = ApiUtils::getMessageByCode($code);
 			if (is_null($message)) {
@@ -26,7 +26,10 @@ abstract class ApiAbstract {
 			}
 		}
 
-		if (Api::DEBUG_MODE) {
+		if (MODE >= DEV) {
+			if (!is_array($debugArgs)) {
+				$debugArgs = array($debugArgs);
+			}
 			foreach ($debugArgs as $key => $value) {
 				if (strpos('%'.$key.'%', $message)) {
 					$message .= ' %'.$key.'%';

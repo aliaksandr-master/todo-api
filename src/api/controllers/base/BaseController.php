@@ -1,8 +1,5 @@
 <?php
 
-restore_error_handler();
-restore_exception_handler();
-
 
 
 abstract class BaseController implements IApiController, IApiDebugStatistic {
@@ -163,7 +160,7 @@ abstract class BaseController implements IApiController, IApiDebugStatistic {
 
 	public function debugStatistic () {
 
-		$dbs = BaseCrudModel::getAllArDb();
+		$dbs = BaseCrudModel::getAllDbConnections();
 
 		$queries = array();
 		$error = array();

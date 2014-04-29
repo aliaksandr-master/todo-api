@@ -1,10 +1,8 @@
 <?php
 
+
+
 class Api extends ApiAbstract {
-
-	const TEST_MODE = _API_TESTING_MODE_;
-
-	const DEBUG_MODE = _API_DEBUG_MODE_;
 
 	/** @var IApiController */
 	public $context;
@@ -30,11 +28,11 @@ class Api extends ApiAbstract {
 	protected $_components = array();
 
 	protected $_componentsMap = array(
-		'access' => 'ApiComponent',
-		'filter' => 'ApiFilter',
+		'access'     => 'ApiComponent',
+		'filter'     => 'ApiFilter',
 		'validation' => 'ApiValidation',
-		'request' => 'ApiRequest',
-		'output' => 'ApiResponse'
+		'request'    => 'ApiRequest',
+		'output'     => 'ApiResponse'
 	);
 
 	private $_apiData = array();
@@ -43,12 +41,10 @@ class Api extends ApiAbstract {
 
 	protected $_stackTrace = array();
 
-	protected $_specName = null;
-
 	protected $_configs = array();
 
 	public $formats = array(
-		'xml'  => array(
+		'xml'   => array(
 			'inputMimes' => array(
 				'xml',
 				'application/xml',
@@ -56,7 +52,7 @@ class Api extends ApiAbstract {
 			),
 			'outputMime' => 'application/xml'
 		),
-		'json' => array(
+		'json'  => array(
 			'inputMimes' => array(
 				'json',
 				'application/json'
@@ -70,7 +66,7 @@ class Api extends ApiAbstract {
 			),
 			'outputMime' => 'application/javascript'
 		),
-		'form' => array(
+		'form'  => array(
 			'inputMimes' => array(
 				'application/x-www-form-urlencoded'
 			),
@@ -79,22 +75,15 @@ class Api extends ApiAbstract {
 	);
 
 
-	function __construct ($method, $uri, array $params = array()) {
+	function __construct ($name, $method, $uri, array $params) {
 		$this->api = $this;
-
-		// INIT CONFIG
-		$this->_configs['methods'] = include(VAR_DIR.DS.'configs'.DS.sha1('methods').'.php');
 
 		// CREATE COMPONENTS
 		foreach ($this->_componentsMap as $componentName => $Component) {
 			$this->_components[$componentName] = $this->$componentName = new $Component($this);
 		}
 
-		// SAVE INIT PARAMS
-		if (!preg_match('/^'.implode('|', array_keys($this->config('methods'))).'$/i', $method)) {
-			$this->error(400, true, array($method));
-		}
-
+		// INIT PARAMS
 		$this->setParam('method', strtoupper($method));
 
 		// todo: change to PATH key
@@ -102,28 +91,40 @@ class Api extends ApiAbstract {
 		$this->setParam('url/pathname', preg_replace('/^([^\?]+)\?(.*)$/', '$1', $uri));
 		$this->setParam('url/search', preg_replace('/^([^\?]+)\?(.*)$/', '$2', $uri));
 
-		foreach (array (
-			 'input/body' => array(),
-			 'input/args' => array(),
-			 'input/query' => array(),
-			 'input/headers' => array(),
-		) as $name => $default) {
+		foreach (array(
+					 'input/body'    => array(),
+					 'input/args'    => array(),
+					 'input/query'   => array(),
+					 'input/headers' => array(),
+				 ) as $name => $default) {
 			$this->setParam($name, ApiUtils::get($params, $name, $default));
 		}
 
-		$cellName = $this->getSpecName($this->getParam('method'), $this->getParam('url/pathname'), $this->getParam('input/args'));
+		$this->trace('Spec name', $name);
 
-		$this->trace('Create spec name', $cellName);
-
-		$apiFile = VAR_DIR.DS.'specs'.DS.sha1($cellName).'.php';
+		$apiFile = VAR_DIR.DS.'specs'.DS.sha1($name).'.php';
 
 		$this->_apiData = is_file($apiFile) ? include($apiFile) : array();
+		$this->setParam('time/action', 0);
 	}
+
+
+	public function check () {
+
+		$method = $this->getParam('method');
+		if (!preg_match('/^GET|PUT|POST|DELETE|OPTIONS|HEAD|CONNECT|TRACE$/i', $method)) {
+			$this->error(400, true, array($method));
+		}
+
+		return $this->valid();
+	}
+
 
 	public function config ($name, $default = null, $strict = true) {
 		if ((!is_null($default) || $strict) && !isset($this->_configs[$name])) {
 			$this->error('Eternal Server Error', 500, true);
 		}
+
 		return ApiUtils::get($this->_configs, $name, $default);
 	}
 
@@ -138,53 +139,30 @@ class Api extends ApiAbstract {
 	}
 
 
-	protected function getSpecName ($method, $uriCall, array $arguments) {
-		if (is_null($this->_specName)) {
-			$uriCall = preg_replace('/\?(.+)$/', '', $uriCall);
-			$uriCall = str_replace('\\', '/', $uriCall);
-			$uriCall = preg_replace('#(/+)$#', '', $uriCall);
-
-			if ($arguments) {
-				$implArgs = implode('|', $arguments);
-				$uriCall = preg_replace('#^('.$implArgs.')$#', '<param>', $uriCall);
-				$uriCall = preg_replace('#^('.$implArgs.')/#', '<param>/', $uriCall);
-				$uriCall = preg_replace('#/('.$implArgs.')/#', '/<param>/', $uriCall);
-				$uriCall = preg_replace('#/('.$implArgs.')$#', '/<param>', $uriCall);
-			}
-
-			$uriCall = preg_replace('/^\/+/i', '', $uriCall);
-			$this->_specName = $method.":".$uriCall;
-		}
-
-		return $this->_specName;
-	}
-
-
-	function launch ($controller, $action) {
+	function launch () {
 
 		$this->setParam('timer/launch', gettimeofday(true));
 
-		$this->context = $this->setParam('controller', $controller);
-		$this->setParam('action', $action);
-
-		$this->trace('Launch width  '.get_class($controller).'->'.$action);
+		$this->trace('Launch width  '.$this->getParam('controller/class').'->'.$this->getParam('controller/action'));
 
 		if (!$this->_apiData) {
-			$this->error('Method %0% Not Allowed', 405, true, array (
-				'(\''.$this->getParam('action').'\')',
+			$this->error('Method %0% Not Allowed', 405, true, array(
+				'(\''.$this->getParam('controller/action').'\')',
 			));
+
 			return null;
 		}
 
 		$response = $this->getSpec('response');
-		$this->setParam('actionToCall', $this->context->compileMethodName($this->getParam('action'), $this->getParam('method'), $response['type'], $this->config('methods')));
+		$this->setParam('actionToCall', $this->context->compileMethodName($this->getParam('controller/action'), $this->getParam('method'), $response['type'], $this->config('methods')));
 
 		$this->trace('Compile launch method name', $this->getParam('actionToCall'));
 
 		if (!method_exists($this->context, $this->getParam('actionToCall'))) {
-			$this->error('Method %0% Not Allowed', 405, true, array (
+			$this->error('Method %0% Not Allowed', 405, true, array(
 				'(\''.$this->getParam('actionToCall').'\')',
 			));
+
 			return null;
 		}
 
@@ -193,7 +171,6 @@ class Api extends ApiAbstract {
 			/** @var ApiComponent $component */
 			$component->beforeLaunch();
 		}
-
 
 		foreach ($this->_components as $componentName => $component) {
 			$this->trace('Check component', $componentName);
@@ -211,6 +188,7 @@ class Api extends ApiAbstract {
 			if ($this->access->valid()) {
 				$this->access->error(null, 403);
 			}
+
 			return null;
 		}
 
@@ -286,8 +264,9 @@ class Api extends ApiAbstract {
 		return true;
 	}
 
+
 	function trace ($markName, $data = null) {
-		if (Api::DEBUG_MODE) {
+		if (MODE === DEV) {
 			if (!is_object($data) && !is_array($data) && !is_null($data)) {
 				if (is_bool($data)) {
 					$data = $data ? 'true' : 'false';
@@ -305,9 +284,10 @@ class Api extends ApiAbstract {
 
 
 	function getStackTrace () {
-		if (Api::DEBUG_MODE) {
+		if (MODE === DEV) {
 			return $this->_stackTrace;
 		}
+
 		return array();
 	}
 
