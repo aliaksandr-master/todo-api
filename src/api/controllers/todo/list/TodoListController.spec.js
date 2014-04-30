@@ -1,63 +1,93 @@
-"use strict";
+'use strict';
 
 var stdResponse = [
-	"id:decimal", "link:string", "name:string", "is_shared:boolean", "sort_order:decimal"
+	'id:decimal', 'link:string', 'name:string', 'is_shared:boolean', 'sort_order:decimal'
 ];
 
 module.exports = {
 
-	"> getMany": {
-		"access": {
-			"need_login": true,
-			"only_owner": true
-		},
-		"response < 255": stdResponse
+	controller: 'TodoListController',
+
+	access: {
+		need_login: true,
+		only_owner: true
 	},
 
-	"> getOne": {
-		"request": {
-			"$id:decimal": "required"
-		},
-		"response": stdResponse
+	statuses: [
+		403, 401
+	],
+
+	'.getMany': {
+		routes: [
+			'get /todo/list/'
+		],
+		statuses: [200, 404],
+		'response < 255': {
+			data: stdResponse
+		}
 	},
 
-	"> createOne": {
-		"access": {
-			"need_login": true,
-			"only_owner": true
+	'.getOne': {
+		routes: [
+			'get /todo/list/(:id)'
+		],
+		statuses: [200, 404],
+		request: {
+			params: {
+				'id:decimal': 'required'
+			}
 		},
-		"request": {
-			"name:string": "optional",
-			"is_shared:boolean": "optional",
-			"sort_order:decimal": "optional"
-		},
-		"response": stdResponse
+		response: {
+			data: stdResponse
+		}
 	},
 
-	"> updateOne": {
-		"access": {
-			"need_login": true,
-			"only_owner": true
+	'.createOne': {
+		statuses: [200, 400],
+		routes: [
+			'post /todo/list/'
+		],
+		request: {
+			body: {
+				'name:string': 'optional',
+				'is_shared:boolean': 'optional',
+				'sort_order:decimal': 'optional'
+			}
 		},
-		"request": {
-			"$id:decimal": "required",
-			"name:string{1,40}": "optional",
-			"is_shared:boolean": "optional",
-			"sort_order:decimal{1,11}": "optional"
-		},
-		"response": stdResponse
+		response: {
+			data: stdResponse
+		}
 	},
 
-	"> deleteOne": {
-		"access": {
-			"need_login": true,
-			"only_owner": true
+	'.updateOne': {
+		statuses: [200, 400],
+		routes: [
+			'put /todo/list/(:id)'
+		],
+		request: {
+			params: {
+				'id:decimal': 'required'
+			},
+			body: {
+				'name:string{1,40}': 'optional',
+				'is_shared:boolean': 'optional',
+				'sort_order:decimal{1,11}': 'optional'
+			}
 		},
-		"request": {
-			"$todo_id:decimal{1,11}": "required"
-		},
-		"response": [
-			"status:boolean"
-		]
+		response: {
+			data: stdResponse
+		}
+	},
+
+	'.deleteOne': {
+		routes: [
+			'delete /todo/list/(:id)/'
+		],
+		statuses: [200, 410],
+		request: {
+			params: {
+				'id:decimal': 'required'
+			}
+		}
 	}
 };

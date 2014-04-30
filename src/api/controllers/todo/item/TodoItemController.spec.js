@@ -1,72 +1,107 @@
-"use strict";
+'use strict';
 
 var stdResponse = [
-	"id:decimal",
-	"todo_id:decimal",
-	"sort_order:decimal",
-	"name:string",
-	"date_create:string",
-	"is_active:boolean"
+	'id:decimal',
+	'todo_id:decimal',
+	'sort_order:decimal',
+	'name:string',
+	'date_create:string',
+	'is_active:boolean'
 ];
 
 module.exports = {
 
-	"> getOne": {
-		"request": {
-			"$todo_id:decimal": "required",
-			"$id:decimal": "required"
-		},
-		"response": stdResponse
+	controller: 'TodoItemController',
+
+	access: {
+		need_login: true,
+		only_owner: true
 	},
 
-	"> getMany": {
-		"handler": "todo#item",
-		"request": {
-			"$todo_id:decimal": "required"
+	statuses: [ 403, 401 ],
+
+	'.getOne': {
+		statuses: [ 200, 404 ],
+		routes: [
+			'get /todo/list/(:listId)/item/(:itemId)/'
+		],
+		request: {
+			params: {
+				'listId:decimal': 'required',
+				'itemId:decimal': 'required'
+			}
 		},
-		"response < 255": stdResponse
+		response: {
+			data: stdResponse
+		}
 	},
 
-	"> createOne": {
-		"access": {
-			"need_login": true,
-			"only_owner": true
+	'.getMany': {
+		routes: [
+			'get /todo/list/(:listId)/item/'
+		],
+		statuses: [ 200, 404 ],
+		request: {
+			params: {
+				'listId:decimal': 'required'
+			}
 		},
-		"request": {
-			"$todo_id:decimal": "required",
-			"name:string": "optional",
-			"sort_order:decimal": "optional",
-			"is_active:boolean": "optional"
-		},
-		"response": stdResponse
+		'response < 255': {
+			data: stdResponse
+		}
 	},
 
-	"> updateOne": {
-		"access": {
-			"need_login": true,
-			"only_owner": true
+	'.createOne': {
+		routes: [
+			'post /todo/list/(:listId)/item/'
+		],
+		statuses: [ 201, 400 ],
+		request: {
+			params: {
+				'listId:decimal': 'required'
+			},
+			body: {
+				'name:string': 'optional',
+				'sort_order:decimal': 'optional',
+				'is_active:boolean': 'optional'
+			}
 		},
-		"request": {
-			"$todo_id:decimal": "required",
-			"$id:decimal": "required",
-			"name:string": "optional",
-			"sort_order:decimal": "optional",
-			"is_active:boolean": "optional"
-		},
-		"response": stdResponse
+		response: {
+			data: stdResponse
+		}
 	},
 
-	"> deleteOne": {
-		"access": {
-			"need_login": true,
-			"only_owner": true
+	'.updateOne': {
+		routes: [
+			'put /todo/list/(:listId)/item/(:itemId)/'
+		],
+		statuses: [ 200, 400 ],
+		request: {
+			params: {
+				'listId:decimal': 'required',
+				'itemId:decimal': 'required'
+			},
+			body: {
+				'name:string': 'optional',
+				'sort_order:decimal': 'optional',
+				'is_active:boolean': 'optional'
+			}
 		},
-		"request": {
-			"$todo_id:decimal": "required",
-			"$id:decimal": "required"
-		},
-		"response": [
-			"status:boolean"
-		]
+		response: {
+			data: stdResponse
+		}
+	},
+
+	'.deleteOne': {
+		routes: [
+			'delete /todo/list/(:listId)/item/(:itemId)/'
+		],
+		statuses: [ 200, 410 ],
+		request: {
+			params: {
+				'listId:decimal': 'required',
+				'itemId:decimal': 'required'
+			}
+		}
 	}
 };
