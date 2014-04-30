@@ -7,6 +7,8 @@ function Directive (name, obj) {
 	this.need = false;
 	this.default = undefined;
 	_.extend(this, obj);
+	this.nested = new DirectiveFactory();
+	this.constructor();
 }
 
 Directive.prototype = {
@@ -37,6 +39,10 @@ Directive.prototype = {
 
 	process: function (directiveName, directiveData, directives) {
 		return directiveData;
+	},
+
+	constructor: function () {
+
 	}
 };
 
@@ -77,11 +83,19 @@ DirectiveFactory.prototype = {
 			}, this);
 
 			var directive = specDirective.inherit(directiveKeyByDirectives, directiveKeyByCommon, directives);
+			if (specDirective.need && _.isEmpty(directive.value) && directive.value !== false) {
+				directive.key = null;
+			}
+
 			if (directive.key != null) {
 				specDirective.verify(directive.key, directive.value, directives);
 				directives[specDirective.name] = specDirective.process(directive.key, directive.value, directives);
+
+				var nested = specDirective.nested.processAll(directive.value, {});
+				directives[specDirective.name] = _.extend(directives[specDirective.name], nested);
+
 			} else if (specDirective.need) {
-				throw new Error('undefined directive');
+				throw new Error('directive required');
 			}
 
 			if (directives[specDirective.name] === undefined && specDirective.default !== undefined) {
@@ -90,13 +104,15 @@ DirectiveFactory.prototype = {
 		} catch (e) {
 			throw new Error(name + ': ' + e.message);
 		}
+		return directives[name];
 	},
 
 	processAll: function (directives, options) {
+		var result = {};
 		_.each(this.directivesSq, function (name) {
-			this.process(name, directives, options);
+			result[name] = this.process(name, directives, options);
 		}, this);
-		return directives;
+		return result;
 	}
 };
 

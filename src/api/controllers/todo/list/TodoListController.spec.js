@@ -13,17 +13,14 @@ module.exports = {
 		only_owner: true
 	},
 
-	statuses: [
-		403, 401
-	],
-
 	'.getMany': {
 		routes: [
 			'get /todo/list/'
 		],
-		statuses: [200, 404],
-		'response < 255': {
-			data: stdResponse
+		response: {
+			statuses: [ 200, 404, 403, 401 ],
+			data: stdResponse,
+			limit: 255
 		}
 	},
 
@@ -31,19 +28,18 @@ module.exports = {
 		routes: [
 			'get /todo/list/(:id)'
 		],
-		statuses: [200, 404],
 		request: {
 			params: {
 				'id:decimal': 'required'
 			}
 		},
 		response: {
+			statuses: [ 200, 404, 403, 401 ],
 			data: stdResponse
 		}
 	},
 
 	'.createOne': {
-		statuses: [200, 400],
 		routes: [
 			'post /todo/list/'
 		],
@@ -55,12 +51,12 @@ module.exports = {
 			}
 		},
 		response: {
+			statuses: [ 200, 400, 403, 401 ],
 			data: stdResponse
 		}
 	},
 
 	'.updateOne': {
-		statuses: [200, 400],
 		routes: [
 			'put /todo/list/(:id)'
 		],
@@ -75,6 +71,7 @@ module.exports = {
 			}
 		},
 		response: {
+			statuses: [ 200, 400, 403, 401 ],
 			data: stdResponse
 		}
 	},
@@ -83,11 +80,13 @@ module.exports = {
 		routes: [
 			'delete /todo/list/(:id)/'
 		],
-		statuses: [200, 410],
 		request: {
 			params: {
 				'id:decimal': 'required'
 			}
+		},
+		response: {
+			statuses: [ 200, 410, 403, 401 ]
 		}
 	}
 };

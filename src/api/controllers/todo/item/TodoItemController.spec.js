@@ -18,10 +18,7 @@ module.exports = {
 		only_owner: true
 	},
 
-	statuses: [ 403, 401 ],
-
 	'.getOne': {
-		statuses: [ 200, 404 ],
 		routes: [
 			'get /todo/list/(:listId)/item/(:itemId)/'
 		],
@@ -32,6 +29,7 @@ module.exports = {
 			}
 		},
 		response: {
+			statuses: [ 200, 404, 403, 401 ],
 			data: stdResponse
 		}
 	},
@@ -40,14 +38,15 @@ module.exports = {
 		routes: [
 			'get /todo/list/(:listId)/item/'
 		],
-		statuses: [ 200, 404 ],
 		request: {
 			params: {
 				'listId:decimal': 'required'
 			}
 		},
-		'response < 255': {
-			data: stdResponse
+		response: {
+			statuses: [ 200, 404, 403, 401 ],
+			data: stdResponse,
+			limit: 255
 		}
 	},
 
@@ -55,7 +54,6 @@ module.exports = {
 		routes: [
 			'post /todo/list/(:listId)/item/'
 		],
-		statuses: [ 201, 400 ],
 		request: {
 			params: {
 				'listId:decimal': 'required'
@@ -67,6 +65,7 @@ module.exports = {
 			}
 		},
 		response: {
+			statuses: [ 201, 400, 403, 401 ],
 			data: stdResponse
 		}
 	},
@@ -75,7 +74,6 @@ module.exports = {
 		routes: [
 			'put /todo/list/(:listId)/item/(:itemId)/'
 		],
-		statuses: [ 200, 400 ],
 		request: {
 			params: {
 				'listId:decimal': 'required',
@@ -88,6 +86,7 @@ module.exports = {
 			}
 		},
 		response: {
+			statuses: [ 200, 400, 403, 401 ],
 			data: stdResponse
 		}
 	},
@@ -96,12 +95,15 @@ module.exports = {
 		routes: [
 			'delete /todo/list/(:listId)/item/(:itemId)/'
 		],
-		statuses: [ 200, 410 ],
 		request: {
 			params: {
 				'listId:decimal': 'required',
 				'itemId:decimal': 'required'
 			}
+		},
+
+		response: {
+			statuses: [ 200, 410, 403, 401 ]
 		}
 	}
 };

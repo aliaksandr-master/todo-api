@@ -10,17 +10,20 @@ module.exports = {
 
 	controller: 'SessionUserController',
 
-	statuses: [],
-
 	'.getOne': {
-		statuses: [200, 404],
+		routes: [
+			'get /session/user/'
+		],
 		response: {
+			statuses: [200, 404],
 			data: response
 		}
 	},
 
 	'.createOne': {
-		statuses: [201, 400],
+		routes: [
+			'post /session/user/'
+		],
 		request: {
 			body: {
 				'username:string{3,50}': 'required',
@@ -29,12 +32,18 @@ module.exports = {
 			}
 		},
 		response: {
+			statuses: [201, 400],
 			data: response
 		}
 	},
 
 	'.deleteOne': {
-		statuses: [200, 410]
+		routes: [
+			'delete /session/user/'
+		],
+		response: {
+			statuses: [200, 410]
+		}
 	}
 
 //	'.test': {

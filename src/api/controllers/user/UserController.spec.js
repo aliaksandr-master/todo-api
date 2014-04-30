@@ -13,9 +13,10 @@ module.exports = {
 		routes: [
 			'get /user/'
 		],
-		statuses: [200, 404],
-		'response < 255': {
-			data: stdResponse
+		response: {
+			statuses: [200, 404],
+			data: stdResponse,
+			limit: 255
 		}
 	},
 
@@ -23,13 +24,13 @@ module.exports = {
 		routes: [
 			'get /user/(:id)/'
 		],
-		statuses: [200, 404],
 		request: {
 			params: {
 				'id:decimal': 'required'
 			}
 		},
 		response: {
+			statuses: [200, 404],
 			data: stdResponse
 		}
 	},
@@ -38,7 +39,6 @@ module.exports = {
 		routes: [
 			'post /user/'
 		],
-		statuses: [200, 400],
 		request: {
 			body: {
 				'username:string{3,50}': 'required|alpha_dash|unique',
@@ -48,6 +48,7 @@ module.exports = {
 			}
 		},
 		response: {
+			statuses: [200, 400],
 			data: stdResponse
 		}
 	},
@@ -56,7 +57,6 @@ module.exports = {
 		routes: [
 			'put /user/(:id)/'
 		],
-		statuses: [200, 400, 403, 401],
 		access: {
 			need_login: true,
 			only_owner: true
@@ -74,6 +74,7 @@ module.exports = {
 			}
 		},
 		response: {
+			statuses: [200, 400, 403, 401],
 			data: stdResponse
 		}
 	},
@@ -82,7 +83,6 @@ module.exports = {
 		routes: [
 			'delete /user/(:id)/'
 		],
-		statuses: [200, 410, 401, 403],
 		access: {
 			need_login: true,
 			only_owner: true
@@ -91,6 +91,9 @@ module.exports = {
 			params: {
 				'id:decimal': 'required'
 			}
+		},
+		response: {
+			statuses: [200, 410, 401, 403]
 		}
 	}
 };

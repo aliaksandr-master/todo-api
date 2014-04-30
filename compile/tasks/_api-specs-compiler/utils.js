@@ -17,6 +17,9 @@ module.exports = function (options) {
 	};
 
 	var INFINITY_LENGTH = 'infinity';
+	var METHODS_EXP = /^GET|PUT|POST|DELETE|OPTIONS|HEAD|CONNECT|TRACE$/i;
+
+	var MAX_LIMIT = 255;
 
 	function filterKeyMap (object, filterer, callback, byKey) {
 		var filter, objArr, filtered;
@@ -128,28 +131,28 @@ module.exports = function (options) {
 
 	var addRule = function (object, ruleName, params, toStart) {
 		ruleName = ruleName.trim();
-		if (!object.validation) {
-			object.validation = {
+		if (!object.verify) {
+			object.verify = {
 				required: true,
 				rules: []
 			};
 		}
 		if (ruleName === 'required' || ruleName === 'optional') {
-			object.validation.required = ruleName === 'required';
+			object.verify.required = ruleName === 'required';
 		} else {
 			var obj = {};
 			obj[ruleName] = validationRuleParamsFormat(params);
 			if (toStart) {
-				object.validation.rules.unshift(obj);
+				object.verify.rules.unshift(obj);
 			} else {
-				object.validation.rules.push(obj);
+				object.verify.rules.push(obj);
 			}
 
 		}
 	};
 
 	var hasRule = function (object, ruleName) {
-		var r = object.validation && _.any(object.validation.rules, function (rule) {
+		var r = object.verify && _.any(object.verify.rules, function (rule) {
 			return rule[ruleName] != null;
 		});
 		return!!r;
@@ -277,7 +280,8 @@ module.exports = function (options) {
 
 	var directiveFactory = new DirectiveFactory();
 
-	directiveFactory.directive('statuses', {
+	directiveFactory.directive('routes', {
+		default: [],
 		need: true,
 		verify: function (directiveKey, directiveValue, directives) {
 			if (!_.isArray(directiveValue)) {
@@ -286,51 +290,71 @@ module.exports = function (options) {
 			if (!directiveValue.length) {
 				throw new Error('empty');
 			}
-			_.each(directiveValue, function (status) {
-				if (!options.statuses[status]) {
-					throw new Error('undefined status id "' + status + '"');
-				}
-			});
 		},
-		inherit: function (directiveKeyByData, directiveKeyByOptions, directives) {
-			var directiveByData = directives[directiveKeyByData] || [];
-			var directiveByOptions = directives[directiveKeyByOptions] || [];
-			var r = directiveByData.concat(directiveByOptions);
-			return {
-				key: this.name,
-				value: r
-			};
+		process: function (directiveKey, directiveValue, directives) {
+			return _.map(directiveValue, function (route) {
+				if (_.isString(route)) {
+					var segments = route.split(/\s+/);
+					if (segments.length !== 2) {
+						throw new Error('has invalid format "' + route +'", must be "METHOD URI_PATTERN"');
+					}
+					route = {
+						method: segments[0],
+						url: segments[1]
+					};
+				}
+				if (!METHODS_EXP.test(route.method)) {
+					throw new Error('has invalid method name "' + route.method + '"');
+				}
+				if (_.isEmpty(route.url)) {
+					throw new Error('has empty url pattern');
+				}
+				route.method = route.method.toUpperCase();
+				route.name = directives.name;
+				return route;
+			});
 		}
 	});
 
 	directiveFactory.directive('response', {
-		default: {},
-		check: function (directive) {
-			return (/^response/).test(directive);
-		},
-		process: function (directive, directiveData, apiData) {
-			var response = null;
-			directive.replace(/^response(?:\s*<\s*([1-9][0-9]*))?$/, function (word, limit) {
-				response = {
-					type:  limit ? 'many' : 'one',
-					limit: limit ? Number(limit) : undefined
-				};
+		constructor: function () {
+			this.nested.directive('statuses', {
+				need: true,
+				verify: function (directiveKey, directiveValue, directives) {
+					if (!_.isArray(directiveValue)) {
+						throw new Error('"' + directiveKey +'" not array');
+					}
+					if (!directiveValue.length) {
+						throw new Error('empty');
+					}
+					_.each(directiveValue, function (status) {
+						if (!options.statuses[status]) {
+							throw new Error('undefined status id "' + status + '"');
+						}
+					});
+				}
 			});
-			if (response == null){
-				throw new Error('Invalid type of response param "' + directive + '" : \n' + JSON.stringify(directiveData, null, 4));
+		},
+		default: {},
+		process: function (directive, directiveData, directives) {
+			var response = {};
+
+			if (!_.isObject(directiveData)) {
+				throw new Error('Invalid type, must be object');
 			}
-			if (_.isArray(directiveData)) {
-				directiveData = {
-					data: directiveData
-				};
+
+			var limit = directiveData.limit;
+			if (limit != null) {
+				limit = parseInt(directiveData.limit + '', 10);
+				if (limit < 1 || limit !== directiveData.limit) {
+					throw new Error('invalid limit format');
+				}
 			}
 			response.output = {
 				data: parseVarParam({}, directiveData.data),
-				meta: parseVarParam({}, directiveData.meta)
+				meta: parseVarParam({}, directiveData.meta),
+				limit: limit
 			};
-			if (!response.output.data && !response.output.meta){
-				throw new Error('EMPTY response param ');
-			}
 			return response;
 		}
 	});
@@ -421,9 +445,16 @@ module.exports = function (options) {
 
 		mainActionDirectives.controller = mainActionDirectives.controller || fpath.replace(/^.+\/([^\.]+)\.spec\.js$/, '$1');
 
+		if (_.isEmpty(mainActionDirectives.controller)) {
+			throw new Error('undefined controller name at ' + fpath);
+		}
+
 		_.each(actions, function (actionDirectives, acctionName) {
 
 			actionDirectives.action = acctionName.replace(/^\./, '');
+			if (_.isEmpty(actionDirectives.action)) {
+				throw new Error('undefined action name "' + acctionName + '"');
+			}
 			actionDirectives.name   = mainActionDirectives.controller + '.' + actionDirectives.action;
 			actionDirectives.title  = actionDirectives.title == null ? actionDirectives.name : actionDirectives.title;
 
