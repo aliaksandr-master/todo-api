@@ -1,4 +1,4 @@
 #METHOD		URL_PATTERN										->		HANDLER_ID
 
 #todo-item
-#get			todo/(decimal:todo_id)/item						->		todo.item.get.all
+#get			todo/(decimal:todo_id)/item						->		TodoItemController.getMany

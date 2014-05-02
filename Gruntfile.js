@@ -14,9 +14,10 @@ var paths = {
 	TMP: cwd + '/tmp'
 };
 
-var mkLauncher = function (prefix) {
+var mkLauncher = function (grunt, prefix) {
 
 	var launcher = {
+		grunt: grunt,
 		prefix: prefix,
 		path: paths,
 		_configs: {},
@@ -50,8 +51,13 @@ var mkLauncher = function (prefix) {
 			this._configs[name] = {};
 		}
 
+		if (!_.isEmpty(this._configs[name][targetName])) {
+			this.grunt.fail.fatal('duplicate targen names "' + name + '.' + targetName + '"');
+		}
+
 		_.extend(this._configs[name], obj);
 
+		return launcher;
 	}.bind(launcher);
 
 	launcher.alias = function (name, tasks, addPref, add2alias) {
@@ -74,6 +80,8 @@ var mkLauncher = function (prefix) {
 		}
 
 		this._aliases[name] = tasks;
+
+		return launcher;
 	}.bind(launcher);
 
 	return launcher;
@@ -116,9 +124,7 @@ module.exports = function (grunt) {
 		if (condition) {
 			var prefix = fpath.replace(/\.js$/, '').replace(/([^\/]+)\/\1$/, '$1');
 
-			console.log('!!!', prefix, '!!!');
-
-			var launcher = mkLauncher(prefix);
+			var launcher = mkLauncher(grunt, prefix);
 
 			require(cwd + fpath).call(launcher, grunt, options);
 

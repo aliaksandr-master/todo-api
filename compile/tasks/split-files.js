@@ -28,7 +28,7 @@ module.exports = function (grunt, options) {
 			content = options.preProcessContent(content, fpath, dest, fileObj);
 			var files = options.process(content, fpath, dest, fileObj);
 			_.each(files, function (content, filePath) {
-				grunt.file.write(filePath, content);
+				grunt.file.write(filePath, _.isString(content) ? content : JSON.stringify(content));
 				logFileOk(filePath);
 			});
 		});

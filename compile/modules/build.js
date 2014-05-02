@@ -32,11 +32,11 @@ module.exports = function (grunt) {
 		files: [
 			{
 				expand: true,
-				cwd: path.BUILD + '/api/',
+				cwd: path.BUILD,
 				src: [
 					'**/*.php'
 				],
-				dest: path.BUILD + '/api/'
+				dest: path.BUILD
 			}
 		]
 	}, false);

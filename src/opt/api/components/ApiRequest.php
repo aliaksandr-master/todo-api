@@ -101,15 +101,12 @@ class ApiRequest extends ApiComponent {
 			$contentType = preg_replace('/;.+/', '', $contentType);
 
 			if ($contentType) {
-				foreach ($this->api->formats as $_format => $data) {
-					$mimes = $data['inputMimes'];
+				foreach ($this->api->mimes as $_format => $_mimes) {
 					if ($format) {
 						break;
 					}
 
-					$mimes = is_array($mimes) ? $mimes : array($mimes);
-
-					foreach ($mimes as $mime) {
+					foreach ($_mimes as $mime) {
 						if ($contentType === $mime) {
 							$format = $_format;
 							break;

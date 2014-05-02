@@ -7,6 +7,25 @@ module.exports = {
 		'public': []
 	},
 
+	mimes: {
+		xml: [
+			'application/xml',
+			'xml',
+			'text/xml'
+		],
+		json: [
+			'application/json',
+			'json'
+		],
+		jsonp: [
+			'application/javascript',
+			'jsonp'
+		],
+		form: [
+			'application/x-www-form-urlencoded'
+		]
+	},
+
 	statuses: {
 		'100': { code: 100, message: 'Continue' },
 		'101': { code: 101, message: 'Switching Protocols' },

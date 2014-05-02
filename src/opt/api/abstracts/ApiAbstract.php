@@ -18,11 +18,11 @@ abstract class ApiAbstract {
 	}
 
 
-	function error ($message = null, $code = 500, $fatal = false, $debugArgs = array()) {
+	function error ($message = null, $status = 500, $fatal = false, $debugArgs = array()) {
 		if (is_null($message)) {
-			$message = ApiUtils::getMessageByCode($code);
+			$message = ApiUtils::getMessageByStatus($status);
 			if (is_null($message)) {
-				$this->api->error('UNDEFINED STATUS CODE "'.$code.'"', 500, true);
+				trigger_error('UNDEFINED STATUS CODE "'.$status.'"', E_USER_ERROR);
 			}
 		}
 
@@ -46,7 +46,7 @@ abstract class ApiAbstract {
 		}
 
 		$this->_errors[] = $message;
-		$this->api->output->status($code);
+		$this->api->output->status($status);
 
 		if ($fatal) {
 			$this->api->output->send();

@@ -94,19 +94,6 @@ class ApiResponse extends ApiComponent {
 			$response['errors'] = $errors;
 		}
 
-		if ($this->_type == self::RESPONSE_TYPE_MANY) {
-			$response["meta"]['count']  = count($response["data"]);
-			$response["meta"]['limit']  = $this->_limit;
-			$response["meta"]['offset'] = $this->_offset;
-		}
-
-		if ($this->api->valid()) {
-			$response['success'] = true;
-		} else {
-			$response['success'] = false;
-			$response['data'] = array();
-		}
-
 		// DEBUG DATA (only for development and testing mode)
 		if (MODE === DEV) {
 			$response["debug"] = array(
@@ -147,8 +134,19 @@ class ApiResponse extends ApiComponent {
 
 		$http_code = $this->status();
 
-		$response['status'] = $http_code;
-		$response['message'] = ApiUtils::getMessageByCode($http_code);
+		$response['status'] = ApiUtils::getCodeByStatus($http_code);
+		$response['message'] = ApiUtils::getMessageByStatus($http_code);
+		$response['success'] = ApiUtils::getSuccessByStatus($http_code);
+
+		if (!$response['success']) {
+			$response['data'] = array();
+		}
+
+		if ($this->_type == self::RESPONSE_TYPE_MANY) {
+			$response["meta"]['count']  = count($response["data"]);
+			$response["meta"]['limit']  = $this->_limit;
+			$response["meta"]['offset'] = $this->_offset;
+		}
 
 		$public_http_code = $this->_virtualStatus && $http_code >= 400 ? self::VIRTUAL_STATUS : $http_code;
 
@@ -361,7 +359,7 @@ class ApiResponse extends ApiComponent {
 
 	function getMime () {
 		if (is_null($this->_mime)) {
-			$this->_mime = $this->api->formats[$this->getFormat()]['outputMime'];
+			$this->_mime = $this->api->mimes[$this->getFormat()][0];
 		}
 		return $this->_mime;
 	}
@@ -369,10 +367,10 @@ class ApiResponse extends ApiComponent {
 	function getFormat () {
 		if (is_null($this->_format)) {
 			$accept = ApiUtils::parseQualityString($this->api->request->header('Accept', ''));
-			$format = ApiUtils::getFileFormatByFileExt(parse_url($this->api->getParam('url/pathname'), PHP_URL_PATH), $this->api->formats, null);
+			$format = ApiUtils::getFileFormatByFileExt(parse_url($this->api->getParam('url/pathname'), PHP_URL_PATH), $this->api->mimes, null);
 
 			if (!is_null($format)) {
-				$format = ApiUtils::getFormatByHeadersAccept($accept, $this->api->formats, null);
+				$format = ApiUtils::getFormatByHeadersAccept($accept, $this->api->mimes, null);
 			}
 
 			if (is_null($format)) {

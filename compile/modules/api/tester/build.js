@@ -5,17 +5,12 @@ module.exports = function (grunt) {
 
 	this.config('json-merge', {
 		options: {
-			outputJSON: 'api.source.json'
+			outputJSON: path.BUILD + '/api-test/var/api.source.json'
 		},
-		files: [
-			{
-				expand: true,
-				cwd: path.TMP + '/api/specs-source',
-				src: '**/*.json',
-				dest: path.BUILD + '/api-test/var'
-			}
-		]
+		files: [{
+			src: this.TMP + '/api/specs-merged.json',
+			dest: path.BUILD + '/api-test/var/specs.json'
+		}]
 	});
-
 
 };

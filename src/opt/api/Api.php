@@ -43,36 +43,11 @@ class Api extends ApiAbstract {
 
 	protected $_configs = array();
 
-	public $formats = array(
-		'xml'   => array(
-			'inputMimes' => array(
-				'xml',
-				'application/xml',
-				'text/xml'
-			),
-			'outputMime' => 'application/xml'
-		),
-		'json'  => array(
-			'inputMimes' => array(
-				'json',
-				'application/json'
-			),
-			'outputMime' => 'application/json'
-		),
-		'jsonp' => array(
-			'inputMimes' => array(
-				'jsonp',
-				'application/javascript'
-			),
-			'outputMime' => 'application/javascript'
-		),
-		'form'  => array(
-			'inputMimes' => array(
-				'application/x-www-form-urlencoded'
-			),
-			'outputMime' => 'application/x-www-form-urlencoded'
-		)
-	);
+	public $mimes =
+		//#:injectData("tmp/api/spec-options.json", "mimes")
+		array()
+		//injectData#
+		;
 
 
 	function __construct ($name, $method, $uri, array $params) {
