@@ -19,59 +19,18 @@ module.exports = function (options) {
 	var INFINITY_LENGTH = 'infinity';
 	var METHODS_EXP = /^GET|PUT|POST|DELETE|OPTIONS|HEAD|CONNECT|TRACE$/i;
 
-	var MAX_LIMIT = 255;
-
-	function filterKeyMap (object, filterer, callback, byKey) {
-		var filter, objArr, filtered;
-		byKey = byKey == null ? true : !!byKey;
-
-		if (_.isRegExp(filterer)) {
-			filter = function (obj) {
-				return filterer.test(byKey ? obj.key : obj.value);
-			};
-		} else if (_.isString(filterer) || _.isNumber(filterer)) {
-			filter = function (obj) {
-				return (byKey ? obj.key : obj.value) === filterer;
-			};
-		} else if (_.isArray(filterer)) {
-			filter = function (obj) {
-				return _.include(byKey ? obj.key : obj.value, filterer);
-			};
-		} else if (_.isFunction(filterer)) {
-			filter = function (obj) {
-				return filterer(obj.key, obj.value, object);
-			};
-		} else {
-			throw new Error('Invalid filterer type');
+	var nestedTypes = {
+		object: {
+			filters: [],
+			limit: false
+		},
+		array: {
+			filters: [],
+			limit: true
 		}
+	};
 
-		objArr = _.map(object, function (v, k) {
-			return {
-				key: k,
-				value: _.isObject(v) ? _.merge({}, v) : v
-			};
-		});
-
-		filtered = _.filter(objArr, filter);
-
-		if (!callback) {
-			return filtered;
-		}
-
-		var a = _.map(filtered, function (obj, index) {
-			var args = [obj.key, obj.value];
-			if (_.isRegExp(filterer)) {
-				obj.key.replace(filterer, function () {
-					args.push(_.toArray(arguments));
-				});
-			}
-			return callback.apply(null, args);
-		});
-
-		return _.compact(a);
-	}
-
-	var utils;
+	var nestedTypesNames = _.keys(nestedTypes);
 
 	var parseFilter = function (str) {
 		var formatExp = /^([\w\d]+)(.*)$/i;
@@ -119,52 +78,42 @@ module.exports = function (options) {
 		return parseParams(param || null) || [];
 	};
 
-	var parseStrArray = function (strOrArray) {
-		if (_.isString(strOrArray)) {
-			strOrArray = strOrArray.split(/\s*\|\s*/);
-		}
-		if (!_.isArray(strOrArray)) {
-			throw new Error('has invalid sting-array format "' + JSON.stringify(strOrArray, null, 4) + '"');
-		}
-		return strOrArray;
-	};
-
 	var addRule = function (object, ruleName, params, toStart) {
 		ruleName = ruleName.trim();
-		if (!object.verify) {
-			object.verify = {
+		if (!object.validation) {
+			object.validation = {
 				required: true,
 				rules: []
 			};
 		}
 		if (ruleName === 'required' || ruleName === 'optional') {
-			object.verify.required = ruleName === 'required';
+			object.validation.required = ruleName === 'required';
 		} else {
 			var obj = {};
 			obj[ruleName] = validationRuleParamsFormat(params);
 			if (toStart) {
-				object.verify.rules.unshift(obj);
+				object.validation.rules.unshift(obj);
 			} else {
-				object.verify.rules.push(obj);
+				object.validation.rules.push(obj);
 			}
 
 		}
 	};
 
 	var hasRule = function (object, ruleName) {
-		var r = object.verify && _.any(object.verify.rules, function (rule) {
+		var r = object.validation && _.any(object.validation.rules, function (rule) {
 			return rule[ruleName] != null;
 		});
 		return!!r;
 	};
 
-	var checkType = function (typeString, defaultType, additionalTypes) {
+	var checkType = function (typeString, defaultType, nestedTypes) {
 		typeString = typeString || defaultType;
 		var found = _.any(options.types, function (obj, typeName) {
 			return typeString === typeName;
 		});
 		if (!found) {
-			found = _.any(additionalTypes, function (typeName) {
+			found = _.any(nestedTypes, function (typeName) {
 				return typeString === typeName;
 			});
 		}
@@ -172,42 +121,6 @@ module.exports = function (options) {
 			throw new Error('has invalid format in type "'+typeString+'"');
 		}
 		return typeString;
-	};
-
-	var rangeFormat = function (rangeString) {
-		var range,
-			minLength = null,
-			maxLength = null;
-
-		if (rangeString) {
-			range = rangeString.trim().split(/\s*,\s*/);
-			minLength = range[0];
-			maxLength = range.length === 1 ? range[0] : range[1];
-
-			if (range.length === 2) {
-				if (!minLength.length) {
-					minLength = null;
-				}
-				if (!maxLength.length) {
-					maxLength = INFINITY_LENGTH;
-				}
-			}
-
-			if (/^[0-9]+$/.test(maxLength)) {
-				maxLength = +maxLength;
-			}
-
-			if (/^[0-9]+$/.test(minLength)) {
-				minLength = +minLength;
-			}
-
-			if (range.length > 2 || !range.length || (/^[0-9]+,[0-9]+$/.test(rangeString) && minLength > maxLength)) {
-				throw new Error ('has invalid format in Range "{' + rangeString + '}"');
-			}
-
-		}
-
-		return [minLength, maxLength];
 	};
 
 	var addFilter = function (object, toEnd, name, params) {
@@ -219,51 +132,51 @@ module.exports = function (options) {
 		toEnd ? object.filters.push(obj) : object.filters.unshift(obj);
 	};
 
-	var parseParamDirective = function (str) {
+	var parseTypedItemString = function (str) {
 		var parsed = {};
-		str.replace(/^([a-zA-Z][a-zA-Z_0-9]*)(?:\:?([a-zA-Z0-9_]*))(?:\{([^\}]+)\})?(\|?.*)$/, function (word, name, type, len, filters) {
-			type = checkType(type, 'string', []);
+		str.replace(/^([a-zA-Z][a-zA-Z_0-9]*)(?:\:?([a-zA-Z0-9_]*))(?:\{?([^\}]*)\}?)(\|?.*)$/, function (word, name, type, rangeString, filters) {
+			type = checkType(type, 'string', nestedTypesNames);
 
-			var range = rangeFormat(len);
+			var range, min, max;
+
+			rangeString = rangeString.replace(/\s*/g, '');
+
+			if (rangeString) {
+				range = rangeString.split(',');
+
+				if (range.length === 1) {
+					max = min = +range[0];
+				} else if (range.length === 2) {
+					min = range[0].length ? +range[0] : undefined;
+					max = range[1].length ? +range[1] : undefined;
+				}
+
+				if (!range.length
+						|| range.length > 2
+						|| (max !== null && !_.isNumber(max))
+						|| (min !== null && !_.isNumber(min))
+						|| (/^[0-9]+,[0-9]+$/.test(rangeString) && min > max)
+					) {
+					throw new Error('invalid range format in item string "' + str + '" {' + rangeString + '}');
+				}
+			}
 
 			parsed = {
 				name: name,
 				type: type,
 				length: {
-					min: range[0],
-					max: range[1]
+					min: min,
+					max: max
 				},
 				filters: parseFilter(filters)
 			};
 		});
+
+		if (_.isEmpty(parsed)){
+			throw new Error('has invalid format');
+		}
+
 		return parsed;
-	};
-
-	var parseVarParam = function (startValue, varParam) {
-		var isArray = _.isArray(varParam);
-		_.each(varParam, function (optionName, optionValue) {
-			if (!isArray) {
-				var _optionName = optionName;
-				optionName = optionValue;
-				optionValue = _optionName;
-			}
-			tryCascadeFuncCall(optionName, function () {
-				var resultParamObject = parseParamDirective(optionName);
-				if (_.isEmpty(resultParamObject)){
-					throw new Error('has invalid format');
-				}
-
-				delete resultParamObject.length;
-
-				if (_.isArray(startValue)) {
-					startValue.push(resultParamObject);
-				} else {
-					startValue[resultParamObject.name] = resultParamObject;
-				}
-			})();
-		});
-
-		return startValue;
 	};
 
 	var applyTypeOptions = function (obj, callback) {
@@ -327,6 +240,9 @@ module.exports = function (options) {
 					if (!directiveValue.length) {
 						throw new Error('empty');
 					}
+					if (directiveValue.length < 2) {
+						throw new Error('must have >= 2 items [' + directiveValue.join(',') + ']');
+					}
 					_.each(directiveValue, function (status) {
 						if (!options.statuses[status]) {
 							throw new Error('undefined status id "' + status + '"');
@@ -350,12 +266,39 @@ module.exports = function (options) {
 					throw new Error('invalid limit format');
 				}
 			}
+
 			response.output = {
-				data: parseVarParam({}, directiveData.data),
-				meta: parseVarParam({}, directiveData.meta),
-				limit: limit
+				data: {},
+				meta: {},
+				limit: limit || null
 			};
+
+			_.each(['data', 'meta'], function (name) {
+				this._reqParseItems(response.output[name], directiveData[name]);
+			}, this);
 			return response;
+		},
+		_reqParseItems: function (result, items) {
+			_.each(items, function (optionName, optionValue) {
+				if (!_.isArray(items)) {
+					var _optionName = optionName;
+					optionName = optionValue;
+					optionValue = _optionName;
+				}
+				tryCascadeFuncCall(optionName, function () {
+					var item = _.omit(parseTypedItemString(optionName), ['length']);
+
+					if (!_.isEmpty(result[item.name])) {
+						throw new Error('duplicate name "' + item.name + '"');
+					}
+
+					result[item.name] = item;
+					if (_.contains(nestedTypesNames, item.type)) {
+						result[item.name].nested = {};
+						this._reqParseItems(result[item.name].nested, optionValue);
+					}
+				}, this)();
+			}, this);
 		}
 	});
 
@@ -366,66 +309,104 @@ module.exports = function (options) {
 		},
 		process: function (directive, directiveData, apiData) {
 			var input = {
+				file: false,
 				params: {},
 				query: {},
 				body: {}
 			};
 
-			_.each(directiveData, function (inputData, inputType) {
-				if (input[inputType] == null) {
-					throw new Error('undefined input type "' + inputType + '"');
+			var categories = _.keys(input);
+
+			_.each(directiveData, function (inputData, inputCategory) {
+				if (!_.contains(categories, inputCategory)) {
+					throw new Error('Undefined type "' + inputCategory + '"');
 				}
-
-				input[inputType] = _.map(inputData, function(optionData, optionName){
-					if (!_.isString(optionData)){
-						optionName += optionData.filters ? '|' + optionData.join('|') : '';
-						optionData = optionData.verify || [];
+				if (inputCategory === 'file') {
+					if (!_.isBoolean(inputData)) {
+						throw new Error('file type must be boolean');
 					}
-
-					var result = parseParamDirective(optionName);
-
-					if (_.isEmpty(result)) {
-						throw new Error('has invalid request format');
-					}
-
-					var FORMAT_EXP = /^([a-z0-9_]+)(.*)$/i;
-					_.each(parseStrArray(optionData), function(rule){
-						var ruleName    = rule.replace(FORMAT_EXP, '$1'),
-							paramString = rule.replace(FORMAT_EXP, '$2');
-						addRule(result, ruleName, paramString, false);
-					});
-
-					var typeOption = options.types[result.type];
-
-					if (result.length.min) {
-						addRule(result, 'min_length', [result.length.min], true);
-					}
-
-					if (result.length.max && result.length.max !== INFINITY_LENGTH) {
-						addRule(result, 'max_length', [result.length.max], true);
-					}
-
-					delete result.length;
-
-					if (typeOption.filters) {
-						applyTypeOptions(typeOption.filters, function (filterName, filterParams) {
-							addFilter(result, false, filterName, filterParams);
-						});
-					}
-
-					applyTypeOptions(typeOption.rules, function (ruleName, ruleParams) {
-						if (!hasRule(result, ruleName)) {
-							addRule(result, ruleName, ruleParams, true);
-						}
-					});
-
-					return result;
-				}, this);
+					input[inputCategory] = inputData;
+				} else {
+					this._reqInput(input[inputCategory], inputData);
+				}
 			}, this);
 
 			return {
 				input: input
 			};
+		},
+		_reqInput: function (result, inputData) {
+			_.each(inputData, function(optionData, optionName){
+				var inputItem = parseTypedItemString(optionName);
+
+				if (_.isEmpty(inputItem.name)) {
+					throw new Error('undefined input item name');
+				}
+
+				tryCascadeFuncCall(inputItem.name, function () {
+					optionData = _.isString(optionData) ? {validation: optionData.split(/\s*\|\s*/)} : optionData;
+					optionData = _.isArray(optionData) ? {validation: optionData} : optionData;
+
+					var available = { validation: [], nested: {}, filters: [], limit: null };
+					var availableNames = _.keys(available);
+					_.defaults(optionData, available);
+
+					if (_.any(optionData, function (v, k) { return !_.contains(availableNames, k); })) {
+						throw new Error('has invalid keys, must be [' + availableNames.join(',') + ']');
+					}
+
+					if (!_.isArray(optionData.validation)) {
+						throw new Error('has invalid sting-array format');
+					}
+
+					var FORMAT_EXP = /^([a-z0-9_]+)(.*)$/i;
+					_.each(optionData.validation, function(rule){
+						addRule(inputItem, rule.replace(FORMAT_EXP, '$1'), rule.replace(FORMAT_EXP, '$2'), false);
+					});
+
+					var typeOption = options.types[inputItem.type] || nestedTypes[inputItem.type];
+
+					if (inputItem.length.min) {
+						addRule(inputItem, 'min_length', [inputItem.length.min], true);
+					}
+
+					if (inputItem.length.max) {
+						addRule(inputItem, 'max_length', [inputItem.length.max], true);
+					}
+
+					delete inputItem.length;
+
+					applyTypeOptions(typeOption.filters.concat(optionData.filters), function (filterName, filterParams) {
+						addFilter(inputItem, false, filterName, filterParams);
+					});
+
+					applyTypeOptions(typeOption.rules, function (ruleName, ruleParams) {
+						!hasRule(inputItem, ruleName) && addRule(inputItem, ruleName, ruleParams, true);
+					});
+
+					if (!_.isEmpty(result[inputItem.name])) {
+						throw new Error('duplicate item name "' + inputItem.name +'"');
+					}
+
+					result[inputItem.name] = inputItem;
+
+					if (_.contains(nestedTypesNames, inputItem.type)) {
+						console.log(11111, inputItem.name);
+						if (_.isEmpty(optionData.nested)) {
+							throw new Error('empty nested field of nested type');
+						}
+						if (nestedTypes[inputItem.type].limit) {
+							result[inputItem.name].limit = optionData.limit == null ? null : optionData.limit;
+						} else if (optionData.limit) {
+							throw new Error('limit field is excess for type "' + inputItem.type + '"');
+						}
+
+						result[inputItem.name].nested = {};
+						this._reqInput(result[inputItem.name].nested, optionData.nested);
+					}
+				}, this)();
+
+			}, this);
 		}
 	});
 

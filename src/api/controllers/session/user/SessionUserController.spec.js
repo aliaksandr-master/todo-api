@@ -47,21 +47,49 @@ module.exports = {
 	}
 
 //	'.test': {
+//		routes: [
+//			'get /session/user/test/'
+//		],
 //		response: {
-//
-//		},
-//		request: {
-//			'username:string{3,50}': 'required',
-//			'password:string{6,50}': 'required',
-//			'data:object': {
+//			statuses: [200, 400],
+//			data: {
 //				'username:string{3,50}': 'required',
 //				'password:string{6,50}': 'required',
-//				'data:array': {
+//				'data:object': {
 //					'username:string{3,50}': 'required',
 //					'password:string{6,50}': 'required',
-//					'data:object': {
+//					'data:array': {
 //						'username:string{3,50}': 'required',
-//						'password:string{6,50}': 'required'
+//						'password:string{6,50}': 'required',
+//						'data:object': {
+//							'username:string{3,50}': 'required',
+//							'password:string{6,50}': 'required'
+//						}
+//					}
+//				}
+//			}
+//		},
+//		request: {
+//			body: {
+//				'username:string{3,50}': 'required',
+//				'password:string{6,50}': 'required',
+//				'data:object': {
+//					nested: {
+//						'username:string{3,50}': 'required',
+//						'password:string{6,50}': 'required',
+//						'data:array': {
+//							limit: 123,
+//							nested: {
+//								'username:string{3,50}': 'required',
+//								'password:string{6,50}': 'required',
+//								'data:object': {
+//									nested: {
+//										'username:string{3,50}': 'required',
+//										'password:string{6,50}': 'required'
+//									}
+//								}
+//							}
+//						}
 //					}
 //				}
 //			}

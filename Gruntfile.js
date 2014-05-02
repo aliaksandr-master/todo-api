@@ -138,15 +138,16 @@ module.exports = function (grunt) {
 
 			config = _.merge(config, launcher._configs);
 
-			_.each(launcher._aliases, function (tasks, alias) {
-				grunt.log.ok(alias, '[' + tasks.join(', ') + ']');
-			});
-
-			_.each(launcher._configs, function (tasks, config) {
-				_.each(tasks, function (obj, target) {
-					grunt.log.error(config + ':' + target);
-				});
-			});
+//			TESTING INFO
+//			_.each(launcher._aliases, function (tasks, alias) {
+//				grunt.log.ok(alias, '[' + tasks.join(', ') + ']');
+//			});
+//
+//			_.each(launcher._configs, function (tasks, config) {
+//				_.each(tasks, function (obj, target) {
+//					grunt.log.error(config + ':' + target);
+//				});
+//			});
 		}
 	});
 
