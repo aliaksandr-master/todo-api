@@ -9,9 +9,11 @@ module.exports = {
 
 	controller: 'UserController',
 
+	routeRootUrl: '/user/',
+
 	'.getMany': {
 		routes: [
-			'get /user/'
+			'get'
 		],
 		response: {
 			statuses: [200, 404],
@@ -22,7 +24,7 @@ module.exports = {
 
 	'.getOne': {
 		routes: [
-			'get /user/(:id)/'
+			'get (:id)/'
 		],
 		request: {
 			params: {
@@ -37,7 +39,7 @@ module.exports = {
 
 	'.createOne': {
 		routes: [
-			'post /user/'
+			'post'
 		],
 		request: {
 			body: {
@@ -55,7 +57,7 @@ module.exports = {
 
 	'.updateOne': {
 		routes: [
-			'put /user/(:id)/'
+			'put (:id)/'
 		],
 		access: {
 			need_login: true,
@@ -81,7 +83,7 @@ module.exports = {
 
 	'.deleteOne': {
 		routes: [
-			'delete /user/(:id)/'
+			'delete (:id)/'
 		],
 		access: {
 			need_login: true,

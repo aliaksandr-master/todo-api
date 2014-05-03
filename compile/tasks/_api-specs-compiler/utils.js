@@ -3,6 +3,10 @@
 var _ = require('lodash');
 var DirectiveFactory = require('./directive').factory;
 
+var METHODS_EXP = /^GET|PUT|POST|DELETE|OPTIONS|HEAD|CONNECT|TRACE$/i;
+
+var VALIDATION_REQUIRED_DEFVAL = true;
+
 var mkobj = function (k, v) {
 	var o = {};
 	o[k] = v;
@@ -23,6 +27,18 @@ var tryCascadeFuncCall = function (name, func, obj) {
 
 module.exports = function (options) {
 
+	var nestedTypes = {
+		object: {
+			filters: [],
+			limit: false
+		},
+		array: {
+			routeParamInfinite: true,
+			filters: [],
+			limit: true
+		}
+	};
+
 	var verifyStringName = function (string, format) {
 		format = format || options.stringNameFormat;
 		if (format === 'camel') {
@@ -39,22 +55,14 @@ module.exports = function (options) {
 		return string;
 	};
 
-	var METHODS_EXP = /^GET|PUT|POST|DELETE|OPTIONS|HEAD|CONNECT|TRACE$/i;
-
-	var nestedTypes = {
-		object: {
-			filters: [],
-			limit: false
-		},
-		array: {
-			filters: [],
-			limit: true
-		}
-	};
-
 	var optionsTypesNames = _.keys(options.types);
 	var nestedTypesNames  = _.keys(nestedTypes);
-	var availableVarTypes = optionsTypesNames.concat(nestedTypesNames);
+	var availableTypes = _.extend({}, nestedTypes, options.types);
+	var availableTypesNames = optionsTypesNames.concat(nestedTypesNames);
+
+	if (_.intersection(optionsTypesNames, nestedTypesNames).length) {
+		throw new Error('you can\'t use [' + nestedTypesNames.join(',') + '] types in options');
+	}
 
 	var parseParamsJSON = function (paramString){
 		var params = [];
@@ -75,14 +83,11 @@ module.exports = function (options) {
 	};
 
 	var addValidationRule = function (object, ruleName, params, toStart) {
-		if (!object.validation) {
-			object.validation = {
-				required: true,
-				rules: []
-			};
-		}
 		ruleName = ruleName.trim();
 		if (ruleName === 'required' || ruleName === 'optional') {
+			if (object.validation.required !== VALIDATION_REQUIRED_DEFVAL) {
+				throw new Error('required/optional rules conflict');
+			}
 			object.validation.required = ruleName === 'required';
 		} else {
 			object.validation.rules[toStart ? 'unshift' : 'push'](mkobj(ruleName, parseParamsJSON(params || null) || []));
@@ -105,7 +110,7 @@ module.exports = function (options) {
 		str.replace(/^([a-zA-Z][a-zA-Z_0-9]*)(?:\:?([a-zA-Z0-9_]*))(?:\{?([^\}]*)\}?)(\|?.*)$/, function (word, nameString, typeString, rangeString, filtersString) {
 			parsed.length = {};
 			parsed.filter = [];
-			parsed.validation = { rules: [] };
+			parsed.validation = { required: VALIDATION_REQUIRED_DEFVAL, rules: [] };
 
 			// name
 			parsed.name = verifyStringName(nameString.trim());
@@ -113,8 +118,8 @@ module.exports = function (options) {
 			// type
 			parsed.type = verifyStringName(typeString.trim() || options.defaultType);
 
-			if (!_.contains(availableVarTypes, parsed.type)) {
-				throw new Error('invalid type "' + typeString + '", must be [' + availableVarTypes.join(',') + ']');
+			if (!_.contains(availableTypesNames, parsed.type)) {
+				throw new Error('invalid type "' + typeString + '", must be [' + availableTypesNames.join(',') + ']');
 			}
 
 			// parse rage string
@@ -174,46 +179,6 @@ module.exports = function (options) {
 
 	var directiveFactory = new DirectiveFactory();
 
-	directiveFactory.directive('routes', {
-
-		default: [],
-
-		need: true,
-
-		verify: function (directiveKey, directiveValue, directives) {
-			if (!_.isArray(directiveValue)) {
-				throw new Error('"' + directiveKey +'" not array');
-			}
-			if (!directiveValue.length) {
-				throw new Error('empty');
-			}
-		},
-
-		process: function (directiveKey, directiveValue, directives) {
-			return _.map(directiveValue, function (route) {
-				if (_.isString(route)) {
-					var segments = route.split(/\s+/);
-					if (segments.length !== 2) {
-						throw new Error('has invalid format "' + route +'", must be "METHOD URI_PATTERN"');
-					}
-					route = {
-						method: segments[0],
-						url: segments[1]
-					};
-				}
-				if (!METHODS_EXP.test(route.method)) {
-					throw new Error('has invalid method name "' + route.method + '"');
-				}
-				if (_.isEmpty(route.url)) {
-					throw new Error('has empty url pattern');
-				}
-				route.method = route.method.toUpperCase();
-				route.name = directives.name;
-				return route;
-			});
-		}
-
-	});
 
 	directiveFactory.directive('response', {
 
@@ -373,7 +338,7 @@ module.exports = function (options) {
 						addFilter(inputItem, false, filterName, filterParams);
 					});
 
-					applyTypeOptions(typeOption.rules, function (ruleName, ruleParams) {
+					applyTypeOptions(typeOption.validation, function (ruleName, ruleParams) {
 						!hasValidationRule(inputItem, ruleName) && addValidationRule(inputItem, ruleName, ruleParams, true);
 					});
 
@@ -401,6 +366,99 @@ module.exports = function (options) {
 
 			}, this);
 		}
+	});
+
+	directiveFactory.directive('routes', {
+
+		default: [],
+
+		need: true,
+
+		verify: function (directiveKey, directiveValue, directives) {
+			if (!_.isArray(directiveValue)) {
+				throw new Error('"' + directiveKey +'" not array');
+			}
+			if (!directiveValue.length) {
+				throw new Error('empty');
+			}
+		},
+
+		process: function (directiveKey, directiveValue, directives) {
+			return _.map(directiveValue, function (route) {
+				if (_.isString(route)) {
+					var segments = route.split(/\s+/);
+					if (!(segments.length === 2 || segments.length === 1)) {
+						throw new Error('has invalid format "' + route +'", must be "METHOD URI_PATTERN"');
+					}
+					route = {
+						method: segments[0],
+						url: segments[1] == null ? '' : segments[1]
+					};
+				}
+				if (!METHODS_EXP.test(route.method)) {
+					throw new Error('has invalid method name "' + route.method + '"');
+				}
+				if (route.url == null || (_.isEmpty(route.url) && !directives.routeRootUrl) ) {
+					throw new Error('has empty url pattern');
+				}
+				route.method = route.method.toUpperCase();
+				route.name = directives.name;
+
+				if (directives.routeRootUrl != null) {
+					if (directives.routeRootUrl && !/^\//.test(route.url)) {
+						route.url = directives.routeRootUrl.replace(/\/$/, '') + '/' + route.url;
+					}
+					delete directives.routeRootUrl;
+				}
+
+				var requestParams = ((directives.request||{}).input||{}).params||{};
+
+				var requestParamNames = _.keys(requestParams);
+				var paramNames = [];
+				route.url = route.url.replace(/\((.*?):([a-zA-Z0-9_]*)\)/g, function (word, pattern, name) {
+					if (!requestParams[name]) {
+						throw new Error('undefined input param "' + name + '" in request spec [' + requestParamNames.join(',') + '], invalid url pattern "' + route.url + '"');
+					}
+
+					if (!availableTypes[requestParams[name].type].routeMask) {
+						throw new Error('invalid used type "' + requestParams[name].type +'" in request params. this type hasn\'t routeMask');
+					}
+
+					if (!pattern) {
+						pattern = availableTypes[requestParams[name].type].routeMask;
+					}
+
+					paramNames.push(name);
+
+					return '(' + pattern + ':' + name + ')';
+				});
+
+//				route.url = route.url.replace(options.router.arrayPattern, function (word, name) {
+//					if (!requestParams[name]) {
+//						throw new Error('undefined input param "' + name + '" in request spec [' + requestParamNames.join(',') + '], invalid url pattern "' + route.url + '"');
+//					}
+//
+//					if (!availableTypes[requestParams[name].type].routeMask) {
+//						throw new Error('invalid used type "' + requestParams[name].type +'" in request params. this type hasn\'t routeMask');
+//					}
+//				});
+
+//				if (directives.routeUrlStrictTrailing != null) {
+//					if (!directives.routeUrlStrictTrailing) {
+//						route.url = route.url.replace(/\/?$/, '/?');
+//					}
+//					delete directives.routeUrlStrictTrailing;
+//				}
+
+				var diffNames = _.difference(requestParamNames, paramNames);
+				if (diffNames.length) {
+					throw new Error('conflict request/routes params [' + diffNames.join(',') +']');
+				}
+
+				return route;
+			});
+		}
+
 	});
 
 	return function (sourceJSON, fpath) {

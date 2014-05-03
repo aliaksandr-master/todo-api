@@ -10,9 +10,11 @@ module.exports = {
 
 	controller: 'SessionUserController',
 
+	routeRootUrl: '/session/user/',
+
 	'.getOne': {
 		routes: [
-			'get /session/user/'
+			'get'
 		],
 		response: {
 			statuses: [200, 404],
@@ -22,7 +24,7 @@ module.exports = {
 
 	'.createOne': {
 		routes: [
-			'post /session/user/'
+			'post'
 		],
 		request: {
 			body: {
@@ -39,7 +41,7 @@ module.exports = {
 
 	'.deleteOne': {
 		routes: [
-			'delete /session/user/'
+			'delete'
 		],
 		response: {
 			statuses: [200, 410]
@@ -48,7 +50,7 @@ module.exports = {
 
 //	'.test': {
 //		routes: [
-//			'get /session/user/test/'
+//			'get test/'
 //		],
 //		response: {
 //			statuses: [200, 400],

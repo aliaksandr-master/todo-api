@@ -13,6 +13,8 @@ module.exports = {
 
 	controller: 'TodoItemController',
 
+	routeRootUrl: '/todo/list/(:listId)/item',
+
 	access: {
 		need_login: true,
 		only_owner: true
@@ -20,7 +22,7 @@ module.exports = {
 
 	'.getOne': {
 		routes: [
-			'get /todo/list/(:listId)/item/(:itemId)/'
+			'get (:itemId)/'
 		],
 		request: {
 			params: {
@@ -36,7 +38,7 @@ module.exports = {
 
 	'.getMany': {
 		routes: [
-			'get /todo/list/(:listId)/item/'
+			'get'
 		],
 		request: {
 			params: {
@@ -52,7 +54,7 @@ module.exports = {
 
 	'.createOne': {
 		routes: [
-			'post /todo/list/(:listId)/item/'
+			'post'
 		],
 		request: {
 			params: {
@@ -72,7 +74,7 @@ module.exports = {
 
 	'.updateOne': {
 		routes: [
-			'put /todo/list/(:listId)/item/(:itemId)/'
+			'put (:itemId)/'
 		],
 		request: {
 			params: {
@@ -93,7 +95,7 @@ module.exports = {
 
 	'.deleteOne': {
 		routes: [
-			'delete /todo/list/(:listId)/item/(:itemId)/'
+			'delete (:itemId)/'
 		],
 		request: {
 			params: {

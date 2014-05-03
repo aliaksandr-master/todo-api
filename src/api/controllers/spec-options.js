@@ -7,6 +7,10 @@ module.exports = {
 		'public': []
 	},
 
+	router: {
+		arrayPattern: /\(\.\.\.([a-zA-Z_][a-zA-Z0-9_]*)\)/g
+	},
+
 	mimes: {
 		xml: [
 			'application/xml',
@@ -77,15 +81,16 @@ module.exports = {
 	types: {
 
 		boolean: {
-			formatExp: '.+',
+			routeMask: '[^/]+',
 			filters: [
 				'to_bool'
-			]
+			],
+			rules: []
 		},
 
 		decimal: {
-			formatExp: '[0-9]+',
-			rules: [
+			routeMask: '[0-9]+',
+			validation: [
 				'decimal'
 			],
 			filters: [
@@ -94,8 +99,8 @@ module.exports = {
 		},
 
 		integer: {
-			formatExp: '-?[0-9]+',
-			rules: [
+			routeMask: '-?[0-9]+',
+			validation: [
 				'integer',
 				{ max_length: 11 }
 			],
@@ -105,8 +110,8 @@ module.exports = {
 		},
 
 		float: {
-			formatExp: '-?[0-9]+[.]?[0-9]*[eE]?-?[0-9]*',
-			rules: [
+			routeMask: '-?[0-9]+[.]?[0-9]*[eE]?-?[0-9]*',
+			validation: [
 				'float',
 				{ max_length: 65 }
 			],
@@ -116,12 +121,12 @@ module.exports = {
 		},
 
 		text: {
-			formatExp: '.+'
+			routeMask: '[^/]+'
 		},
 
 		string: {
-			formatExp: '.+',
-			rules: [
+			routeMask: '[^/]+',
+			validation: [
 				{ max_length: 255 }
 			],
 			filters:[

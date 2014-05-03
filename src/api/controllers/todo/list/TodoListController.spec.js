@@ -8,6 +8,8 @@ module.exports = {
 
 	controller: 'TodoListController',
 
+	routeRootUrl: '/todo/list',
+
 	access: {
 		need_login: true,
 		only_owner: true
@@ -15,7 +17,7 @@ module.exports = {
 
 	'.getMany': {
 		routes: [
-			'get /todo/list/'
+			'get'
 		],
 		response: {
 			statuses: [ 200, 404, 403, 401 ],
@@ -26,7 +28,7 @@ module.exports = {
 
 	'.getOne': {
 		routes: [
-			'get /todo/list/(:id)'
+			'get (:id)'
 		],
 		request: {
 			params: {
@@ -41,7 +43,7 @@ module.exports = {
 
 	'.createOne': {
 		routes: [
-			'post /todo/list/'
+			'post'
 		],
 		request: {
 			body: {
@@ -58,7 +60,7 @@ module.exports = {
 
 	'.updateOne': {
 		routes: [
-			'put /todo/list/(:id)'
+			'put (:id)'
 		],
 		request: {
 			params: {
@@ -78,7 +80,7 @@ module.exports = {
 
 	'.deleteOne': {
 		routes: [
-			'delete /todo/list/(:id)/'
+			'delete (:id)/'
 		],
 		request: {
 			params: {
