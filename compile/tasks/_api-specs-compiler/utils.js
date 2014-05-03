@@ -3,20 +3,42 @@
 var _ = require('lodash');
 var DirectiveFactory = require('./directive').factory;
 
+var mkobj = function (k, v) {
+	var o = {};
+	o[k] = v;
+	return o;
+};
+
+var tryCascadeFuncCall = function (name, func, obj) {
+	return function () {
+		try {
+			func.apply(obj, arguments);
+		} catch (e) {
+			var errorObj = new Error(name + (e._origError ? ' >>> ' : '.') + e.message);
+			errorObj._origError = true;
+			throw errorObj;
+		}
+	};
+};
+
 module.exports = function (options) {
 
-	var tryCascadeFuncCall = function (name, func, obj) {
-		return function () {
-			try {
-				func.apply(obj, arguments);
-			} catch (e) {
-				var message = _.isString(e) ? e : e.message;
-				throw new Error(name + ': ' +message);
+	var verifyStringName = function (string, format) {
+		format = format || options.stringNameFormat;
+		if (format === 'camel') {
+			if (!/^[a-z][a-zA-Z0-9]*$/.test(string)) {
+				throw new Error('string "' + string + '" has invalid stringNameFormat, must be in camel case');
 			}
-		};
+		} else if (format === 'underscore') {
+			if (!/^[a-z][a-z0-9_]*$/.test(string)) {
+				throw new Error('string "' + string + '" has invalid stringNameFormat, must be in underscore case');
+			}
+		} else if (format) {
+			throw new Error('options has invalid stringNameFormat name "' + format +'" ');
+		}
+		return string;
 	};
 
-	var INFINITY_LENGTH = 'infinity';
 	var METHODS_EXP = /^GET|PUT|POST|DELETE|OPTIONS|HEAD|CONNECT|TRACE$/i;
 
 	var nestedTypes = {
@@ -30,41 +52,19 @@ module.exports = function (options) {
 		}
 	};
 
-	var nestedTypesNames = _.keys(nestedTypes);
+	var optionsTypesNames = _.keys(options.types);
+	var nestedTypesNames  = _.keys(nestedTypes);
+	var availableVarTypes = optionsTypesNames.concat(nestedTypesNames);
 
-	var parseFilter = function (str) {
-		var formatExp = /^([\w\d]+)(.*)$/i;
-		if (str) {
-			var parts = str.replace(/^\|/, '').split(/\s*\|\s*/g);
-
-			return _.map(parts, function (part) {
-				var filterName   = part.replace(formatExp, '$1');
-				var filterParams = part.replace(formatExp, '$2').replace(/'/g, '"');
-				if (filterParams) {
-					try {
-						filterParams = JSON.parse(filterParams);
-					} catch (e) {
-						throw new Error('has invalid JSON format in FILTERS "' + part + '"');
-					}
-				}
-				var obj = {};
-				obj[filterName] = filterParams || [];
-				return obj;
-			});
-		}
-		return [];
-	};
-
-
-	var parseParams = function (param){
+	var parseParamsJSON = function (paramString){
 		var params = [];
-		if (param != null) {
-			params = param;
-			if (_.isString(param)) {
+		if (paramString != null) {
+			params = paramString;
+			if (_.isString(paramString)) {
 				try {
-					params = JSON.parse(param.replace(/'/g, '"'), true);
+					params = JSON.parse(paramString, true);
 				} catch (e) {
-					throw new Error('has invalid JSON format in params "' + param + '"');
+					throw new Error('has invalid JSON format in params "' + paramString + '"');
 				}
 			}
 			if (!_.isArray(params)) {
@@ -74,73 +74,51 @@ module.exports = function (options) {
 		return params;
 	};
 
-	var validationRuleParamsFormat = function (param) {
-		return parseParams(param || null) || [];
-	};
-
-	var addRule = function (object, ruleName, params, toStart) {
-		ruleName = ruleName.trim();
+	var addValidationRule = function (object, ruleName, params, toStart) {
 		if (!object.validation) {
 			object.validation = {
 				required: true,
 				rules: []
 			};
 		}
+		ruleName = ruleName.trim();
 		if (ruleName === 'required' || ruleName === 'optional') {
 			object.validation.required = ruleName === 'required';
 		} else {
-			var obj = {};
-			obj[ruleName] = validationRuleParamsFormat(params);
-			if (toStart) {
-				object.validation.rules.unshift(obj);
-			} else {
-				object.validation.rules.push(obj);
-			}
-
+			object.validation.rules[toStart ? 'unshift' : 'push'](mkobj(ruleName, parseParamsJSON(params || null) || []));
 		}
 	};
 
-	var hasRule = function (object, ruleName) {
-		var r = object.validation && _.any(object.validation.rules, function (rule) {
+	var hasValidationRule = function (object, ruleName) {
+		return object.validation && _.any(object.validation.rules, function (rule) {
 			return rule[ruleName] != null;
 		});
-		return!!r;
-	};
-
-	var checkType = function (typeString, defaultType, nestedTypes) {
-		typeString = typeString || defaultType;
-		var found = _.any(options.types, function (obj, typeName) {
-			return typeString === typeName;
-		});
-		if (!found) {
-			found = _.any(nestedTypes, function (typeName) {
-				return typeString === typeName;
-			});
-		}
-		if (!found) {
-			throw new Error('has invalid format in type "'+typeString+'"');
-		}
-		return typeString;
 	};
 
 	var addFilter = function (object, toEnd, name, params) {
-		if (!object.filters) {
-			object.filters = [];
-		}
-		var obj = {};
-		obj[name] = params || [];
-		toEnd ? object.filters.push(obj) : object.filters.unshift(obj);
+		_.defaults(object, { filters : [] });
+		object.filters[toEnd ? 'push' : 'unshift'](mkobj(name, params));
 	};
 
 	var parseTypedItemString = function (str) {
-		var parsed = {};
-		str.replace(/^([a-zA-Z][a-zA-Z_0-9]*)(?:\:?([a-zA-Z0-9_]*))(?:\{?([^\}]*)\}?)(\|?.*)$/, function (word, name, type, rangeString, filters) {
-			type = checkType(type, 'string', nestedTypesNames);
+		var parsed = {}, range, min, max;
+		str.replace(/^([a-zA-Z][a-zA-Z_0-9]*)(?:\:?([a-zA-Z0-9_]*))(?:\{?([^\}]*)\}?)(\|?.*)$/, function (word, nameString, typeString, rangeString, filtersString) {
+			parsed.length = {};
+			parsed.filter = [];
+			parsed.validation = { rules: [] };
 
-			var range, min, max;
+			// name
+			parsed.name = verifyStringName(nameString.trim());
 
+			// type
+			parsed.type = verifyStringName(typeString.trim() || options.defaultType);
+
+			if (!_.contains(availableVarTypes, parsed.type)) {
+				throw new Error('invalid type "' + typeString + '", must be [' + availableVarTypes.join(',') + ']');
+			}
+
+			// parse rage string
 			rangeString = rangeString.replace(/\s*/g, '');
-
 			if (rangeString) {
 				range = rangeString.split(',');
 
@@ -159,17 +137,20 @@ module.exports = function (options) {
 					) {
 					throw new Error('invalid range format in item string "' + str + '" {' + rangeString + '}');
 				}
+				parsed.length.min = min;
+				parsed.length.max = max;
 			}
 
-			parsed = {
-				name: name,
-				type: type,
-				length: {
-					min: min,
-					max: max
-				},
-				filters: parseFilter(filters)
-			};
+			// parse filters string
+			var FILTER_FORMAT_EXP = /^([a-zA-Z_]+)(.*)$/i;
+			if (filtersString) {
+				var filterSegments = filtersString.replace(/^\|/, '').split(/\s*\|\s*/g);
+				parsed.filter = _.map(filterSegments, function (part) {
+					var name = part.replace(FILTER_FORMAT_EXP, '$1');
+					var params = parseParamsJSON(part.replace(FILTER_FORMAT_EXP, '$2'));
+					return mkobj(name, params);
+				});
+			}
 		});
 
 		if (_.isEmpty(parsed)){
@@ -194,8 +175,11 @@ module.exports = function (options) {
 	var directiveFactory = new DirectiveFactory();
 
 	directiveFactory.directive('routes', {
+
 		default: [],
+
 		need: true,
+
 		verify: function (directiveKey, directiveValue, directives) {
 			if (!_.isArray(directiveValue)) {
 				throw new Error('"' + directiveKey +'" not array');
@@ -204,6 +188,7 @@ module.exports = function (options) {
 				throw new Error('empty');
 			}
 		},
+
 		process: function (directiveKey, directiveValue, directives) {
 			return _.map(directiveValue, function (route) {
 				if (_.isString(route)) {
@@ -227,9 +212,11 @@ module.exports = function (options) {
 				return route;
 			});
 		}
+
 	});
 
 	directiveFactory.directive('response', {
+
 		constructor: function () {
 			this.nested.directive('statuses', {
 				need: true,
@@ -251,7 +238,9 @@ module.exports = function (options) {
 				}
 			});
 		},
+
 		default: {},
+
 		process: function (directive, directiveData, directives) {
 			var response = {};
 
@@ -276,8 +265,10 @@ module.exports = function (options) {
 			_.each(['data', 'meta'], function (name) {
 				this._reqParseItems(response.output[name], directiveData[name]);
 			}, this);
+
 			return response;
 		},
+
 		_reqParseItems: function (result, items) {
 			_.each(items, function (optionName, optionValue) {
 				if (!_.isArray(items)) {
@@ -300,14 +291,15 @@ module.exports = function (options) {
 				}, this)();
 			}, this);
 		}
+
 	});
 
 	directiveFactory.directive('request', {
+
 		default: {},
-		check: function (directive) {
-			return (/^request/).test(directive);
-		},
+
 		process: function (directive, directiveData, apiData) {
+
 			var input = {
 				file: false,
 				params: {},
@@ -335,6 +327,7 @@ module.exports = function (options) {
 				input: input
 			};
 		},
+
 		_reqInput: function (result, inputData) {
 			_.each(inputData, function(optionData, optionName){
 				var inputItem = parseTypedItemString(optionName);
@@ -361,17 +354,17 @@ module.exports = function (options) {
 
 					var FORMAT_EXP = /^([a-z0-9_]+)(.*)$/i;
 					_.each(optionData.validation, function(rule){
-						addRule(inputItem, rule.replace(FORMAT_EXP, '$1'), rule.replace(FORMAT_EXP, '$2'), false);
+						addValidationRule(inputItem, rule.replace(FORMAT_EXP, '$1'), rule.replace(FORMAT_EXP, '$2'), false);
 					});
 
 					var typeOption = options.types[inputItem.type] || nestedTypes[inputItem.type];
 
 					if (inputItem.length.min) {
-						addRule(inputItem, 'min_length', [inputItem.length.min], true);
+						addValidationRule(inputItem, 'min_length', [inputItem.length.min], true);
 					}
 
 					if (inputItem.length.max) {
-						addRule(inputItem, 'max_length', [inputItem.length.max], true);
+						addValidationRule(inputItem, 'max_length', [inputItem.length.max], true);
 					}
 
 					delete inputItem.length;
@@ -381,7 +374,7 @@ module.exports = function (options) {
 					});
 
 					applyTypeOptions(typeOption.rules, function (ruleName, ruleParams) {
-						!hasRule(inputItem, ruleName) && addRule(inputItem, ruleName, ruleParams, true);
+						!hasValidationRule(inputItem, ruleName) && addValidationRule(inputItem, ruleName, ruleParams, true);
 					});
 
 					if (!_.isEmpty(result[inputItem.name])) {

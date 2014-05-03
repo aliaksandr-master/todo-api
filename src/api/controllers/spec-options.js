@@ -70,6 +70,10 @@ module.exports = {
 		'505': { success: true, code: 505, message: 'HTTP Version not supported' }
 	},
 
+	stringNameFormat: '', // camel, underscore
+
+	defaultType: 'string',
+
 	types: {
 
 		boolean: {

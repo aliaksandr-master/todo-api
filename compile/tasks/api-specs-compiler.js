@@ -26,8 +26,14 @@ module.exports = function (grunt) {
 				return !/^_/.test(v);
 			});
 			if (allowCondition) {
+				var parsedObj;
 				var ext = fpath.split('.').pop();
-				var parsedObj = parsers[ext].call(grunt, fpath, dest, options);
+				try {
+					parsedObj = parsers[ext].call(grunt, fpath, dest, options);
+				} catch (e) {
+					grunt.fail.fatal(e.message);
+					return;
+				}
 				grunt.file.write(dest, JSON.stringify(parsedObj, null, options.beauty ? 4 : null));
 				logFileOk(dest);
 			}
