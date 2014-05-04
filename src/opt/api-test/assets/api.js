@@ -11,7 +11,7 @@
 	var tplFormToggle = window.tpl('form-toggle');
 	var tplFormSelect = window.tpl('form-select');
 
-	function Form(){
+	function Form () {
 
 	}Form.prototype = {
 		buildMainTemplate: function(){

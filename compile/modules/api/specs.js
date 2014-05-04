@@ -17,7 +17,7 @@ module.exports = function (grunt) {
 
 		.config('api-specs-compiler', {
 			options: _.extend({
-				beauty: false,
+				beauty: true,
 				verbose: false
 			}, require(path.SRC + '/api/controllers/spec-options.js')),
 

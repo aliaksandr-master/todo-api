@@ -8,6 +8,7 @@ module.exports = function (grunt) {
 		var _ = require('lodash');
 
 		var options = this.options({
+			beautify: false,
 			process: function (content, fpath, dest, fileObj) {
 				return content;
 			}
@@ -17,7 +18,7 @@ module.exports = function (grunt) {
 			var json = grunt.file.readJSON(fpath);
 			var obj = options.process(json, fpath, fileObj);
 			if (!_.isString(obj)) {
-				obj = JSON.stringify(obj);
+				obj = JSON.stringify(obj, null, options.beautify ? 4 : null);
 			}
 			grunt.file.write(!dest || fileObj.orig.overwrite ? fpath : dest, obj);
 			logFileOk(dest);
