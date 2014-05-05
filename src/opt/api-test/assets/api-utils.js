@@ -1,7 +1,7 @@
 "use strict";
 (function(window, $){
 
-	window.api = function(){
+	window.specs = function(){
 		var result = {};
 		$.ajax({
 			url: window.API_JSON,
@@ -16,9 +16,10 @@
 
 	var tplMemo = {};
 	// FROM REMOTE
-	window.tpl = function(path, isRemote){
+	window.templateCompiler = function(path, isRemote){
 		if(!isRemote){
 			return function(params){
+				params || (params = {});
 				if(!tplMemo.hasOwnProperty(path)){
 					tplMemo[path] = Handlebars.compile($('#template-' + path).html());
 				}
@@ -29,6 +30,7 @@
 			return "";
 		};
 		return function(params){
+			params || (params = {});
 			if(!tplMemo.hasOwnProperty(path)){
 				$.ajax({
 					url: window.MY_ROOT + 'templates/' + path,

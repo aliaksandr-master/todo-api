@@ -5,7 +5,7 @@ error_reporting(E_ALL);
 define('ROOT', __DIR__);
 define('MY_ROOT_URL', "/api-test/");
 define('ROOT_URL', "/api/");
-define('API_SOURCE_JSON_FILE', "/api-test/var/api.source.json");
+define('API_SOURCE_JSON_FILE', "/api-test/var/specs.json");
 ?>
 <html>
 <head>
