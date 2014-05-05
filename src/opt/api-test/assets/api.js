@@ -34,11 +34,12 @@
 			$(document.body).html(tpl.main());
 			that.buildPlaces();
 
-			that.parseSpecs();
-//			that.buildMenu();
+			that.buildMenu();
+			that.initLocation();
 //			that.buildForm();
 //
-//			that._delegateEvents();
+			that._delegateEvents();
+			that.applyDataFromLocation();
 		});
 	}
 
@@ -56,36 +57,33 @@
 				});
 
 				$(document).on(name + that.uid, find, function (e) {
-					return this[handler].call(that, e, $(this));
+					return that[handler].call(that, e, $(this));
 				});
 			});
 		},
 
-		parseSpecs: function () {
-			var that = this;
+		applyDataFromLocation: function () {
+			var parsedUrl = window.utils.parseUrl(window.location.href);
+			var $menu = $("#menu-bar");
 
-			var ctrl = {};
-			_.each(this.specs.source, function (spec) {
-				if (!ctrl[spec.controller]) {
-					ctrl[spec.controller] = [];
-				}
-				ctrl[spec.controller].push({
-					name: spec.name,
-					text: spec.action,
-					link: '#' + spec.name
-				});
-			});
+			this.specName = parsedUrl.data.spec;
 
-			this.specs.parsed.menu = _.map(ctrl, function (v, k) {
-				return {
-					index: ctrl.length,
-					name: k,
-					links: v
-				};
-			});
+			// MENU
+			$menu.find('.menu-nav-li').removeClass('active');
+			if (this.specName) {
+				$menu.find('[data-ctrl="' + this.getCtrlNameBySpecName(this.specName) + '"]').addClass('in');
+				$menu.find('[data-spec="' + this.specName + '"]').addClass('active');
+			}
 
-			console.log(this.spec.parsed.menu);
+		},
 
+		getCtrlNameBySpecName: function (specName) {
+			return specName.replace(/^([^\.]+)\..+$/, '$1');
+		},
+
+		initLocation: function () {
+			var parsedUrl = window.utils.parseUrl(window.location.href);
+			console.log(parsedUrl);
 		},
 
 		build: function (id, builder, options, $place, method) {
@@ -146,50 +144,42 @@
 		},
 
 		buildMenu: function () {
-			var map = {};
-			var nameMap = {};
 
-			_.each(SPECS, function(v, k){
-				var name = k.replace(/\s/, '');
-				nameMap[name] = k;
-				var method = k.replace(/^([a-zA-Z]+).+$/, '$1');
-				if(!map[method]){
-					map[method] = [];
+			var that = this;
+			var parsedUrl = window.utils.parseUrl(window.location.href);
+
+			var ctrl = {};
+			_.each(this.specs.source, function (spec) {
+				var ctrlName = spec.controller.replace(/Controller$/i, '').replace(/([A-Z])/g, ' $1').trim().toLowerCase();
+				if (!ctrl[ctrlName]) {
+					ctrl[ctrlName] = [];
+					ctrl[ctrlName].ctrl = spec.controller;
 				}
-				map[method].push({
-					name: name,
-					text: (v.title || k).replace(/^(POST|PUT|DELETE|GET|PATCH|HEAD|OPTION)\s+(.+)$/, '$2'),
-					link: '#' + name
+				ctrl[ctrlName].push({
+					name: spec.name,
+					text: spec.action,
+					link: window.utils.addParamsToUrl(parsedUrl.path, {
+						spec: spec.name
+					})
 				});
-				if((currLocation && currLocation === name) || (!currLocation && !currName)){
-					currName = name;
-					currMethod = method;
-				}
 			});
 
-			var _map = [];
-			_.each(map, function(v, k){
-				_map.push({
-					index: _map.length,
+			var counter = 0;
+			var data = _.map(ctrl, function (v, k) {
+				return {
+					index: counter++,
 					name: k,
+					ctrl: v.ctrl,
 					links: v
-				});
+				};
 			});
+
 
 			var $menu = $("#menu-bar");
 			$menu.append(tpl.menu({
-				data: _map
+				data: data
 			}));
 			$("#accordion").collapse();
-
-			$menu.on('click', 'li > a', function(){
-				window.location.href = $(this).attr("href");
-				window.location.reload();
-				return false;
-			});
-			$menu.find('.active').removeClass('active');
-			$menu.find('[data-method="'+currMethod+'"]').addClass('in');
-			$menu.find('[data-name="'+currName+'"]').parent().addClass('active');
 		},
 
 		buildForm: function () {
@@ -304,9 +294,16 @@
 		},
 
 		events: {
+//			'click #menu-bar li > a': 'onMenuItemClick',
 			'keyup #form input': 'sendOnEnter',
 			'submit #form': 'onSubmit'
 		},
+
+//		onMenuItemClick: function (e, $thisTarget) {
+//			window.location.href = $thisTarget.attr("href");
+//			window.location.reload();
+//			return false;
+//		},
 
 		sendOnEnter: function (e, $thisTarget) {
 			if (e.keyCode === 13) {
