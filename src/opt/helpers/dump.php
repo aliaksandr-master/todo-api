@@ -63,3 +63,9 @@ function dump($var, $showFullData = false, $escapeTags = false, $cover = true){
         }
     }
 }
+
+function dumpd () {
+	$args = func_get_args();
+	call_user_func_array('dump', $args);
+	die('');
+}

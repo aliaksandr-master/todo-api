@@ -3,7 +3,11 @@
 class ApiFilter extends ApiComponent {
 
     public function apply ($value, $filterName, array $params = array(), $contextName = null, $strictObj = 'filter', $strictMessage = 'Undefined filter', $strictCode = 500) {
-        $result = $this->api->context->applyFilter ($value, $filterName, $params, $contextName);
+		$result = null;
+
+		if (!empty($this->api->context)) {
+			$result = $this->api->context->applyFilter ($value, $filterName, $params, $contextName);
+		}
 
         if (is_null($result)) {
 			$method = 'filter__'.$filterName;

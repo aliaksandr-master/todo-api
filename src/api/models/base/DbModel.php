@@ -56,9 +56,7 @@ abstract class DbModel {
 		$params = $this->getConnectDbParams();
 
 		if (empty(self::$_dbConnection[$dbName])) {
-			//			$connection;
-			//
-			//			self::$_dbConnection[$dbName] = &$connection;
+			self::$_dbConnection[$dbName] = CI_ActiveRecord::connect($params);
 		}
 
 		return self::$_dbConnection[$dbName];

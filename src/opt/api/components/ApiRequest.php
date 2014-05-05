@@ -46,7 +46,7 @@ class ApiRequest extends ApiComponent {
 		$this->_headers = $this->getHeadersSrc();
 		$this->_query = $this->_initParam($this->getQuerySrc(), ApiUtils::get($requestInput, 'query', array()), $this->_additionalQueryParams, false);
 		$this->_body = $this->_initParam($this->getBodySrc(), ApiUtils::get($requestInput, 'body', array()), $this->_additionalBodyParams, false);
-		$this->_args = $this->_initParam($this->getArgsSrc(), ApiUtils::get($requestInput, 'args', array()), array(), true);
+		$this->_args = $this->_initParam($this->getArgsSrc(), ApiUtils::get($requestInput, 'params', array()), array(), true);
 
 		$this->_input = array_merge($this->_input, $this->_query, $this->_args, $this->_body);
 	}
@@ -86,7 +86,7 @@ class ApiRequest extends ApiComponent {
 
 	function getArgsSrc () {
 		if (is_null($this->_argsSource)) {
-			$this->_argsSource = $this->api->getParam('input/args');
+			$this->_argsSource = $this->api->getParam('input/params');
 		}
 		return $this->_argsSource;
 	}
@@ -132,7 +132,7 @@ class ApiRequest extends ApiComponent {
 
 		$this->_applyAfterFiltersToParam(ApiUtils::get($requestInput, 'query', array()), $this->_query);
 		$this->_applyAfterFiltersToParam(ApiUtils::get($requestInput, 'body',  array()), $this->_body);
-		$this->_applyAfterFiltersToParam(ApiUtils::get($requestInput, 'args',  array()), $this->_args);
+		$this->_applyAfterFiltersToParam(ApiUtils::get($requestInput, 'params',  array()), $this->_args);
 	}
 
 
@@ -141,7 +141,7 @@ class ApiRequest extends ApiComponent {
 	}
 
 
-	function arg ($name = null, $default = null) {
+	function param ($name = null, $default = null) {
 		return ApiUtils::getArr($this->_args, $name, $default);
 	}
 
@@ -219,7 +219,7 @@ class ApiRequest extends ApiComponent {
 	function check () {
 		$valid = 1;
 		$requestInput = ApiUtils::get($this->api->getSpec('request'), 'input', array());
-		$valid *= $this->_checkParam(ApiUtils::get($requestInput, 'args', array()), $this->_args);
+		$valid *= $this->_checkParam(ApiUtils::get($requestInput, 'params', array()), $this->_args);
 		$valid *= $this->_checkParam(ApiUtils::get($requestInput, 'body', array()), $this->_body);
 		$valid *= $this->_checkParam(ApiUtils::get($requestInput, 'query', array()), $this->_query);
 		if (!$valid) {

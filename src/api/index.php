@@ -3,13 +3,10 @@
 // start
 define('START_TIMESTAMP', gettimeofday(true));
 
+
 // CONST
 define('DS', '/');
 define('SD', '\\');
-
-define('PROD', 0);
-define('DEV',  1);
-define('TEST', 2);
 
 // DIR PATHS
 define('DIR', str_replace(SD, DS, __DIR__));
@@ -18,20 +15,32 @@ define('CACHE_DIR', realpath(DIR.DS.'..').DS.'private.cache');
 define('SESSION_DIR', CACHE_DIR.DS.'session');
 define('OPT_DIR', realpath('..'.DS.'opt'));
 
+
 define('ROOT_URI', str_replace(SD, DS, pathinfo($_SERVER['SCRIPT_NAME'], PATHINFO_DIRNAME)));
 
-$ENV = DEV;
 
-define('MODE', $ENV > PROD && isset($_GET['environment']) && ($_GET['environment'] === DEV || $_GET['environment'] === TEST) ? $_GET['environment'] : PROD);
+// DEBUG LEVELS
+define('PROD', 0);
+define('TEST', 1);
+define('DEV',  2);
+$DEBUG_LEVELS = array(PROD, TEST, DEV);
+
+$ALLOW_DEBUG_LEVEL = DEV;
+$_DEBUG_LEVEL = isset($_GET['_mode']) && in_array($_GET['_mode'], $DEBUG_LEVELS) ? $_GET['_mode'] : PROD;
+$_DEBUG_LEVEL = $ALLOW_DEBUG_LEVEL < $_DEBUG_LEVEL ? $ALLOW_DEBUG_LEVEL : $_DEBUG_LEVEL;
+define('MODE', $_DEBUG_LEVEL);
 define('DB_DEBUG', MODE > PROD);
 
-if (MODE === PROD) {
-	error_reporting(0);
-	ini_set('display_errors', 0);
-} else {
+
+if (MODE > PROD) {
 	error_reporting(E_ALL);
 	ini_set('display_errors', 1);
+} else {
+	error_reporting(0);
+	ini_set('display_errors', 0);
+}
 
+if (MODE > TEST) {
 	ini_set('xdebug.overload_var_dump', '0');
 	ini_set('xdebug.auto_trace', 'On');
 	ini_set('xdebug.show_local_vars', 'On');
@@ -98,13 +107,14 @@ if ($SESSION_USER_INACTIVE_TIME > 0) {
 	$_SESSION['session_time_idle'] = $time;
 }
 
+$url = str_replace(ROOT_URI, '', $_SERVER['REQUEST_URI']);
 /*
  * -------------------------------------------------------------------
  *  ROUTER
  * -------------------------------------------------------------------
  */
-$router = new Router(include(VAR_DIR.DS.'routes.php'));
-$routeResult = $router->match($_SERVER['REQUEST_METHOD'], $_SERVER['REQUEST_URI']);
+$router = new Router(/*#:injectData("tmp/api/router/routes.json")#*/);
+$routeResult = $router->match($_SERVER['REQUEST_METHOD'], $url, array('name' => null, 'params' => array()));
 
 
 /*
@@ -113,10 +123,9 @@ $routeResult = $router->match($_SERVER['REQUEST_METHOD'], $_SERVER['REQUEST_URI'
  * -------------------------------------------------------------------
  */
 
-$url = str_replace(ROOT_URI, '', $_SERVER['REQUEST_URI']);
-$api = new Api($routeResult['name'], $_SERVER['REQUEST_METHOD'], $url, array(
+$api = new Api(MODE, $routeResult['name'], $_SERVER['REQUEST_METHOD'], $url, array(
 	'input/body'    => file_get_contents('php://input'),
-	'input/args'    => $routeResult['params'],
+	'input/params'  => $routeResult['params'],
 	'input/query'   => $_GET,
 	'input/headers' => getallheaders()
 ));

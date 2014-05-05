@@ -22,7 +22,8 @@ abstract class BaseController implements IApiController, IApiDebugStatistic {
 	const VALIDATOR_METHOD_PREF = 'rule_';
 
 
-	public function __construct () {
+	public function __construct ($api) {
+		$this->api = $api;
 		// base constructor
 		$this->user = UserModel::instance();
 	}
@@ -39,7 +40,7 @@ abstract class BaseController implements IApiController, IApiDebugStatistic {
 
 
 	function getActionArgs ($actionName, $method, $actionMethodName, ApiRequest &$input) {
-		return $input->arg();
+		return $input->param();
 	}
 
 
@@ -48,7 +49,7 @@ abstract class BaseController implements IApiController, IApiDebugStatistic {
 	}
 
 
-	public function hasAccess (ApiComponent &$apiAccess, array $accessSpec, $method, $actionName, $methodName) {
+	public function hasAccess (ApiComponent &$apiAccess, $accessSpec, $method, $actionName) {
 
 		// CHECK ONLY OWNER
 		if (!empty($accessSpec[static::ACCESS_ONLY_OWNER])) {
@@ -65,7 +66,7 @@ abstract class BaseController implements IApiController, IApiDebugStatistic {
 		}
 
 		// CHECK user permissions
-		$handler = strtolower(get_class($this))."#".$methodName;
+		$handler = strtolower(get_class($this))."#".$actionName;
 
 		$callName = strtoupper($method).":".$handler;
 		$callNameAny = "ANY:".$handler;
@@ -109,12 +110,6 @@ abstract class BaseController implements IApiController, IApiDebugStatistic {
 				if ($method == "GET") {
 					if (!$hasData) {
 						return 404;
-					}
-				} else {
-					if ($method == "DELETE") {
-						if (!$hasData) {
-							return 500; // you must send Boolean response
-						}
 					}
 				}
 			}

@@ -49,8 +49,16 @@ class ApiResponse extends ApiComponent {
 
 		$this->_response = $this->api->getSpec('response');
 		$this->_responseOutput = ApiUtils::get($this->_response, 'output', array());
-		$this->_type = ApiUtils::get($this->_response, 'type', self::RESPONSE_TYPE_ONE);
-		$this->_limit = ApiUtils::get($this->_response, 'limit', 1);
+
+		$this->_limit = ApiUtils::get($this->_responseOutput, 'limit', null);
+
+		$this->_type = self::RESPONSE_TYPE_MANY;
+
+		if (is_null($this->_limit)) {
+			$this->_type = self::RESPONSE_TYPE_ONE;
+			$this->_limit = 1;
+		}
+
 		$this->_fields = array_keys(ApiUtils::get($this->_responseOutput, 'data', array()));
 		$this->_offset = $this->api->request->query('offset', 0);
 
@@ -104,7 +112,6 @@ class ApiResponse extends ApiComponent {
 				'time/compile' => 0,
 				'memoryPeak' => ApiUtils::formatBytes(memory_get_peak_usage()),
 				'controller' => get_class($this->api->context),
-				'methodName' => $this->api->getParam('actionToCall'),
 				'action' => $this->api->getParam('action'),
 				'db' => null,
 				'stackTrace' => $this->api->getStackTrace(),
@@ -120,7 +127,7 @@ class ApiResponse extends ApiComponent {
 						)
 					),
 					"query"  => $this->api->request->query(),
-					"args"    => $this->api->request->arg(),
+					"args"    => $this->api->request->param(),
 					"body"   => $this->api->request->body(),
 					"body:raw" => $this->api->getParam('input/body')
 				),

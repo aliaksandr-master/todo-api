@@ -35,7 +35,7 @@ module.exports = function (grunt) {
 					inner:  3
 				},
 				{
-					regExp: /\/\*\s*#:([^\s]+)(?:\s*\(([^\n\)]*?)\))?#\s*\*\//gm,
+					regExp: /\/\*#:([^\s\(]+)\s*\(([^\n\)]*?)\)\s*#\*\//gm,
 					name:   1,
 					attr:   2,
 					inner:  null

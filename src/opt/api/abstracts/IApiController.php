@@ -35,11 +35,10 @@ interface IApiController {
 	 * @param array        $accessSpec
 	 * @param string       $method
 	 * @param string       $actionName
-	 * @param string       $methodName
 	 *
 	 * @return boolean
 	 */
-	public function hasAccess (ApiComponent &$apiAccess, array $accessSpec, $method, $actionName, $methodName);
+	public function hasAccess (ApiComponent &$apiAccess, $accessSpec, $method, $actionName);
 
 
 	/**

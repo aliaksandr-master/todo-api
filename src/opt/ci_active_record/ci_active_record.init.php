@@ -6,12 +6,14 @@ if (!defined('DB_DEBUG')) {
 
 // for CI check in all file in header
 if (!defined('BASEPATH')) {
-    define('BASEPATH', __DIR__.DS.'active_record'.DS);
+    define('BASEPATH', str_replace(SD, DS, __DIR__).DS);
+//	build/opt/ci_active_record/database/drivers/mysqli/mysqli_driver.php
+//  build/opt/ci_active_record/database/database/drivers/mysqli/mysqli_driver.php
 }
 
 if (!function_exists('log_message')) {
     function log_message ($level = 'error', $message, $php_error = FALSE) {
-        DB_DEBUG && trigger_error($message, E_USER_WARNING);
+//        DB_DEBUG && trigger_error($message, E_USER_WARNING);
     }
 }
 
@@ -30,7 +32,7 @@ class CI_ActiveRecord {
      *
      * @return CI_DB_mysql_driver
      */
-    function &connect ($params){
+    public static function &connect ($params){
 
 //        "hostname" : "localhost",
 //        "username" : "root",
@@ -50,20 +52,20 @@ class CI_ActiveRecord {
 
         if (empty(self::$_db[$params['database']])) {
 
-            require_once(BASEPATH.'DB_driver.php');
+            require_once(BASEPATH.'database'.DS.'DB_driver.php');
 
-            if (!class_exists('CI_DB')){
-                eval('class CI_DB extends CI_DB_driver { }');
-            }
+			require_once(BASEPATH.'database'.DS.'DB_active_rec.php');
 
-            require_once(BASEPATH.'database/drivers/'.$params['dbdriver'].'/'.$params['dbdriver'].'_driver.php');
+			if (!class_exists('CI_DB')) {
+				eval('class CI_DB extends CI_DB_active_record { }');
+			}
 
-            $driver = 'CI_DB_'.$params['dbdriver'].'_driver';
+            require_once(BASEPATH.'database'.DS.'drivers'.DS.$params['dbdriver'].DS.$params['dbdriver'].'_driver.php');
 
-            $DB = new $driver($params);
-            if ($DB->autoinit == TRUE){
-                $DB->initialize();
-            }
+            $Driver = 'CI_DB_'.$params['dbdriver'].'_driver';
+
+            $DB = new $Driver($params);
+			$DB->initialize();
             self::$_db[$params['database']] = $DB;
         }
 

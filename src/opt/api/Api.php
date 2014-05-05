@@ -4,6 +4,8 @@
 
 class Api extends ApiAbstract {
 
+	public $mode = 0;
+
 	/** @var IApiController */
 	public $context;
 
@@ -43,14 +45,12 @@ class Api extends ApiAbstract {
 
 	protected $_configs = array();
 
-	public $mimes =
-		//#:injectData("tmp/api/spec-options.json", "mimes")
-		array()
-		//injectData#
-		;
+	public $mimes = /*#:injectData("tmp/api/spec-options.json", "mimes")*/ array() /*injectData#*/ ;
 
 
-	function __construct ($name, $method, $uri, array $params) {
+	function __construct ($mode, $name, $method, $uri, array $params) {
+		$this->mode = $mode;
+
 		$this->api = $this;
 
 		// CREATE COMPONENTS
@@ -68,11 +68,11 @@ class Api extends ApiAbstract {
 
 		foreach (array(
 					 'input/body'    => array(),
-					 'input/args'    => array(),
+					 'input/params'  => array(),
 					 'input/query'   => array(),
 					 'input/headers' => array(),
-				 ) as $name => $default) {
-			$this->setParam($name, ApiUtils::get($params, $name, $default));
+				 ) as $paramName => $defaultValue) {
+			$this->setParam($paramName, ApiUtils::get($params, $paramName, $defaultValue));
 		}
 
 		$this->trace('Spec name', $name);
@@ -80,6 +80,7 @@ class Api extends ApiAbstract {
 		$apiFile = VAR_DIR.DS.'specs'.DS.sha1($name).'.php';
 
 		$this->_apiData = is_file($apiFile) ? include($apiFile) : array();
+
 		$this->setParam('time/action', 0);
 	}
 
@@ -118,26 +119,18 @@ class Api extends ApiAbstract {
 
 		$this->setParam('timer/launch', gettimeofday(true));
 
-		$this->trace('Launch width  '.$this->getParam('controller/class').'->'.$this->getParam('controller/action'));
-
 		if (!$this->_apiData) {
-			$this->error('Method %0% Not Allowed', 405, true, array(
-				'(\''.$this->getParam('controller/action').'\')',
-			));
-
+			$this->error(null, 405, true);
 			return null;
 		}
 
-		$response = $this->getSpec('response');
-		$this->setParam('actionToCall', $this->context->compileMethodName($this->getParam('controller/action'), $this->getParam('method'), $response['type'], $this->config('methods')));
+		$this->trace('Launch width  '.$this->getSpec('controller').'->'.$this->getSpec('action'));
 
-		$this->trace('Compile launch method name', $this->getParam('actionToCall'));
+		$Controller = $this->getSpec('controller');
+		$this->context = new $Controller($this);
 
-		if (!method_exists($this->context, $this->getParam('actionToCall'))) {
-			$this->error('Method %0% Not Allowed', 405, true, array(
-				'(\''.$this->getParam('actionToCall').'\')',
-			));
-
+		if (!method_exists($this->context, $this->getSpec('action'))) {
+			$this->error('Method %0% Not Allowed', 405, true, array( '(\''.$this->getSpec('name').'\')' ));
 			return null;
 		}
 
@@ -157,7 +150,7 @@ class Api extends ApiAbstract {
 			return null;
 		}
 
-		$hasAccess = $this->context->hasAccess($this->access, $this->getSpec('access'), $this->getParam('method'), $this->getParam('action'), $this->getParam('actionToCall'));
+		$hasAccess = $this->context->hasAccess($this->access, $this->getSpec('access'), $this->getParam('method'), $this->getSpec('action'));
 		$this->trace('Has Access', $hasAccess);
 		if (!$hasAccess) {
 			if ($this->access->valid()) {
@@ -178,9 +171,9 @@ class Api extends ApiAbstract {
 		}
 
 		if ($this->valid()) {
-			$actionMethod = $this->getParam('actionToCall');
+			$actionMethod = $this->getSpec('action');
 			$call = array($this->context, $actionMethod);
-			$callArgs = $this->context->getActionArgs($this->getParam('action'), $this->getParam('method'), $actionMethod, $this->request);
+			$callArgs = $this->context->getActionArgs($this->getSpec('action'), $this->getParam('method'), $actionMethod, $this->request);
 
 			$this->trace('Call controller method \''.$actionMethod.'\' with args ', $callArgs);
 			$this->setParam('time/action', gettimeofday(true));

@@ -35,31 +35,6 @@ module.exports = function (grunt) {
 			]
 		})
 
-		.config('split-files:specs', {
-			options: {
-				process: function (content, fpath, dest, fileObj) {
-					var result = {};
-
-					var destDir = fileObj.orig.dest.replace(/\/$/, '');
-
-					_.each(content, function (obj, key) {
-						result[destDir + '/' + sha1(key) + '.php'] = '<?php \nreturn ' + json2php(obj) + ';\n?>';
-					});
-
-					return result;
-				}
-			},
-
-			files: [{
-				expand: true,
-				cwd: path.TMP + '/api-specs/',
-				src: [
-					'**/*.json'
-				],
-				dest: path.BUILD + '/api/var/specs/'
-			}]
-		})
-
 		.config('json-merge:make-common', {
 			options: {
 				outputJSON: path.TMP + '/api/specs-merged.json'
@@ -196,11 +171,8 @@ module.exports = function (grunt) {
 			},
 			files: [
 				{
-					expand: true,
-					cwd: path.SRC + '/api/router/',
-					src: 'routes.txt',
-					dest: path.TMP + '/api/router/',
-					ext: '.json'
+					src: path.SRC + '/api/routes.txt',
+					dest: path.TMP + '/api/router/routes.json'
 				}
 			]
 		})
@@ -254,6 +226,34 @@ module.exports = function (grunt) {
 		.config('clean:excess-router', [
 			path.TMP + '/api/router/spec-routes.json'
 		])
+
+
+
+		.config('split-files:specs', {
+			options: {
+				process: function (content, fpath, dest, fileObj) {
+					var result = {};
+
+					var destDir = fileObj.orig.dest.replace(/\/$/, '');
+
+					_.each(content, function (obj, key) {
+						result[destDir + '/' + sha1(key) + '.php'] = '<?php \nreturn ' + json2php(obj) + ';';
+					});
+
+					return result;
+				}
+			},
+
+			files: [{
+				expand: true,
+				cwd: path.TMP + '/api/specs/',
+				src: [
+					'**/*.json'
+				],
+				dest: path.BUILD + '/api/var/specs/',
+				ext: '.php'
+			}]
+		})
 
 		.config('js-to-json', {
 			files: [

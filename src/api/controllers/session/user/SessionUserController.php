@@ -4,7 +4,7 @@
 
 class SessionUserController extends BaseController {
 
-	public function DELETE_ONE_user () {
+	public function deleteOne () {
 		$id = $this->user->current('id');
 		$this->user->logout();
 
@@ -12,7 +12,7 @@ class SessionUserController extends BaseController {
 	}
 
 
-	public function CREATE_ONE_user () {
+	public function createOne () {
 		$password = $this->user->cryptPassword($this->input('password'));
 
 		$user = $this->user->read(array('username' => $this->input("username"), 'password' => $password));
@@ -34,7 +34,7 @@ class SessionUserController extends BaseController {
 	}
 
 
-	public function GET_ONE_user () {
+	public function getOne () {
 		$user = $this->user->current();
 		if (empty($user)) {
 			$this->api->output->error(null, 404);

@@ -8,7 +8,7 @@ module.exports = function (grunt) {
 			path.SRC + '/api/**/*.spec.{json,js}'
 		],
 		tasks: [
-			'api/build'
+			'api/specs'
 		]
 	});
 
@@ -16,7 +16,10 @@ module.exports = function (grunt) {
 		files: [
 			path.SRC + '/api/**/*.php'
 		],
-		tasks: 'api/specs'
+		tasks: [
+			'api/build',
+			'pragma'
+		]
 	});
 
 };
