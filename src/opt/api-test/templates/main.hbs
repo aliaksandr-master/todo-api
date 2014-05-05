@@ -1,34 +1,11 @@
 <div style="margin: 10px;">
     <div class="clearfix">
-        <div id="menu-bar">
-            <h2>Actions:</h2>
-        </div>
+        <div id="menu-bar"></div>
         <div id="request-bar"></div>
         <h1 id="mainHeader"></h1>
         <div id="response-bar">
+            <div id="form-head" class="clearfix request-param"></div>
             <form id="form" action="{{action}}">
-                <div class="clearfix request-param">
-                    <div class="pull-left">
-                        <select id="_FORMAT_" class="form-control">
-                            <option value="json">JSON</option>
-                            <option value="params">Params</option>
-                        </select>
-                    </div>
-                    <div class="pull-left">
-                        <select id="_METHOD_" class="form-control">
-                            <option value="GET">GET</option>
-                            <option value="PUT">PUT</option>
-                            <option value="POST">POST</option>
-                            <option value="DELETE">DELETE</option>
-                            <option value="PATCH">PATCH</option>
-                            <option value="PATCH">OPTION</option>
-                            <option value="PATCH">HEAD</option>
-                        </select>
-                    </div>
-                    <div style="overflow: hidden;">
-                        <input type="text" id="_URL_" value="{{action}}" class="form-control"/>
-                    </div>
-                </div>
                 <div id="form-content"></div>
                 <div class="form-submit clearfix">
                     <input id="form-submit" type="submit" class="btn btn-warning pull-left"/>

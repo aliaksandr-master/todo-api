@@ -2,7 +2,7 @@
 
 (function(window, $, _){
 
-	window.specs = function(){
+	window.spec = function(){
 		var result = {};
 		$.ajax({
 			url: window.API_JSON,

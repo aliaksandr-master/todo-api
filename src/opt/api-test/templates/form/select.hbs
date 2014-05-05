@@ -1,7 +1,7 @@
-<label for="form-{{name}}">{{label}}</label>
+{{#if label}}<label for="form-{{name}}">{{label}}</label>{{/if}}
 <div class="form-control-wr">
-    <select class="form-control" name="{{name}}" id="form-{{name}}">
-        {{#each}}
+    <select class="form-control" name="{{name}}" id="{{id}}">
+        {{#each option}}
             <option value="{{value}}">{{text}}</option>
         {{/each}}
     </select>

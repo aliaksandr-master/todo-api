@@ -1,20 +1,20 @@
 <div class="panel panel-default" id="accordion">
     {{#each data}}
-    <div class="panel-heading">
-        <h4 class="panel-title">
-            <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseThree-{{index}}">
-                {{name}}
-            </a>
-        </h4>
-    </div>
-    <div id="collapseThree-{{index}}" data-ctrl="{{ctrl}}" class="panel-collapse collapse">
-        <div class="panel-body">
-            <ul class="nav nav-pills nav-stacked">
-                {{#each links}}
-                <li data-spec="{{name}}" class="menu-nav-li"><a href="{{link}}">{{text}}</a></li>
-                {{/each}}
-            </ul>
+        <div class="panel-heading">
+            <h4 class="panel-title">
+                <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseThree-{{index}}">
+                    {{name}}
+                </a>
+            </h4>
         </div>
-    </div>
+        <div id="collapseThree-{{index}}" data-ctrl="{{ctrl}}" class="panel-collapse collapse">
+            <div class="panel-body">
+                <ul class="nav nav-pills nav-stacked">
+                    {{#each links}}
+                        <li data-spec="{{name}}" class="menu-nav-li"><a href="{{link}}">{{text}}</a></li>
+                    {{/each}}
+                </ul>
+            </div>
+        </div>
     {{/each}}
 </div>

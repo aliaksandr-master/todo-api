@@ -6,13 +6,23 @@ module.exports = function (grunt) {
 
 	this
 
-		.config('json-process', {
+		.config('json-process:specs', {
 			options: {
 				beautify: true
 			},
 			files: [{
 				src: path.TMP + '/api/specs-merged.json',
 				dest: path.BUILD + '/api-test/var/specs.json'
+			}]
+		})
+
+		.config('json-process:routes', {
+			options: {
+				beautify: true
+			},
+			files: [{
+				src: path.TMP + '/api/router/routes.json',
+				dest: path.BUILD + '/api-test/var/routes.json'
 			}]
 		});
 };

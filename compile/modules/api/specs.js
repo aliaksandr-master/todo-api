@@ -106,6 +106,7 @@ module.exports = function (grunt) {
 						delete obj.title;
 						delete obj.dsc;
 						delete obj.description;
+						delete obj.fpath;
 					});
 					return content;
 				}

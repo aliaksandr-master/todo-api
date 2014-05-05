@@ -2,8 +2,6 @@
 
 (function(window, $, _, template){
 
-	var SPECS = window.specs();
-
 	var tpl = {
 		panel: template('panel'),
 		main: template('main'),
@@ -19,33 +17,71 @@
 
 	var allFormsUID = [];
 
-	function Form (specs) {
+	function Form (container, spec, routes) {
 		var that = this;
 
-		this.specs = {
-			source: specs,
-			parsed: {}
-		};
 		this.uid = 'apiTesterForm' + allFormsUID.length;
-
 		allFormsUID.push(this.uid);
 
-		$(function () {
-			$(document.body).html(tpl.main());
-			that.buildPlaces();
+		this._spec = spec;
+		this._routes = routes;
 
-			that.buildMenu();
-			that.initLocation();
-//			that.buildForm();
-//
-			that._delegateEvents();
-			that.applyDataFromLocation();
-		});
+		this.spec = {};
+		this.routes = {};
+
+		this.$el = $(container).eq(0);
+		this.el = this.$el.get()[0];
+
+		this.reset();
+
+		that.buildMain();
+		that.buildPlaces();
+		that.buildMenu();
+		that.refresh();
 	}
 
 	Form.prototype = {
 
-		_delegateEvents: function () {
+		reset: function () {
+			this.spec.current = {};
+			this.spec.source = _.cloneDeep(this._spec);
+			this.location = null;
+			this.element = {};
+			this.routes.source = _.cloneDeep(this._routes);
+			this.routes.group = _.groupBy(this.routes.source, 'name');
+			this.routes.current = [];
+		},
+
+		refresh: function (href) {
+			this.reset();
+
+			href = href == null ? window.location.href : href;
+
+			this.location = window.utils.parseUrl(href);
+			this.location.data = this.location.data == null ? {} : this.location.data;
+
+			this.spec.current = _.cloneDeep(this.spec.source[this.location.data.spec] || {});
+
+			if (this.spec.current) {
+				this.routes.current = this.routes.group[this.spec.current.name] || [];
+			}
+
+			if (_.isEmpty(this.routes.current)) {
+				this.spec.current = {};
+			}
+
+			this.initMenu();
+			this.buildForm();
+			this.initForm();
+
+			this.delegateEvents();
+		},
+
+		$: function (find) {
+			return find == null ? this.$el : this.$el.find(find);
+		},
+
+		delegateEvents: function () {
 			var that = this;
 			_.each(this.events, function (handler, event) {
 				var name = event.replace(/^([^ ]+)[ ]+(.+)$/, '$1');
@@ -53,51 +89,40 @@
 				name = name + '.' ;
 
 				_.each(allFormsUID, function (uid) {
-					$(document).off(name + uid);
+					that.$().off(name + uid);
 				});
 
-				$(document).on(name + that.uid, find, function (e) {
+				that.$().on(name + that.uid, find, function (e) {
 					return that[handler].call(that, e, $(this));
 				});
 			});
 		},
 
-		applyDataFromLocation: function () {
-			var parsedUrl = window.utils.parseUrl(window.location.href);
-			var $menu = $("#menu-bar");
-
-			this.specName = parsedUrl.data.spec;
-
-			// MENU
+		initMenu: function () {
+			var $menu = this.$("#menu-bar");
 			$menu.find('.menu-nav-li').removeClass('active');
-			if (this.specName) {
-				$menu.find('[data-ctrl="' + this.getCtrlNameBySpecName(this.specName) + '"]').addClass('in');
-				$menu.find('[data-spec="' + this.specName + '"]').addClass('active');
+			if (this.spec.current) {
+				$menu.find('[data-ctrl="' + this.spec.current.controller + '"]').addClass('in');
+				$menu.find('[data-spec="' + this.spec.current.name + '"]').addClass('active');
 			}
-
 		},
 
-		getCtrlNameBySpecName: function (specName) {
-			return specName.replace(/^([^\.]+)\..+$/, '$1');
-		},
-
-		initLocation: function () {
-			var parsedUrl = window.utils.parseUrl(window.location.href);
-			console.log(parsedUrl);
+		buildMain: function () {
+			this.$el.html(tpl.main());
 		},
 
 		build: function (id, builder, options, $place, method) {
 			method = method || 'append';
-			options.id = id.replace('#', '');
-			$($place)[method](builder(options));
-			this[options.id] = $('#' + options.id);
+			options.id = id.replace(/^[#]+/, '');
+			this.$($place)[method](builder(options));
+			this.element[options.id] = this.$('#' + options.id);
 			return this;
 		},
 
 		buildPlaces: function(){
 
-			var $responsePanels = $('#response-panels');
-			var $requestPanels  = $('#request-bar');
+			var $responsePanels = this.$('#response-panels');
+			var $requestPanels  = this.$('#request-bar');
 
 			this
 				.build('#responseJSON', tpl.panel, {
@@ -143,21 +168,25 @@
 				}, $requestPanels);
 		},
 
+		_parseCamelCase: function (str) {
+			return str.replace(/Controller$/i, '').replace(/([A-Z])/g, ' $1').trim().toLowerCase();
+		},
+
 		buildMenu: function () {
 
 			var that = this;
 			var parsedUrl = window.utils.parseUrl(window.location.href);
 
 			var ctrl = {};
-			_.each(this.specs.source, function (spec) {
-				var ctrlName = spec.controller.replace(/Controller$/i, '').replace(/([A-Z])/g, ' $1').trim().toLowerCase();
+			_.each(this.spec.source, function (spec) {
+				var ctrlName = that._parseCamelCase(spec.controller);
 				if (!ctrl[ctrlName]) {
 					ctrl[ctrlName] = [];
 					ctrl[ctrlName].ctrl = spec.controller;
 				}
 				ctrl[ctrlName].push({
 					name: spec.name,
-					text: spec.action,
+					text: that._parseCamelCase(spec.action),
 					link: window.utils.addParamsToUrl(parsedUrl.path, {
 						spec: spec.name
 					})
@@ -174,18 +203,85 @@
 				};
 			});
 
-
-			var $menu = $("#menu-bar");
+			var $menu = this.$("#menu-bar");
 			$menu.append(tpl.menu({
 				data: data
 			}));
-			$("#accordion").collapse();
+			this.$("#accordion").collapse();
+		},
+
+		initForm: function () {
+
+			this.$('#form-route-url').attr('readonly', true);
+			this.$('#form-route-method').attr('readonly', true);
+
+			this.refreshRouterUrl();
 		},
 
 		buildForm: function () {
+			if (_.isEmpty(this.spec.current)) {
+				return;
+			}
+
+			_.each(this.spec.current.request.input, function (input, category) {
+				if (_.isEmpty(input)) {
+					return;
+				}
+
+				var elemName = 'requestInputForm_' + category;
+				this.build(elemName, tpl.panel, {
+					label: category.toUpperCase(),
+					type: '',
+					content: ''
+				}, '#form-content');
+
+				_.each(input, function (itemOptions, itemName) {
+
+					if (/boolean/.test(itemOptions.type)) {
+						this.build(elemName + ' ' + itemName, tpl.form.toggle, {
+							label: itemName,
+							name: itemName
+						}, this.element[elemName]);
+					} else {
+						this.build(elemName + ' ' + itemName, tpl.form.field, {
+							label: itemName,
+							placeholder: itemName,
+							type: 'text',
+							name: itemName
+						}, this.element[elemName]);
+					}
+
+				}, this);
+
+			}, this);
+
+			var counter = 0;
+			var stdRoutesVal = [];
+			this.build('form-route', tpl.form.select, {
+				option: stdRoutesVal.concat(_.map(this.routes.current, function (v, k) {
+					return {
+						text: v.method + ' ' + v.reverse,
+						value: counter++
+					};
+				}))
+			}, '#form-head');
+
+			this.build('route-method', tpl.form.field, {
+				placeholder: 'method',
+				type: 'text',
+				name: 'route-method'
+			}, '#form-head');
+
+			this.build('route-url', tpl.form.field, {
+				placeholder: 'url',
+				type: 'text',
+				name: 'route-url'
+			}, '#form-head');
+
+			return;
 			var curr = nameMap[currName];
 
-			$("#mainHeader").html(curr);
+			this.$("#mainHeader").html(curr);
 			var data = SPECS[nameMap[currName]];
 			var method = curr.replace(/([a-z]+)\s+(.+)/i, '$1');
 			var url = curr.replace(/([a-z]+)\s+(.+)/i, '$2');
@@ -226,8 +322,8 @@
 					$elem.val(value);
 				};
 
-				$('.putData').on('click', function () {
-					var isValidData = $(this).hasClass('-valid');
+				this.$('.putData').on('click', function () {
+					var isValidData = that.$(this).hasClass('-valid');
 					var isPrevData = $(this).hasClass('-prev');
 					var prevData = window.loadSendDataToStore();
 					$.each(data['request'], function (k, v) {
@@ -286,17 +382,59 @@
 				});
 				$formContent.html(formElement);
 				if(!formElement){
-					$('.putData').remove();
+					this.$('.putData').remove();
 				}
 			} else {
-				$('.putData').remove();
+				this.$('.putData').remove();
 			}
 		},
 
 		events: {
 //			'click #menu-bar li > a': 'onMenuItemClick',
-			'keyup #form input': 'sendOnEnter',
-			'submit #form': 'onSubmit'
+			'keyup #requestInputForm_body input': 'sendOnEnter',
+			'submit #form': 'submitForm',
+			'change #form-route': 'refreshRouterUrl',
+			'keypress #requestInputForm_params [name]': 'refreshRouterUrl',
+			'change #requestInputForm_params [name]': 'refreshRouterUrl'
+		},
+
+		getDataFromRegion: function (regionName) {
+			var that = this;
+			var data = {};
+			var $region = this.$('#requestInputForm_' + regionName);
+
+			$region.find('[name]').each(function () {
+				var name = $(this).attr('name');
+				data[name] = $region.find('[name="' + name + '"]').val();
+			});
+
+			return data;
+		},
+
+		refreshRouterUrl: function () {
+			var that = this;
+			var routeId = this.$('#form-route').val();
+			var route = this.routes.current[routeId];
+			var data = this.getDataFromRegion('params');
+			var url = this.reverseUrlByRoute(route, data);
+
+			url = window.API_ROOT.replace(/\/$/, '') + '/' + url.replace(/^\//, '');
+
+			this.$('#form-route-method').val(route.method);
+			this.$('#form-route-url').val(url);
+		},
+
+		reverseUrlByRoute: function (route, data) {
+			var url = route.reverse;
+			_.each(data, function (v, k) {
+				url = url.replace('<' + k + '>', v);
+			});
+
+			if (/<([^>]+)>/.test(url)) {
+				throw new Error('invalid route params in reverse "' + url + '"');
+			}
+
+			return url;
 		},
 
 //		onMenuItemClick: function (e, $thisTarget) {
@@ -312,18 +450,18 @@
 		},
 
 		onRequestSuccess: function (requestObj, response, jqXHR) {
-			$("#responseHeadersNonFormat").html(jqXHR.getAllResponseHeaders());
-			$("#errors").html("");
+			this.$("#responseHeadersNonFormat").html(jqXHR.getAllResponseHeaders());
+			this.$("#errors").html("");
 			if($.isPlainObject(response)){
-				$("#responseHTML").html("");
-				$("#responseJSON").html(window.jsonFormat(response));
-				$("#response").text(JSON.stringify(response));
+				this.$("#responseHTML").html("");
+				this.$("#responseJSON").html(window.jsonFormat(response));
+				this.$("#response").text(JSON.stringify(response));
 			}else{
-				$("#responseJSON").html("");
-				$("#response").text(response);
-				$("#responseHTML").html(response);
+				this.$("#responseJSON").html("");
+				this.$("#response").text(response);
+				this.$("#responseHTML").html(response);
 			}
-			$('#sendInfo').html(window.jsonFormat({
+			this.$('#sendInfo').html(window.jsonFormat({
 				time: (Date.now() - time)/1000,
 				encoding: jqXHR.getResponseHeader('Content-Encoding'),
 				compress: (100 - Math.round((+jqXHR.getResponseHeader('Content-Length') / jqXHR.responseText.length)*100)) + '%'
@@ -337,7 +475,7 @@
 			var respHtml = jqXHR.responseText.replace(/[<]!DOCTYPE(?:[^>]*)[>]/g, '');
 			respHtml = respHtml.replace(/<\/?html[^>]+>/g, '');
 
-			$("#responseHeadersNonFormat").html(jqXHR.getAllResponseHeaders());
+			this.$("#responseHeadersNonFormat").html(jqXHR.getAllResponseHeaders());
 
 			try {
 				resp = window.jsonFormat(JSON.parse(jqXHR.responseText, true));
@@ -347,75 +485,62 @@
 				isJSON = false;
 			}
 
-			$("#responseHTML").html("");
-			$("#responseJSON").html(isJSON ? resp : "");
-			$("#errors").html(
+			this.$("#responseHTML").html("");
+			this.$("#responseJSON").html(isJSON ? resp : "");
+			this.$("#errors").html(
 				'<div class="alert alert-danger">' +
 					'<h4>Ajax Error <b>' + jqXHR.status + '</b> (<i>' + status + '</i>)</h4>' +
 					'<p>' + jqXHR.statusText + '</p><br>' +
 					(isJSON ? '' : '<div>' + resp + '</div>') +
 					'</div>'
 			);
-			$("#response").text(jqXHR.responseText);
-			$('#sendInfo').html(window.jsonFormat({
+			this.$("#response").text(jqXHR.responseText);
+			this.$('#sendInfo').html(window.jsonFormat({
 				time: (Date.now() - time)/1000
 			}));
 		},
 
-		onSubmit: function () {
+		submitForm: function () {
+			var that = this;
 
 			var requestObj = {
 				time: Date.now()
 			};
 
-			var that = this;
-			var param = $(this).serializeArray();
+			var params = {};
 
-			window.saveSendDataToStore(param);
+			params.type = this.$('#form-route-method').val();
 
-			var pararms = {
-				type: $method.val(),
-				url: $url.val(),
-				data: param
-			};
+			params.url = this.$('#form-route-url').val();
+			params.url = window.utils.addParamsToUrl(params.url, this.getDataFromRegion('query'));
+			params.url = window.utils.addParamsToUrl(params.url, {
+				_testing: 1,
+				_debug: 1
+			});
 
-			var strParam = $.param(param);
+			params.dataType = 'json';
 
-			var jsonParam = {};
-
-			for(var i = 0; i < param.length; i++){
-				jsonParam[param[i].name] = param[i].value;
+			if(params.type !== "GET"){
+				params.contentType = 'json';
+				params.data = JSON.stringify(this.getDataFromRegion('body'));
 			}
 
-			var resultParams = param;
-
-			var resultParamsStr = strParam;
-
-			if($format.val() === "json" && pararms.type !== "GET"){
-				resultParams = jsonParam;
-				resultParamsStr = JSON.stringify(resultParams);
-				pararms.contentType = 'json';
-				pararms.dataType = 'json';
-			}
-
-			$("#requestParams").html(window.jsonFormat(jsonParam));
-			$("#requestDataNonFormat").text(resultParamsStr);
-
-			var options = $.extend({}, pararms, {
-				data: resultParamsStr,
+			$.ajax($.extend({}, params, {
 				success: function(response, _$, jqXHR){
 					that.onRequestSuccess(requestObj, response, jqXHR);
 				},
 				error: function(jqXHR, status){
 					that.onRequestError(requestObj, jqXHR);
 				}
-			});
-			$.ajax(options);
+			}));
+
 			return false;
 		}
 	};
 
-	var form = new Form(SPECS);
+	$(function () {
+		var form = new Form(document.body, window.API_JSON, window.API_ROUTES_JSON);
+	});
 
 //	$(function(){
 //

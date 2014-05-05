@@ -101,7 +101,6 @@ module.exports = function (options) {
 	};
 
 	var addFilter = function (object, toEnd, name, params) {
-		_.defaults(object, { filters : [] });
 		object.filters[toEnd ? 'push' : 'unshift'](mkobj(name, params));
 	};
 
@@ -109,7 +108,7 @@ module.exports = function (options) {
 		var parsed = {}, range, min, max;
 		str.replace(/^([a-zA-Z][a-zA-Z_0-9]*)(?:\:?([a-zA-Z0-9_]*))(?:\{?([^\}]*)\}?)(\|?.*)$/, function (word, nameString, typeString, rangeString, filtersString) {
 			parsed.length = {};
-			parsed.filter = [];
+			parsed.filters = [];
 			parsed.validation = { required: VALIDATION_REQUIRED_DEFVAL, rules: [] };
 
 			// name
@@ -150,7 +149,7 @@ module.exports = function (options) {
 			var FILTER_FORMAT_EXP = /^([a-zA-Z_]+)(.*)$/i;
 			if (filtersString) {
 				var filterSegments = filtersString.replace(/^\|/, '').split(/\s*\|\s*/g);
-				parsed.filter = _.map(filterSegments, function (part) {
+				parsed.filters = _.map(filterSegments, function (part) {
 					var name = part.replace(FILTER_FORMAT_EXP, '$1');
 					var params = parseParamsJSON(part.replace(FILTER_FORMAT_EXP, '$2'));
 					return mkobj(name, params);
@@ -476,6 +475,7 @@ module.exports = function (options) {
 		});
 
 		mainActionDirectives.controller = mainActionDirectives.controller || fpath.replace(/^.+\/([^\.]+)\.spec\.js$/, '$1');
+		mainActionDirectives.fpath = fpath;
 
 		if (_.isEmpty(mainActionDirectives.controller)) {
 			throw new Error('undefined controller name at ' + fpath);
