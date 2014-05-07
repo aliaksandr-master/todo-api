@@ -20,8 +20,8 @@ module.exports = function (grunt) {
 
 	this.run('jshint:compile', {
 		src: [
-			path.ROOT + '/Gruntfile.js',
-			path.COMPILE + '/**/*.{js,json}'
+			path.CWD + '/Gruntfile.js',
+			path.GRUNT + '/**/*.{js,json}'
 		]
 	}, false);
 

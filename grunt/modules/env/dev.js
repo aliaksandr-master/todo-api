@@ -15,7 +15,7 @@ module.exports = function (grunt) {
 			},
 			{
 				expand: true,
-				cwd: path.COMPILE + "/env/dev/",
+				cwd: path.GRUNT + "/env/dev/",
 				src: [
 					'**/*', '*'
 				],
