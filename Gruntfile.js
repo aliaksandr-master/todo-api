@@ -9,7 +9,7 @@ var paths = {
 	SRC: cwd + '/src',
 	DEPLOY: cwd + '/deploy',
 	LOCAL: cwd + '/_local',
-	COMPILE: cwd + '/compile',
+	COMPILE: cwd + '/grunt',
 	BUILD: cwd + '/build',
 	TMP: cwd + '/tmp'
 };
@@ -111,7 +111,7 @@ module.exports = function (grunt) {
 
 	_.each(grunt.file.expand({ cwd: cwd }, 'tasks/**/*.js'), function (fpath) {
 		_.all(fpath.split(/[\\\/]+/), function (v) {
-			return !/^_.+$/.test(v) || /^_compile$/.test(v);
+			return !/^_.+$/.test(v);
 		}) && require(cwd + fpath)(grunt, options);
 	});
 
