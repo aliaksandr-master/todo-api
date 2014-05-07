@@ -3,14 +3,14 @@
 module.exports = function (grunt) {
 	var path = this.path;
 
-	this.config('clean', [
+	this.run('clean', [
 		path.BUILD + '/api/controllers',
 		path.BUILD + '/api/models',
 		path.BUILD + '/api/index.php',
 		path.BUILD + '/api/.htaccess'
 	]);
 
-	this.config('copy', {
+	this.run('copy', {
 		options: {
 			excludeEmpty: true
 		},
@@ -29,7 +29,7 @@ module.exports = function (grunt) {
 		]
 	});
 
-	this.config('find-php-classes', {
+	this.run('find-php-classes', {
 		options: {
 			cwd: path.BUILD + '/',
 			src: [
@@ -45,7 +45,7 @@ module.exports = function (grunt) {
 		}
 	});
 
-	this.config('json2php', {
+	this.run('json2php', {
 		files: [
 			{
 				src:  path.TMP + '/classes/api.json',

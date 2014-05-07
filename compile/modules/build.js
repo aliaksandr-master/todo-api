@@ -3,7 +3,7 @@
 module.exports = function (grunt) {
 	var path = this.path;
 
-	this.config('pragma:php', {
+	this.run('pragma:php', {
 		options: {
 			processors: {
 				injectData: function (pragma, fpath) {
@@ -41,7 +41,7 @@ module.exports = function (grunt) {
 		]
 	}, false);
 
-	this.config('copy:build', {
+	this.run('copy:build', {
 		files: [
 			{
 				src: path.SRC + '/.htaccess',

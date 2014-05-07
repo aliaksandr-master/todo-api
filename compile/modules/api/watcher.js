@@ -3,7 +3,7 @@
 module.exports = function (grunt) {
 	var path = this.path;
 
-	this.config('watch:specs', {
+	this.run('watch:specs', {
 		files: [
 			path.SRC + '/api/**/*.spec.{json,js}'
 		],
@@ -12,7 +12,7 @@ module.exports = function (grunt) {
 		]
 	});
 
-	this.config('watch:php', {
+	this.run('watch:php', {
 		files: [
 			path.SRC + '/api/**/*.php'
 		],

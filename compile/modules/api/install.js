@@ -3,7 +3,7 @@
 module.exports = function (grunt) {
 	var path = this.path;
 
-	this.config('clean', [
+	this.run('clean', [
 		path.BUILD + '/api'
 	]);
 

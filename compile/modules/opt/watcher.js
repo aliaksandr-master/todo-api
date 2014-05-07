@@ -3,7 +3,7 @@
 module.exports = function (grunt) {
 	var path = this.path;
 
-	this.config('watch', {
+	this.run('watch', {
 		files: [
 			path.SRC + "/opt/**/*.php"
 		],

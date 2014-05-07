@@ -3,7 +3,7 @@
 module.exports = function (grunt) {
 	var path = this.path;
 
-	this.config('copy-new-files:config', {
+	this.run('copy-new-files:config', {
 		files: [
 			{
 				expand: true,
@@ -14,18 +14,18 @@ module.exports = function (grunt) {
 		]
 	});
 
-	this.config('clean:installed', [
+	this.run('clean:installed', [
 		path.TMP
 	], false);
 
-	this.config('jshint:compile', {
+	this.run('jshint:compile', {
 		src: [
 			path.ROOT + '/Gruntfile.js',
 			path.COMPILE + '/**/*.{js,json}'
 		]
 	}, false);
 
-	this.config('jshint:src', {
+	this.run('jshint:src', {
 		src: [
 			path.SRC + '/**/*.{js,json}',
 			'!' + path.SRC + '/client/static/vendor/**/*.{js,json}',

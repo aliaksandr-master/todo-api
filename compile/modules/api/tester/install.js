@@ -4,11 +4,11 @@ module.exports = function (grunt) {
 	var path = this.path;
 
 	this
-		.config('clean', [
+		.run('clean', [
 			path.BUILD + '/api-test'
 		])
 
-		.config('copy', {
+		.run('copy', {
 			options: {
 				excludeEmpty: true
 			},

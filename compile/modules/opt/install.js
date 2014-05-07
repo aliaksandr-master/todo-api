@@ -3,7 +3,7 @@
 module.exports = function () {
 	var path = this.path;
 
-	this.config('copy', {
+	this.run('copy', {
 		options: {
 			excludeEmpty: true
 		},

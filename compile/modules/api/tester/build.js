@@ -6,7 +6,7 @@ module.exports = function (grunt) {
 
 	this
 
-		.config('json-process:specs', {
+		.run('json-process:specs', {
 			options: {
 				beautify: true
 			},
@@ -16,7 +16,7 @@ module.exports = function (grunt) {
 			}]
 		})
 
-		.config('json-process:routes', {
+		.run('json-process:routes', {
 			options: {
 				beautify: true
 			},

@@ -9,13 +9,13 @@ module.exports = function (grunt) {
 
 	this
 
-		.config('jshint', {
+		.run('jshint', {
 			src: [
 				path.SRC + '/api/controllers/**/*.spec.{js,json}'
 			]
 		})
 
-		.config('api-specs-compiler', {
+		.run('api-specs-compiler', {
 			options: _.extend({
 				beauty: true,
 				verbose: false
@@ -35,7 +35,7 @@ module.exports = function (grunt) {
 			]
 		})
 
-		.config('json-merge:make-common', {
+		.run('json-merge:make-common', {
 			options: {
 				outputJSON: path.TMP + '/api/specs-merged.json'
 			},
@@ -48,7 +48,7 @@ module.exports = function (grunt) {
 			]
 		})
 
-		.config('split-files:spec-routes', {
+		.run('split-files:spec-routes', {
 			options: {
 				process: function (content, fpath, dest, fileObj) {
 					var result = [];
@@ -73,7 +73,7 @@ module.exports = function (grunt) {
 			}]
 		})
 
-		.config('json-process:clean', {
+		.run('json-process:clean', {
 			options: {
 				process: function (content, fpath, dest, fileObj) {
 					_.each(content, function (obj) {
@@ -94,7 +94,7 @@ module.exports = function (grunt) {
 			}]
 		})
 
-		.config('php_router_gen:specs', {
+		.run('php_router_gen:specs', {
 			options: {
 
 				map: function () {
@@ -177,7 +177,7 @@ module.exports = function (grunt) {
 			]
 		})
 
-		.config('php_router_gen:router', {
+		.run('php_router_gen:router', {
 			options: {
 
 				map: function () {
@@ -212,7 +212,7 @@ module.exports = function (grunt) {
 			]
 		})
 
-		.config('json-merge', {
+		.run('json-merge', {
 			options: {
 				outputJSON: path.TMP + '/api/router/routes.json',
 				array: true
@@ -223,13 +223,13 @@ module.exports = function (grunt) {
 			]
 		})
 
-		.config('clean:excess-router', [
+		.run('clean:excess-router', [
 			path.TMP + '/api/router/spec-routes.json'
 		])
 
 
 
-		.config('split-files:specs', {
+		.run('split-files:specs', {
 			options: {
 				process: function (content, fpath, dest, fileObj) {
 					var result = {};
@@ -255,7 +255,7 @@ module.exports = function (grunt) {
 			}]
 		})
 
-		.config('js-to-json', {
+		.run('js-to-json', {
 			files: [
 				{
 					expand: true,

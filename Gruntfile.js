@@ -28,7 +28,7 @@ var mkLauncher = function (grunt, prefix) {
 
 	var TARGET_EXP = /^([^:]+):([^:]+).*$/;
 
-	launcher.config = function (name, targetObj, addPref, add2alias) {
+	launcher.run = function (name, targetObj, addPref, add2alias) {
 		var targetName = '';
 
 		if (TARGET_EXP.test(name)) {
