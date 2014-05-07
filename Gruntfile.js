@@ -8,7 +8,7 @@ var paths = {
 	ROOT: cwd,
 	SRC: cwd + '/src',
 	DEPLOY: cwd + '/deploy',
-	LOCAL: cwd + '/_local',
+	DEV: cwd + '/.developer',
 	COMPILE: cwd + '/grunt',
 	BUILD: cwd + '/build',
 	TMP: cwd + '/tmp'

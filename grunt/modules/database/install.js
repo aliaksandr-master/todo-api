@@ -5,7 +5,7 @@ module.exports = function (grunt) {
 
 	this.run('mysql-schema', {
 		options: {
-			connection: path.LOCAL + '/configs/database/default.json',
+			connection: path.DEV + '/configs/database/default.json',
 			outputJSON: path.TMP + '/database/default.scheme.json'
 		}
 	});

@@ -16,7 +16,7 @@ abstract class DefaultDbModel extends BaseCrudModel  {
 
 	function getConnectDbParams () {
 		return
-			//#:injectData("_local/configs/database/default.json")
+			//#:injectData(".developer/configs/database/default.json")
 			array()
 			//injectData#
 			;

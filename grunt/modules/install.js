@@ -9,7 +9,7 @@ module.exports = function (grunt) {
 				expand: true,
 				cwd: path.SRC + '/configs',
 				src: '**/*.json',
-				dest: path.ROOT + '/_local/configs'
+				dest: path.DEV + '/configs'
 			}
 		]
 	});
