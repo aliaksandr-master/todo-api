@@ -1,7 +1,9 @@
 "use strict";
 
 module.exports = function (grunt) {
-	var path = this.path;
+	var path = this;
+
+	this.options('jshint', grunt.file.readJSON(path.CWD + '/.jshintrc'), true);
 
 	this.run('pragma:php', {
 		options: {
@@ -41,19 +43,20 @@ module.exports = function (grunt) {
 		]
 	}, false);
 
-	this.run('copy:build', {
+	this.run('copy', {
 		files: [
 			{
 				src: path.SRC + '/.htaccess',
 				dest: path.BUILD + '/.htaccess'
 			}
 		]
-	}, false, false);
+	}, false);
 
-	this.alias([
+	this.add([
 		'api/build',
 		'api/tester/build',
 //		'client/build',
-		'pragma:php'
+		'pragma:build/php',
+		'copy:build'
 	]);
 };

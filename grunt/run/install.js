@@ -1,44 +1,44 @@
 "use strict";
 
 module.exports = function (grunt) {
-	var path = this.path;
+	var opt = this;
 
 	this.run('copy-new-files:config', {
 		files: [
 			{
 				expand: true,
-				cwd: path.SRC + '/configs',
+				cwd: opt.SRC + '/configs',
 				src: '**/*.json',
-				dest: path.DEV + '/configs'
+				dest: opt.DEV + '/configs'
 			}
 		]
 	});
 
-	this.run('clean:installed', [
-		path.TMP
-	], false);
+	this.run('clean:temp', [
+		opt.TMP
+	]);
 
 	this.run('jshint:compile', {
 		src: [
-			path.CWD + '/Gruntfile.js',
-			path.GRUNT + '/**/*.{js,json}'
+			opt.CWD + '/Gruntfile.js',
+			opt.GRUNT + '/**/*.{js,json}'
 		]
-	}, false);
+	});
 
 	this.run('jshint:src', {
 		src: [
-			path.SRC + '/**/*.{js,json}',
-			'!' + path.SRC + '/client/static/vendor/**/*.{js,json}',
-			'!' + path.SRC + '/opt/**/*.{js,json}'
+			opt.SRC + '/**/*.{js,json}',
+			'!' + opt.SRC + '/client/static/vendor/**/*.{js,json}',
+			'!' + opt.SRC + '/opt/**/*.{js,json}'
 		]
-	}, false);
+	});
 
-	this.alias([
-		'jshint:compile',
-		'jshint:src',
+	this.add([
+		'jshint:install/compile',
+		'jshint:install/src',
 		'copy-new-files:install/config',
 
-		"clean:installed",
+		"clean:install/temp",
 		"opt/install",
 		"database/install",
 		"api/install",

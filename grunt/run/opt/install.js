@@ -1,7 +1,7 @@
 "use strict";
 
 module.exports = function () {
-	var path = this.path;
+	var path = this;
 
 	this.run('copy', {
 		options: {

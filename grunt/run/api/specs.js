@@ -1,7 +1,7 @@
 "use strict";
 
 module.exports = function (grunt) {
-	var path = this.path;
+	var path = this;
 
 	var _ = require('lodash');
 	var sha1 = require('sha1');

@@ -3,7 +3,7 @@
 
 module.exports = function (grunt) {
 
-	this.alias("build", [
+	this.add([
 		'api/realization',
 		"api/specs"
 	]);

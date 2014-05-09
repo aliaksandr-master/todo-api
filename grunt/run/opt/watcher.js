@@ -1,7 +1,7 @@
 "use strict";
 
 module.exports = function (grunt) {
-	var path = this.path;
+	var path = this;
 
 	this.run('watch', {
 		files: [

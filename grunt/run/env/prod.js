@@ -1,6 +1,6 @@
 "use strict";
 module.exports = function (grunt) {
-	var path = this.path;
+	var path = this;
 
 	this.run('copy', {
 		files: [
