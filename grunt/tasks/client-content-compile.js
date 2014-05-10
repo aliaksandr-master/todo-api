@@ -8,12 +8,9 @@ module.exports = function(grunt){
 
     var options = {
         expand: true,
-        cwd: global.SRC + "/client/content/",
-        src: [
-            "*.md",
-            "**/*.md"
-        ],
-        dest: global.BUILD + "/client/content/",
+        cwd: process.cwd() + "/src/client/content/",
+        src: [ "**/*.md" ],
+        dest: process.cwd() + "/build/client/content/",
         ext: "html",
         template: "template.hbs"
     };

@@ -14,7 +14,7 @@ define(function(require, exports, module){
 	}
 
 	var translates = {};
-	request.load('/var/lang.' + lang + '.json', 'self', true).then(function (json) {
+	request.load('/var/lang/' + lang + '.json', 'self', true).then(function (json) {
 		translates = json;
 	});
 

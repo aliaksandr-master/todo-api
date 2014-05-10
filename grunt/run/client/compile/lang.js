@@ -44,4 +44,13 @@ module.exports = function (grunt) {
 		]
 	});
 
+	this.run('copy', {
+		files: [{
+			expand: true,
+			cwd: opt.TMP + '/client/lang',
+			src: '*.json',
+			dest: opt.BUILD + '/client/var/lang'
+		}]
+	});
+
 };
