@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 module.exports = function (grunt) {
 	var opt = this;
@@ -38,12 +38,12 @@ module.exports = function (grunt) {
 		'jshint:install/src',
 		'copy-new-files:install/config',
 
-		"clean:install/temp",
-		"opt/install",
-		"database/install",
-		"api/install",
-		"api/tester/install",
-//		"client/install"
+		'clean:install/temp',
+		'opt/install',
+		'database/install',
+		'api/install',
+		'api/tester/install',
+		'client/install'
 	]);
 
 };

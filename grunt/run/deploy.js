@@ -1,24 +1,29 @@
-"use strict";
+'use strict';
 
 module.exports = function (grunt) {
 	var path = this;
 
 	this.alias('dev', [
-		"install",
-		"build",
-		"env/dev"
+		'install',
+		'build',
+		'deploy',
+		'env/dev'
 	], false);
 
 	this.alias('prod', [
-		"install",
-		"build",
-		"env/prod"
+		'install',
+		'deploy',
+		'env/prod'
 	], false);
 
 	this.alias('test', [
-		"install",
-		"build",
-		"env/test"
+		'env/test'
 	], false);
+
+	this.add([
+		'install',
+		'deploy',
+		'client/deploy'
+	]);
 
 };

@@ -243,15 +243,15 @@ module.exports = function (grunt, options) {
 			});
 
 			if (grumbleSq._$$sys) {
-				console.log('!!!', nestedSq);
+//				console.log('!!!', nestedSq);
 				nestedSq = nestedSq.concat(grumbleSq._$$sq);
-				console.log('>!!', nestedSq);
+//				console.log('>!!', nestedSq);
 				return;
 			}
 
 			var sq = grumbleSq._$$sq;
 			if (grumbleSq._$$name != null) {
-				console.log('>>', grumbleSq._$$name, sq);
+//				console.log('>>', grumbleSq._$$name, sq);
 				grunt.task.registerTask(grumbleSq._$$name, sq);
 				if (!grumbleSq._$$skip && sq.length) {
 					nestedSq.push(grumbleSq._$$name);
@@ -263,7 +263,7 @@ module.exports = function (grunt, options) {
 			}
 		});
 
-		console.log('!>', grumble._$$main._$$name, nestedSq);
+//		console.log('!>', grumble._$$main._$$name, nestedSq);
 		grunt.task.registerTask(grumble._$$main._$$name, nestedSq);
 	});
 

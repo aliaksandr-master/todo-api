@@ -55,7 +55,7 @@ module.exports = function (grunt) {
 	this.add([
 		'api/build',
 		'api/tester/build',
-//		'client/build',
+		'client/build',
 		'pragma:build/php',
 		'copy:build'
 	]);

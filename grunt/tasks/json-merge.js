@@ -1,47 +1,57 @@
-"use strict";
+'use strict';
 
 module.exports = function (grunt) {
-
 	grunt.task.registerMultiTask('json-merge', function () {
-
 		var _ = require('lodash');
-		var fileFilterer = require('../utils/task/fileFilterer');
+		var path = require('path');
+		var fileProcessor = require('../utils/task/gruntTaskFileProcessor')(this);
 		var logFileOk = require('../utils/task/logFileOk');
 
 		var options = this.options({
-			outputJSON: null,
+
+			processContent: function (content, fpath) {
+				return content;
+			},
+
+			processResult: function (result, dest) {
+				return result;
+			},
+
+			readFile: function (fpath) {
+				var json = {};
+				if (/\.json$/.test(fpath)) {
+					json = grunt.file.readJSON(fpath);
+				} else if (/\.js$/.test(fpath)) {
+					json = require(fpath);
+				} else {
+					grunt.fail.fatal('can\'t read file with extension ' + path.extname(fpath));
+				}
+				return json;
+			},
+
+			array: false,
+
 			deepMerge: true,
-			beauty: true
+
+			beautify: false
 		});
 
-		var result = null;
-		fileFilterer(grunt, this, function (fpath, dest, fileObj) {
-			var json = {};
-			if (/\.json$/.test(fpath)) {
-				json = grunt.file.readJSON(fpath);
-			}
-			if (/\.js$/.test(fpath)) {
-				json = require(fpath);
-			}
+		fileProcessor.configure({
+			blockMode: true,
+			readFile: options.readFile,
+			beautifyJSON: options.beautify,
+			processContent: options.processContent,
+			processResult: options.processResult
+		});
+
+		fileProcessor.each(function (fpath, json) {
+			var result = this.result == null ? (options.array ? [] : {}) : this.result;
 			if (options.array) {
-				if (result === null) {
-					result = [];
-				}
 				result = result.concat(json);
 			} else {
-				if (result === null) {
-					result = {};
-				}
 				result = options.deepMerge ? _.merge(result, json) : _.extend(result, json);
 			}
+			return result;
 		});
-
-		if (options.outputJSON) {
-			grunt.file.write(options.outputJSON, JSON.stringify(result, null, options.beauty ? 4 : null));
-			logFileOk(options.outputJSON);
-		} else {
-			grunt.fail.fatal('dest or outputJSON is undefined');
-		}
-
 	});
 };

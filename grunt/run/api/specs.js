@@ -36,16 +36,12 @@ module.exports = function (grunt) {
 		})
 
 		.run('json-merge:make-common', {
-			options: {
-				outputJSON: path.TMP + '/api/specs-merged.json'
-			},
-			files: [
-				{
-					expand: true,
-					cwd: path.TMP + '/api/specs/',
-					src: '**/*.json'
-				}
-			]
+			files: [{
+				expand: true,
+				cwd: path.TMP + '/api/specs/',
+				src: '**/*.json',
+				dest: path.TMP + '/api/specs-merged.json'
+			}]
 		})
 
 		.run('split-files:spec-routes', {
@@ -214,20 +210,20 @@ module.exports = function (grunt) {
 
 		.run('json-merge', {
 			options: {
-				outputJSON: path.TMP + '/api/router/routes.json',
 				array: true
 			},
-			files: [
-				{src: path.TMP + '/api/router/spec-routes.json'},
-				{src: path.TMP + '/api/router/routes.json'}
-			]
+			files: [{
+				src: [
+					path.TMP + '/api/router/spec-routes.json',
+					path.TMP + '/api/router/routes.json'
+				],
+				dest: path.TMP + '/api/router/routes.json'
+			}]
 		})
 
 		.run('clean:excess-router', [
 			path.TMP + '/api/router/spec-routes.json'
 		])
-
-
 
 		.run('split-files:specs', {
 			options: {

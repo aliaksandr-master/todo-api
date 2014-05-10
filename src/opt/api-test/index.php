@@ -34,5 +34,7 @@ define('ROOT_URL', "/api/");
 	<script src="assets/utils.js"></script>
 	<script src="assets/tester.js"></script>
 </head>
-<body></body>
+<body>
+
+</body>
 </html>
