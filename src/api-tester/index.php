@@ -1,11 +1,25 @@
 <!DOCTYPE html>
 <?php
+
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
-define('ROOT', __DIR__);
+require_once('../opt/helpers/dump.php');
+require_once('../opt/helpers/FsHelper.php');
+
+define('DS', '/');
+define('SD', '\\');
+define('ROOT', FsHelper::normalizePath(__DIR__));
 define('MY_ROOT_URL', "/api-test/");
 define('ROOT_URL', "/api/");
+
+$templatesDir = ROOT.DS.'static'.DS.'templates';
+$expand = FsHelper::expand($templatesDir);
+
+$files = FsHelper::expandResult($expand);
+
+$files = FsHelper::mapFilesResult($files, FsHelper::REL_FILES_LIST, DS);
+
 ?>
 <html>
 <head>
@@ -18,14 +32,10 @@ define('ROOT_URL', "/api/");
         window.API_JSON = <?php echo(file_get_contents('var/specs.json')); ?>;
         window.API_ROUTES_JSON = <?php echo(file_get_contents('var/routes.json')); ?>;
     </script>
-    <script type="text/plain" id="template-main"><?php include('static/templates/main.hbs'); ?></script>
-    <script type="text/plain" id="template-menu"><?php include('static/templates/menu.hbs'); ?></script>
-    <script type="text/plain" id="template-panel"><?php include('static/templates/panel.hbs'); ?></script>
-    <script type="text/plain" id="template-form-cover"><?php include('static/templates/form/cover.hbs'); ?></script>
-    <script type="text/plain" id="template-form-field"><?php include('static/templates/form/field.hbs'); ?></script>
-    <script type="text/plain" id="template-form-select"><?php include('static/templates/form/select.hbs'); ?></script>
-    <script type="text/plain" id="template-form-text"><?php include('static/templates/form/text.hbs'); ?></script>
-    <script type="text/plain" id="template-form-toggle"><?php include('static/templates/form/toggle.hbs'); ?></script>
+	<?php foreach ($files as $fileSrc) {
+		$content = file_get_contents($templatesDir.$fileSrc);
+		?><script type="text/x-handlebars-template" data-src="<?php echo($fileSrc); ?>"><?php echo($content); ?></script><?php
+	}?>
 	<script src="vendor/lodash/lodash.js"></script>
 	<script src="vendor/jquery/jquery.js"></script>
 	<script src="vendor/handlebars/handlebars.js"></script>

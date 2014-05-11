@@ -7,11 +7,11 @@
 		main: template('main'),
 		menu: template('menu'),
 		form: {
-			field: template('form-field'),
-			textarea: template('form-text'),
-			cover: template('form-cover'),
-			toggle: template('form-toggle'),
-			select: template('form-select')
+			field: template('form/field'),
+			textarea: template('form/text'),
+			cover: template('form/cover'),
+			toggle: template('form/toggle'),
+			select: template('form/select')
 		}
 	};
 

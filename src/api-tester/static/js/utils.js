@@ -22,7 +22,7 @@
 			return function(params){
 				params || (params = {});
 				if(!tplMemo.hasOwnProperty(path)){
-					tplMemo[path] = Handlebars.compile($('#template-' + path).html());
+					tplMemo[path] = Handlebars.compile($('script[data-src="/' + path + '.hbs"]').html());
 				}
 				return tplMemo[path](params);
 			};
