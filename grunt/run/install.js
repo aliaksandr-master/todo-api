@@ -27,7 +27,7 @@ module.exports = function (grunt) {
 		src: [
 			opt.SRC + '/**/*.{js,json}',
 			'!' + opt.SRC + '/client/static/vendor/**/*.{js,json}',
-			'!' + opt.SRC + '/opt/**/*.{js,json}'
+			'!' + opt.SRC + '/api-tester/vendor/**/*.{js,json}'
 		]
 	});
 

@@ -279,114 +279,114 @@
 			}, '#form-head');
 
 			return;
-			var curr = nameMap[currName];
-
-			this.$("#mainHeader").html(curr);
-			var data = SPECS[nameMap[currName]];
-			var method = curr.replace(/([a-z]+)\s+(.+)/i, '$1');
-			var url = curr.replace(/([a-z]+)\s+(.+)/i, '$2');
-
-			var counter = 1;
-			url = url.replace(/\$[^\/]+/g, function($0){
-				if(/id/i.test($0)){
-					return counter++;
-				}
-				return $0;
-			});
-			$form.attr('action', window.API_ROOT + url + "/");
-			$form.attr('method', method);
-
-			if(data["request"]){
-				var setRandValue = function($elem, type, v, isValidData, isPrev, value){
-					if (!isPrev) {
-						if (/email/.test(v)) {
-							if(isValidData){
-								value = window.randomString(10) + '@' + window.randomString(5) + '.' + window.randomString(3);
-							} else {
-								value = window.randomString(10);
-							}
-						} else if (/decimal|float|integer/.test(type)) {
-							if (isValidData) {
-								value = window.randomInteger(0, 1000);
-							} else {
-								value = window.randomString(10, false);
-							}
-						} else if (/text|string/.test(type)){
-							if (isValidData) {
-								value = window.randomString(10, true);
-							} else {
-								value = window.randomInteger(0, 1000);
-							}
-						}
-					}
-					$elem.val(value);
-				};
-
-				this.$('.putData').on('click', function () {
-					var isValidData = that.$(this).hasClass('-valid');
-					var isPrevData = $(this).hasClass('-prev');
-					var prevData = window.loadSendDataToStore();
-					$.each(data['request'], function (k, v) {
-						if (!/^\$/.test(k)) {
-							var name = k.replace(/^([\w\d]+)\:?(.+)$/, '$1');
-							var type = k.replace(/^([\w\d]+)\:?(.+)$/, '$2');
-							var $elem = $form.find('[name="'+name+'"]');
-							if (/boolean/.test(type)) {
-								$elem.filter('[value="'+(window.randomBoolean() * 1)+'"]').click();
-							} else {
-								if (_.isArray(v)) {
-									v = v.join('|');
-								}
-								if (isPrevData) {
-									var findName = false;
-									_.each(prevData, function(v){
-										if(v.name === name){
-											findName = true;
-											setRandValue($elem, type, v, isValidData, true, v.value);
-											return false;
-										}
-									});
-								} else {
-									setRandValue($elem, type, v, isValidData, false, '');
-								}
-							}
-						}
-					});
-				});
-
-				var formElement = '';
-				$.each(data['request'], function(k, v){
-					if(!/^\$/.test(k)){
-						var name = k.replace(/^([\w\d]+)\:?(.+)$/, '$1');
-						var type = k.replace(/^([\w\d]+)\:?(.+)$/, '$2');
-						if(/boolean/.test(type)){
-							formElement += tpl.form.cover({
-								type: type,
-								content: tpl.form.toggle({
-									label: name,
-									name: name
-								})
-							});
-						}else{
-							formElement += tpl.form.cover({
-								type: type,
-								content: tpl.form.field({
-									label: name,
-									placeholder: type,
-									type: 'text',
-									name: name
-								})
-							});
-						}
-					}
-				});
-				$formContent.html(formElement);
-				if(!formElement){
-					this.$('.putData').remove();
-				}
-			} else {
-				this.$('.putData').remove();
-			}
+//			var curr = nameMap[currName];
+//
+//			this.$("#mainHeader").html(curr);
+//			var data = SPECS[nameMap[currName]];
+//			var method = curr.replace(/([a-z]+)\s+(.+)/i, '$1');
+//			var url = curr.replace(/([a-z]+)\s+(.+)/i, '$2');
+//
+//			var counter = 1;
+//			url = url.replace(/\$[^\/]+/g, function($0){
+//				if(/id/i.test($0)){
+//					return counter++;
+//				}
+//				return $0;
+//			});
+//			$form.attr('action', window.API_ROOT + url + "/");
+//			$form.attr('method', method);
+//
+//			if(data["request"]){
+//				var setRandValue = function($elem, type, v, isValidData, isPrev, value){
+//					if (!isPrev) {
+//						if (/email/.test(v)) {
+//							if(isValidData){
+//								value = window.randomString(10) + '@' + window.randomString(5) + '.' + window.randomString(3);
+//							} else {
+//								value = window.randomString(10);
+//							}
+//						} else if (/decimal|float|integer/.test(type)) {
+//							if (isValidData) {
+//								value = window.randomInteger(0, 1000);
+//							} else {
+//								value = window.randomString(10, false);
+//							}
+//						} else if (/text|string/.test(type)){
+//							if (isValidData) {
+//								value = window.randomString(10, true);
+//							} else {
+//								value = window.randomInteger(0, 1000);
+//							}
+//						}
+//					}
+//					$elem.val(value);
+//				};
+//
+//				this.$('.putData').on('click', function () {
+//					var isValidData = that.$(this).hasClass('-valid');
+//					var isPrevData = $(this).hasClass('-prev');
+//					var prevData = window.loadSendDataToStore();
+//					$.each(data['request'], function (k, v) {
+//						if (!/^\$/.test(k)) {
+//							var name = k.replace(/^([\w\d]+)\:?(.+)$/, '$1');
+//							var type = k.replace(/^([\w\d]+)\:?(.+)$/, '$2');
+//							var $elem = $form.find('[name="'+name+'"]');
+//							if (/boolean/.test(type)) {
+//								$elem.filter('[value="'+(window.randomBoolean() * 1)+'"]').click();
+//							} else {
+//								if (_.isArray(v)) {
+//									v = v.join('|');
+//								}
+//								if (isPrevData) {
+//									var findName = false;
+//									_.each(prevData, function(v){
+//										if(v.name === name){
+//											findName = true;
+//											setRandValue($elem, type, v, isValidData, true, v.value);
+//											return false;
+//										}
+//									});
+//								} else {
+//									setRandValue($elem, type, v, isValidData, false, '');
+//								}
+//							}
+//						}
+//					});
+//				});
+//
+//				var formElement = '';
+//				$.each(data['request'], function(k, v){
+//					if(!/^\$/.test(k)){
+//						var name = k.replace(/^([\w\d]+)\:?(.+)$/, '$1');
+//						var type = k.replace(/^([\w\d]+)\:?(.+)$/, '$2');
+//						if(/boolean/.test(type)){
+//							formElement += tpl.form.cover({
+//								type: type,
+//								content: tpl.form.toggle({
+//									label: name,
+//									name: name
+//								})
+//							});
+//						}else{
+//							formElement += tpl.form.cover({
+//								type: type,
+//								content: tpl.form.field({
+//									label: name,
+//									placeholder: type,
+//									type: 'text',
+//									name: name
+//								})
+//							});
+//						}
+//					}
+//				});
+//				$formContent.html(formElement);
+//				if(!formElement){
+//					this.$('.putData').remove();
+//				}
+//			} else {
+//				this.$('.putData').remove();
+//			}
 		},
 
 		events: {
@@ -461,11 +461,11 @@
 				this.$("#response").text(response);
 				this.$("#responseHTML").html(response);
 			}
-			this.$('#sendInfo').html(window.jsonFormat({
-				time: (Date.now() - time)/1000,
-				encoding: jqXHR.getResponseHeader('Content-Encoding'),
-				compress: (100 - Math.round((+jqXHR.getResponseHeader('Content-Length') / jqXHR.responseText.length)*100)) + '%'
-			}));
+//			this.$('#sendInfo').html(window.jsonFormat({
+//				time: (Date.now() - time)/1000,
+//				encoding: jqXHR.getResponseHeader('Content-Encoding'),
+//				compress: (100 - Math.round((+jqXHR.getResponseHeader('Content-Length') / jqXHR.responseText.length)*100)) + '%'
+//			}));
 		},
 
 		onRequestError: function (requestObj, jqXHR) {
@@ -496,7 +496,7 @@
 			);
 			this.$("#response").text(jqXHR.responseText);
 			this.$('#sendInfo').html(window.jsonFormat({
-				time: (Date.now() - time)/1000
+//				time: (Date.now() - time)/1000
 			}));
 		},
 

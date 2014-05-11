@@ -12,7 +12,7 @@ module.exports = function (grunt) {
 			},
 			files: [{
 				src: opt.TMP + '/api/specs-merged.json',
-				dest: opt.BUILD + '/api-test/var/specs.json'
+				dest: opt.BUILD + '/api-tester/var/specs.json'
 			}]
 		})
 
@@ -22,7 +22,7 @@ module.exports = function (grunt) {
 			},
 			files: [{
 				src: opt.TMP + '/api/router/routes.json',
-				dest: opt.BUILD + '/api-test/var/routes.json'
+				dest: opt.BUILD + '/api-tester/var/routes.json'
 			}]
 		});
 };

@@ -1,6 +1,6 @@
 "use strict";
 
-(function(window, $, _){
+(function(window, $, _, Handlebars){
 
 	window.spec = function(){
 		var result = {};
@@ -72,7 +72,7 @@
 	};
 
 	window.randomBoolean = function(){
-		return!!(window.randomInteger(0, 2) - 1);
+		return Boolean(window.randomInteger(0, 2) - 1);
 	};
 
 	var prevData = [];
@@ -117,9 +117,7 @@
 						return '';
 					}
 				};
-				for (key in queryParams) {
-					if (!Object.prototype.hasOwnProperty.call(queryParams, key)) continue;
-					value = queryParams[key];
+				_.each(queryParams, function (value, key) {
 					encodedKey = encodeURIComponent(key);
 					if (_.isArray(value)) {
 						for (_i = 0, _len = value.length; _i < _len; _i++) {
@@ -129,7 +127,7 @@
 					} else {
 						query += stringifyKeyValuePair(encodedKey, value);
 					}
-				}
+				});
 				return query && query.substring(1);
 			},
 			parse: function(queryString) {
@@ -196,4 +194,4 @@
 		}
 	};
 
-})(window, window.jQuery, window._);
+})(window, window.jQuery, window._, window.Handlebars);

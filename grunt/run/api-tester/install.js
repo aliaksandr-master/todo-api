@@ -5,7 +5,7 @@ module.exports = function (grunt) {
 
 	this
 		.run('clean', [
-			opt.BUILD + '/api-test'
+			opt.BUILD + '/api-tester'
 		])
 
 		.run('copy', {
@@ -14,12 +14,12 @@ module.exports = function (grunt) {
 			},
 			files: [{
 				expand: true,
-				cwd: opt.SRC + '/opt/api-test',
+				cwd: opt.SRC + '/api-tester',
 				src: [
 					'**/*.{php,html,htaccess,hbs,js,css,eot,svg,ttf,woff,otf}',
 					'**/.htaccess'
 				],
-				dest: opt.BUILD + '/api-test'
+				dest: opt.BUILD + '/api-tester'
 			}]
 		});
 };
