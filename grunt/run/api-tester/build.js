@@ -25,4 +25,8 @@ module.exports = function (grunt) {
 				dest: opt.BUILD + '/api-tester/var/routes.json'
 			}]
 		});
+
+	this.add([
+		'api-tester/compile/static'
+	]);
 };

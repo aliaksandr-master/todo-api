@@ -20,6 +20,7 @@
 	window.templateCompiler = function(path, isRemote){
 		if(!isRemote){
 			return function(params){
+				path = path.replace(/^\/+|\.hbs$/g, '');
 				params || (params = {});
 				if(!tplMemo.hasOwnProperty(path)){
 					tplMemo[path] = Handlebars.compile($('script[data-src="/' + path + '.hbs"]').html());

@@ -36,6 +36,7 @@ $files = FsHelper::mapFilesResult($files, FsHelper::REL_FILES_LIST, DS);
 		$content = file_get_contents($templatesDir.$fileSrc);
 		?><script type="text/x-handlebars-template" data-src="<?php echo($fileSrc); ?>"><?php echo($content); ?></script><?php
 	}?>
+
 	<script src="vendor/lodash/lodash.js"></script>
 	<script src="vendor/jquery/jquery.js"></script>
 	<script src="vendor/handlebars/handlebars.js"></script>
@@ -44,7 +45,5 @@ $files = FsHelper::mapFilesResult($files, FsHelper::REL_FILES_LIST, DS);
 	<script src="static/js/utils.js"></script>
 	<script src="static/js/tester.js"></script>
 </head>
-<body>
-
-</body>
+<body></body>
 </html>
