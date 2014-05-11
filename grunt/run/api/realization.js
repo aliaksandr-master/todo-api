@@ -14,19 +14,17 @@ module.exports = function (grunt) {
 		options: {
 			excludeEmpty: true
 		},
-		files: [
-			{
-				expand: true,
-				cwd: opt.SRC + '/api/',
-				src: [
-					'controllers/**/*.php',
-					'models/**/*.php',
-					'.htaccess',
-					'index.php'
-				],
-				dest: opt.BUILD + '/api/'
-			}
-		]
+		files: [{
+			expand: true,
+			cwd: opt.SRC + '/api/',
+			src: [
+				'controllers/**/*.php',
+				'models/**/*.php',
+				'.htaccess',
+				'index.php'
+			],
+			dest: opt.BUILD + '/api/'
+		}]
 	});
 
 	this.run('find-php-classes', {
@@ -46,11 +44,9 @@ module.exports = function (grunt) {
 	});
 
 	this.run('json2php', {
-		files: [
-			{
-				src:  opt.TMP + '/classes/api.json',
-				dest: opt.BUILD + '/api/var/classes.php'
-			}
-		]
+		files: [{
+			src:  opt.TMP + '/classes/api.json',
+			dest: opt.BUILD + '/api/var/classes.php'
+		}]
 	});
 };

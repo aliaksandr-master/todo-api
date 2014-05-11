@@ -23,12 +23,10 @@ module.exports = function (grunt) {
 		src: [
 			opt.BUILD + '/client/static/index.html'
 		],
-		replacements: [
-			{
-				from: 'static/',
-				to: 'static-' + opt.buildTimestamp + '/'
-			}
-		]
+		replacements: [{
+			from: 'static/',
+			to: 'static-' + opt.buildTimestamp + '/'
+		}]
 	});
 
 };

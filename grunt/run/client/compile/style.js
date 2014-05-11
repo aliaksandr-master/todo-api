@@ -12,17 +12,15 @@ module.exports = function (grunt) {
 	]);
 
 	this.run('copy', {
-		files: [
-			{
-				expand: true,
-				cwd: opt.SRC + "/client/",
-				src: [
-					'**/*.css',
-					'*.css'
-				],
-				dest: opt.BUILD + "/client/"
-			}
-		]
+		files: [{
+			expand: true,
+			cwd: opt.SRC + "/client/",
+			src: [
+				'**/*.css',
+				'*.css'
+			],
+			dest: opt.BUILD + "/client/"
+		}]
 	});
 
 	this.run('less', {
@@ -34,34 +32,28 @@ module.exports = function (grunt) {
 			strictUnits: true,
 			strictImports: true,
 			rootpath: '',
-			paths: [
-				opt.SRC + '/client/static/client'
-			]
+			paths: [ opt.SRC + '/client/static/client' ]
 		},
-		files: [
-			{
-				expand: true,
-				cwd: opt.SRC + "/client/static/styles",
-				src: [
-					'*.less',
-					'**/*.less'
-				],
-				dest: opt.BUILD + '/client/static/styles',
-				ext: '.css'
-			}
-		]
+		files: [{
+			expand: true,
+			cwd: opt.SRC + "/client/static/styles",
+			src: [
+				'*.less',
+				'**/*.less'
+			],
+			dest: opt.BUILD + '/client/static/styles',
+			ext: '.css'
+		}]
 	});
 
 	this.run('copy:fonts', {
-		files: [
-			{
-				expand: true,
-				cwd: opt.SRC + "/client/static/",
-				src: '**/*.{ttf,svg,eot,woff}',
-				dest: opt.BUILD + "/client/static/fonts/",
-				flatten: true
-			}
-		]
+		files: [{
+			expand: true,
+			cwd: opt.SRC + "/client/static/",
+			src: '**/*.{ttf,svg,eot,woff}',
+			dest: opt.BUILD + "/client/static/fonts/",
+			flatten: true
+		}]
 	});
 
 	this.run('replace:fonts', {
@@ -69,25 +61,23 @@ module.exports = function (grunt) {
 		src: [
 			opt.BUILD + '/client/static/**/*.css'
 		],
-		replacements: [
-			{
-				from: /url\s*\([^\)]+\)/gi,
-				to: function($0){
-					$0 = $0.replace(/^url/,"");
-					var url = $0.replace(/['"\s\(\)]+/g, "").trim();
-					var fileName;
-					// FONTS
-					if(/\.(woff|ttf|eot|svg)/.test(url)){
-						fileName = url.split(/[\/\\]+/).pop();
-						url = '/client/static-'+opt.buildTimestamp+'/fonts/'+fileName;
-					}else if(/^[\/\\]*static\//.test(url) && /\.(png|jpg|jpeg|gif)/.test(url)){
-						url = url.replace(/([\/\\]?)static[\\\/]]/,'$1static-' + opt.buildTimestamp +'/');
-					}
-					//							console.log($0,'  url: ',url);
-					return "url('"+url+"')";
+		replacements: [{
+			from: /url\s*\([^\)]+\)/gi,
+			to: function($0){
+				$0 = $0.replace(/^url/,"");
+				var url = $0.replace(/['"\s\(\)]+/g, "").trim();
+				var fileName;
+				// FONTS
+				if(/\.(woff|ttf|eot|svg)/.test(url)){
+					fileName = url.split(/[\/\\]+/).pop();
+					url = '/client/static-'+opt.buildTimestamp+'/fonts/'+fileName;
+				}else if(/^[\/\\]*static\//.test(url) && /\.(png|jpg|jpeg|gif)/.test(url)){
+					url = url.replace(/([\/\\]?)static[\\\/]]/,'$1static-' + opt.buildTimestamp +'/');
 				}
+				//							console.log($0,'  url: ',url);
+				return "url('"+url+"')";
 			}
-		]
+		}]
 	});
 
 	this.run('autoprefixer', {

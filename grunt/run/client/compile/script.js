@@ -26,14 +26,12 @@ module.exports = function (grunt) {
 	]);
 
 	this.run('copy', {
-		files: [
-			{
-				expand: true,
-				cwd: opt.SRC + "/client/static/js/",
-				src: '**/*.js',
-				dest: opt.BUILD + "/client/static/js/"
-			}
-		]
+		files: [{
+			expand: true,
+			cwd: opt.SRC + "/client/static/js/",
+			src: '**/*.js',
+			dest: opt.BUILD + "/client/static/js/"
+		}]
 	});
 
 	this.run('replace', {

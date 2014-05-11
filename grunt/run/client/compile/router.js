@@ -11,12 +11,10 @@ module.exports = function (grunt) {
 				}
 			}
 		},
-		files: [
-			{
-				src: opt.GRUNT + '/assets/client/route.tpl',
-				dest: opt.BUILD + '/client/static/js/routes.js'
-			}
-		]
+		files: [{
+			src: opt.GRUNT + '/assets/client/route.tpl',
+			dest: opt.BUILD + '/client/static/js/routes.js'
+		}]
 	});
 
 };

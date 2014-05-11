@@ -19,14 +19,12 @@ module.exports = function (grunt) {
 	});
 
 	this.run('copy', {
-		files: [
-			{
-				expand: true,
-				cwd: opt.SRC + "/client/static/vendor",
-				src: '**/*',
-				dest: opt.BUILD + "/client/static/vendor"
-			}
-		]
+		files: [{
+			expand: true,
+			cwd: opt.SRC + "/client/static/vendor",
+			src: '**/*',
+			dest: opt.BUILD + "/client/static/vendor"
+		}]
 	});
 
 };

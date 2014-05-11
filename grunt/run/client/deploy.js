@@ -49,13 +49,11 @@ module.exports = function (grunt) {
 			appDir: opt.BUILD + '/client/static',
 			baseUrl: 'js',
 			dir: opt.DEPLOY + '/client/static',
-			modules: [
-				{
-					name: 'main',
-					include: include,
-					insertRequire: ['main']
-				}
-			],
+			modules: [{
+				name: 'main',
+				include: include,
+				insertRequire: ['main']
+			}],
 			mainConfigFile: opt.DEPLOY + '/client/static/js/config.js',
 			almond: true,
 			optimize: 'uglify2',

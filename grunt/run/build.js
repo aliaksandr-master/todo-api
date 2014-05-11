@@ -31,25 +31,21 @@ module.exports = function (grunt) {
 				}
 			}
 		},
-		files: [
-			{
-				expand: true,
-				cwd: opt.BUILD,
-				src: [
-					'**/*.php'
-				],
-				dest: opt.BUILD
-			}
-		]
+		files: [{
+			expand: true,
+			cwd: opt.BUILD,
+			src: [
+				'**/*.php'
+			],
+			dest: opt.BUILD
+		}]
 	}, false);
 
 	this.run('copy', {
-		files: [
-			{
-				src: opt.SRC + '/.htaccess',
-				dest: opt.BUILD + '/.htaccess'
-			}
-		]
+		files: [{
+			src: opt.SRC + '/.htaccess',
+			dest: opt.BUILD + '/.htaccess'
+		}]
 	}, false);
 
 	this.add([

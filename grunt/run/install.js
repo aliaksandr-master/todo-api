@@ -4,14 +4,12 @@ module.exports = function (grunt) {
 	var opt = this;
 
 	this.run('copy-new-files:config', {
-		files: [
-			{
-				expand: true,
-				cwd: opt.SRC + '/configs',
-				src: '**/*.json',
-				dest: opt.DEV + '/configs'
-			}
-		]
+		files: [{
+			expand: true,
+			cwd: opt.SRC + '/configs',
+			src: '**/*.json',
+			dest: opt.DEV + '/configs'
+		}]
 	});
 
 	this.run('clean:temp', [

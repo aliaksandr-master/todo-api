@@ -15,15 +15,12 @@ module.exports = function (grunt) {
 				return content.replace(/^[\x20\t]+/mg, '').replace(/[\x20\t]+$/mg, '').replace(/[\r\n]+/g, '');
 			}
 		},
-
-		files: [
-			{
-				expand: true,
-				cwd: opt.SRC + "/client/static/templates",
-				src: '**/*.hbs',
-				dest: opt.BUILD + '/client/static/templates',
-				ext: '.js'
-			}
-		]
+		files: [{
+			expand: true,
+			cwd: opt.SRC + "/client/static/templates",
+			src: '**/*.hbs',
+			dest: opt.BUILD + '/client/static/templates',
+			ext: '.js'
+		}]
 	});
 };

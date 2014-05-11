@@ -33,15 +33,13 @@ module.exports = function (grunt) {
 		options: {
 			beautify: true
 		},
-		files: [
-			{
-				src: [
-					opt.TMP + '/client/lang/en.json',
-					opt.TMP + '/client/lang/ru.json'
-				],
-				dest: opt.TMP + '/client/lang/ru.json'
-			}
-		]
+		files: [{
+			src: [
+				opt.TMP + '/client/lang/en.json',
+				opt.TMP + '/client/lang/ru.json'
+			],
+			dest: opt.TMP + '/client/lang/ru.json'
+		}]
 	});
 
 	this.run('copy', {

@@ -10,9 +10,7 @@ module.exports = function (grunt) {
 	this
 
 		.run('jshint', {
-			src: [
-				opt.SRC + '/api/controllers/**/*.spec.{js,json}'
-			]
+			src: [ opt.SRC + '/api/controllers/**/*.spec.{js,json}' ]
 		})
 
 		.run('api-specs-compiler', {
@@ -21,18 +19,16 @@ module.exports = function (grunt) {
 				verbose: false
 			}, require(opt.SRC + '/api/controllers/spec-options.js')),
 
-			files: [
-				{
-					expand: true,
-					flatten: true,
-					cwd: opt.SRC + '/api/controllers',
-					src: [
-						'**/*.spec.{json,raml,yaml,js}'
-					],
-					ext: '.json',
-					dest: opt.TMP + '/api/specs/'
-				}
-			]
+			files: [{
+				expand: true,
+				flatten: true,
+				cwd: opt.SRC + '/api/controllers',
+				src: [
+					'**/*.spec.{json,raml,yaml,js}'
+				],
+				ext: '.json',
+				dest: opt.TMP + '/api/specs/'
+			}]
 		})
 
 		.run('json-merge:make-common', {
@@ -92,7 +88,6 @@ module.exports = function (grunt) {
 
 		.run('php_router_gen:specs', {
 			options: {
-
 				map: function () {
 					var json = grunt.file.readJSON(opt.TMP + '/api/specs-merged.json');
 					var result = {};
@@ -155,27 +150,21 @@ module.exports = function (grunt) {
 
 						routes.push(rowObj);
 					});
-
 					return routes; // must be [{method: 'get', url: '/needed/url/string', name: 'resource.name'}]
 				},
-
 				caseSensitive: true,
 				unicodeSensitive: true,
 				trailingSensitive: false,
-
 				beautify: true
 			},
-			files: [
-				{
-					src: opt.SRC + '/api/routes.txt',
-					dest: opt.TMP + '/api/router/routes.json'
-				}
-			]
+			files: [{
+				src: opt.SRC + '/api/routes.txt',
+				dest: opt.TMP + '/api/router/routes.json'
+			}]
 		})
 
 		.run('php_router_gen:router', {
 			options: {
-
 				map: function () {
 					var json = grunt.file.readJSON(opt.TMP + '/api/specs-merged.json');
 					var result = {};
@@ -186,26 +175,21 @@ module.exports = function (grunt) {
 
 					return result;
 				},
-
 				aliases: {
 					"": "[^\/]+",
 					"decimal": "[0-9]+"
 				},
-
 				caseSensitive: true,
 				unicodeSensitive: true,
 				trailingSensitive: false,
-
 				beautify: false
 			},
-			files: [
-				{
-					expand: true,
-					cwd: opt.TMP + '/api',
-					src: 'spec-routes.json',
-					dest: opt.TMP + '/api/router/'
-				}
-			]
+			files: [{
+				expand: true,
+				cwd: opt.TMP + '/api',
+				src: 'spec-routes.json',
+				dest: opt.TMP + '/api/router/'
+			}]
 		})
 
 		.run('json-merge', {
@@ -239,7 +223,6 @@ module.exports = function (grunt) {
 					return result;
 				}
 			},
-
 			files: [{
 				expand: true,
 				cwd: opt.TMP + '/api/specs/',
@@ -252,18 +235,16 @@ module.exports = function (grunt) {
 		})
 
 		.run('js-to-json', {
-			files: [
-				{
-					expand: true,
-					flatten: true,
-					cwd: opt.SRC + '/api/',
-					src: [
-						'controllers/spec-options.js'
-					],
-					dest: opt.TMP + '/api/',
-					ext: '.json'
-				}
-			]
+			files: [{
+				expand: true,
+				flatten: true,
+				cwd: opt.SRC + '/api/',
+				src: [
+					'controllers/spec-options.js'
+				],
+				dest: opt.TMP + '/api/',
+				ext: '.json'
+			}]
 		});
 
 };

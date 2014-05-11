@@ -8,12 +8,10 @@ module.exports = function (grunt) {
 			excludeEmpty: true
 		},
 
-		files: [
-			{
-				src: this.SRC + '/client/.htaccess',
-				dest: this.BUILD + '/client/.htaccess'
-			}
-		]
+		files: [{
+			src: this.SRC + '/client/.htaccess',
+			dest: this.BUILD + '/client/.htaccess'
+		}]
 	});
 
 };
