@@ -16,7 +16,9 @@ module.exports = function (grunt) {
 				expand: true,
 				cwd: opt.SRC + '/api-tester',
 				src: [
-					'**/*.{php,html,htaccess,hbs,js,css,eot,svg,ttf,woff,otf}',
+					'static/**/*',
+					'vendor/**/*',
+					'*php',
 					'**/.htaccess'
 				],
 				dest: opt.BUILD + '/api-tester'

@@ -1,7 +1,10 @@
-Options +FollowSymlinks
+Options -MultiViews
 
-RewriteEngine On
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^.*$ index.php [L]
+# Block access to hidden files and directories.
+# This includes directories used by version control systems such as Git and SVN.
+
+RewriteCond %{SCRIPT_FILENAME} -d [OR]
+RewriteCond %{SCRIPT_FILENAME} -f
+RewriteRule "(^|/)\." - [F]

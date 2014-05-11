@@ -2,10 +2,8 @@
 
 module.exports = function (grunt) {
 	var opt = this;
-	var _ = require('lodash');
 
 	this
-
 		.run('json-process:specs', {
 			options: {
 				beautify: true
@@ -15,7 +13,6 @@ module.exports = function (grunt) {
 				dest: opt.BUILD + '/api-tester/var/specs.json'
 			}]
 		})
-
 		.run('json-process:routes', {
 			options: {
 				beautify: true

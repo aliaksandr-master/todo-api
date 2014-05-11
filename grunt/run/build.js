@@ -41,7 +41,7 @@ module.exports = function (grunt) {
 		}]
 	}, false);
 
-	this.run('copy', {
+	this.run('copy:htaccess', {
 		files: [{
 			src: opt.SRC + '/.htaccess',
 			dest: opt.BUILD + '/.htaccess'
@@ -53,6 +53,6 @@ module.exports = function (grunt) {
 		'api-tester/build',
 		'client/build',
 		'pragma:build/php',
-		'copy:build'
+		'copy:build/htaccess'
 	]);
 };
