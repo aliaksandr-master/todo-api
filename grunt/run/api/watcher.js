@@ -1,11 +1,11 @@
 "use strict";
 
 module.exports = function (grunt) {
-	var path = this;
+	var opt = this;
 
 	this.run('watch:specs', {
 		files: [
-			path.SRC + '/api/**/*.spec.{json,js}'
+			opt.SRC + '/api/**/*.spec.{json,js}'
 		],
 		tasks: [
 			'api/specs'
@@ -14,7 +14,7 @@ module.exports = function (grunt) {
 
 	this.run('watch:php', {
 		files: [
-			path.SRC + '/api/**/*.php'
+			opt.SRC + '/api/**/*.php'
 		],
 		tasks: [
 			'api/build',

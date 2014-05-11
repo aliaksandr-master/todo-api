@@ -1,17 +1,17 @@
 "use strict";
 
 module.exports = function (grunt) {
-	var path = this;
+	var opt = this;
 
 	var _ = require('lodash');
 	var sha1 = require('sha1');
-	var json2php = require(path.GRUNT + "/utils/json2php.js");
+	var json2php = require(opt.GRUNT + "/utils/json2php.js");
 
 	this
 
 		.run('jshint', {
 			src: [
-				path.SRC + '/api/controllers/**/*.spec.{js,json}'
+				opt.SRC + '/api/controllers/**/*.spec.{js,json}'
 			]
 		})
 
@@ -19,18 +19,18 @@ module.exports = function (grunt) {
 			options: _.extend({
 				beauty: true,
 				verbose: false
-			}, require(path.SRC + '/api/controllers/spec-options.js')),
+			}, require(opt.SRC + '/api/controllers/spec-options.js')),
 
 			files: [
 				{
 					expand: true,
 					flatten: true,
-					cwd: path.SRC + '/api/controllers',
+					cwd: opt.SRC + '/api/controllers',
 					src: [
 						'**/*.spec.{json,raml,yaml,js}'
 					],
 					ext: '.json',
-					dest: path.TMP + '/api/specs/'
+					dest: opt.TMP + '/api/specs/'
 				}
 			]
 		})
@@ -38,9 +38,9 @@ module.exports = function (grunt) {
 		.run('json-merge:make-common', {
 			files: [{
 				expand: true,
-				cwd: path.TMP + '/api/specs/',
+				cwd: opt.TMP + '/api/specs/',
 				src: '**/*.json',
-				dest: path.TMP + '/api/specs-merged.json'
+				dest: opt.TMP + '/api/specs-merged.json'
 			}]
 		})
 
@@ -57,15 +57,15 @@ module.exports = function (grunt) {
 
 					var files = {};
 
-					files[path.TMP + '/api/spec-routes.json'] = result;
+					files[opt.TMP + '/api/spec-routes.json'] = result;
 
 					return files;
 				}
 			},
 
 			files: [{
-				src: path.TMP + '/api/specs-merged.json',
-				dest: path.TMP + '/api/'
+				src: opt.TMP + '/api/specs-merged.json',
+				dest: opt.TMP + '/api/'
 			}]
 		})
 
@@ -84,9 +84,9 @@ module.exports = function (grunt) {
 			},
 			files: [{
 				expand: true,
-				cwd: path.TMP + '/api/specs',
+				cwd: opt.TMP + '/api/specs',
 				src: '**/*.json',
-				dest: path.TMP + '/api/specs'
+				dest: opt.TMP + '/api/specs'
 			}]
 		})
 
@@ -94,7 +94,7 @@ module.exports = function (grunt) {
 			options: {
 
 				map: function () {
-					var json = grunt.file.readJSON(path.TMP + '/api/specs-merged.json');
+					var json = grunt.file.readJSON(opt.TMP + '/api/specs-merged.json');
 					var result = {};
 
 					_.each(json, function (data, name) {
@@ -167,8 +167,8 @@ module.exports = function (grunt) {
 			},
 			files: [
 				{
-					src: path.SRC + '/api/routes.txt',
-					dest: path.TMP + '/api/router/routes.json'
+					src: opt.SRC + '/api/routes.txt',
+					dest: opt.TMP + '/api/router/routes.json'
 				}
 			]
 		})
@@ -177,7 +177,7 @@ module.exports = function (grunt) {
 			options: {
 
 				map: function () {
-					var json = grunt.file.readJSON(path.TMP + '/api/specs-merged.json');
+					var json = grunt.file.readJSON(opt.TMP + '/api/specs-merged.json');
 					var result = {};
 
 					_.each(json, function (data, name) {
@@ -201,9 +201,9 @@ module.exports = function (grunt) {
 			files: [
 				{
 					expand: true,
-					cwd: path.TMP + '/api',
+					cwd: opt.TMP + '/api',
 					src: 'spec-routes.json',
-					dest: path.TMP + '/api/router/'
+					dest: opt.TMP + '/api/router/'
 				}
 			]
 		})
@@ -214,15 +214,15 @@ module.exports = function (grunt) {
 			},
 			files: [{
 				src: [
-					path.TMP + '/api/router/spec-routes.json',
-					path.TMP + '/api/router/routes.json'
+					opt.TMP + '/api/router/spec-routes.json',
+					opt.TMP + '/api/router/routes.json'
 				],
-				dest: path.TMP + '/api/router/routes.json'
+				dest: opt.TMP + '/api/router/routes.json'
 			}]
 		})
 
 		.run('clean:excess-router', [
-			path.TMP + '/api/router/spec-routes.json'
+			opt.TMP + '/api/router/spec-routes.json'
 		])
 
 		.run('split-files:specs', {
@@ -242,11 +242,11 @@ module.exports = function (grunt) {
 
 			files: [{
 				expand: true,
-				cwd: path.TMP + '/api/specs/',
+				cwd: opt.TMP + '/api/specs/',
 				src: [
 					'**/*.json'
 				],
-				dest: path.BUILD + '/api/var/specs/',
+				dest: opt.BUILD + '/api/var/specs/',
 				ext: '.php'
 			}]
 		})
@@ -256,11 +256,11 @@ module.exports = function (grunt) {
 				{
 					expand: true,
 					flatten: true,
-					cwd: path.SRC + '/api/',
+					cwd: opt.SRC + '/api/',
 					src: [
 						'controllers/spec-options.js'
 					],
-					dest: path.TMP + '/api/',
+					dest: opt.TMP + '/api/',
 					ext: '.json'
 				}
 			]

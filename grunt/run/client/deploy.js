@@ -37,8 +37,8 @@ module.exports = function (grunt) {
 
 	var incOptions = {
 		cwd: opt.BUILD + '/client/static/js',
-		rename: function(base, path) {
-			return path.replace(/\.js$/, '');
+		rename: function(base, opt) {
+			return opt.replace(/\.js$/, '');
 		}
 	};
 

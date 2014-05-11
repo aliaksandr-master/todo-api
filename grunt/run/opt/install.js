@@ -1,7 +1,7 @@
 "use strict";
 
 module.exports = function () {
-	var path = this;
+	var opt = this;
 
 	this.run('copy', {
 		options: {
@@ -10,7 +10,7 @@ module.exports = function () {
 		files: [
 			{
 				expand: true,
-				cwd: path.SRC + "/opt/",
+				cwd: opt.SRC + "/opt/",
 				src: [
 					"api/**/*.php",
 					"ci_active_record/**/*.php",
@@ -18,7 +18,7 @@ module.exports = function () {
 					"router/**/*.php",
 					".htaccess"
 				],
-				dest: path.BUILD + "/opt/"
+				dest: opt.BUILD + "/opt/"
 			}
 		]
 	});

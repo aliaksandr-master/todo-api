@@ -42,7 +42,7 @@ module.exports = function (grunt) {
 		'opt/install',
 		'database/install',
 		'api/install',
-		'api/tester/install',
+		'api-tester/install',
 		'client/install'
 	]);
 

@@ -1,12 +1,12 @@
 "use strict";
 
 module.exports = function (grunt) {
-	var path = this;
+	var opt = this;
 
 	this.run('mysql-schema', {
 		options: {
-			connection: path.DEV + '/configs/database/default.json',
-			outputJSON: path.TMP + '/database/default.scheme.json'
+			connection: opt.DEV + '/configs/database/default.json',
+			outputJSON: opt.TMP + '/database/default.scheme.json'
 		}
 	});
 };

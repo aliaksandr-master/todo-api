@@ -1,11 +1,11 @@
 "use strict";
 
 module.exports = function (grunt) {
-	var path = this;
+	var opt = this;
 
 	this.run('watch', {
 		files: [
-			path.SRC + "/opt/**/*.php"
+			opt.SRC + "/opt/**/*.php"
 		],
 		tasks: [
 			'copy:opt/install',

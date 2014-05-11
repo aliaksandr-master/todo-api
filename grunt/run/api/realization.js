@@ -1,13 +1,13 @@
 "use strict";
 
 module.exports = function (grunt) {
-	var path = this;
+	var opt = this;
 
 	this.run('clean', [
-		path.BUILD + '/api/controllers',
-		path.BUILD + '/api/models',
-		path.BUILD + '/api/index.php',
-		path.BUILD + '/api/.htaccess'
+		opt.BUILD + '/api/controllers',
+		opt.BUILD + '/api/models',
+		opt.BUILD + '/api/index.php',
+		opt.BUILD + '/api/.htaccess'
 	]);
 
 	this.run('copy', {
@@ -17,21 +17,21 @@ module.exports = function (grunt) {
 		files: [
 			{
 				expand: true,
-				cwd: path.SRC + '/api/',
+				cwd: opt.SRC + '/api/',
 				src: [
 					'controllers/**/*.php',
 					'models/**/*.php',
 					'.htaccess',
 					'index.php'
 				],
-				dest: path.BUILD + '/api/'
+				dest: opt.BUILD + '/api/'
 			}
 		]
 	});
 
 	this.run('find-php-classes', {
 		options: {
-			cwd: path.BUILD + '/',
+			cwd: opt.BUILD + '/',
 			src: [
 				'api/index.php',
 				'api/controllers/**/*.php',
@@ -41,15 +41,15 @@ module.exports = function (grunt) {
 				'opt/router/**/*.php'
 			],
 			beauty: false,
-			outputJSON: path.TMP + '/classes/api.json'
+			outputJSON: opt.TMP + '/classes/api.json'
 		}
 	});
 
 	this.run('json2php', {
 		files: [
 			{
-				src:  path.TMP + '/classes/api.json',
-				dest: path.BUILD + '/api/var/classes.php'
+				src:  opt.TMP + '/classes/api.json',
+				dest: opt.BUILD + '/api/var/classes.php'
 			}
 		]
 	});

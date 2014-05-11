@@ -1,7 +1,7 @@
 "use strict";
 
 module.exports = function (grunt) {
-	var path = this;
+	var opt = this;
 
 	this.add([
 		'install',

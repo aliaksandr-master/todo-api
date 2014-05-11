@@ -1,15 +1,15 @@
 "use strict";
 
 module.exports = function (grunt) {
-	var path = this;
+	var opt = this;
 
-	this.options('jshint', grunt.file.readJSON(path.CWD + '/.jshintrc'), true);
+	this.options('jshint', grunt.file.readJSON(opt.CWD + '/.jshintrc'), true);
 
 	this.run('pragma:php', {
 		options: {
 			processors: {
 				injectData: function (pragma, fpath) {
-					var json2php = require(path.GRUNT + '/utils/json2php.js');
+					var json2php = require(opt.GRUNT + '/utils/json2php.js');
 
 					var jsonFile = pragma.params[0];
 					var resultData = grunt.file.readJSON(jsonFile);
@@ -34,11 +34,11 @@ module.exports = function (grunt) {
 		files: [
 			{
 				expand: true,
-				cwd: path.BUILD,
+				cwd: opt.BUILD,
 				src: [
 					'**/*.php'
 				],
-				dest: path.BUILD
+				dest: opt.BUILD
 			}
 		]
 	}, false);
@@ -46,15 +46,15 @@ module.exports = function (grunt) {
 	this.run('copy', {
 		files: [
 			{
-				src: path.SRC + '/.htaccess',
-				dest: path.BUILD + '/.htaccess'
+				src: opt.SRC + '/.htaccess',
+				dest: opt.BUILD + '/.htaccess'
 			}
 		]
 	}, false);
 
 	this.add([
 		'api/build',
-		'api/tester/build',
+		'api-tester/build',
 		'client/build',
 		'pragma:build/php',
 		'copy:build'

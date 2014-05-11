@@ -1,7 +1,7 @@
 "use strict";
 
 module.exports = function (grunt) {
-	var path = this;
+	var opt = this;
 	var _ = require('lodash');
 
 	this
@@ -11,8 +11,8 @@ module.exports = function (grunt) {
 				beautify: true
 			},
 			files: [{
-				src: path.TMP + '/api/specs-merged.json',
-				dest: path.BUILD + '/api-test/var/specs.json'
+				src: opt.TMP + '/api/specs-merged.json',
+				dest: opt.BUILD + '/api-test/var/specs.json'
 			}]
 		})
 
@@ -21,8 +21,8 @@ module.exports = function (grunt) {
 				beautify: true
 			},
 			files: [{
-				src: path.TMP + '/api/router/routes.json',
-				dest: path.BUILD + '/api-test/var/routes.json'
+				src: opt.TMP + '/api/router/routes.json',
+				dest: opt.BUILD + '/api-test/var/routes.json'
 			}]
 		});
 };

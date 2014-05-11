@@ -1,10 +1,10 @@
 "use strict";
 
 module.exports = function (grunt) {
-	var path = this;
+	var opt = this;
 
 	this.run('clean', [
-		path.BUILD + '/api'
+		opt.BUILD + '/api'
 	]);
 
 };

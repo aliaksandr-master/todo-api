@@ -13,7 +13,7 @@ module.exports = function (grunt) {
 		},
 		files: [
 			{
-				src: opt.GRUNT + '/run/client/assets/route.tpl',
+				src: opt.GRUNT + '/assets/client/route.tpl',
 				dest: opt.BUILD + '/client/static/js/routes.js'
 			}
 		]

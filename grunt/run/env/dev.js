@@ -1,25 +1,25 @@
 "use strict";
 
 module.exports = function (grunt) {
-	var path = this;
+	var opt = this;
 
 	this.run('copy', {
 		files: [
 			{
 				expand: true,
-				cwd: path.BUILD,
+				cwd: opt.BUILD,
 				src: [
 					'**/*', '*'
 				],
-				dest: path.DEPLOY
+				dest: opt.DEPLOY
 			},
 			{
 				expand: true,
-				cwd: path.GRUNT + "/env/dev/",
+				cwd: opt.GRUNT + "/assets/env/dev/",
 				src: [
 					'**/*', '*'
 				],
-				dest: path.DEPLOY
+				dest: opt.DEPLOY
 			}
 		]
 	});
