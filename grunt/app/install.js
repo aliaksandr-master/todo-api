@@ -31,6 +31,17 @@ module.exports = function (grunt) {
 		]
 	});
 
+	this.run('copyByConfig:vendor', {
+		files: [
+			{
+				expand: true,
+				cwd:  opt.SRC,
+				src: '**/vendor.runtime.json',
+				dest: opt.BUILD
+			}
+		]
+	}, false);
+
 	this.add([
 		'jshint:install/compile',
 		'jshint:install/src',
@@ -41,7 +52,8 @@ module.exports = function (grunt) {
 		'database/install',
 		'api/install',
 		'api-tester/install',
-		'client/install'
+		'client/install',
+		'copyByConfig:install/vendor'
 	]);
 
 };

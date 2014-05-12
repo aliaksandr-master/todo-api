@@ -1,20 +1,20 @@
 {
 	"vendor/handlebars": [
-		"/opt/client/bower/handlebars/handlebars.js"
+		"/opt/frontend/bower/handlebars/handlebars.js"
 	],
 	"vendor/jquery": [
-		"/opt/client/bower/jquery/jquery.js"
+		"/opt/frontend/bower/jquery/jquery.js"
 	],
 	"vendor/lodash": [
-		"/opt/client/bower/lodash/dist/lodash.js"
+		"/opt/frontend/bower/lodash/dist/lodash.js"
 	],
 	"vendor/requirejs": [
-		"/opt/client/bower/requirejs/require.js"
+		"/opt/frontend/bower/requirejs/require.js"
 	],
 	"vendor/require-css": [
-		"opt/client/bower/requirejs/require.js"
+		"/opt/frontend/bower/requirejs/require.js"
 	],
 	"vendor/requirejs-text": [
-		"/opt/client/bower/requirejs-text/text.js"
+		"/opt/frontend/bower/requirejs-text/text.js"
 	]
 }
