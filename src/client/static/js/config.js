@@ -35,7 +35,7 @@ require.config({
 
 		'*':{
 			'text': 'vendor/requirejs-text/text',
-			'css': 'vendor/require-css/css'
+			'css':  'vendor/require-css/css'
 		}
 	},
 

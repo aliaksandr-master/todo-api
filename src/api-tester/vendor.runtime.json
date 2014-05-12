@@ -1,0 +1,20 @@
+{
+	"vendor/handlebars": [
+		"/opt/client/bower/handlebars/handlebars.js"
+	],
+	"vendor/jquery": [
+		"/opt/client/bower/jquery/jquery.js"
+	],
+	"vendor/lodash": [
+		"/opt/client/bower/lodash/dist/lodash.js"
+	],
+	"vendor/requirejs": [
+		"/opt/client/bower/requirejs/require.js"
+	],
+	"vendor/require-css": [
+		"opt/client/bower/requirejs/require.js"
+	],
+	"vendor/requirejs-text": [
+		"/opt/client/bower/requirejs-text/text.js"
+	]
+}

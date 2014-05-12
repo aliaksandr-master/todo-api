@@ -8,12 +8,13 @@ module.exports = function (grunt) {
 
 	var pkg = require('./package.json');
 
-	require('./node_require/grumble/grumble')(grunt, {
+	require('./opt/nodejs/custom/grumble/grumble')(grunt, {
 		modulesDir: '/grunt/app',
 		tasksDir: '/grunt/tasks',
 
 		CWD:    cwd,
 		SRC:    cwd + '/src',
+		OPT:    cwd + '/opt',
 		DEPLOY: cwd + '/deploy',
 		DEV:    cwd + '/.developer',
 		GRUNT:  cwd + '/grunt',
