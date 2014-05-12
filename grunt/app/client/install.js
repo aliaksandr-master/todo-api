@@ -21,9 +21,9 @@ module.exports = function (grunt) {
 	this.run('copy', {
 		files: [{
 			expand: true,
-			cwd: opt.SRC + "/client/static/vendor",
+			cwd:  opt.OPT + '/frontend/vendor',
 			src: '**/*',
-			dest: opt.BUILD + "/client/static/vendor"
+			dest: opt.BUILD + '/client/static/vendor'
 		}]
 	});
 

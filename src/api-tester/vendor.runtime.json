@@ -16,5 +16,17 @@
 	],
 	"vendor/requirejs-text": [
 		"/opt/frontend/bower/requirejs-text/text.js"
+	],
+	"vendor/bootstrap/custom/css/": [
+		"/opt/frontend/vendor/bootstrap/custom/css/bootstrap.css"
+	],
+	"vendor/bootstrap/custom/fonts/": [
+		"/opt/frontend/vendor/bootstrap/custom/fonts/glyphicons-halflings-regular.eot",
+		"/opt/frontend/vendor/bootstrap/custom/fonts/glyphicons-halflings-regular.svg",
+		"/opt/frontend/vendor/bootstrap/custom/fonts/glyphicons-halflings-regular.ttf",
+		"/opt/frontend/vendor/bootstrap/custom/fonts/glyphicons-halflings-regular.woff"
+	],
+	"vendor/bootstrap/custom/js/": [
+		"/opt/frontend/vendor/bootstrap/custom/js/bootstrap.js"
 	]
 }

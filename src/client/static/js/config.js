@@ -21,7 +21,7 @@ require.config({
 		'handlebars': '../vendor/handlebars/handlebars',
 		'chaplin': '../vendor/chaplin/chaplin',
 
-		'jquery-ui': '../vendor/jquery-ui-amd',
+		'jquery-ui': '../vendor/jquery-ui-amd/jqueryui',
 
 		'jquery.swipe': '../vendor/jquery.event.swipe/jquery.event.swipe',
 		'jquery.move':  '../vendor/jquery.event.move/jquery.event.move',

@@ -61,6 +61,12 @@
 		"requirejs-text": {
 			".": "text.js"
 		},
+		"jquery-ui-amd": {
+			".": "*"
+		},
+		"jquery-ui-touch-punch-amd": {
+			".": "*"
+		},
 		"jquery.event.move": {
 			".": "js/jquery.event.move.js"
 		},
