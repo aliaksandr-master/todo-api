@@ -5,7 +5,7 @@ module.exports = function (grunt) {
 
 	var _ = require('lodash');
 	var sha1 = require('sha1');
-	var json2php = require(opt.GRUNT + "/utils/json2php.js");
+	var json2php = opt.utils.json2php;
 
 	this
 

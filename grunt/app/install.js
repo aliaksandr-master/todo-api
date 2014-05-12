@@ -10,7 +10,7 @@ module.exports = function (grunt) {
 			src: '**/*.json',
 			dest: opt.DEV + '/configs'
 		}]
-	});
+	}, false);
 
 	this.run('clean:temp', [
 		opt.TMP

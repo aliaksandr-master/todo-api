@@ -9,7 +9,7 @@ module.exports = function (grunt) {
 		options: {
 			processors: {
 				injectData: function (pragma, fpath) {
-					var json2php = require(opt.GRUNT + '/utils/json2php.js');
+					var json2php = opt.utils.json2php;
 
 					var jsonFile = pragma.params[0];
 					var resultData = grunt.file.readJSON(jsonFile);

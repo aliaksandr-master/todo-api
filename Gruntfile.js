@@ -8,7 +8,15 @@ module.exports = function (grunt) {
 
 	var pkg = require('./package.json');
 
-	require('./opt/nodejs/custom/grumble/grumble')(grunt, {
+	var fs = grunt.file.expand([
+		'opt/nodejs/**/grunt-*.js',
+		'!opt/nodejs/**/grunt-grumble.js'
+	]);
+	_.each(fs, function (f) {
+		require(cwd + '/' + f)(grunt);
+	});
+
+	require('./opt/nodejs/custom/grunt-grumble/grunt-grumble')(grunt, {
 		modulesDir: '/grunt/app',
 		tasksDir: '/grunt/tasks',
 
@@ -20,6 +28,10 @@ module.exports = function (grunt) {
 		GRUNT:  cwd + '/grunt',
 		BUILD:  cwd + '/build',
 		TMP:    cwd + '/tmp',
+
+		utils: {
+			json2php: require('./opt/nodejs/custom/json-to-php-array/json-to-php-array')
+		},
 
 		buildTimestamp: Date.now(),
 		package: pkg,

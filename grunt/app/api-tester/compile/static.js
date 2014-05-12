@@ -4,7 +4,6 @@ module.exports = function (grunt) {
 	var opt = this;
 
 	var _ = require('lodash');
-	var mkobj = function (k, v) { var o = {}; o[k] = v; return o;};
 
 	this.run('jade', {
 		options: {
@@ -19,9 +18,7 @@ module.exports = function (grunt) {
 		},
 		files: [{
 			expand: true,
-			src: [
-				'**/*.jade'
-			],
+			src: [ '**/*.jade' ],
 			cwd: opt.SRC + '/api-tester/jade',
 			dest: opt.BUILD + '/api-tester',
 			ext: '.html'

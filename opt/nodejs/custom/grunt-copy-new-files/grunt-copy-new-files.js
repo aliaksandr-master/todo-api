@@ -5,8 +5,8 @@ module.exports = function(grunt){
 	grunt.task.registerMultiTask('copy-new-files', function(){
 
 		var _ = require('lodash');
-		var fileFilterer = require('../utils/task/fileFilterer');
-		var logFileOk = require('../utils/task/logFileOk');
+		var fileFilterer = require('../grunt-additional-task-utils/fileFilterer');
+		var logFileOk = require('../grunt-additional-task-utils/logFileOk');
 
         _.each(this.data.files, function(fileObject){
             var array = grunt.file.expandMapping(fileObject.src || [], fileObject.dest, _.pick(fileObject, ["flatten", "expand", "ext", "rename", "cwd"]));

@@ -5,10 +5,10 @@ module.exports = function (grunt) {
 		var _ = require('lodash');
 		var sha1 = require('sha1');
 
-		var fileFilterer = require('../utils/task/fileFilterer');
-		var logFileOk = require('../utils/task/logFileOk');
-		var jsonParser = require('./_api-specs-compiler/parsers/json');
-		var ramlParser = require('./_api-specs-compiler/parsers/raml'); // not implemented
+		var fileFilterer = require('../grunt-additional-task-utils/fileFilterer.js');
+		var logFileOk = require('../grunt-additional-task-utils/logFileOk');
+		var jsonParser = require('./lib/parsers/json');
+		var ramlParser = require('./lib/parsers/raml'); // not implemented
 
 		var parsers = {
 			js: jsonParser,

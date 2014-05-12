@@ -3,9 +3,9 @@
 module.exports = function (grunt) {
 
 	grunt.task.registerMultiTask('json2php', function () {
-		var json2php = require('../utils/json2php.js');
-		var fileFilterer = require('../utils/task/fileFilterer');
-		var logFileOk = require('../utils/task/logFileOk');
+		var json2php = require('../json-to-php-array/json-to-php-array.js');
+		var fileFilterer = require('../grunt-additional-task-utils/fileFilterer');
+		var logFileOk = require('../grunt-additional-task-utils/logFileOk');
 
 		fileFilterer(grunt, this, function (fpath, dest, fileObj) {
 			var json = grunt.file.readJSON(fpath);

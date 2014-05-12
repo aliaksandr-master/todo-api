@@ -4,8 +4,8 @@ module.exports = function (grunt) {
 	grunt.task.registerMultiTask('json-merge', function () {
 		var _ = require('lodash');
 		var path = require('path');
-		var fileProcessor = require('../utils/task/gruntTaskFileProcessor')(this);
-		var logFileOk = require('../utils/task/logFileOk');
+		var fileProcessor = require('../grunt-additional-task-utils/gruntTaskFileProcessor')(this);
+		var logFileOk = require('../grunt-additional-task-utils/logFileOk');
 
 		var options = this.options({
 

@@ -5,8 +5,8 @@ module.exports = function (grunt, options) {
 	grunt.task.registerMultiTask('split-files', function () {
 
 		var _ = require('lodash');
-		var fileFilterer = require('../utils/task/fileFilterer');
-		var logFileOk = require('../utils/task/logFileOk');
+		var fileFilterer = require('../grunt-additional-task-utils/fileFilterer');
+		var logFileOk = require('../grunt-additional-task-utils/logFileOk');
 
 		var options = this.options({
 			process: function (content, filename, dest, fileObj) {

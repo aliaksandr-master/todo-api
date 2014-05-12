@@ -3,8 +3,8 @@
 module.exports = function (grunt) {
 
 	grunt.task.registerMultiTask('json-process', function () {
-		var fileFilterer = require('../utils/task/fileFilterer');
-		var logFileOk = require('../utils/task/logFileOk');
+		var fileFilterer = require('../grunt-additional-task-utils/fileFilterer');
+		var logFileOk = require('../grunt-additional-task-utils/logFileOk');
 		var _ = require('lodash');
 
 		var options = this.options({

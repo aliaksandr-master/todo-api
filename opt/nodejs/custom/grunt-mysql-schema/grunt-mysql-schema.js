@@ -7,8 +7,8 @@ module.exports = function(grunt){
 		var _ = require('lodash');
 		var shell = require("shelljs");
 		var parser = require('xml2json');
-		var fileFilterer = require('../utils/task/fileFilterer');
-		var logFileOk = require('../utils/task/logFileOk');
+		var fileFilterer = require('../grunt-additional-task-utils/fileFilterer');
+		var logFileOk = require('../grunt-additional-task-utils/logFileOk');
 
 		var options = this.options({
 			connection: {
