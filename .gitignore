@@ -13,8 +13,7 @@
 
 # compile files
 /node_modules/
-/bower_components/
-/vendor/bower/
+/opt/client/bower/
 /.developer/
 /tmp/
 /deploy/
