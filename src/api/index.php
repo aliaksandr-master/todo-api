@@ -113,7 +113,7 @@ $url = str_replace(ROOT_URI, '', $_SERVER['REQUEST_URI']);
  *  ROUTER
  * -------------------------------------------------------------------
  */
-$router = new Router(/*#:injectData("tmp/api/router/routes.json")#*/);
+$router = new Router(/*#:injectData("@VAR/api/router/routes.json")#*/);
 $routeResult = $router->match($_SERVER['REQUEST_METHOD'], $url, array('name' => null, 'params' => array()));
 
 

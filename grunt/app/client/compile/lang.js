@@ -18,13 +18,13 @@ module.exports = function (grunt) {
 				expand: true,
 				cwd: opt.SRC + '/client/lang/en',
 				src: [ '**/*.json' ],
-				dest: opt.TMP + '/client/lang/en.json'
+				dest: opt.VAR + '/client/lang/en.json'
 			},
 			{
 				expand: true,
 				cwd: opt.SRC + '/client/lang/ru',
 				src: [ '**/*.json' ],
-				dest: opt.TMP + '/client/lang/ru.json'
+				dest: opt.VAR + '/client/lang/ru.json'
 			}
 		]
 	});
@@ -35,17 +35,17 @@ module.exports = function (grunt) {
 		},
 		files: [{
 			src: [
-				opt.TMP + '/client/lang/en.json',
-				opt.TMP + '/client/lang/ru.json'
+				opt.VAR + '/client/lang/en.json',
+				opt.VAR + '/client/lang/ru.json'
 			],
-			dest: opt.TMP + '/client/lang/ru.json'
+			dest: opt.VAR + '/client/lang/ru.json'
 		}]
 	});
 
 	this.run('copy', {
 		files: [{
 			expand: true,
-			cwd: opt.TMP + '/client/lang',
+			cwd: opt.VAR + '/client/lang',
 			src: '*.json',
 			dest: opt.BUILD + '/client/var/lang'
 		}]

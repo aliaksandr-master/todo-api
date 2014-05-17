@@ -11,7 +11,12 @@ module.exports = function (grunt) {
 				injectData: function (pragma, fpath) {
 					var json2php = opt.utils.json2php;
 
-					var jsonFile = pragma.params[0];
+					var jsonFile = pragma.params[0].replace(/@([A-Z]+)/g, function (word, name) {
+						if (opt[name] === undefined) {
+							throw new Error('@' + name + ' is undefined');
+						}
+						return opt[name];
+					});
 					var resultData = grunt.file.readJSON(jsonFile);
 					if (pragma.params[1]) {
 						resultData = resultData[pragma.params[1]];

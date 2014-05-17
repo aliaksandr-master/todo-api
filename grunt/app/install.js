@@ -13,7 +13,7 @@ module.exports = function (grunt) {
 	}, false);
 
 	this.run('clean:temp', [
-		opt.TMP
+		opt.VAR
 	]);
 
 	this.run('jshint:compile', {

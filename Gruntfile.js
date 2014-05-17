@@ -27,7 +27,7 @@ module.exports = function (grunt) {
 		DEV:    cwd + '/.developer',
 		GRUNT:  cwd + '/grunt',
 		BUILD:  cwd + '/build',
-		TMP:    cwd + '/tmp',
+		VAR:    cwd + '/var',
 
 		utils: {
 			json2php: require('./opt/nodejs/custom/json-to-php-array/json-to-php-array')

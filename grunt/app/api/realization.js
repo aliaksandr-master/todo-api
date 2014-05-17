@@ -39,13 +39,13 @@ module.exports = function (grunt) {
 				'opt/router/**/*.php'
 			],
 			beauty: false,
-			outputJSON: opt.TMP + '/classes/api.json'
+			outputJSON: opt.VAR + '/classes/api.json'
 		}
 	});
 
 	this.run('json2php', {
 		files: [{
-			src:  opt.TMP + '/classes/api.json',
+			src:  opt.VAR + '/classes/api.json',
 			dest: opt.BUILD + '/api/var/classes.php'
 		}]
 	});

@@ -8,7 +8,7 @@ abstract class DefaultDbModel extends BaseCrudModel  {
 
 	function getDbScheme () {
 		return
-			//#:injectData("tmp/database/default.scheme.json")
+			//#:injectData("@VAR/database/default.scheme.json")
 			array()
 			//injectData#
 			;
