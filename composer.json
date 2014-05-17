@@ -1,0 +1,8 @@
+{
+	"config": {
+		"vendor-dir": "opt/backend/composer"
+	},
+	"require": {
+
+	}
+}

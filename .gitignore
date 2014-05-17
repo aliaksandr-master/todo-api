@@ -16,5 +16,6 @@
 /opt/frontend/bower/
 /.developer/
 /var/
+/opt/backend/composer/
 /deploy/
 /build/
