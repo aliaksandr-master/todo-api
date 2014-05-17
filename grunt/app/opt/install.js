@@ -3,21 +3,12 @@
 module.exports = function () {
 	var opt = this;
 
-	this.run('copy', {
+	this.run('symlink', {
 		options: {
-			excludeEmpty: true
+			overwrite: true,
+			force: true
 		},
-		files: [{
-			expand: true,
-			cwd: opt.SRC + "/opt/",
-			src: [
-				"api/**/*.php",
-				"ci_active_record/**/*.php",
-				"helpers/**/*.php",
-				"router/**/*.php",
-				".htaccess"
-			],
-			dest: opt.BUILD + "/opt/"
-		}]
+		target: 'opt',
+		link: 'path/to/link'
 	});
 };

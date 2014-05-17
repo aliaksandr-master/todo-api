@@ -13,6 +13,8 @@
 
 		"grunt-php-router-gen": "latest",
 
+		"grunt-symbolic-link": "latest",
+
 		"grunt-contrib-jade": "latest",
 
 		"grunt-contrib-less": "latest",
@@ -44,5 +46,8 @@
 		"markdown": "latest",
 
 		"handlebars": "latest"
-    }
+    },
+	"scripts": {
+		"install": "php composer.phar install && grunt install build"
+	}
 }
