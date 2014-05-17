@@ -15,6 +15,6 @@
 /node_modules/
 /opt/frontend/bower/
 /.developer/
-/tmp/
+/var/
 /deploy/
 /build/
