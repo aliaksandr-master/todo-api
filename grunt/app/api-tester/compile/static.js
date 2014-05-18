@@ -19,46 +19,54 @@ module.exports = function (grunt) {
 				specs = _.groupBy(specs, 'controller');
 				return {
 					_: _,
+					read: function (path) {
+						return grunt.file.read(opt.SRC + '/api-tester' + path);
+					},
 					rootUrl: ROOT_URI,
-					homeUrl: ROOT_URI + '/_index.html',
+					homeUrl: ROOT_URI + '/index.html',
 					navs: [
-						{href: ROOT_URI + '/page/var/specs.html', text: 'Specs'},
-						{href: ROOT_URI + '/page/var/routes.html', text: 'Routes'},
-						{href: ROOT_URI + '/page/var/routes.html', text: 'Spec Options', nested: [
-							{href: ROOT_URI + '/page/var/filters.html', text: 'Available Filters'},
-							{href: ROOT_URI + '/page/var/rules.html', text: 'Available Validation Rules'},
-							{href: ROOT_URI + '/page/var/statuses.html', text: 'Available Spec Statuses'},
-							{href: ROOT_URI + '/page/var/types.html', text: 'Available Spec Types'}
-						]}
-
+						{href: ROOT_URI + '/pages/tester/', text: 'Tester'},
+						{href: ROOT_URI + '/pages/var/specs.html', text: 'Specs'},
+						{href: ROOT_URI + '/pages/var/routes.html', text: 'Spec Options', nested: [
+							{href: ROOT_URI + '/pages/var/filters.html', text: 'Available Filters'},
+							{href: ROOT_URI + '/pages/var/rules.html', text: 'Available Validation Rules'},
+							{href: ROOT_URI + '/pages/var/statuses.html', text: 'Available Spec Statuses'},
+							{href: ROOT_URI + '/pages/var/types.html', text: 'Available Spec Types'}
+						]},
+						{href: ROOT_URI + '/pages/var/routes.html', text: 'Routes'}
 					],
 					filter: grunt.file.readJSON(opt.VAR + '/api/filters.json'),
 					specsSrc: specsSrc,
 					specs: specs,
 					specOptions: grunt.file.readJSON(opt.VAR + '/api/spec-options.json'),
 					rules: grunt.file.readJSON(opt.VAR + '/api/rules.json'),
-					routes: grunt.file.readJSON(opt.VAR + '/api/spec-routes.json')
+					specRoutes: grunt.file.readJSON(opt.VAR + '/api/spec-routes.json'),
+					routes: grunt.file.readJSON(opt.VAR + '/api/router/routes.json')
 				};
 			}
 		},
 		files: [{
 			expand: true,
 			src: [ '**/*.jade' ],
-			cwd: opt.SRC + '/api-tester/jade',
+			cwd: opt.SRC + '/api-tester',
 			dest: opt.BUILD + '/api-tester',
 			ext: '.html'
 		}]
 	});
 
+	this.run('clean', [
+		opt.BUILD + '/api-tester/inc'
+	]);
+
 	this.run('less', {
 		files: [
 			{
 				expand: true,
-				cwd: opt.SRC + '/api-tester/static/styles',
+				cwd: opt.SRC + '/api-tester',
 				src: [
 					'**/*.less'
 				],
-				dest: opt.BUILD + '/api-tester/static/styles',
+				dest: opt.BUILD + '/api-tester',
 				ext: '.css'
 			}
 		]

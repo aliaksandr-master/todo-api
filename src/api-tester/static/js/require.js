@@ -19,7 +19,8 @@ require.config({
 		'*':{
 
 			jquery: 'packages/jquery/jquery',
-			lodash: 'packages/lodash/lodash',
+			handlebars: 'packages/handlebars/handlebars',
+			lodash: 'packages/lodash/dist/lodash',
 			bootstrap: 'vendor/bootstrap/custom/js/bootstrap.min',
 
 			'text': 'packages/requirejs-text/text',
@@ -35,12 +36,23 @@ require.config({
 		},
 		'vendor/bootstrap/custom/js/bootstrap.min': {
 			deps: ['packages/jquery/jquery']
+		},
+		'packages/handlebars/handlebars': {
+			init: function () {
+				return window.Handlebars;
+			}
 		}
 	}
 
 });
 
+define('main/app', function (require, exports, module) {
+	var $ = require('jquery');
 
-require(['jquery', 'modules/start'], function ($, start) {
-	start();
+	return function () {
+	};
+});
+
+require(['jquery', 'main/app'], function ($, app) {
+	app();
 });

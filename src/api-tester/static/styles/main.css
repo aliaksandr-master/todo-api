@@ -100,32 +100,6 @@ body {
 	word-break: keep-all;
 	white-space: pre-wrap;
 }
-b.index {
-	color: #86001a;
-	font-weight: normal;
-}
-b.bool {
-	color: blue;
-	font-weight: normal;
-}
-b.number {
-	color: red;
-	font-weight: normal;
-}
-b.string {
-	color: #009500;
-	font-weight: normal;
-}
-i.coma {
-	color: black;
-	font-style: normal;
-	font-weight: bold;
-}
-i.braked {
-	color: black;
-	font-style: normal;
-	font-weight: normal;
-}
 
 #form {
 	display: block;

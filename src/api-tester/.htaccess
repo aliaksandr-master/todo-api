@@ -1,5 +1,2 @@
 RewriteEngine On
 Options +FollowSymlinks
-
-RewriteCond %{REQUEST_FILENAME} -f
-RewriteRule ^api-tester/opt(.*)$ ../opt/frontend$1 [R,L]

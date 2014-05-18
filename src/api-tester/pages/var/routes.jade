@@ -1,4 +1,4 @@
-extends ../../../.inc/layout-simple
+extends ../../inc/layout-simple
 block body
 	.panel.panel-default
 		.panel-heading Routes
@@ -12,7 +12,7 @@ block body
 						th Name
 						th Data
 				tbody
-					each route, index in routes
+					each route, index in specRoutes
 						tr
 							td= index+1
 							td

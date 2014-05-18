@@ -1,90 +1,10 @@
-"use strict";
+define(function(require, exports, module){
+    "use strict";
 
-(function(window, $, _, Handlebars){
+	var _ = require('lodash');
+	var $ = require('jquery');
 
-	window.spec = function(){
-		var result = {};
-		$.ajax({
-			url: window.API_JSON,
-			async: false,
-			dataType: 'json',
-			success: function(resp){
-				result = resp;
-			}
-		});
-		return result;
-	};
-
-	var tplMemo = {};
-	// FROM REMOTE
-	window.templateCompiler = function(path, isRemote){
-		if(!isRemote){
-			return function(params){
-				path = path.replace(/^\/+|\.hbs$/g, '');
-				params || (params = {});
-				if(!tplMemo.hasOwnProperty(path)){
-					tplMemo[path] = Handlebars.compile($('script[data-src="/' + path + '.hbs"]').html());
-				}
-				return tplMemo[path](params);
-			};
-		}
-		var result = function(){
-			return "";
-		};
-		return function(params){
-			params || (params = {});
-			if(!tplMemo.hasOwnProperty(path)){
-				$.ajax({
-					url: window.MY_ROOT + 'templates/' + path,
-					async: false,
-					dataType: 'html',
-					success: function(resp){
-						result = Handlebars.compile(resp);
-					}
-				});
-				tplMemo[path] = result;
-			}
-			return tplMemo[path](params);
-		};
-	};
-
-	window.jsonFormat = function(obj){
-		var json = JSON.stringify(obj, null, 2);
-		json = json.replace(/^(\s*"[^:]*"\s*\:\s*)?['"](.*)['"]([^\w\d]*)?$/gm, '$1<b class=\'string\'>"$2"</b>$3');
-//		json = json.replace(/^(\s*)"([^:]+)"\s*\:\s*(.+)$/gm, '$1<b class=\'index\'>$2</b><i class=\'coma\'>:</i> $3');
-		json = json.replace(/([\{\}\[\]])/g, '<i class=\'braked\'>$1</i>');
-		json = json.replace(/([^\w\d])(true|false)([^\w\d]*)$/gm, '$1<b class=\'bool\'>$2</b>$3');
-		json = json.replace(/([^\w\d])((?:[+-])?(?:\d+\.)?\d+)([^\w\d]*)$/gm, '$1<b class=\'number\'>$2</b>$3');
-
-		return json;
-	};
-
-	window.randomString = function(length, hasNumber){
-		var text = "",
-			possible = "abcdefghijklmnopqrstuvwxyz" + (hasNumber ? '0123456789' : '');
-		for( var i=0; i < length; i++ ){
-			text += possible.charAt(Math.floor(Math.random() * possible.length));
-		}
-		return text;
-	};
-
-	window.randomInteger = function(start, stop){
-		return Math.ceil((start||0) + Math.random() * stop);
-	};
-
-	window.randomBoolean = function(){
-		return Boolean(window.randomInteger(0, 2) - 1);
-	};
-
-	var prevData = [];
-	window.saveSendDataToStore = function(data){
-		prevData = data;
-	};
-	window.loadSendDataToStore = function(){
-		return prevData;
-	};
-
-	window.utils = {
+	return {
 
 		// Adds params to the given url, including array params (key name will be duplicated in this case)
 		addParamsToUrl: function(url, params) {
@@ -194,5 +114,4 @@
 			return result;
 		}
 	};
-
-})(window, window.jQuery, window._, window.Handlebars);
+});

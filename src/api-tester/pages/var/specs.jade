@@ -1,4 +1,4 @@
-extends ../../../.inc/layout-simple
+extends ../../inc/layout-simple
 block body
 	each specsByController, controller in specs
 		- var parentId = 'specAccordion'+controller;
@@ -11,7 +11,7 @@ block body
 						a.panel-title(data-toggle="collapse",data-parent="#"+parentId,href="#"+id)
 							span.glyphicon.glyphicon-file
 							= ' ' + spec.action.replace(/([A-Z])/g, ' $1').toLowerCase()
-					.panel-collapse.collapse.in(id=id,style='height:0;overflow:hidden;')
+					.panel-collapse.collapse(id=id,style='height:0;overflow:hidden;')
 						.panel-body
 							if (spec.title && spec.title !== spec.name)
 								.doc-item

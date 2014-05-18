@@ -3,7 +3,7 @@ html(lang='ru')
 head
 	meta(charset='utf-8')
 	meta(name='viewport', content='width=device-width, initial-scale=1.0')
-	title Starter Template for Bootstrap
+	title Api tester and documentor
 	link(href='/opt/frontend/vendor/bootstrap/custom/css/bootstrap.css', rel='stylesheet')
 	link(href='/api-tester/static/styles/index.css', rel='stylesheet')
 	block head
@@ -32,13 +32,12 @@ body(style='padding-top: 50px;')
 						else
 							li
 								a(href=nav.href)= nav.text
-	.container
-		.row
-			.col-xs-3
-				block nav
-			.col-xs-9
-				block body
+	block container
 
 script(src='/opt/frontend/bower/requirejs/require.js')
 script(src='/api-tester/static/js/require.js')
+script.
+	require(['jquery', 'bootstrap'], function ($) {
+		//$('.panel-collapse').collapse();
+	});
 block scripts
