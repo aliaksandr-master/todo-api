@@ -1,0 +1,158 @@
+extends ../../../.inc/layout-simple
+block body
+	each specsByController, controller in specs
+		- var parentId = 'specAccordion'+controller;
+		h1= controller.replace(/Controller$/, '').replace(/([A-Z])/g, ' $1').trim()
+		.panel-group.doc-panelgroup(id=parentId)
+			each spec, index in specsByController
+				- var id = spec.name.replace(/[^a-zA-Z0-9_]/, '_');
+				.panel.doc-panel
+					.panel-heading.clearfix
+						a.panel-title(data-toggle="collapse",data-parent="#"+parentId,href="#"+id)
+							span.glyphicon.glyphicon-file
+							= ' ' + spec.action.replace(/([A-Z])/g, ' $1').toLowerCase()
+					.panel-collapse.collapse.in(id=id,style='height:0;overflow:hidden;')
+						.panel-body
+							if (spec.title && spec.title !== spec.name)
+								.doc-item
+									h3=spec.title
+
+							if (spec.description)
+								.doc-item
+									.alert.alert-info!= spec.description
+
+							.doc-item.-handler
+								| Name:&nbsp;
+								b
+									= spec.controller
+									| .
+									= spec.action
+
+							if (spec.access)
+								.doc-item.-access
+									h3 Access
+										each val, name in spec.access
+											|&nbsp;
+											if (val)
+												span.label.label-warning= name
+											else
+												span.label.label-default= name
+
+							.doc-item.-routes
+								h3 Routes
+								table.table
+									colgroup
+										col(width='1%')
+										col
+									tbody
+										each route, index in spec.routes
+											tr
+												td
+													if route.method == 'GET'
+														.label.label-success= route.method
+													else if route.method == 'PUT'
+														.label.label-warning=route.method
+													else if route.method == 'POST'
+														.label.label-primary=route.method
+													else if route.method == 'DELETE'
+														.label.label-danger=route.method
+													else
+														.label.label-default=route.method
+												td!= route.url.replace(/\([^\)]+?:([a-zA-Z_]+)\)/g, '<span class="label label-primary">$1</span>')
+
+
+							if spec.request.input
+								.doc-item.-request
+									h3 Request Data:
+									table.table
+										colgroup
+											col(width='1%')
+											col(width='1%')
+											col(width='1%')
+											col
+										thead
+											tr
+												td
+												td name
+												td type
+												td attr
+										tbdoy
+											each inputParams, inputCategory in spec.request.input
+												if inputCategory == 'file'
+													if inputParams
+														tr
+															td
+																.label.label-danger= inputCategory
+												else
+													each inputParam in inputParams
+														tr
+															td
+																if inputCategory == 'query'
+																	.label.label-default= inputCategory
+																else if inputCategory == 'body'
+																	.label.label-warning= inputCategory
+																else
+																	.label.label-primary= inputCategory
+															td= inputParam.name
+															td= inputParam.type
+															td
+																if inputParam.validation.required
+																	.label.label-danger required
+																else
+																	.label.label-warning optional
+																each rule in inputParam.validation.rules
+																	each params, name in rule
+																		| &nbsp;
+																		.label.label-default
+																			= name + (params.length ? ' ' + JSON.stringify(params) : '')
+
+							.doc-item.-response
+								h3 Response&nbsp;
+									if (spec.response.output.limit)
+										span.label.label-success
+											| objects array <&nbsp;
+											= spec.response.output.limit
+									else
+										span.label.label-warning one object
+
+							.doc-item.-response-statuses
+								h4 Response statuses:
+									each alias in spec.response.statuses
+										| &nbsp;
+										if (specOptions.statuses[alias].success)
+											span.label.label-success= alias
+										else
+											span.label.label-danger= alias
+
+
+							if !_.isEmpty(spec.response.output.data)
+								.doc-item.-response-data
+									h4 Response Data
+									table.table
+										colgroup
+											col(width='1%')
+										thead
+											tr
+												th name
+												th type
+										tbody
+											each val in spec.response.output.data
+												tr
+													td= val.name
+													td= val.type
+
+							if !_.isEmpty(spec.response.output.meta)
+								.doc-item.-response-meta
+									h4 Response Meta
+									table.table
+										colgroup
+											col(width='1%')
+										thead
+											tr
+												th name
+												th type
+										tbody
+											each val in spec.response.output.meta
+												tr
+													td= val.name
+													td= val.type

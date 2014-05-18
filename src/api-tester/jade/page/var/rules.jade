@@ -1,0 +1,9 @@
+extends ../../../.inc/layout-simple
+
+block body
+	.panel.panel-default
+		.panel-heading Rules
+		.panel-body
+			ol
+				each val, index in rules
+					li= val

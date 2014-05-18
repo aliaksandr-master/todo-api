@@ -1,0 +1,28 @@
+extends ../../../.inc/layout-simple
+block body
+	.panel.panel-default
+		.panel-heading Types
+		.panel-body
+			ol
+				table.table
+					colgroup
+						col(width="1%")
+						col(width="1%")
+						col(width="1%")
+						col
+					thead
+						th(nowrap) Alias Name
+						th(nowrap) Http Code
+						th Result
+						th Default Message
+					tdody
+						each val, alias in specOptions.statuses
+							tr
+								th= alias
+								td= val.code
+								td
+									if (val.success)
+										span.label.label-success success
+									else
+										span.label.label-danger error
+								td= val.message

@@ -1,0 +1,36 @@
+extends ../../../.inc/layout-simple
+
+block body
+	.panel.panel-default
+		.panel-heading Types
+		.panel-body
+			ol
+				table.table
+					thead
+						th name
+						th validation
+						th filters
+						th routeMask
+					tdody
+						each val, name in specOptions.types
+							tr
+								td
+									span.label.label-success
+										= name
+								td
+									if (val.validation)
+										each rule in val.validation
+											if typeof rule == 'object'
+												each ruleParams, ruleName in rule
+													div= ruleName + ' [' + JSON.stringify(ruleParams) + ']'
+											else
+												div= rule
+								td
+									if (val.filters)
+										each filter in val.filters
+											if typeof filter == 'object'
+												each filterParams, filterName in rule
+													div= filterName + ' [' + JSON.stringify(filterParams) + ']'
+											else
+												div= filter
+								td= val.routeMask

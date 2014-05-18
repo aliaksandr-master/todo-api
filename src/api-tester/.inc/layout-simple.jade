@@ -4,14 +4,41 @@ head
 	meta(charset='utf-8')
 	meta(name='viewport', content='width=device-width, initial-scale=1.0')
 	title Starter Template for Bootstrap
-	link(href='/api-tester/vendor/bootstrap/custom/css/bootstrap.css', rel='stylesheet')
-	link(href='/api-tester/vendor/bootstrap/custom/css/bootstrap-theme.css', rel='stylesheet')
+	link(href='/opt/frontend/vendor/bootstrap/custom/css/bootstrap.css', rel='stylesheet')
 	link(href='/api-tester/static/styles/index.css', rel='stylesheet')
 	block head
-body
-	block body
+body(style='padding-top: 50px;')
+	.navbar.navbar-inverse.navbar-fixed-top(role="navigation")
+		.container
+			.navbar-header
+				button.navbar-toggle(type="button",data-toggle="collapse",data-target="#main-navbar")
+					span.sr-only Toggle navigation
+					span.icon-bar
+					span.icon-bar
+					span.icon-bar
+				a.navbar-brand(href=homeUrl) Home
+			#main-navbar.collapse.navbar-collapse
+				ul.nav.navbar-nav.navbar-right
+					each nav in navs
+						if nav.nested
+							li.dropdown
+								a.dropdown-toggle(data-toggle="dropdown")
+									= nav.text
+									b.caret
+								ul.dropdown-menu
+									each nestedVal in nav.nested
+										li
+											a(href=nestedVal.href)= nestedVal.text
+						else
+							li
+								a(href=nav.href)= nav.text
+	.container
+		.row
+			.col-xs-3
+				block nav
+			.col-xs-9
+				block body
 
-script(src='/api-tester/vendor/requirejs/require.js')
+script(src='/opt/frontend/bower/requirejs/require.js')
 script(src='/api-tester/static/js/require.js')
-script(src='/api-tester/static/js/main.js')
 block scripts

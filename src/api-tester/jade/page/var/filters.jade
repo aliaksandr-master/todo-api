@@ -1,0 +1,8 @@
+extends ../../../.inc/layout-simple
+block body
+	.panel.panel-default
+		.panel-heading Filters
+		.panel-body
+			ol
+				each val, index in filter
+					li= val

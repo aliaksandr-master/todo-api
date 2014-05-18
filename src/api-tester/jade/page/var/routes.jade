@@ -1,0 +1,32 @@
+extends ../../../.inc/layout-simple
+block body
+	.panel.panel-default
+		.panel-heading Routes
+		.panel-body
+			table.table
+				thead
+					tr
+						th #
+						th Method
+						th Url
+						th Name
+						th Data
+				tbody
+					each route, index in routes
+						tr
+							td= index+1
+							td
+								if route.method == 'GET'
+									.label.label-success= route.method
+								else if route.method == 'PUT'
+									.label.label-warning=route.method
+								else if route.method == 'POST'
+									.label.label-primary=route.method
+								else if route.method == 'DELETE'
+									.label.label-danger=route.method
+								else
+									.label.label-default=route.method
+							td= route.url
+							td
+								.label.label-default= route.name
+							td
