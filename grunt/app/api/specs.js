@@ -8,16 +8,102 @@ module.exports = function (grunt) {
 	var json2php = opt.utils.json2php;
 
 	this
+		.run('php-method-finder:rules', {
+			options: {
+				filter: function (method) {
+					return /^rule_.+$/.test(method.name);
+				},
+				processResult: function (result) {
+					return _.map(result, function (method) {
+						return method.name.replace(/^rule_+/, '');
+					});
+				}
+			},
+			files: [{
+				expand: true,
+				cwd: opt.SRC + '/api',
+				src: [
+					'**/*.php'
+				],
+				dest: opt.VAR + '/api/rules',
+				ext: '.json'
+			}]
+		})
+
+		.run('json-merge:rules', {
+			options: {
+				array: true
+			},
+			files: [{
+				expand: true,
+				cwd: opt.VAR + '/api/rules',
+				src: [ '**/*.json' ],
+				dest: opt.VAR + '/api/rules.json'
+			}]
+		})
+
+		.run('clean:rules', [
+			opt.VAR + '/api/rules'
+		])
+
+		.run('php-method-finder:filters', {
+			options: {
+				filter: function (method) {
+					return /^filter_.+$/.test(method.name);
+				},
+				processResult: function (result) {
+					return _.map(result, function (method) {
+						return method.name.replace(/^filter_+/, '');
+					});
+				}
+			},
+			files: [
+				{
+					expand: true,
+					cwd: opt.SRC + '/api',
+					src: [
+						'**/*.php'
+					],
+					dest: opt.VAR + '/api/filters',
+					ext: '.json'
+				}
+			]
+		})
+
+		.run('json-merge:filters', {
+			options: {
+				array: true
+			},
+			files: [{
+				expand: true,
+				cwd: opt.VAR + '/api/filters',
+				src: [ '**/*.json' ],
+				dest: opt.VAR + '/api/filters.json'
+			}]
+		})
+
+		.run('clean:filters', [
+			opt.VAR + '/api/filters'
+		])
 
 		.run('jshint', {
 			src: [ opt.SRC + '/api/controllers/**/*.spec.{js,json}' ]
 		})
 
 		.run('api-specs-compiler', {
-			options: _.extend({
+			options: {
 				beauty: true,
-				verbose: false
-			}, require(opt.SRC + '/api/controllers/spec-options.js')),
+				verbose: false,
+				runtimeOptions: function () {
+					var specOptions = require(opt.SRC + '/api/controllers/spec-options.js');
+					return {
+						types:    specOptions.types,
+						rules:    grunt.file.readJSON(opt.VAR + '/api/rules.json'),
+						filters:  grunt.file.readJSON(opt.VAR + '/api/filters.json'),
+						statuses: specOptions.statuses
+					};
+				}
+			},
 
 			files: [{
 				expand: true,

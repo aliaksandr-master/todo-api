@@ -1,0 +1,11 @@
+{
+	"max_debug_level": 1,
+	"default_debug_level": 1,
+	"debug_get_param": "_debug",
+	"debug_levels": {
+		"0": "production",
+		"1": "statistic",
+		"2": "testing",
+		"3": "debug"
+	}
+}

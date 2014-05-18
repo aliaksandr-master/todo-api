@@ -1,7 +1,7 @@
 <?php
 
 
-require_once(OPT_DIR.DS.'ci_active_record'.DS.'ci_active_record.init.php');
+require_once(OPT_DIR.DS.'vendor'.DS.'ci_active_record'.DS.'ci_active_record.init.php');
 
 
 

@@ -3,12 +3,16 @@
 module.exports = function () {
 	var opt = this;
 
+	this.run('clean', [
+		opt.BUILD + '/opt'
+	]);
+
 	this.run('symlink', {
 		options: {
 			overwrite: true,
-			force: true
+			type: 'dir'
 		},
-		target: 'opt',
-		link: 'path/to/link'
+		target: opt.CWD + '/opt',
+		link: opt.BUILD + '/opt'
 	});
 };

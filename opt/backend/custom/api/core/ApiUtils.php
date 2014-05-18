@@ -10,27 +10,6 @@ class ApiUtils {
         return is_null($param) ? $obj : (isset($obj[$param]) ? $obj[$param] : $default);
     }
 
-	private static $_statusesMap =
-		//#:injectData("tmp/api/spec-options.json", "statuses")
-		array()
-		//injectData#
-	;
-
-	static function getMessageByStatus ($status) {
-		$statusObj = ApiUtils::get(self::$_statusesMap, $status, array());
-		return ApiUtils::get($statusObj, 'message', null);
-	}
-
-	static function getCodeByStatus ($status) {
-		$statusObj = ApiUtils::get(self::$_statusesMap, $status, array());
-		return ApiUtils::get($statusObj, 'code', null);
-	}
-
-	static function getSuccessByStatus ($status) {
-		$statusObj = ApiUtils::get(self::$_statusesMap, $status, array());
-		return ApiUtils::get($statusObj, 'success', null);
-	}
-
 	static function camelCase($str, $ucFirst = false){
 		$str = preg_replace("/[^a-zA-Z0-9]/", " ", (string)$str);
 		$str = preg_replace_callback("/(?<=[^a-zA-Z])[a-z]/", "self::_camelCaseCallback", trim($str));
@@ -77,7 +56,7 @@ class ApiUtils {
 	static function getFormatByHeadersAccept ($headersAccept, array $supportedFormats, $defaultFormat) {
 
 		if (empty($supportedFormats[$defaultFormat])) {
-			throw new Exception('unsupported default output format');
+			throw new Exception('unsupported default response format');
 		}
 
 		$headersAcceptStr = implode(',', $headersAccept);

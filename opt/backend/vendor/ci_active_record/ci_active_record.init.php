@@ -11,6 +11,13 @@ if (!defined('BASEPATH')) {
 //  build/opt/ci_active_record/database/database/drivers/mysqli/mysqli_driver.php
 }
 
+// for CI check in all file in header
+if (!defined('APPPATH')) {
+    define('APPPATH', str_replace(SD, DS, __DIR__).DS);
+//	build/opt/ci_active_record/database/drivers/mysqli/mysqli_driver.php
+//  build/opt/ci_active_record/database/database/drivers/mysqli/mysqli_driver.php
+}
+
 if (!function_exists('log_message')) {
     function log_message ($level = 'error', $message, $php_error = FALSE) {
 //        DB_DEBUG && trigger_error($message, E_USER_WARNING);

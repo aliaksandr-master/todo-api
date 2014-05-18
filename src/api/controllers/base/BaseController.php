@@ -2,10 +2,7 @@
 
 
 
-abstract class BaseController implements IApiController, IApiDebugStatistic {
-
-	/** @var CI_Loader */
-	public $load;
+abstract class BaseResourceController implements IApiResourceController {
 
 	/** @var UserModel */
 	public $user;
@@ -13,13 +10,9 @@ abstract class BaseController implements IApiController, IApiDebugStatistic {
 	/** @var Api */
 	protected $api = null;
 
-	const ACCESS_ONLY_OWNER = 'only_owner';
+	private $_filterer = null;
 
-	const ACCESS_NEED_LOGIN = 'need_login';
-
-	const FILTER_METHOD_PREF = 'filter_';
-
-	const VALIDATOR_METHOD_PREF = 'rule_';
+	private $_verifier = null;
 
 
 	public function __construct ($api) {
@@ -29,18 +22,45 @@ abstract class BaseController implements IApiController, IApiDebugStatistic {
 	}
 
 
-	function compileMethodName ($action, $method, $responseType, array $methodAliasesMap) {
-		if ($action === 'index') {
-			$action = '';
+	function resource ($action) {
+		$beforeActionResult = $this->beforeAction($action);
+		if (!$beforeActionResult && !is_null($beforeActionResult)) {
+			return null;
 		}
-		$action = strtoupper(ApiUtils::get($methodAliasesMap, $method, $method)).'_'.strtoupper($responseType).($action || strlen($action) ? '_'.$action : '');
-
-		return $action;
+		return call_user_func_array(array($this, $action), $this->api->request->param());
 	}
 
 
-	function getActionArgs ($actionName, $method, $actionMethodName, ApiRequest &$input) {
-		return $input->param();
+	function filterData ($value, $filter, array $params = array()) {
+		if (method_exists($this, 'filter_'.$filter)) {
+			return $this->{'filter_'.$filter}($value, $filter, $params);
+		}
+		if (is_null($this->_filterer)) {
+			$this->_filterer = new Filterer($this, $this->api);
+		}
+		return $this->_filterer->apply($value, $filter, $params);
+	}
+
+
+	function verifyData ($value, $rule, array $params = array(), $name = null) {
+		if (method_exists($this, 'rule_'.$rule)) {
+			return $this->{'rule_'.$rule}($value, $params, $name);
+		}
+		if (is_null($this->_verifier)) {
+			$this->_verifier = new Verifier($this, $this->api);
+		}
+
+		return $this->_verifier->apply($value, $rule, $params, $name);
+	}
+
+
+	function prepareSuccess () {
+		$status = $this->prepareResponseStatusByMethod($this->api->response->status(), $this->api->response->data(), $this->api->request->method);
+		$this->api->response->status($status);
+	}
+
+
+	function prepareError () {
 	}
 
 
@@ -49,38 +69,49 @@ abstract class BaseController implements IApiController, IApiDebugStatistic {
 	}
 
 
-	public function hasAccess (ApiComponent &$apiAccess, $accessSpec, $method, $actionName) {
+	function accessError ($reason, $status = 403) {
+		$this->api->error('access', $reason);
+		$this->api->response->status($status);
+	}
+
+
+	function systemError ($reason, $status = 500) {
+		$this->api->error('system', $reason);
+		$this->api->response->status($status);
+	}
+
+
+	function hasAccess ($action) {
+		$accessSpec = $this->api->getSpec('access', array());
 
 		// CHECK ONLY OWNER
-		if (!empty($accessSpec[static::ACCESS_ONLY_OWNER])) {
+		if (!empty($accessSpec['only_owner'])) {
 			// TODO: need implement ONLY_OWNER access Spec
 		}
 
 		// CHECK NEED LOGIN
-		if (!empty($accessSpec[static::ACCESS_NEED_LOGIN])) {
-			if (!$this->user->isLogged()) {
-				$apiAccess->error(static::ACCESS_NEED_LOGIN, 401);
+		if (!empty($accessSpec['need_login']) && !$this->user->isLogged()) {
+			$this->accessError('need_login', 401);
 
-				return false;
-			}
+			return false;
 		}
 
 		// CHECK user permissions
-		$handler = strtolower(get_class($this))."#".$actionName;
+		$handler = strtolower(get_class($this))."#".$action;
 
-		$callName = strtoupper($method).":".$handler;
+		$callName = strtoupper($this->api->request->method).":".$handler;
 		$callNameAny = "ANY:".$handler;
 
 		// TODO: must use ACCESS MODEL and USER MODEL to create Access-array
 		$restrictions = array();
 
 		if (isset($restrictions[$callNameAny]) && !$restrictions[$callNameAny]) {
-			$apiAccess->error(null, 403);
+			$this->accessError(null, 403);
 
 			return false;
 		}
 		if (isset($restrictions[$callName]) && !$restrictions[$callName]) {
-			$apiAccess->error(null, 403);
+			$this->accessError(null, 403);
 
 			return false;
 		}
@@ -89,9 +120,20 @@ abstract class BaseController implements IApiController, IApiDebugStatistic {
 	}
 
 
-	public function prepareResponseStatusByMethod ($status, $response, $method) {
+	function beforeAction ($action) {
+		if (!method_exists($this, $action)) {
+			$this->systemError('Method Not Allowed', 405);
 
-		$hasData = !empty($response['data']);
+			return false;
+		}
+
+		return $this->hasAccess($action);
+	}
+
+
+	public function prepareResponseStatusByMethod ($status, $data, $method) {
+
+		$hasData = !empty($data);
 
 		if ($method == "POST") {
 			if ($hasData) {
@@ -104,7 +146,7 @@ abstract class BaseController implements IApiController, IApiDebugStatistic {
 				if ($hasData) {
 					return 200; // updated resource
 				} else {
-					return 500; // empty GET result
+					return 410; // empty GET result
 				}
 			} else {
 				if ($method == "GET") {
@@ -119,41 +161,7 @@ abstract class BaseController implements IApiController, IApiDebugStatistic {
 	}
 
 
-	public function applyValidationRule ($value, $ruleName, $params, $contextName) {
-		$method = self::VALIDATOR_METHOD_PREF.$ruleName;
-		if (method_exists($this, $method)) {
-			return $this->$method($value, $params, $contextName);
-		}
-
-		return null;
-	}
-
-
-	public function applyFilter ($value, $filterName, $params, $contextName) {
-		$method = self::FILTER_METHOD_PREF.$filterName;
-		if (method_exists($this, $method)) {
-			return $this->$method($value, $params, $contextName);
-		}
-
-		return null;
-	}
-
-
-	public function toType ($value, $type, $param = null) {
-		switch ($type) {
-			case 'decimal':
-			case 'integer':
-				return intval(trim((string) $value));
-			case 'float':
-				return floatval(trim((string) $value));
-			case 'boolean':
-				return (bool) $value;
-		}
-		return trim((string) $value); // default type = string
-	}
-
-
-	public function debugStatistic () {
+	public function statistic () {
 
 		$dbs = BaseCrudModel::getAllDbConnections();
 

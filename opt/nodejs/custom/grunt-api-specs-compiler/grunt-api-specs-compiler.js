@@ -17,9 +17,21 @@ module.exports = function (grunt) {
 		};
 
 		var options = this.options({
-			statuses: {},
-			types: {}
+			beautify: false,
+			verbose: false,
+			runtimeOptions: function () {
+				return {};
+			}
 		});
+
+		options = _.extend({
+			statuses: {},
+			types: {},
+			filters: [],
+			rules: []
+		}, options, _.result(options, 'runtimeOptions'));
+
+		options.rules.push('optional', 'required');
 
 		fileFilterer(grunt, this, function (fpath, dest, fileObj) {
 			var allowCondition = _.all(fpath.split(/[\\\/]+/), function (v) {

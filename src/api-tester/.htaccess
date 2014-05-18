@@ -1,10 +1,5 @@
-Options -MultiViews
+RewriteEngine On
+Options +FollowSymlinks
 
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-# Block access to hidden files and directories.
-# This includes directories used by version control systems such as Git and SVN.
-
-RewriteCond %{SCRIPT_FILENAME} -d [OR]
-RewriteCond %{SCRIPT_FILENAME} -f
-RewriteRule "(^|/)\." - [F]
+RewriteCond %{REQUEST_FILENAME} -f
+RewriteRule ^api-tester/opt(.*)$ ../opt/frontend$1 [R,L]

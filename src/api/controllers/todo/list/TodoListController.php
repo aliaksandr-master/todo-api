@@ -2,7 +2,7 @@
 
 
 
-class TodoListController extends BaseController {
+class TodoListController extends BaseResourceController {
 
 	/** @var TodoModel */
 	public $model;

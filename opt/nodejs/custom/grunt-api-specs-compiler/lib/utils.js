@@ -84,6 +84,9 @@ module.exports = function (options) {
 
 	var addValidationRule = function (object, ruleName, params, toStart) {
 		ruleName = ruleName.trim();
+		if (!_.contains(options.rules, ruleName)) {
+			throw new Error('unavailable rule "' + ruleName + '"');
+		}
 		if (ruleName === 'required' || ruleName === 'optional') {
 			if (object.validation.required !== VALIDATION_REQUIRED_DEFVAL) {
 				throw new Error('required/optional rules conflict');
@@ -101,6 +104,9 @@ module.exports = function (options) {
 	};
 
 	var addFilter = function (object, toEnd, name, params) {
+		if (!_.contains(options.filters, name)) {
+			throw new Error('unavailable filter "' + name + '"');
+		}
 		object.filters[toEnd ? 'push' : 'unshift'](mkobj(name, params));
 	};
 
@@ -149,10 +155,11 @@ module.exports = function (options) {
 			var FILTER_FORMAT_EXP = /^([a-zA-Z_]+)(.*)$/i;
 			if (filtersString) {
 				var filterSegments = filtersString.replace(/^\|/, '').split(/\s*\|\s*/g);
-				parsed.filters = _.map(filterSegments, function (part) {
+
+				_.each(filterSegments, function (part) {
 					var name = part.replace(FILTER_FORMAT_EXP, '$1');
 					var params = parseParamsJSON(part.replace(FILTER_FORMAT_EXP, '$2'));
-					return mkobj(name, params);
+					addFilter(parsed, true, name, params);
 				});
 			}
 		});
@@ -196,7 +203,7 @@ module.exports = function (options) {
 					}
 					_.each(directiveValue, function (status) {
 						if (!options.statuses[status]) {
-							throw new Error('undefined status id "' + status + '"');
+							throw new Error('unavailable status "' + status + '"');
 						}
 					});
 				}

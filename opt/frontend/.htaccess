@@ -1,4 +1,4 @@
 RewriteEngine On
 Options +FollowSymlinks
 
-deny from all
+allow from all

@@ -69,7 +69,7 @@ module.exports = {
 			},
 			body: {
 				'username:string': 'optional|need["password_old"]|unique',
-				'email:string': 'required|valid_email|unique|need["password_old"]',
+				'email:string': 'optional|valid_email|unique|need["password_old"]',
 				'password_old:string': 'optional|valid_password',
 				'password_new:string': 'optional|matches["password_new_confirm"]|need["password_old"]',
 				'password_new_confirm:string': 'optional|matches["password_new"]|need["password_old"]'

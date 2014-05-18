@@ -514,7 +514,7 @@
 			params.url = this.$('#form-route-url').val();
 			params.url = window.utils.addParamsToUrl(params.url, this.getDataFromRegion('query'));
 			params.url = window.utils.addParamsToUrl(params.url, {
-				_mode: 2
+				_debug: 'debug'
 			});
 
 			params.dataType = 'json';

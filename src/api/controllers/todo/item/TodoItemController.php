@@ -2,7 +2,7 @@
 
 
 
-class TodoItemController extends BaseController {
+class TodoItemController extends BaseResourceController {
 
 	/**@var TodoItemModel */
 	public $model;

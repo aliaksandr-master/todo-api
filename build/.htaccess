@@ -1,10 +1,9 @@
+RewriteEngine On
 Options +FollowSymlinks
 
-RewriteEngine On
-
 # modules
+RewriteRule ^opt/frontend/(.*)$ opt/frontend/$1 [L]
 RewriteRule ^api-tester/?(.*)$ api-tester/$1 [R,L]
-
 RewriteRule ^api/?(.*)$ api/$1 [L]
 RewriteRule ^files/(.+)$ files/$1 [L]
 

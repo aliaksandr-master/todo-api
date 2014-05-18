@@ -2,7 +2,7 @@
 
 
 
-class SessionUserController extends BaseController {
+class SessionUserController extends BaseResourceController {
 
 	public function deleteOne () {
 		$id = $this->user->current('id');

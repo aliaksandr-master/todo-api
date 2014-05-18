@@ -2,7 +2,7 @@
 
 
 
-class UserController extends BaseController {
+class UserController extends BaseResourceController {
 
 	public function __construct ($api) {
 		parent::__construct($api);
@@ -30,7 +30,7 @@ class UserController extends BaseController {
 	public function deleteOne ($id) {
 		$user = $this->user->read($id);
 		if (empty($user)) {
-			$this->api->output->error(404);
+			$this->api->contentError(null, 404);
 		} else {
 			$this->user->delete($id);
 		}
@@ -41,6 +41,7 @@ class UserController extends BaseController {
 
 	public function createOne () {
 		$data = $this->api->request->pipe($this->user->safeFieldsMap());
+		dump($data);
 		$data['password'] = $this->user->cryptPassword($data['password']);
 		$data['date_register'] = date("Y-m-d H:i:s", gettimeofday(true));
 		$activationCode = sha1(md5(microtime()));
