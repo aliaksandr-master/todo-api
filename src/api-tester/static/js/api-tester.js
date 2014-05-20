@@ -36,9 +36,10 @@ define(function (require, exports, module) {
 		this.$el = $(container).eq(0);
 		this.el = this.$el.get()[0];
 
+		this.initRawPanels();
 		this.reset();
 
-		that.refresh();
+		this.refresh();
 	}
 
 	Form.prototype = {
@@ -51,6 +52,15 @@ define(function (require, exports, module) {
 			this.routes.source = _.cloneDeep(this._routes);
 			this.routes.group = _.groupBy(this.routes.source, 'name');
 			this.routes.current = [];
+		},
+
+		initSpecHeader: function () {
+			if (this.spec.current.title !== this.spec.current.name) {
+				this.$('#api-tester-spec-name').html(this.spec.current.title);
+			}
+			this.$('#api-tester-spec-ctrl').html(this.spec.current.controller);
+			this.$('#api-tester-spec-action').html(this.spec.current.action);
+			this.$('#api-tester-spec-description').html(this.spec.current.description || '');
 		},
 
 		refresh: function (href) {
@@ -74,6 +84,7 @@ define(function (require, exports, module) {
 			this.initMenu();
 			this.buildForm();
 			this.initForm();
+			this.initSpecHeader();
 
 			this.delegateEvents();
 		},
@@ -97,6 +108,29 @@ define(function (require, exports, module) {
 					return that[handler].call(that, e, $(this));
 				});
 			});
+		},
+
+		initRawPanels: function () {
+			var $rawsCheck = this.$('.panel-raw :checkbox');
+			$rawsCheck.on('change', function () {
+				var checked = $(this).is(':checked');
+				var $raw = $(this).closest('.panel-raw');
+				var $trBody = $raw.find('.panel-body.-transformed');
+				var $rawBody = $raw.find('.panel-body.-raw');
+				if (checked) {
+					$trBody.hide();
+					$rawBody.show();
+				} else {
+					$trBody.show();
+					$rawBody.hide();
+				}
+			});
+		},
+
+		insertToRawPanel: function (name, raw, transformed) {
+			var $panel = this.$('#api-tester-'+name);
+			$panel.find('.panel-body.-transformed').html(transformed);
+			$panel.find('.panel-body.-raw').html(raw);
 		},
 
 		initMenu: function () {
@@ -347,51 +381,70 @@ define(function (require, exports, module) {
 			}
 		},
 
-		onRequestSuccess: function (requestObj, response, jqXHR) {
-			this.$("#response").html("");
-			this.$("#responseHeadersNonFormat").html(jqXHR.getAllResponseHeaders());
-			this.$("#errors").html("");
-			if($.isPlainObject(response)){
-				this.$("#response").html(jsonFormat(response));
-			}else{
-				this.$("#response").text(response);
-			}
-			//			this.$('#sendInfo').html(jsonFormat({
-			//				time: (Date.now() - time)/1000,
-			//				encoding: jqXHR.getResponseHeader('Content-Encoding'),
-			//				compress: (100 - Math.round((+jqXHR.getResponseHeader('Content-Length') / jqXHR.responseText.length)*100)) + '%'
-			//			}));
+		showHeaders: function (contentSrc, content) {
+
+			var headers = {};
+			contentSrc.replace(/^(.*?):[ \t]*([^\r\n]*)$/mg, function (w, name, value) {
+				headers[name] = value;
+			});
+
+			this.insertToRawPanel('response-headers', contentSrc, jsonFormat(headers));
 		},
 
-		onRequestError: function (requestObj, jqXHR) {
-			var resp = jqXHR.responseText,
-				isJSON = false;
+		showErrors: function (string) {
+			this.$("#errors").html(string || '');
+		},
 
-			var respHtml = jqXHR.responseText.replace(/[<]!DOCTYPE(?:[^>]*)[>]/g, '');
-			respHtml = respHtml.replace(/<\/?html[^>]+>/g, '');
+		showResponse: function (contentSrc, content) {
+			content || (content = contentSrc);
+			if($.isPlainObject(content)){
+				content = jsonFormat(content);
+			}
+			this.insertToRawPanel('response-data', contentSrc, content);
+		},
 
-			this.$("#responseHeadersNonFormat").html(jqXHR.getAllResponseHeaders());
+		showRequestData: function (srcData, data) {
+			data || (data = srcData);
+			if($.isPlainObject(data)){
+				data = jsonFormat(data);
+			}
+			this.insertToRawPanel('request-data', srcData, data);
+		},
+
+		showInfo: function (requestObj, response, jqXHR) {
+			this.$('#api-tester-interaction-info .panel-body').html(jsonFormat({
+				time: (Date.now() -requestObj.time)/1000,
+				encoding: jqXHR.getResponseHeader('Content-Encoding'),
+				compress_saved: (100 - Math.round((+jqXHR.getResponseHeader('Content-Length') / jqXHR.responseText.length)*100)) + '%'
+			}));
+		},
+
+		onRequestSuccess: function (requestObj, response, jqXHR) {
+			this.showHeaders(jqXHR.getAllResponseHeaders());
+			this.showErrors();
+			this.showResponse(jqXHR.responseText, response);
+			this.showInfo(requestObj, response, jqXHR);
+		},
+
+		onRequestError: function (requestObj, response, jqXHR) {
+			var responseSrc = response;
 
 			try {
-				resp = jsonFormat(JSON.parse(jqXHR.responseText, true));
-				isJSON = true;
+				response = JSON.parse(response, true);
 			} catch (e) {
-				resp = respHtml;
-				isJSON = false;
+				response = responseSrc;
 			}
 
-			this.$("#response").html(isJSON ? resp : "");
-			this.$("#errors").html(
+			this.showHeaders(jqXHR.getAllResponseHeaders());
+			this.showInfo(requestObj, response, jqXHR);
+			this.showResponse(jqXHR.responseText, response);
+
+			this.showErrors(
 				'<div class="alert alert-danger">' +
-					'<h4>Ajax Error <b>' + jqXHR.status + '</b> (<i>' + status + '</i>)</h4>' +
+					'<h4>Error <b>' + jqXHR.status + '</b> (<i>' + status + '</i>)</h4>' +
 					'<p>' + jqXHR.statusText + '</p><br>' +
-					(isJSON ? '' : '<div>' + resp + '</div>') +
-					'</div>'
+				'</div>'
 			);
-			this.$("#response").text(jqXHR.responseText);
-			this.$('#sendInfo').html(jsonFormat({
-				//				time: (Date.now() - time)/1000
-			}));
 		},
 
 		submitForm: function () {
@@ -413,17 +466,21 @@ define(function (require, exports, module) {
 
 			params.dataType = 'json';
 
-			if(params.type !== "GET"){
+			var data = this.getDataFromRegion('body');
+
+			if (params.type !== "GET") {
 				params.contentType = 'json';
-				params.data = JSON.stringify(this.getDataFromRegion('body'));
+				params.data = JSON.stringify(data);
 			}
 
+			this.showRequestData(params.data, data);
+
 			$.ajax($.extend({}, params, {
-				success: function(response, _$, jqXHR){
+				success: function (response, _$, jqXHR) {
 					that.onRequestSuccess(requestObj, response, jqXHR);
 				},
-				error: function(jqXHR, status){
-					that.onRequestError(requestObj, jqXHR);
+				error: function (jqXHR, status) {
+					that.onRequestError(requestObj, jqXHR.responseText, jqXHR);
 				}
 			}));
 

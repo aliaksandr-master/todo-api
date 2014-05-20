@@ -33,7 +33,7 @@ module.exports = function (grunt) {
 							{href: ROOT_URI + '/page/var/statuses/', text: 'Available Spec Statuses'},
 							{href: ROOT_URI + '/page/var/types/', text: 'Available Spec Types'}
 						]},
-						{href: ROOT_URI + '/page/var/routes.html', text: 'Routes'}
+						{href: ROOT_URI + '/page/var/routes/', text: 'Routes'}
 					],
 					filter: grunt.file.readJSON(opt.VAR + '/api/filters.json'),
 					specsSrc: specsSrc,

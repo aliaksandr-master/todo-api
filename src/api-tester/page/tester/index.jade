@@ -1,4 +1,18 @@
 extends ../../inc/templates/layout-empty
+mixin pre-panel(name, text)
+	.panel.panel-default(id='api-tester-' + name)
+		.panel-heading!= text
+		pre.panel-body
+
+mixin raw-panel(name, text)
+	.panel.panel-default.panel-raw(id='api-tester-' + name)
+		.panel-heading.clearfix
+			span.pull-left!= text
+			label.pull-right Raw
+				input(type='checkbox',value=1)
+		pre.panel-body.-transformed
+		pre.panel-body.-raw(style='display:none;')
+
 block container
 	script
 		!= 'window.MY_ROOT = "/api-tester/";'
@@ -8,48 +22,44 @@ block container
 	div(style="margin: 15px 15px 0;")
 		.row#api-tester
 
-			.col-md-6
+			.col-md-9#api-tester-info
 
-				.panel.panel-default
-					.panel-heading Info
-					#sendInfo.panel-body
+				.api-tester-spec-wr
+					h1#api-tester-spec-name
+					h2#api-tester-spec-ctrl
+					h2#api-tester-spec-action
+					div#api-tester-spec-description
 
-				.panel.panel-default
-					.panel-heading Request <b>Data</b> (formatted)
-					#requestParams.panel-body
+				+pre-panel('interaction-info', 'Info')
+				+raw-panel('request-data', 'Request Data')
+				+raw-panel('response-headers', 'Response Headers')
 
-				.panel.panel-default
-					.panel-heading Response <b>Headers</b>
-					#responseHeadersNonFormat.panel-body
-
-				.panel.panel-default
-					.panel-heading Request <b>Data</b>
-					#requestDataNonFormat.panel-body
-
-				.panel.panel-default
-					.panel-heading Response <b>Data</b>
-					#response.panel-body
-
-			.col-md-18
+			.col-md-14#api-tester-response
 				#errors
 
-				.panel.panel-default
-					.panel-heading Respoonse
-					pre#response.panel-body(style='padding: 5px; border: none; background: none;')
+				+raw-panel('response-data', 'Response Data')
 
-			.col-md-6
+			.col-md-7#api-tester-request
 
 				#form-head.clearfix
-					.form-control-wr
-						select#form-route.form-control
-					.form-control-wr
-						input#form-route-method.form-control(type="text",placeholder='http method')
-					.form-control-wr
-						input#form-route-url.form-control(type="text", placeholder='request url')
-					.form-control-wr
-						input#form-request-format.form-control(type="text", placeholder='request data format', value="json")
-					.form-control-wr
-						input#form-request-query.form-control(type="text", placeholder='additional query', value="_debug=debug")
+					.row
+						.col-sm-30
+							.form-control-wr
+								select#form-route.input-sm.form-control
+					.row
+						.col-sm-15
+							.form-control-wr
+								input#form-route-method.input-sm.form-control(type="text",placeholder='http method')
+						.col-sm-15
+							.form-control-wr
+								input#form-request-format.input-sm.form-control(type="text", placeholder='request data format', value="json")
+					.row
+						.col-sm-30
+							.form-control-wr
+								input#form-route-url.input-sm.form-control(type="text", placeholder='request url')
+						.col-sm-30
+							.form-control-wr
+								input#form-request-query.input-sm.form-control(type="text", placeholder='additional query', value="_debug=debug")
 
 				form#form
 					#form-content
@@ -57,7 +67,7 @@ block container
 						button#form-submit.btn.btn-warning.pull-left(type="submit") Submit
 						button.btn.btn-default.putData.pull-right Invalid
 						button.btn.btn-default.putData.pull-right.-valid Valid
-						button.btn.btn-default.putData.pull-right.-prev Prev
+
 
 block scripts
 	script(type="text/x-handlebars-template",data-src="/panel.hbs")!= read('/static/templates/panel.hbs')

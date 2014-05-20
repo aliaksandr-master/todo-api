@@ -1,0 +1,76 @@
+@import "../../../inc/styles/mixins/mixins";
+
+#api-tester {
+	.panel-heading {
+		padding: @pad;
+		color: #555;
+	}
+	.panel-body {
+		padding: @pad;
+		font-size: 11px;
+	}
+	pre.panel-body {
+		padding: 5px;
+		border: none;
+		background: none;
+		font-family: @font-family-monospace;
+		margin: 0;
+	}
+	.panel-body:before {
+		content: '';
+	}
+	.panel-body:after {
+		content: '';
+	}
+	.panel-body:empty {
+		display: none !important;
+	}
+
+	#api-tester-spec-ctrl,
+	#api-tester-spec-action {
+		&:before {
+			display: block;
+			font-size: 12px;
+			color: #777;
+			line-height: 1;
+		}
+		& {
+			display: block;
+			margin: 0 0 @pad*4;
+			padding: 0;
+			font-size: 20px;
+			line-height: 1.2;
+
+		}
+	}
+	#api-tester-spec-ctrl:before {
+		content: 'controller:';
+	}
+	#api-tester-spec-action:before {
+		content: 'action:';
+	}
+	#api-tester-spec-description:before {
+		content: 'api-tester-spec-description:';
+		display: block;
+		font-size: 12px;
+		color: #777;
+		line-height: 1;
+	}
+	#api-tester-spec-description:empty {
+		display: none;
+	}
+	#api-tester-spec-name {
+		display: block;
+		line-height: 1.2;
+		font-size: 24px;
+		margin: 0 0 @pad * 4;
+		padding: 0;
+	}
+	#api-tester-spec-name:empty {
+		display: none;
+	}
+	.api-tester-spec-wr {
+		display: block;
+		padding: 0 0 @pad * 4;
+	}
+}
