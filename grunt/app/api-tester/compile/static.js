@@ -25,7 +25,7 @@ module.exports = function (grunt) {
 					rootUrl: ROOT_URI,
 					homeUrl: ROOT_URI + '/page/',
 					navs: [
-						{href: ROOT_URI + '/page/tester/', text: 'Tester'},
+//						{href: ROOT_URI + '/page/tester/', text: 'Tester'},
 						{href: ROOT_URI + '/page/var/specs/', text: 'Specs'},
 						{href: ROOT_URI + '/page/var/routes/', text: 'Spec Options', nested: [
 							{href: ROOT_URI + '/page/var/filters/', text: 'Available Filters'},
