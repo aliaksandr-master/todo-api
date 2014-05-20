@@ -23,17 +23,17 @@ module.exports = function (grunt) {
 						return grunt.file.read(opt.SRC + '/api-tester' + path);
 					},
 					rootUrl: ROOT_URI,
-					homeUrl: ROOT_URI + '/index.html',
+					homeUrl: ROOT_URI + '/page/',
 					navs: [
-						{href: ROOT_URI + '/pages/tester/', text: 'Tester'},
-						{href: ROOT_URI + '/pages/var/specs.html', text: 'Specs'},
-						{href: ROOT_URI + '/pages/var/routes.html', text: 'Spec Options', nested: [
-							{href: ROOT_URI + '/pages/var/filters.html', text: 'Available Filters'},
-							{href: ROOT_URI + '/pages/var/rules.html', text: 'Available Validation Rules'},
-							{href: ROOT_URI + '/pages/var/statuses.html', text: 'Available Spec Statuses'},
-							{href: ROOT_URI + '/pages/var/types.html', text: 'Available Spec Types'}
+						{href: ROOT_URI + '/page/tester/', text: 'Tester'},
+						{href: ROOT_URI + '/page/var/specs/', text: 'Specs'},
+						{href: ROOT_URI + '/page/var/routes/', text: 'Spec Options', nested: [
+							{href: ROOT_URI + '/page/var/filters/', text: 'Available Filters'},
+							{href: ROOT_URI + '/page/var/rules/', text: 'Available Validation Rules'},
+							{href: ROOT_URI + '/page/var/statuses/', text: 'Available Spec Statuses'},
+							{href: ROOT_URI + '/page/var/types/', text: 'Available Spec Types'}
 						]},
-						{href: ROOT_URI + '/pages/var/routes.html', text: 'Routes'}
+						{href: ROOT_URI + '/page/var/routes.html', text: 'Routes'}
 					],
 					filter: grunt.file.readJSON(opt.VAR + '/api/filters.json'),
 					specsSrc: specsSrc,
