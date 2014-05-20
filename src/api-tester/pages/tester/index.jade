@@ -5,63 +5,57 @@ block container
 		!= 'window.API_ROOT = "/api/";'
 		!= 'window.API_JSON = ' + JSON.stringify(specsSrc) + ';'
 		!= 'window.API_ROUTES_JSON = ' + JSON.stringify(routes) + ';'
-	.row
-		.col-md-2
-			#api-tester-nav.panel.panel-default
-				each specObj, controller in specs
-					.panel-heading
-						.panel-title
-							a.collapsed(style="display:block;",data-toggle="collapse",data-pattern="#api-tester-nav" href="#ctrl-"+controller)
-								=controller.replace(/Controller$/, '').replace(/([A-Z])/g, ' $1').trim()
-					.panel-collapse.collapse(id="ctrl-"+controller,data-ctrl=controller)
-						.panel-body
-							ul.nav.nav-pills.nav-stacked
-								each spec in specObj
-									li(data-spec=spec.name)
-										a(href="/api-tester/pages/tester/?spec="+spec.name)= spec.action.replace(/([A-Z])/g, ' $1').toLowerCase()
-		.col-md-10
-			.row#api-tester
-				.col-md-8
-					#form-head.clearfix
+	div(style="margin: 15px 15px 0;")
+		.row#api-tester
+			.col-md-8
+				#form-head.clearfix
+					.form-control-wr
+						select#form-route.form-control
+					.form-control-wr
+						input#form-route-method.form-control(type="text",placeholder='http method')
+					.form-control-wr
+						input#form-route-url.form-control(type="text", placeholder='request url')
+					.form-control-wr
+						input#form-request-format.form-control(type="text", placeholder='request data format', value="JSON")
+					.form-control-wr
+						input#form-request-query.form-control(type="text", placeholder='additional query', value="_debug=debug")
 
-					form#form
-						#form-content
-						.form-submit.clearfix
-							button#form-submit.btn.btn-warning.pull-left(type="submit") Submit
-							button.btn.btn-default.putData.pull-right Invalid
-							button.btn.btn-default.putData.pull-right.-valid Valid
-							button.btn.btn-default.putData.pull-right.-prev Prev
 
-					#errors
+				form#form
+					#form-content
+					.form-submit.clearfix
+						button#form-submit.btn.btn-warning.pull-left(type="submit") Submit
+						button.btn.btn-default.putData.pull-right Invalid
+						button.btn.btn-default.putData.pull-right.-valid Valid
+						button.btn.btn-default.putData.pull-right.-prev Prev
 
-					.panel.panel-default
-						.panel-heading Respoonse <b>API</b>
-						#responseJSON.panel-body
+				#errors
 
-					.panel.panel-default
-						.panel-heading Respoonse <b>HTML</b>
-						#responseHTML.panel-body
-				.col-md-4
+				.panel.panel-default
+					.panel-heading Respoonse
+					pre#response.panel-body(style='padding: 5px; border: none; background: none;')
 
-					.panel.panel-default
-						.panel-heading Info
-						#sendInfo.panel-body
+			.col-md-4
 
-					.panel.panel-default
-						.panel-heading Request <b>Data</b> (formatted)
-						#requestParams.panel-body
+				.panel.panel-default
+					.panel-heading Info
+					#sendInfo.panel-body
 
-					.panel.panel-default
-						.panel-heading Response <b>Headers</b>
-						#responseHeadersNonFormat.panel-body
+				.panel.panel-default
+					.panel-heading Request <b>Data</b> (formatted)
+					#requestParams.panel-body
 
-					.panel.panel-default
-						.panel-heading Request <b>Data</b>
-						#requestDataNonFormat.panel-body
+				.panel.panel-default
+					.panel-heading Response <b>Headers</b>
+					#responseHeadersNonFormat.panel-body
 
-					.panel.panel-default
-						.panel-heading Response <b>Data</b>
-						#response.panel-body
+				.panel.panel-default
+					.panel-heading Request <b>Data</b>
+					#requestDataNonFormat.panel-body
+
+				.panel.panel-default
+					.panel-heading Response <b>Data</b>
+					#response.panel-body
 
 
 block scripts

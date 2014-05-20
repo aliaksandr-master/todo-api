@@ -125,9 +125,6 @@ define(function (require, exports, module) {
 
 		initForm: function () {
 
-			this.$('#form-route-url').attr('readonly', true);
-			this.$('#form-route-method').attr('readonly', true);
-
 			this.refreshRouterUrl();
 		},
 
@@ -169,27 +166,16 @@ define(function (require, exports, module) {
 			}, this);
 
 			var counter = 0;
-			var stdRoutesVal = [];
-			this.build('form-route', tpl.form.select, {
-				option: stdRoutesVal.concat(_.map(this.routes.current, function (v, k) {
-					return {
-						text: v.method + ' ' + v.reverse,
-						value: counter++
-					};
-				}))
-			}, '#form-head');
 
-			this.build('route-method', tpl.form.field, {
-				placeholder: 'method',
-				type: 'text',
-				name: 'route-method'
-			}, '#form-head');
-
-			this.build('route-url', tpl.form.field, {
-				placeholder: 'url',
-				type: 'text',
-				name: 'route-url'
-			}, '#form-head');
+			var $formRouteSelect = $('#form-route');
+			$formRouteSelect.html('');
+			_.each(this.routes.current, function (v, k) {
+				var $option = $('<option/>')
+					.text(v.method + ' ' + v.reverse)
+					.attr('value', counter++);
+				$formRouteSelect.append($option);
+			});
+			$formRouteSelect.val(0);
 
 			//			var curr = nameMap[currName];
 			//
@@ -362,16 +348,13 @@ define(function (require, exports, module) {
 		},
 
 		onRequestSuccess: function (requestObj, response, jqXHR) {
+			this.$("#response").html("");
 			this.$("#responseHeadersNonFormat").html(jqXHR.getAllResponseHeaders());
 			this.$("#errors").html("");
 			if($.isPlainObject(response)){
-				this.$("#responseHTML").html("");
-				this.$("#responseJSON").html(jsonFormat(response));
-				this.$("#response").text(JSON.stringify(response));
+				this.$("#response").html(jsonFormat(response));
 			}else{
-				this.$("#responseJSON").html("");
 				this.$("#response").text(response);
-				this.$("#responseHTML").html(response);
 			}
 			//			this.$('#sendInfo').html(jsonFormat({
 			//				time: (Date.now() - time)/1000,
@@ -397,8 +380,7 @@ define(function (require, exports, module) {
 				isJSON = false;
 			}
 
-			this.$("#responseHTML").html("");
-			this.$("#responseJSON").html(isJSON ? resp : "");
+			this.$("#response").html(isJSON ? resp : "");
 			this.$("#errors").html(
 				'<div class="alert alert-danger">' +
 					'<h4>Ajax Error <b>' + jqXHR.status + '</b> (<i>' + status + '</i>)</h4>' +
@@ -425,9 +407,9 @@ define(function (require, exports, module) {
 
 			params.url = this.$('#form-route-url').val();
 			params.url = utils.addParamsToUrl(params.url, this.getDataFromRegion('query'));
-			params.url = utils.addParamsToUrl(params.url, {
-				_debug: 'debug'
-			});
+			params.url = params.url + '?' + this.$('#form-request-query').val();
+
+			console.log(params.url);
 
 			params.dataType = 'json';
 

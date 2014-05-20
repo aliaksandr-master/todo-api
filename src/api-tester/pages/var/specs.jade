@@ -11,6 +11,7 @@ block body
 						a.panel-title(data-toggle="collapse",data-parent="#"+parentId,href="#"+id)
 							span.glyphicon.glyphicon-file
 							= ' ' + spec.action.replace(/([A-Z])/g, ' $1').toLowerCase()
+						a.doc-test-link(href="/api-tester/pages/tester/?spec="+spec.name) test
 					.panel-collapse.collapse(id=id,style='height:0;overflow:hidden;')
 						.panel-body
 							if (spec.title && spec.title !== spec.name)
