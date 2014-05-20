@@ -7,35 +7,8 @@ block container
 		!= 'window.API_ROUTES_JSON = ' + JSON.stringify(routes) + ';'
 	div(style="margin: 15px 15px 0;")
 		.row#api-tester
-			.col-md-8
-				#form-head.clearfix
-					.form-control-wr
-						select#form-route.form-control
-					.form-control-wr
-						input#form-route-method.form-control(type="text",placeholder='http method')
-					.form-control-wr
-						input#form-route-url.form-control(type="text", placeholder='request url')
-					.form-control-wr
-						input#form-request-format.form-control(type="text", placeholder='request data format', value="JSON")
-					.form-control-wr
-						input#form-request-query.form-control(type="text", placeholder='additional query', value="_debug=debug")
 
-
-				form#form
-					#form-content
-					.form-submit.clearfix
-						button#form-submit.btn.btn-warning.pull-left(type="submit") Submit
-						button.btn.btn-default.putData.pull-right Invalid
-						button.btn.btn-default.putData.pull-right.-valid Valid
-						button.btn.btn-default.putData.pull-right.-prev Prev
-
-				#errors
-
-				.panel.panel-default
-					.panel-heading Respoonse
-					pre#response.panel-body(style='padding: 5px; border: none; background: none;')
-
-			.col-md-4
+			.col-md-3
 
 				.panel.panel-default
 					.panel-heading Info
@@ -57,6 +30,34 @@ block container
 					.panel-heading Response <b>Data</b>
 					#response.panel-body
 
+			.col-md-6
+				#errors
+
+				.panel.panel-default
+					.panel-heading Respoonse
+					pre#response.panel-body(style='padding: 5px; border: none; background: none;')
+
+			.col-md-3
+
+				#form-head.clearfix
+					.form-control-wr
+						select#form-route.form-control
+					.form-control-wr
+						input#form-route-method.form-control(type="text",placeholder='http method')
+					.form-control-wr
+						input#form-route-url.form-control(type="text", placeholder='request url')
+					.form-control-wr
+						input#form-request-format.form-control(type="text", placeholder='request data format', value="json")
+					.form-control-wr
+						input#form-request-query.form-control(type="text", placeholder='additional query', value="_debug=debug")
+
+				form#form
+					#form-content
+					.form-submit.clearfix
+						button#form-submit.btn.btn-warning.pull-left(type="submit") Submit
+						button.btn.btn-default.putData.pull-right Invalid
+						button.btn.btn-default.putData.pull-right.-valid Valid
+						button.btn.btn-default.putData.pull-right.-prev Prev
 
 block scripts
 	script(type="text/x-handlebars-template",data-src="/panel.hbs")!= read('/static/templates/panel.hbs')

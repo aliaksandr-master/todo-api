@@ -47,7 +47,10 @@ module.exports = function (grunt) {
 		},
 		files: [{
 			expand: true,
-			src: [ '**/*.jade' ],
+			src: [
+				'**/*.jade',
+				'!inc/**/*.jade'
+			],
 			cwd: opt.SRC + '/api-tester',
 			dest: opt.BUILD + '/api-tester',
 			ext: '.html'
@@ -64,7 +67,8 @@ module.exports = function (grunt) {
 				expand: true,
 				cwd: opt.SRC + '/api-tester',
 				src: [
-					'**/*.less'
+					'**/*.less',
+					'!inc/**/*.less'
 				],
 				dest: opt.BUILD + '/api-tester',
 				ext: '.css'
