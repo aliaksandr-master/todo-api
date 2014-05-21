@@ -1,5 +1,5 @@
-{{#if label}}<label for="form-{{name}}">{{label}}</label>{{/if}}
 <div class="form-control-wr">
+    {{#if label}}<label for="form-{{name}}">{{label}}</label>{{/if}}
     <select class="form-control input-sm" name="{{name}}" id="{{id}}">
         {{#each option}}
             <option value="{{value}}">{{text}}</option>

@@ -7,13 +7,12 @@ define(function (require, exports, module) {
 	var random = require('modules/randomizr');
 	var template = require('modules/templater');
 	var jsonFormat = require('modules/json-format');
+	var prettyJSON = require('vendor/prettyjson/prettyjson');
 
 	var tpl = {
-		panel: template('panel'),
 		form: {
 			field: template('form/field'),
 			textarea: template('form/text'),
-			cover: template('form/cover'),
 			toggle: template('form/toggle'),
 			select: template('form/select')
 		}
@@ -391,6 +390,10 @@ define(function (require, exports, module) {
 			return url;
 		},
 
+		formatJSON: function (obj, options) {
+			return jsonFormat(obj);
+		},
+
 		sendOnEnter: function (e, $thisTarget) {
 			if (e.keyCode === 13) {
 				$thisTarget.closest("form").submit();
@@ -404,7 +407,7 @@ define(function (require, exports, module) {
 				headers[name] = value;
 			});
 
-			this.insertToRawPanel('response-headers', contentSrc, jsonFormat(headers));
+			this.insertToRawPanel('response-headers', contentSrc, this.formatJSON(headers));
 		},
 
 		showErrors: function (string) {
@@ -414,7 +417,7 @@ define(function (require, exports, module) {
 		showResponse: function (contentSrc, content) {
 			content || (content = contentSrc);
 			if($.isPlainObject(content)){
-				content = jsonFormat(content);
+				content =  this.formatJSON(content);
 			}
 			this.insertToRawPanel('response-data', contentSrc, content);
 		},
@@ -422,13 +425,13 @@ define(function (require, exports, module) {
 		showRequestData: function (srcData, data) {
 			data || (data = srcData);
 			if($.isPlainObject(data)){
-				data = jsonFormat(data);
+				data =  this.formatJSON(data);
 			}
 			this.insertToRawPanel('request-data', srcData, data);
 		},
 
 		showInfo: function (requestObj, response, jqXHR) {
-			this.$('#api-tester-interaction-info .panel-body').html(jsonFormat({
+			this.$('#api-tester-interaction-info .panel-body').html( this.formatJSON({
 				time: (Date.now() -requestObj.time)/1000,
 				encoding: jqXHR.getResponseHeader('Content-Encoding'),
 				compress_saved: (100 - Math.round((+jqXHR.getResponseHeader('Content-Length') / jqXHR.responseText.length)*100)) + '%'

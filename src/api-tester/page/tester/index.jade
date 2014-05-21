@@ -99,8 +99,6 @@ block container
 					+run-panel('form-params',  'Request data (Url Params)')
 
 block scripts
-	script(type="text/x-handlebars-template",data-src="/panel.hbs")!= read('/static/templates/panel.hbs')
-	script(type="text/x-handlebars-template",data-src="/form/cover.hbs")!= read('/static/templates/form/cover.hbs')
 	script(type="text/x-handlebars-template",data-src="/form/field.hbs")!= read('/static/templates/form/field.hbs')
 	script(type="text/x-handlebars-template",data-src="/form/select.hbs")!= read('/static/templates/form/select.hbs')
 	script(type="text/x-handlebars-template",data-src="/form/text.hbs")!= read('/static/templates/form/text.hbs')

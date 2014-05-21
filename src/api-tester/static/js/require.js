@@ -12,7 +12,7 @@ require.config({
 
 		'vendor':   '../../../opt/frontend/vendor',
 		'packages': '../../../opt/frontend/bower',
-		'custom':   '../../../opt/frontend/custom'
+		'opt':   '../../../opt/frontend/custom'
 	},
 
 	map: {

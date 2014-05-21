@@ -4,7 +4,7 @@ define(function(require, exports, module){
 
 	var _ = require('lodash');
 
-	return {
+	var obj = {
 
 		replacer: function (options) {
 			return function(match, pIndent, pKey, pVal, pEnd) {
@@ -18,7 +18,7 @@ define(function(require, exports, module){
 				if (pVal) {
 					r = r + (pVal[0] === '"' ? str : val) + pVal + '</span>';
 				}
-				return '<div style="padding-left: ' + (options.spaces ? pIndent / options.spaces : 0) + 'px" class="' + options.rowClassName + '">' + r + (pEnd || '') + '</div>';
+				return '<div class="' + options.rowClassName + '">' + r + (pEnd || '') + '</div>';
 			};
 		},
 
@@ -40,5 +40,7 @@ define(function(require, exports, module){
 				.replace(jsonLine, this.replacer(options));
 		}
 	};
+
+	return obj.prettyPrint.bind(obj);
 
 });
