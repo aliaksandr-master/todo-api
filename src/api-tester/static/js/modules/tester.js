@@ -458,12 +458,7 @@ define(function (require, exports, module) {
 			this.showInfo(requestObj, response, jqXHR);
 			this.showResponse(jqXHR.responseText, response);
 
-			this.showErrors(
-				'<div class="alert alert-danger">' +
-					'<h4>Error <b>' + jqXHR.status + '</b> (<i>' + status + '</i>)</h4>' +
-					'<p>' + jqXHR.statusText + '</p><br>' +
-				'</div>'
-			);
+			this.showErrors('<div class="alert alert-danger"><h4>Error <b>' + jqXHR.status + '</b> (<i>' + status + '</i>)</h4><p>' + jqXHR.statusText + '</p></div>');
 		},
 
 		submitForm: function () {
