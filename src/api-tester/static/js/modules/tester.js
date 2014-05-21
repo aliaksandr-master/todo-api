@@ -126,9 +126,10 @@ define(function (require, exports, module) {
 		},
 
 		insertToRawPanel: function (name, raw, transformed) {
+			raw = (raw == null ? '' : raw) + '';
 			var $panel = this.$('#api-tester-'+name);
 			$panel.find('.panel-body.-transformed').html(transformed);
-			$panel.find('.panel-body.-raw').html(raw);
+			$panel.find('.panel-body.-raw').html(raw).attr('title', '  length: ' + raw.length + 'symbols  ');
 		},
 
 		build: function (id, builder, options, $place, method) {

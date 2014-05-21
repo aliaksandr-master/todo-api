@@ -44,8 +44,7 @@
 				height: 12px;
 				line-height: 14px;
 			}
-			label {
-				display: block;
+			.panel-raw-toggle {
 				padding: 0;
 				margin: 0;
 				text-transform: uppercase;
@@ -55,12 +54,16 @@
 				color: #666;
 				opacity: 0.8;
 				cursor: pointer;
+				display: none;
 			}
-			label:hover {
+			&:hover .panel-raw-toggle {
+				display: block;
+			}
+			.panel-raw-toggle:hover {
 				color: #000;
 				opacity: 1;
 			}
-			label b {
+			.panel-raw-toggle b {
 				display: inline-block;
 				padding-right: 5px;
 				font-weight: normal;

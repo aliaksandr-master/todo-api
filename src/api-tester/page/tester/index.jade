@@ -25,7 +25,7 @@ mixin raw-panel(name, text)
 	.panel.panel-default.panel-raw(id='api-tester-' + name)
 		.panel-heading.clearfix
 			span.pull-left!= text
-			label.pull-right
+			label.pull-right.panel-raw-toggle
 				input(type='checkbox',value=1)
 				b Raw
 		pre.panel-body.-transformed
