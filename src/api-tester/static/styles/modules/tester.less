@@ -39,14 +39,19 @@
 	}
 	.panel-raw {
 		.panel-heading {
+			> span {
+				display: block;
+				height: 12px;
+				line-height: 14px;
+			}
 			label {
 				display: block;
 				padding: 0;
 				margin: 0;
 				text-transform: uppercase;
 				font-size: 12px;
-				line-height: 1;
 				height: 12px;
+				line-height: 14px;
 				color: #666;
 				opacity: 0.8;
 				cursor: pointer;
@@ -126,7 +131,7 @@
 		padding: @pad * 4 0;
 	}
 
-	#form,
+	#api-tester-form,
 	#form-head {
 		& {
 			margin: -18px 0 0;
@@ -146,5 +151,17 @@
 		.form-control-wr {
 			padding-top: @pad * 2;
 		}
+	}
+
+	#api-tester-form {
+		margin-top: 0;
+		overflow: hidden;
+	}
+
+	.panel-body-content {
+		padding: 0 0 @pad * 4;
+	}
+	.panel-body-content:empty {
+		display: none;
 	}
 }

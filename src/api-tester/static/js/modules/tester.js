@@ -81,7 +81,6 @@ define(function (require, exports, module) {
 				this.spec.current = {};
 			}
 
-			this.initMenu();
 			this.buildForm();
 			this.initForm();
 			this.initSpecHeader();
@@ -133,18 +132,6 @@ define(function (require, exports, module) {
 			$panel.find('.panel-body.-raw').html(raw);
 		},
 
-		initMenu: function () {
-			var that = this;
-			var $menu = $("#api-tester-nav");
-			$(function () {
-				$menu.find('li').removeClass('active');
-				if (that.spec.current) {
-					$menu.find('[data-ctrl="' + that.spec.current.controller + '"]').addClass('in');
-					$menu.find('[data-spec="' + that.spec.current.name + '"]').addClass('active');
-				}
-			});
-		},
-
 		build: function (id, builder, options, $place, method) {
 			method = method || 'append';
 			options.id = id.replace(/^[#]+/, '');
@@ -162,41 +149,73 @@ define(function (require, exports, module) {
 			this.refreshRouterUrl();
 		},
 
+		_buildFormElement_field: function (element) {
+			return tpl.form.field(_.extend(element, {
+				label: element.name,
+				placeholder: element.name,
+				type: 'text'
+			}));
+		},
+
+		_buildFormElement_string: function (element) {
+			return this._buildFormElement_field.apply(this, arguments);
+		},
+
+		_buildFormElement_decimal: function (element) {
+			return this._buildFormElement_field.apply(this, arguments);
+		},
+
+		_buildFormElement_integer: function (element) {
+			return this._buildFormElement_field.apply(this, arguments);
+		},
+
+		_buildFormElement_float: function (element) {
+			return this._buildFormElement_field.apply(this, arguments);
+		},
+
+		_buildFormElement_text: function (element) {
+			return this._buildFormElement_field.apply(this, arguments);
+		},
+
+		_buildFormElement_boolean: function (element) {
+			return tpl.form.toggle(_.extend(element, {
+				label: element.name
+			}));
+		},
+
+		_buildFormElement: function (element) {
+			element = _.extend({
+				name: null,
+				type: null,
+				value: null
+			}, element);
+
+			if (!this['_buildFormElement_' + element.type]) {
+				console.error('must create _buildFormElement_' + element.type);
+			}
+
+			return this['_buildFormElement_' + element.type](element);
+		},
+
+		buildFormPart: function (partName, elementsArray) {
+			var elements = _.map(elementsArray, this._buildFormElement, this);
+
+			var elemId = '#api-tester-form-' + partName.toLowerCase();
+			var $container = this.$(elemId + ' .panel-body-content');
+			$container.html('');
+			_.each(elements, function (html) {
+				$container.append(html);
+			});
+		},
+
 		buildForm: function () {
 			if (_.isEmpty(this.spec.current)) {
 				return;
 			}
 
-			_.each(this.spec.current.request.input, function (input, category) {
-				if (_.isEmpty(input)) {
-					return;
-				}
-
-				var elemName = 'requestInputForm_' + category;
-				this.build(elemName, tpl.panel, {
-					label: category.toUpperCase(),
-					type: '',
-					content: ''
-				}, '#form-content');
-
-				_.each(input, function (itemOptions, itemName) {
-
-					if (/boolean/.test(itemOptions.type)) {
-						this.build(elemName + ' ' + itemName, tpl.form.toggle, {
-							label: itemName,
-							name: itemName
-						}, this.element[elemName]);
-					} else {
-						this.build(elemName + ' ' + itemName, tpl.form.field, {
-							label: itemName,
-							placeholder: itemName,
-							type: 'text',
-							name: itemName
-						}, this.element[elemName]);
-					}
-
-				}, this);
-
+			_.each(['body', 'params', 'query'], function (part) {
+				var req = _.isEmpty(this.spec.current.request) ? {} : this.spec.current.request;
+				this.buildFormPart(part, (req.input || {})[part] || []);
 			}, this);
 
 			var counter = 0;
@@ -211,130 +230,132 @@ define(function (require, exports, module) {
 			});
 			$formRouteSelect.val(0);
 
-			//			var curr = nameMap[currName];
-			//
-			//			this.$("#mainHeader").html(curr);
-			//			var data = SPECS[nameMap[currName]];
-			//			var method = curr.replace(/([a-z]+)\s+(.+)/i, '$1');
-			//			var url = curr.replace(/([a-z]+)\s+(.+)/i, '$2');
-			//
-			//			var counter = 1;
-			//			url = url.replace(/\$[^\/]+/g, function($0){
-			//				if(/id/i.test($0)){
-			//					return counter++;
-			//				}
-			//				return $0;
-			//			});
-			//			$form.attr('action', API_ROOT + url + "/");
-			//			$form.attr('method', method);
-			//
-			//			if(data["request"]){
-			//				var setRandValue = function($elem, type, v, isValidData, isPrev, value){
-			//					if (!isPrev) {
-			//						if (/email/.test(v)) {
-			//							if(isValidData){
-			//								value = random.string(10) + '@' + window.randomString(5) + '.' + window.randomString(3);
-			//							} else {
-			//								value = random.string(10);
-			//							}
-			//						} else if (/decimal|float|integer/.test(type)) {
-			//							if (isValidData) {
-			//								value = random.integer(0, 1000);
-			//							} else {
-			//								value = random.string(10, false);
-			//							}
-			//						} else if (/text|string/.test(type)){
-			//							if (isValidData) {
-			//								value = random.string(10, true);
-			//							} else {
-			//								value = random.integer(0, 1000);
-			//							}
-			//						}
-			//					}
-			//					$elem.val(value);
-			//				};
-			//
-			//				this.$('.putData').on('click', function () {
-			//					var isValidData = that.$(this).hasClass('-valid');
-			//					var isPrevData = $(this).hasClass('-prev');
-			//					var prevData = window.loadSendDataToStore();
-			//					$.each(data['request'], function (k, v) {
-			//						if (!/^\$/.test(k)) {
-			//							var name = k.replace(/^([\w\d]+)\:?(.+)$/, '$1');
-			//							var type = k.replace(/^([\w\d]+)\:?(.+)$/, '$2');
-			//							var $elem = $form.find('[name="'+name+'"]');
-			//							if (/boolean/.test(type)) {
-			//								$elem.filter('[value="'+(random.boolean() * 1)+'"]').click();
-			//							} else {
-			//								if (_.isArray(v)) {
-			//									v = v.join('|');
-			//								}
-			//								if (isPrevData) {
-			//									var findName = false;
-			//									_.each(prevData, function(v){
-			//										if(v.name === name){
-			//											findName = true;
-			//											setRandValue($elem, type, v, isValidData, true, v.value);
-			//											return false;
-			//										}
-			//									});
-			//								} else {
-			//									setRandValue($elem, type, v, isValidData, false, '');
-			//								}
-			//							}
-			//						}
-			//					});
-			//				});
-			//
-			//				var formElement = '';
-			//				$.each(data['request'], function(k, v){
-			//					if(!/^\$/.test(k)){
-			//						var name = k.replace(/^([\w\d]+)\:?(.+)$/, '$1');
-			//						var type = k.replace(/^([\w\d]+)\:?(.+)$/, '$2');
-			//						if(/boolean/.test(type)){
-			//							formElement += tpl.form.cover({
-			//								type: type,
-			//								content: tpl.form.toggle({
-			//									label: name,
-			//									name: name
-			//								})
-			//							});
-			//						}else{
-			//							formElement += tpl.form.cover({
-			//								type: type,
-			//								content: tpl.form.field({
-			//									label: name,
-			//									placeholder: type,
-			//									type: 'text',
-			//									name: name
-			//								})
-			//							});
-			//						}
-			//					}
-			//				});
-			//				$formContent.html(formElement);
-			//				if(!formElement){
-			//					this.$('.putData').remove();
-			//				}
-			//			} else {
-			//				this.$('.putData').remove();
-			//			}
+//			var curr = nameMap[currName];
+//
+//			this.$("#mainHeader").html(curr);
+//			var data = SPECS[nameMap[currName]];
+//			var method = curr.replace(/([a-z]+)\s+(.+)/i, '$1');
+//			var url = curr.replace(/([a-z]+)\s+(.+)/i, '$2');
+//
+//			var counter = 1;
+//			url = url.replace(/\$[^\/]+/g, function($0){
+//				if(/id/i.test($0)){
+//					return counter++;
+//				}
+//				return $0;
+//			});
+//			$form.attr('action', API_ROOT + url + "/");
+//			$form.attr('method', method);
+//
+//			if(data["request"]){
+//				var setRandValue = function($elem, type, v, isValidData, isPrev, value){
+//					if (!isPrev) {
+//						if (/email/.test(v)) {
+//							if(isValidData){
+//								value = random.string(10) + '@' + window.randomString(5) + '.' + window.randomString(3);
+//							} else {
+//								value = random.string(10);
+//							}
+//						} else if (/decimal|float|integer/.test(type)) {
+//							if (isValidData) {
+//								value = random.integer(0, 1000);
+//							} else {
+//								value = random.string(10, false);
+//							}
+//						} else if (/text|string/.test(type)){
+//							if (isValidData) {
+//								value = random.string(10, true);
+//							} else {
+//								value = random.integer(0, 1000);
+//							}
+//						}
+//					}
+//					$elem.val(value);
+//				};
+//
+//				this.$('.putData').on('click', function () {
+//					var isValidData = that.$(this).hasClass('-valid');
+//					var isPrevData = $(this).hasClass('-prev');
+//					var prevData = window.loadSendDataToStore();
+//					$.each(data['request'], function (k, v) {
+//						if (!/^\$/.test(k)) {
+//							var name = k.replace(/^([\w\d]+)\:?(.+)$/, '$1');
+//							var type = k.replace(/^([\w\d]+)\:?(.+)$/, '$2');
+//							var $elem = $form.find('[name="'+name+'"]');
+//							if (/boolean/.test(type)) {
+//								$elem.filter('[value="'+(random.boolean() * 1)+'"]').click();
+//							} else {
+//								if (_.isArray(v)) {
+//									v = v.join('|');
+//								}
+//								if (isPrevData) {
+//									var findName = false;
+//									_.each(prevData, function(v){
+//										if(v.name === name){
+//											findName = true;
+//											setRandValue($elem, type, v, isValidData, true, v.value);
+//											return false;
+//										}
+//									});
+//								} else {
+//									setRandValue($elem, type, v, isValidData, false, '');
+//								}
+//							}
+//						}
+//					});
+//				});
+//
+//				var formElement = '';
+//				$.each(data['request'], function(k, v){
+//					if(!/^\$/.test(k)){
+//						var name = k.replace(/^([\w\d]+)\:?(.+)$/, '$1');
+//						var type = k.replace(/^([\w\d]+)\:?(.+)$/, '$2');
+//						if(/boolean/.test(type)){
+//							formElement += tpl.form.cover({
+//								type: type,
+//								content: tpl.form.toggle({
+//									label: name,
+//									name: name
+//								})
+//							});
+//						}else{
+//							formElement += tpl.form.cover({
+//								type: type,
+//								content: tpl.form.field({
+//									label: name,
+//									placeholder: type,
+//									type: 'text',
+//									name: name
+//								})
+//							});
+//						}
+//					}
+//				});
+//				$formContent.html(formElement);
+//				if(!formElement){
+//					this.$('.putData').remove();
+//				}
+//			} else {
+//				this.$('.putData').remove();
+//			}
 		},
 
 		events: {
 			//			'click #menu-bar li > a': 'onMenuItemClick',
-			'keyup #requestInputForm_body input': 'sendOnEnter',
-			'submit #form': 'submitForm',
+			'keyup #api-tester-form-body input': 'sendOnEnter',
+			'keyup #api-tester-form-params input': 'sendOnEnter',
+			'keyup #api-tester-form-query input': 'sendOnEnter',
+			'submit #api-tester-form': 'submitForm',
 			'click #api-tester-form-submit': 'submitForm',
 			'change #form-route': 'refreshRouterUrl',
-			'keypress #requestInputForm_params [name]': 'refreshRouterUrl',
-			'change #requestInputForm_params [name]': 'refreshRouterUrl'
+
+			'keypress #api-tester-form-params [name]': 'refreshRouterUrl',
+			'change #api-tester-form-params [name]': 'refreshRouterUrl'
 		},
 
 		getDataFromRegion: function (regionName) {
-			var that = this;
 			var data = {};
-			var $region = this.$('#requestInputForm_' + regionName);
+			var $region = this.$('#api-tester-form-' + regionName + ' .panel-body-content');
 
 			$region.find('[name]').each(function () {
 				var name = $(this).attr('name');
@@ -369,12 +390,6 @@ define(function (require, exports, module) {
 
 			return url;
 		},
-
-		//		onMenuItemClick: function (e, $thisTarget) {
-		//			window.location.href = $thisTarget.attr("href");
-		//			window.location.reload();
-		//			return false;
-		//		},
 
 		sendOnEnter: function (e, $thisTarget) {
 			if (e.keyCode === 13) {
@@ -463,8 +478,6 @@ define(function (require, exports, module) {
 			params.url = utils.addParamsToUrl(params.url, this.getDataFromRegion('query'));
 			params.url = params.url + '?' + this.$('#form-request-query').val();
 
-			console.log(params.url);
-
 			params.dataType = 'json';
 
 			var data = this.getDataFromRegion('body');
@@ -489,13 +502,7 @@ define(function (require, exports, module) {
 		}
 	};
 
-	$(function () {
-		var form = new Form($('#api-tester'), window.API_JSON, window.API_ROUTES_JSON);
-	});
-
-	//	$(function(){
-	//
-	//		var $form = $("#form");
+	//		var $form = $("#api-tester-form");
 	//		var $formContent = $('#form-content');
 	//		var currName = null;
 	//		var currMethod = null;
@@ -515,10 +522,8 @@ define(function (require, exports, module) {
 	//
 	//			});
 	//		}
-	//	});
-
 
     return function () {
-
+		var form = new Form($('#api-tester'), window.API_JSON, window.API_ROUTES_JSON);
 	};
 });
