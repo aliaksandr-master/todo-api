@@ -325,6 +325,7 @@ define(function (require, exports, module) {
 			//			'click #menu-bar li > a': 'onMenuItemClick',
 			'keyup #requestInputForm_body input': 'sendOnEnter',
 			'submit #form': 'submitForm',
+			'click #api-tester-form-submit': 'submitForm',
 			'change #form-route': 'refreshRouterUrl',
 			'keypress #requestInputForm_params [name]': 'refreshRouterUrl',
 			'change #requestInputForm_params [name]': 'refreshRouterUrl'

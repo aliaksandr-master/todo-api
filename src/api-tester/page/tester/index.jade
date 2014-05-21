@@ -8,8 +8,9 @@ mixin raw-panel(name, text)
 	.panel.panel-default.panel-raw(id='api-tester-' + name)
 		.panel-heading.clearfix
 			span.pull-left!= text
-			label.pull-right Raw
+			label.pull-right
 				input(type='checkbox',value=1)
+				b Raw
 		pre.panel-body.-transformed
 		pre.panel-body.-raw(style='display:none;')
 
@@ -45,29 +46,38 @@ block container
 					.row
 						.col-sm-30
 							.form-control-wr
+								label Route:
 								select#form-route.input-sm.form-control
 					.row
-						.col-sm-15
+						.col-sm-10
 							.form-control-wr
+								label Method
 								input#form-route-method.input-sm.form-control(type="text",placeholder='http method')
-						.col-sm-15
+						.col-sm-10
 							.form-control-wr
+								label Request
 								input#form-request-format.input-sm.form-control(type="text", placeholder='request data format', value="json")
+						.col-sm-10
+							.form-control-wr
+								label Resposne
+								input#form-response-format.input-sm.form-control(type="text", placeholder='response data format', value="json")
+
 					.row
 						.col-sm-30
 							.form-control-wr
+								label Request Uri
 								input#form-route-url.input-sm.form-control(type="text", placeholder='request url')
 						.col-sm-30
 							.form-control-wr
 								input#form-request-query.input-sm.form-control(type="text", placeholder='additional query', value="_debug=debug")
 
+				#api-tester-form-submit-wr.clearfix
+					button#api-tester-form-submit.btn.btn-success.pull-left(type="submit") Submit
+					button.btn.btn-default.putData.pull-right Invalid
+					button.btn.btn-default.putData.pull-right.-valid Valid
+
 				form#form
 					#form-content
-					.form-submit.clearfix
-						button#form-submit.btn.btn-warning.pull-left(type="submit") Submit
-						button.btn.btn-default.putData.pull-right Invalid
-						button.btn.btn-default.putData.pull-right.-valid Valid
-
 
 block scripts
 	script(type="text/x-handlebars-template",data-src="/panel.hbs")!= read('/static/templates/panel.hbs')

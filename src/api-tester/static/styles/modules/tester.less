@@ -1,6 +1,9 @@
 @import "../../../inc/styles/mixins/mixins";
 
 #api-tester {
+	.panel {
+		box-shadow: 0 1px 2px rgba(0,0,0,1);
+	}
 	.panel-heading {
 		padding: @pad;
 		color: #555;
@@ -24,6 +27,50 @@
 	}
 	.panel-body:empty {
 		display: none !important;
+	}
+	.panel-heading {
+		border: none !important;
+		text-transform: uppercase;
+		font-size: 12px;
+		line-height: 12px;
+	}
+	.panel-body {
+		border-top: 1px solid #ccc !important;
+	}
+	.panel-raw {
+		.panel-heading {
+			label {
+				display: block;
+				padding: 0;
+				margin: 0;
+				text-transform: uppercase;
+				font-size: 12px;
+				line-height: 1;
+				height: 12px;
+				color: #666;
+				opacity: 0.8;
+				cursor: pointer;
+			}
+			label:hover {
+				color: #000;
+				opacity: 1;
+			}
+			label b {
+				display: inline-block;
+				padding-right: 5px;
+				font-weight: normal;
+			}
+			input[type="checkbox"] {
+				padding: 0;
+				margin: 0;
+				line-height: 1;
+				font-size: 12px;
+				height: 12px;
+				width: 12px;
+				float: right;
+				cursor: pointer;
+			}
+		}
 	}
 
 	#api-tester-spec-ctrl,
@@ -72,5 +119,32 @@
 	.api-tester-spec-wr {
 		display: block;
 		padding: 0 0 @pad * 4;
+	}
+
+	#api-tester-form-submit-wr {
+		display: block;
+		padding: @pad * 4 0;
+	}
+
+	#form,
+	#form-head {
+		& {
+			margin: -18px 0 0;
+		}
+		label {
+			display: block;
+			text-transform: uppercase;
+			font-size: 10px;
+			line-height: 10px;
+			padding: 0;
+			margin: 0;
+			color: #777;
+		}
+		label:after {
+			content: ':';
+		}
+		.form-control-wr {
+			padding-top: @pad * 2;
+		}
 	}
 }
