@@ -27,6 +27,21 @@ define(function(require, exports, module){
 			return url + paramsStr;
 		},
 
+		removeParamFromUrl: function (url, paramNames) {
+			if (!_.isArray(paramNames)) {
+				paramNames = [paramNames];
+			}
+			var parsedUrl = this.parseUrl(url);
+			var queryString = parsedUrl.query;
+			var params = this.queryParams.parse(queryString);
+			console.log(params);
+			_.each(paramNames, function (name) {
+				delete params[name];
+			});
+			queryString = this.queryParams.stringify(params);
+
+		},
+
 		queryParams: {
 			stringify: function(queryParams) {
 				var arrParam, encodedKey, key, query, stringifyKeyValuePair, value, _i, _len;

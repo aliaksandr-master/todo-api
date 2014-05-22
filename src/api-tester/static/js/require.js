@@ -6,21 +6,26 @@ require.config({
 
 	paths: {
 
-		'styles':    '../styles',
-		'modules': 'modules',
-		'templates': '../templates',
+		styles:    '../styles',
+		modules: 'modules',
+		templates: '../templates',
 
-		'vendor':   '../../../opt/frontend/vendor',
-		'packages': '../../../opt/frontend/bower',
-		'opt':   '../../../opt/frontend/custom'
+		vendor:   '../../../opt/frontend/vendor',
+		packages: '../../../opt/frontend/bower',
+		opt:   '../../../opt/frontend/custom',
+
+		URIjs: '../../../opt/frontend/bower/URIjs/src'
+
 	},
 
 	map: {
 		'*':{
 
 			jquery: 'packages/jquery/jquery',
+			backbone: 'packages/backbone/backbone',
 			handlebars: 'packages/handlebars/handlebars',
 			lodash: 'packages/lodash/dist/lodash',
+			underscore: 'packages/lodash/dist/lodash',
 			bootstrap: 'vendor/bootstrap/custom/js/bootstrap.min',
 
 			'text': 'packages/requirejs-text/text',

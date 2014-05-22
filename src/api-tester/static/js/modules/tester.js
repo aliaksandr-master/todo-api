@@ -3,11 +3,12 @@ define(function (require, exports, module) {
 
 	var _ = require('lodash');
 	var $ = require('jquery');
-	var utils = require('modules/utils');
-	var random = require('modules/randomizr');
-	var template = require('modules/templater');
-	var jsonFormat = require('modules/json-format');
-	var prettyJSON = require('vendor/prettyjson/prettyjson');
+	var Backbone = require('backbone');
+	var utils = require('lib/utils');
+	var random = require('lib/randomizr');
+	var template = require('lib/templater');
+	var jsonFormat = require('lib/json-format');
+	var URI = require('URIjs/URI');
 
 	var tpl = {
 		form: {
@@ -20,8 +21,8 @@ define(function (require, exports, module) {
 
 	var allFormsUID = [];
 
-	function Form (container, spec, routes) {
-		var that = this;
+	function SpecFormApp (router, container, spec, routes) {
+		this.router = router;
 
 		this.uid = 'apiTesterForm' + allFormsUID.length;
 		allFormsUID.push(this.uid);
@@ -41,7 +42,7 @@ define(function (require, exports, module) {
 		this.refresh();
 	}
 
-	Form.prototype = {
+	SpecFormApp.prototype = {
 
 		reset: function () {
 			this.spec.current = {};
@@ -462,6 +463,28 @@ define(function (require, exports, module) {
 			this.showErrors('<div class="alert alert-danger"><h4>Error <b>' + jqXHR.status + '</b> (<i>' + status + '</i>)</h4><p>' + jqXHR.statusText + '</p></div>');
 		},
 
+		saveRequestParamsToUrl: function () {
+			var params = {
+				method: this.$('#form-route-method').val(),
+				uri: this.$('#form-route-url').val(),
+				route: this.$('#form-route').val(),
+				additionalQuery: this.$('#form-request-query').val(),
+				values: {
+					query: this.getDataFromRegion('query'),
+					body: this.getDataFromRegion('body'),
+					params: this.getDataFromRegion('params')
+				},
+				form: {
+					// need add current form structure
+				},
+				format: {
+					request: $('#form-request-format').val(),
+					response: $('#form-response-format').val()
+				}
+			};
+			this.router.replaceParam('params', JSON.stringify(params));
+		},
+
 		submitForm: function () {
 			var that = this;
 
@@ -477,14 +500,16 @@ define(function (require, exports, module) {
 			params.url = utils.addParamsToUrl(params.url, this.getDataFromRegion('query'));
 			params.url = params.url + '?' + this.$('#form-request-query').val();
 
-			params.dataType = 'json';
+			params.dataType = $('#form-response-format').val();
 
 			var data = this.getDataFromRegion('body');
 
 			if (params.type !== "GET") {
-				params.contentType = 'json';
+				params.contentType = $('#form-request-format').val();
 				params.data = JSON.stringify(data);
 			}
+
+			this.saveRequestParamsToUrl();
 
 			this.showRequestData(params.data, data);
 
@@ -501,28 +526,54 @@ define(function (require, exports, module) {
 		}
 	};
 
-	//		var $form = $("#api-tester-form");
-	//		var $formContent = $('#form-content');
-	//		var currName = null;
-	//		var currMethod = null;
-	//		var currLocation = (window.location.href + "").replace(/^[^\#]+\#?(.*)$/, "$1");
-	//
-	//		// BUILD FORM
-	//		if(SPECS[nameMap[currName]]){
-	//
-	//			var $method = $('#_METHOD_'),
-	//				$format = $("#_FORMAT_"),
-	//				$url = $('#_URL_');
-	//
-	//			$method.val(($form.attr("method") || "").toUpperCase() || "GET");
-	//			$url.val(($form.attr("action") || "") || "/");
-	//
-	//			$form.on("submit", function(){
-	//
-	//			});
-	//		}
+	var SpecRouter = Backbone.Router.extend({
+
+		routes: {
+			"help":                 "help",    // #help
+			"search/:query":        "search",  // #search/kiwis
+			"search/:query/p:page": "search"   // #search/kiwis/p7
+		},
+
+		initialize: function () {
+			var r = SpecRouter.__super__.initialize.apply(this, arguments);
+
+			this.form = new SpecFormApp(this, $('#api-tester'), window.API_JSON, window.API_ROUTES_JSON);
+
+			return r;
+		},
+
+		addParam: function (name, value) {
+			var uri = URI(window.location.href);
+			uri.addQuery(name, value);
+			this.navigate(this._urlStringToNavigate(uri), {trigger: true});
+		},
+
+		removeParam: function (name) {
+			var uri = URI(window.location.href);
+			uri.removeQuery(name);
+			this.navigate(this._urlStringToNavigate(uri), {trigger: true});
+		},
+
+		replaceParam: function (name, value) {
+			var uri = URI(window.location.href);
+			uri.removeQuery(name);
+			uri.addQuery(name, value);
+			this.navigate(this._urlStringToNavigate(uri), {trigger: true});
+		},
+
+		_urlStringToNavigate: function (uri) {
+			return uri.path() + '?' + uri.query();
+		}
+
+	});
+
 
     return function () {
-		var form = new Form($('#api-tester'), window.API_JSON, window.API_ROUTES_JSON);
+
+		var router = new SpecRouter();
+
+		Backbone.history.start({
+			pushState: true
+		});
 	};
 });
