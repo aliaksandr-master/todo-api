@@ -3,57 +3,96 @@ define(function(require, exports, module){
 
 	var _ = require('lodash');
 
-	var SpecFormCompiler = function (options) {
+	var SpecFormCompiler = function (options, spec) {
 		this.options = _.extend({
-			formTemplateName: 'form',
+			mainTemplateName: 'form',
 			templates: {},
-			types: {},
-			attr: function (name, spec) {
-				return null;
-			}
+			types: {}
 		}, options);
-		this._compiled = false;
-		this._names = [];
+		this.spec = { nested: spec };
+		this._elements = {};
 	};
 
 	SpecFormCompiler.prototype = {
 
-		setSpec: function (spec) {
-			this.spec = { spec: spec };
-			this._compiled = false;
-			return this;
-		},
-
-		setValue: function (value) {
-			this.value = value;
-			this._compiled = false;
-			return this;
-		},
-
-		getElementNames: function () {
+		getNames: function () {
 			this._compile();
-			return this._names;
+			return _.keys(this._elements);
 		},
 
 		_compile: function () {
-			if (!this._compiled) {
+			if (this._compiled === null) {
 				this._compiled = this._genNested(this.spec, this.value);
 			}
 			return this._compiled;
 		},
 
-		toString: function () {
-			var formAttr = this.options.attr(null, null);
+		_splitName: function (name) {
+			var segments = [];
+			name.replace(/^([^\[]+)((?:\[[^\]]+\])*)$/, function (w, segm, arrKey) {
+				segments = [segm];
+				arrKey.replace(/\[([^\]]+)\]/g, function (w, segm) {
+					segments.push(segm);
+				});
+			});
+			return segments;
+		},
 
-			var tplData = _.extend({
+		serialize: function ($container, convert) {
+			convert = convert == null ? true : Boolean(convert);
+			var valObj = {};
+			_.each(this._elements, function (type, name) {
+				var segments = [],
+					$el = $container.find('[name="' + name + '"]'),
+					val = $el.val(),
+					_valObj = valObj;
+
+				if ($el.length) {
+					val = convert ? this.convert(val, type) : val;
+				} else {
+					return;
+				}
+
+				if (val === undefined) {
+					return;
+				}
+
+				segments = this._splitName(name);
+
+				_.each(segments, function (segm, k) {
+					if (segments.length === k + 1) {
+						_valObj[segm] = val;
+					} else {
+						if (_valObj[segm] == null) {
+							_valObj[segm] = /^\d+$/.test(segments[k+1]) ? [] : {};
+						}
+						_valObj = _valObj[segm];
+					}
+				}, this);
+			}, this);
+			return valObj;
+		},
+
+		convert: function (val, type) {
+			if (_.isFunction(this.options.types[type].convert)) {
+				return this.options.types[type].convert(val);
+			}
+			return val;
+		},
+
+		render: function (value) {
+			this._compiled = null;
+			this.value = value;
+
+			var tplData = {
 				value: this._compile()
-			}, formAttr);
+			};
 
-			return this._template(this.options.formTemplateName, tplData);
+			return this._template(this.options.mainTemplateName, tplData);
 		},
 
 		_genNested: function (spec, value, key) {
-			return _.map(spec.spec, function (sp) {
+			return _.map(spec.nested, function (sp) {
 				var name, val;
 				name  = _.keys(sp)[0];
 				val = value !== null && typeof value === 'object' ? value[name] : undefined;
@@ -65,22 +104,25 @@ define(function(require, exports, module){
 			return this.options.templates[name](data);
 		},
 
+		_isNested: function (element) {
+			return element.nested != null && element.nested !== false && element.nested !== 0;
+		},
+
 		_gen: function (name, element, value, parent, key) {
 			if (typeof element === 'string') {
 				element = { type: element };
 			}
 
-			if (parent.nested && /^[\d\w]/i.test(parent.name)) {
+			if (this._isNested(parent) && parent !== this.spec && /^[\d\w]/i.test(parent.name)) {
 				name = parent.name + (key == null ? '' : '[' + key +']') + '[' + name + ']';
 			}
 
-			element = _.extend({}, element, this.options.types[element.type]);
+			element = _.extend({}, this.options.types[element.type], element);
 
 			element.name = name;
-			element.value = value == null ? (element.nested ? {} : null) : value;
-			element.attr = this.options.attr(name, element);
+			element.value = value == null ? (this._isNested(element) != null ? {} : null) : value;
 
-			if (element.nested) {
+			if (this._isNested(element) != null) {
 				if (element.array) {
 					var v = _.isEmpty(element.value) ? [null]: element.value;
 					element.value = _.map(v, function (value, key) {
@@ -93,7 +135,12 @@ define(function(require, exports, module){
 				}
 			}
 
-			this._names.push(element.name);
+			if (!this._isNested(element)) {
+				if (this._elements[element.name]) {
+					throw new Error('duplicate element name "' + element.name + '"');
+				}
+				this._elements[element.name] = element.type;
+			}
 			return this._template(element.template, element);
 		}
 	};

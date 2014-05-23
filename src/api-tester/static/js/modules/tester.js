@@ -13,92 +13,104 @@ define(function (require, exports, module) {
 
 	var formGen = new SpecCompiler({
 		templates: {
-			field: template('gen/field'),
-			text:  template('gen/text'),
-			flag:  template('gen/flag'),
-			cover: template('gen/cover'),
-			form:  template('gen/form')
+			field:  template('gen/field'),
+			text:   template('gen/text'),
+			flag:   template('gen/flag'),
+			cover:  template('gen/cover'),
+			form:   template('gen/form'),
+			custom: template('gen/cover')
 		},
 		types: {
 			text: {
-				array:    false,
-				nested:   false,
 				template: 'text'
 			},
 			string: {
-				array:    false,
-				nested:   false,
 				template: 'field'
 			},
 			decimal: {
-				array:    false,
-				nested:   false,
-				template: 'field'
+				template: 'field',
+				convert: function (val) {
+					if (val.length) {
+						return parseInt(val, 10);
+					}
+					return undefined;
+				}
 			},
 			float: {
-				array:    false,
-				nested:   false,
-				template: 'field'
+				template: 'field',
+				convert: function (val) {
+					if (val.length) {
+						return parseFloat(val);
+					}
+					return undefined;
+				}
 			},
 			integer: {
-				array:    false,
-				nested:   false,
-				template: 'field'
+				template: 'field',
+				convert: function (val) {
+					if (val.length) {
+						return parseInt(val, 10);
+					}
+					return undefined;
+				}
 			},
 			boolean: {
-				array:    false,
-				nested:   false,
-				template: 'flag'
+				template: 'flag',
+				convert: function (val) {
+					return Boolean(val);
+				}
 			},
 			object: {
-				nested:   true,
-				array:    false,
 				template: 'cover'
 			},
 			array: {
 				array:    true,
-				nested:   true,
 				template: 'cover'
 			}
 		}
-	});
-
-	formGen.setSpec([
-		{hello: 'decimal'},
+	}, [
+		{hello: {
+			type:  'decimal',
+			label: 'Hello:'
+		}},
 		{params: {
 			type: 'array',
-			spec: [
-				{val:   {type: 'string'}},
-				{id:    {type: 'decimal'}},
+			nested: [
+				{val: {
+					type: 'string',
+					label: 'hello',
+					template: 'custom'
+				}},
+				{id: 'decimal'},
 				{object: {
 					type: 'object',
-					spec: [
-						{username: {type: 'string'}},
-						{password: {type: 'decimal'}},
-						{save: {type: 'boolean'}}
+					nested: [
+						{username: 'string'},
+						{password: 'decimal'},
+						{save: 'boolean'}
 					]
 				}}
 			]
 		}},
 		{options: {
 			type: 'object',
-			spec: [
-				{username: {type: 'string'}},
-				{password: {type: 'decimal'}},
-				{save: {type: 'boolean'}},
-				{object: {
+			nested: [
+				{username11: 'string'},
+				{password3: 'decimal'},
+				{save: 'boolean'},
+				{object2: {
 					type: 'object',
 					spec: [
-						{username: {type: 'string'}},
-						{password: {type: 'decimal'}},
-						{save: {type: 'boolean'}}
+						{username4: 'string'},
+						{password5: 'decimal'},
+						{save6: 'boolean'}
 					]
 				}}
 			]
 		}}
 	]);
 
-	formGen.setValue({
+	var form = formGen.render({
 		hello: '111 hello!!!',
 		params: [
 			{
@@ -122,7 +134,11 @@ define(function (require, exports, module) {
 		}
 	});
 
-	$('#test').append(formGen.toString());
+	$('#test').append(form);
+
+	var vals = formGen.serialize($('#test'));
+	var vals2 = formGen.serialize($('#test'), false);
+	console.log(vals, vals2);
 
 	var tpl = {
 		form: {
