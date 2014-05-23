@@ -8,10 +8,10 @@ define(function (require, exports, module) {
 	var random = require('lib/randomizr');
 	var template = require('lib/templater');
 	var jsonFormat = require('lib/json-format');
-	var formGen = require('lib/form-generator');
+	var SpecCompiler = require('lib/form-generator');
 	var URI = require('URIjs/URI');
 
-	formGen = formGen.configure({
+	var formGen = new SpecCompiler({
 		templates: {
 			field: template('gen/field'),
 			text:  template('gen/text'),
@@ -63,9 +63,7 @@ define(function (require, exports, module) {
 		}
 	});
 
-	var res = formGen.generate({
-
-	}, [
+	formGen.setSpec([
 		{hello: 'decimal'},
 		{params: {
 			type: 'array',
@@ -98,7 +96,9 @@ define(function (require, exports, module) {
 				}}
 			]
 		}}
-	], {
+	]);
+
+	formGen.setValue({
 		hello: '111 hello!!!',
 		params: [
 			{
@@ -122,7 +122,7 @@ define(function (require, exports, module) {
 		}
 	});
 
-	$('#test').append(res);
+	$('#test').append(formGen.toString());
 
 	var tpl = {
 		form: {

@@ -3,91 +3,100 @@ define(function(require, exports, module){
 
 	var _ = require('lodash');
 
-	var defaultOptions = {
-		map: {},
-		templates: {
-			form: null
+	var SpecFormCompiler = function (options) {
+		this.options = _.extend({
+			formTemplateName: 'form',
+			templates: {},
+			types: {},
+			attr: function (name, spec) {
+				return null;
+			}
+		}, options);
+		this._compiled = false;
+		this._names = [];
+	};
+
+	SpecFormCompiler.prototype = {
+
+		setSpec: function (spec) {
+			this.spec = { spec: spec };
+			this._compiled = false;
+			return this;
 		},
-		types: {},
-		attr: function (name, spec) {
-			return this.map[name];
-		}
-	};
 
-	var SpecCompiler = function (options, params, spec, value) {
-		this.options = options;
-		this.params  = params;
-		this.value   = value;
-		this.spec    = spec;
-	};
+		setValue: function (value) {
+			this.value = value;
+			this._compiled = false;
+			return this;
+		},
 
-	SpecCompiler.prototype = {
+		getElementNames: function () {
+			this._compile();
+			return this._names;
+		},
+
+		_compile: function () {
+			if (!this._compiled) {
+				this._compiled = this._genNested(this.spec, this.value);
+			}
+			return this._compiled;
+		},
 
 		toString: function () {
-			return this.template('form', _.extend({}, this.params, {
-				value: this.generateNested({spec: this.spec}, this.value)
-			}));
+			var formAttr = this.options.attr(null, null);
+
+			var tplData = _.extend({
+				value: this._compile()
+			}, formAttr);
+
+			return this._template(this.options.formTemplateName, tplData);
 		},
 
-		generateNested: function (spec, values, key) {
+		_genNested: function (spec, value, key) {
 			return _.map(spec.spec, function (sp) {
-				var k = _.map(sp, function (_, k) { return k; })[0];
-				var v;
-				if (values != null && _.isObject(values)) {
-					v = values[k];
-				}
-				v = v == null ? null : v;
-				return this.generate(k, sp[k], v, spec, key);
+				var name, val;
+				name  = _.keys(sp)[0];
+				val = value !== null && typeof value === 'object' ? value[name] : undefined;
+				return this._gen(name, sp[name], val === null ? undefined : val, spec, key);
 			}, this);
 		},
 
-		template: function (name, data) {
+		_template: function (name, data) {
 			return this.options.templates[name](data);
 		},
 
-		generate: function (name, spec, values, parent, key) {
-
-			if (_.isString(spec)) {
-				spec = { type: spec };
+		_gen: function (name, element, value, parent, key) {
+			if (typeof element === 'string') {
+				element = { type: element };
 			}
 
-			if (parent.nested && /^[a-zA-Z0-9_\[\]]+$/.test(parent.name)) {
+			if (parent.nested && /^[\d\w]/i.test(parent.name)) {
 				name = parent.name + (key == null ? '' : '[' + key +']') + '[' + name + ']';
 			}
 
-			spec = _.extend({}, spec, this.options.types[spec.type], {
-				name: name
-			});
+			element = _.extend({}, element, this.options.types[element.type]);
 
-			spec.value = values == null ? (spec.nested ? {} : null) : values;
-			spec.attr = this.options.attr(name);
+			element.name = name;
+			element.value = value == null ? (element.nested ? {} : null) : value;
+			element.attr = this.options.attr(name, element);
 
-			if (spec.nested) {
-				if (spec.array) {
-					var v = _.isEmpty(spec.value) ? [null]: spec.value;
-					spec.value = _.map(v, function (values, key) {
-						var params =_.extend({}, spec, { value: this.generateNested(spec, values, key) });
-						return this.template(spec.template, params);
+			if (element.nested) {
+				if (element.array) {
+					var v = _.isEmpty(element.value) ? [null]: element.value;
+					element.value = _.map(v, function (value, key) {
+						var _elem =_.clone(element);
+						_elem.value = this._genNested(element, value, key);
+						return this._template(element.template, _elem);
 					}, this);
 				} else {
-					spec.value = this.generateNested(spec, spec.value);
+					element.value = this._genNested(element, element.value);
 				}
 			}
-			return this.template(spec.template, spec);
+
+			this._names.push(element.name);
+			return this._template(element.template, element);
 		}
 	};
 
-    return {
-		configure: function (options) {
-			options = _.merge({}, defaultOptions, options);
-
-			return {
-				generate: function (params, spec, values) {
-					var form = new SpecCompiler(options, params, spec, values);
-					return form.toString();
-				},
-				options: options
-			};
-		}
-	};
+    return SpecFormCompiler;
 });
