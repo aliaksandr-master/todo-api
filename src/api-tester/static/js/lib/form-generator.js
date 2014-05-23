@@ -1,11 +1,11 @@
 (function(root, factory) {
 	"use strict";
 	if (typeof define === 'function' && define.amd) {
-		define(['lodash'], function(_) {
+		define(['underscore'], function(_) {
 			return factory(_);
 		});
 	} else if (typeof module !== 'undefined' && typeof module.exports !== 'undefined') {
-		module.exports = factory(root, require('lodash'));
+		module.exports = factory(root, require('underscore'));
 	} else {
 		root.SpecGenerator = factory(root._);
 	}
