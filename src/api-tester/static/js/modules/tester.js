@@ -8,7 +8,121 @@ define(function (require, exports, module) {
 	var random = require('lib/randomizr');
 	var template = require('lib/templater');
 	var jsonFormat = require('lib/json-format');
+	var formGen = require('lib/form-generator');
 	var URI = require('URIjs/URI');
+
+	formGen = formGen.configure({
+		templates: {
+			field: template('gen/field'),
+			text:  template('gen/text'),
+			flag:  template('gen/flag'),
+			cover: template('gen/cover'),
+			form:  template('gen/form')
+		},
+		types: {
+			text: {
+				array:    false,
+				nested:   false,
+				template: 'text'
+			},
+			string: {
+				array:    false,
+				nested:   false,
+				template: 'field'
+			},
+			decimal: {
+				array:    false,
+				nested:   false,
+				template: 'field'
+			},
+			float: {
+				array:    false,
+				nested:   false,
+				template: 'field'
+			},
+			integer: {
+				array:    false,
+				nested:   false,
+				template: 'field'
+			},
+			boolean: {
+				array:    false,
+				nested:   false,
+				template: 'flag'
+			},
+			object: {
+				nested:   true,
+				array:    false,
+				template: 'cover'
+			},
+			array: {
+				array:    true,
+				nested:   true,
+				template: 'cover'
+			}
+		}
+	});
+
+	var res = formGen.generate({
+
+	}, [
+		{hello: 'decimal'},
+		{params: {
+			type: 'array',
+			spec: [
+				{val:   {type: 'string'}},
+				{id:    {type: 'decimal'}},
+				{object: {
+					type: 'object',
+					spec: [
+						{username: {type: 'string'}},
+						{password: {type: 'decimal'}},
+						{save: {type: 'boolean'}}
+					]
+				}}
+			]
+		}},
+		{options: {
+			type: 'object',
+			spec: [
+				{username: {type: 'string'}},
+				{password: {type: 'decimal'}},
+				{save: {type: 'boolean'}},
+				{object: {
+					type: 'object',
+					spec: [
+						{username: {type: 'string'}},
+						{password: {type: 'decimal'}},
+						{save: {type: 'boolean'}}
+					]
+				}}
+			]
+		}}
+	], {
+		hello: '111 hello!!!',
+		params: [
+			{
+				val: 333,
+				object: {
+					username: 333444
+				}
+			},
+			{
+				val: 111,
+				object: {
+					username: 2222222
+				}
+			}
+		],
+		options: {
+			username: 'victor!',
+			object: {
+				password: 112222333
+			}
+		}
+	});
+
+	$('#test').append(res);
 
 	var tpl = {
 		form: {

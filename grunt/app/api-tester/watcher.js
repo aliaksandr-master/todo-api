@@ -16,7 +16,7 @@ module.exports = function (grunt) {
 
 	this.run('watch', {
 		files: [
-			opt.SRC + '/api-tester/**/*.{php,js,htaccess}'
+			opt.SRC + '/api-tester/**/*.{php,js,hbs,htaccess}'
 		],
 		tasks: [
 			'api-tester/install',

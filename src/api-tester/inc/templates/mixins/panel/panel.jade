@@ -1,0 +1,26 @@
+mixin run-panel(name, text)
+	.panel.panel-default(id='api-tester-' + name)
+		.panel-heading.clearfix
+			span.pull-left!= text
+		.panel-body
+			.panel-body-content
+			.input-group
+				.input-group-btn
+					button.run-panel-add-button.btn.btn-default.btn-sm(type='button') Add
+				select.run-panel-add-button.form-control.input-sm
+					option(value='string') String
+					option(value='text')  Textarea
+					option(value='decimal')  Decimal
+					option(value='float')  Float
+					option(value='boolean')  Boolean
+					option(value='integer')  Integer
+
+mixin raw-panel(name, text)
+	.panel.panel-default.panel-raw(id='api-tester-' + name)
+		.panel-heading.clearfix
+			span.pull-left!= text
+			label.pull-right.panel-raw-toggle
+				input(type='checkbox',value=1)
+				b Raw
+		pre.panel-body.-transformed
+		pre.panel-body.-raw(style='display:none;')

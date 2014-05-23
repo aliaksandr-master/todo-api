@@ -1,35 +1,12 @@
 extends ../../inc/templates/layout-empty
-mixin pre-panel(name, text)
-	.panel.panel-default(id='api-tester-' + name)
-		.panel-heading!= text
-		pre.panel-body
 
-mixin run-panel(name, text)
-	.panel.panel-default(id='api-tester-' + name)
-		.panel-heading.clearfix
-			span.pull-left!= text
-		.panel-body
-			.panel-body-content
-			.input-group
-				.input-group-btn
-					button.run-panel-add-button.btn.btn-default.btn-sm(type='button') Add
-				select.run-panel-add-button.form-control.input-sm
-					option(value='string') String
-					option(value='text')  Textarea
-					option(value='decimal')  Decimal
-					option(value='float')  Float
-					option(value='boolean')  Boolean
-					option(value='integer')  Integer
-
-mixin raw-panel(name, text)
-	.panel.panel-default.panel-raw(id='api-tester-' + name)
-		.panel-heading.clearfix
-			span.pull-left!= text
-			label.pull-right.panel-raw-toggle
-				input(type='checkbox',value=1)
-				b Raw
-		pre.panel-body.-transformed
-		pre.panel-body.-raw(style='display:none;')
+mixin flag(id, text, value, trueMessage, falseMessage)
+	.form-control-wr
+		if text
+			label= text
+		select.form-control.input-sm(id=id)
+			option(value=1, selected=(value ? true : false))= trueMessage ? trueMessage : 'Yes'
+			option(value=0, selected=(value ? false : true))= falseMessage ? falseMessage : 'No'
 
 block container
 	script
@@ -37,10 +14,11 @@ block container
 		!= 'window.API_ROOT = "/api/";'
 		!= 'window.API_JSON = ' + JSON.stringify(specsSrc) + ';'
 		!= 'window.API_ROUTES_JSON = ' + JSON.stringify(routes) + ';'
+	#test
 	div(style="margin: 15px 15px 0;")
 		.row#api-tester
 
-			.col-md-9#api-tester-info
+			.col-md-7#api-tester-info
 
 				.api-tester-spec-wr
 					h1#api-tester-spec-name
@@ -52,12 +30,12 @@ block container
 				+raw-panel('request-data', 'Request Data')
 				+raw-panel('response-headers', 'Response Headers')
 
-			.col-md-14#api-tester-response
+			.col-md-13#api-tester-response
 				#errors
 
 				+raw-panel('response-data', 'Response Data')
 
-			.col-md-7#api-tester-request
+			.col-md-10#api-tester-request
 
 				#form-head.clearfix
 					.row
@@ -84,9 +62,6 @@ block container
 							.form-control-wr
 								label Request Uri
 								input#form-route-url.input-sm.form-control(type="text", placeholder='request url')
-						.col-sm-30
-							.form-control-wr
-								input#form-request-query.input-sm.form-control(type="text", placeholder='additional query', value="_debug=debug")
 
 				#api-tester-form-submit-wr.clearfix
 					button#api-tester-form-submit.btn.btn-success.pull-left(type="submit") Submit
@@ -98,11 +73,22 @@ block container
 					+run-panel('form-query', 'Request data (Query)')
 					+run-panel('form-params',  'Request data (Url Params)')
 
+				+collapsed-panel('options', 'Options')#api-tester-options
+					+flag('option-debug-mode', '', true, 'Debug Attribute Enabled', 'Debug Attribute Disabled')
+
+
 block scripts
 	script(type="text/x-handlebars-template",data-src="/form/field.hbs")!= read('/static/templates/form/field.hbs')
 	script(type="text/x-handlebars-template",data-src="/form/select.hbs")!= read('/static/templates/form/select.hbs')
 	script(type="text/x-handlebars-template",data-src="/form/text.hbs")!= read('/static/templates/form/text.hbs')
 	script(type="text/x-handlebars-template",data-src="/form/toggle.hbs")!= read('/static/templates/form/toggle.hbs')
+
+	script(type="text/x-handlebars-template",data-src="/gen/cover.hbs")!= read('/static/templates/gen/cover.hbs')
+	script(type="text/x-handlebars-template",data-src="/gen/field.hbs")!= read('/static/templates/gen/field.hbs')
+	script(type="text/x-handlebars-template",data-src="/gen/flag.hbs")!= read('/static/templates/gen/flag.hbs')
+	script(type="text/x-handlebars-template",data-src="/gen/form.hbs")!= read('/static/templates/gen/form.hbs')
+	script(type="text/x-handlebars-template",data-src="/gen/text.hbs")!= read('/static/templates/gen/text.hbs')
+
 	script.
 		require(['jquery', 'modules/tester'], function ($, run) {
 			$(function () {
