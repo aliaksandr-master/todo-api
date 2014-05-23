@@ -88,7 +88,7 @@ define(function(require, exports, module){
 				value: this._compile()
 			};
 
-			return this._template(this.options.mainTemplateName, tplData);
+			return this.template(this.options.mainTemplateName, tplData);
 		},
 
 		_genNested: function (spec, value, key) {
@@ -100,7 +100,7 @@ define(function(require, exports, module){
 			}, this);
 		},
 
-		_template: function (name, data) {
+		template: function (name, data) {
 			return this.options.templates[name](data);
 		},
 
@@ -128,7 +128,7 @@ define(function(require, exports, module){
 					element.value = _.map(v, function (value, key) {
 						var _elem =_.clone(element);
 						_elem.value = this._genNested(element, value, key);
-						return this._template(element.template, _elem);
+						return this.template(element.template, _elem);
 					}, this);
 				} else {
 					element.value = this._genNested(element, element.value);
@@ -141,7 +141,7 @@ define(function(require, exports, module){
 				}
 				this._elements[element.name] = element.type;
 			}
-			return this._template(element.template, element);
+			return this.template(element.template, element);
 		}
 	};
 
