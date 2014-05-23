@@ -110,7 +110,7 @@ define(function (require, exports, module) {
 		}}
 	]);
 
-	var form = formGen.render({
+	var form = formGen.render('form', {
 		hello: '111 hello!!!',
 		params: [
 			{

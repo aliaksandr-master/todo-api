@@ -1,11 +1,19 @@
-define(function(require, exports, module){
-    "use strict";
+(function(root, factory) {
+	"use strict";
+	if (typeof define === 'function' && define.amd) {
+		define(['lodash'], function(_) {
+			return factory(_);
+		});
+	} else if (typeof module !== 'undefined' && typeof module.exports !== 'undefined') {
+		module.exports = factory(root, require('lodash'));
+	} else {
+		root.SpecGenerator = factory(root._);
+	}
+}(this, function(_) {
+	"use strict";
 
-	var _ = require('lodash');
-
-	var SpecFormCompiler = function (options, spec) {
+	var SpecGenerator = function (options, spec) {
 		this.options = _.extend({
-			mainTemplateName: 'form',
 			templates: {},
 			types: {}
 		}, options);
@@ -13,7 +21,7 @@ define(function(require, exports, module){
 		this._elements = {};
 	};
 
-	SpecFormCompiler.prototype = {
+	SpecGenerator.prototype = {
 
 		getNames: function () {
 			this._compile();
@@ -38,19 +46,21 @@ define(function(require, exports, module){
 			return segments;
 		},
 
+		getValueByName: function ($container, name) {
+			var $el = $container.find('[name="' + name + '"]');
+			return $el.length ? $el.val() : undefined;
+		},
+
 		serialize: function ($container, convert) {
 			convert = convert == null ? true : Boolean(convert);
 			var valObj = {};
-			_.each(this._elements, function (type, name) {
-				var segments = [],
-					$el = $container.find('[name="' + name + '"]'),
-					val = $el.val(),
+			_.each(this._elements, function (element, name) {
+				var segments,
+					val = this.getValueByName($container, name),
 					_valObj = valObj;
 
-				if ($el.length) {
-					val = convert ? this.convert(val, type) : val;
-				} else {
-					return;
+				if (val !== undefined && _.isFunction(element.convert) && convert) {
+					val = element.convert(val);
 				}
 
 				if (val === undefined) {
@@ -73,14 +83,7 @@ define(function(require, exports, module){
 			return valObj;
 		},
 
-		convert: function (val, type) {
-			if (_.isFunction(this.options.types[type].convert)) {
-				return this.options.types[type].convert(val);
-			}
-			return val;
-		},
-
-		render: function (value) {
+		render: function (templateName, value) {
 			this._compiled = null;
 			this.value = value;
 
@@ -88,7 +91,7 @@ define(function(require, exports, module){
 				value: this._compile()
 			};
 
-			return this.template(this.options.mainTemplateName, tplData);
+			return this.template(templateName, tplData);
 		},
 
 		_genNested: function (spec, value, key) {
@@ -139,11 +142,11 @@ define(function(require, exports, module){
 				if (this._elements[element.name]) {
 					throw new Error('duplicate element name "' + element.name + '"');
 				}
-				this._elements[element.name] = element.type;
+				this._elements[element.name] = element;
 			}
 			return this.template(element.template, element);
 		}
 	};
 
-    return SpecFormCompiler;
-});
+	return SpecGenerator;
+}));
