@@ -12,12 +12,11 @@
 }(this, function(_) {
 	"use strict";
 
-	var SpecGenerator = function (options, spec) {
+	var SpecGenerator = function (options) {
 		this.options = _.extend({
 			templates: {},
 			types: {}
 		}, options);
-		this.spec = { nested: spec };
 		this._elements = {};
 	};
 
@@ -46,24 +45,40 @@
 			return segments;
 		},
 
-		getValueByName: function ($container, name) {
-			var $el = $container.find('[name="' + name + '"]');
-			return $el.length ? $el.val() : undefined;
+		findValues: function ($container) {
+			var values = {};
+			$container
+				.find('[name]').filter('input, textarea, select')
+				.each(function (index, element) {
+					var $el = $container.find(element);
+					if ($el.is(':checkbox') && !$el.is(':checked')) {
+						return;
+					}
+					values[element.name] = $el.val();
+				});
+			return values;
 		},
 
-		serialize: function ($container, convert) {
-			convert = convert == null ? true : Boolean(convert);
+		serialize: function ($container, bySpec, convert) {
+			bySpec = Boolean(bySpec);
 			var valObj = {};
-			_.each(this._elements, function (element, name) {
+			var values = this.findValues($container);
+			_.each(values, function (value, name) {
 				var segments,
-					val = this.getValueByName($container, name),
+					element,
 					_valObj = valObj;
 
-				if (val !== undefined && _.isFunction(element.convert) && convert) {
-					val = element.convert(val);
+				if (bySpec && value !== undefined) {
+					element = this._elements[name];
+					if (!element) {
+						return;
+					}
+					if (_.isFunction(element.convert) && (convert || convert === undefined)) {
+						value = element.convert(value, name, $container);
+					}
 				}
 
-				if (val === undefined) {
+				if (value === undefined) {
 					return;
 				}
 
@@ -71,20 +86,22 @@
 
 				_.each(segments, function (segm, k) {
 					if (segments.length === k + 1) {
-						_valObj[segm] = val;
+						_valObj[segm] = value;
 					} else {
-						if (_valObj[segm] == null) {
+						if (_valObj[segm] === undefined) {
 							_valObj[segm] = /^\d+$/.test(segments[k+1]) ? [] : {};
 						}
 						_valObj = _valObj[segm];
 					}
 				}, this);
 			}, this);
+
 			return valObj;
 		},
 
-		render: function (templateName, value) {
+		render: function (templateName, spec, value) {
 			this._compiled = null;
+			this.spec = { nested: spec, $$$skip$$$: true };
 			this.value = value;
 
 			var tplData = {
@@ -96,10 +113,41 @@
 
 		_genNested: function (spec, value, key) {
 			return _.map(spec.nested, function (sp) {
-				var name, val;
+				var name, val, element;
 				name  = _.keys(sp)[0];
+
+				element = sp[name];
+
+				if (typeof element === 'string') {
+					element = { type: element };
+				}
+				if (_.isArray(element)) {
+					element = {
+						nested: element
+					};
+				}
+				element || (element = {});
+				name.replace(/^(.+?):([^:]*)$/, function (w, _name, _type) {
+					element = _.extend(element || {}, {
+						type: _type
+					});
+					name = _name;
+				});
+
+				if (/^#/.test(name)) {
+					name = name.replace('#', '');
+					element.$$$skip$$$ = true;
+					element.type || (element.type = 'cover');
+				}
+
+				element.name = name;
+
 				val = value !== null && typeof value === 'object' ? value[name] : undefined;
-				return this._gen(name, sp[name], val === null ? undefined : val, spec, key);
+				val = val === null ? undefined : val;
+
+				element.value = val === undefined ? (this._isNested(element) ? {} : undefined) : val;
+
+				return this._gen(element, spec, key);
 			}, this);
 		},
 
@@ -111,39 +159,32 @@
 			return element.nested != null && element.nested !== false && element.nested !== 0;
 		},
 
-		_gen: function (name, element, value, parent, key) {
-			if (typeof element === 'string') {
-				element = { type: element };
-			}
-
-			if (this._isNested(parent) && parent !== this.spec && /^[\d\w]/i.test(parent.name)) {
-				name = parent.name + (key == null ? '' : '[' + key +']') + '[' + name + ']';
+		_gen: function (element, parent, key) {
+			if (/^[\d\w]/i.test(parent.name) && !parent.$$$skip$$$) {
+				element.name = parent.name + (key == null ? '' : '[' + key +']') + '[' + element.name + ']';
 			}
 
 			element = _.extend({}, this.options.types[element.type], element);
 
-			element.name = name;
-			element.value = value == null ? (this._isNested(element) != null ? {} : null) : value;
-
-			if (this._isNested(element) != null) {
+			if (this._isNested(element)) {
 				if (element.array) {
-					var v = _.isEmpty(element.value) ? [null]: element.value;
+					var v = _.isEmpty(element.value) ? [undefined]: element.value;
 					element.value = _.map(v, function (value, key) {
-						var _elem =_.clone(element);
-						_elem.value = this._genNested(element, value, key);
+						var _elem =_.extend({
+							value: this._genNested(element, value, key)
+						},element);
 						return this.template(element.template, _elem);
 					}, this);
 				} else {
 					element.value = this._genNested(element, element.value);
 				}
-			}
-
-			if (!this._isNested(element)) {
+			} else {
 				if (this._elements[element.name]) {
 					throw new Error('duplicate element name "' + element.name + '"');
 				}
 				this._elements[element.name] = element;
 			}
+
 			return this.template(element.template, element);
 		}
 	};

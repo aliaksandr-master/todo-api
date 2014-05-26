@@ -60,6 +60,9 @@ define(function (require, exports, module) {
 					return Boolean(val);
 				}
 			},
+			cover: {
+				template: 'cover'
+			},
 			object: {
 				template: 'cover'
 			},
@@ -68,30 +71,29 @@ define(function (require, exports, module) {
 				template: 'cover'
 			}
 		}
-	}, [
-		{hello: {
-			type:  'decimal',
+	});
+
+	var form = formGen.render('form', [
+		{'hello': {
+			type: 'decimal',
 			label: 'Hello:'
 		}},
-		{params: {
-			type: 'array',
-			nested: [
-				{val: {
-					type: 'string',
-					label: 'hello',
-					template: 'custom'
-				}},
-				{id: 'decimal'},
-				{object: {
-					type: 'object',
-					nested: [
-						{username: 'string'},
-						{password: 'decimal'},
-						{save: 'boolean'}
-					]
-				}}
-			]
-		}},
+		{'params:array': [
+			{val: {
+				type: 'string',
+				label: 'hello',
+				template: 'custom'
+			}},
+			{id: 'decimal'},
+			{'object': {
+				type: 'object',
+				nested: [
+					{username: 'string'},
+					{password: 'decimal'},
+					{save: 'boolean'}
+				]
+			}}
+		]},
 		{options: {
 			type: 'object',
 			nested: [
@@ -100,17 +102,28 @@ define(function (require, exports, module) {
 				{save: 'boolean'},
 				{object2: {
 					type: 'object',
-					spec: [
+					nested: [
 						{username4: 'string'},
 						{password5: 'decimal'},
 						{save6: 'boolean'}
 					]
 				}}
 			]
-		}}
-	]);
-
-	var form = formGen.render('form', {
+		}},
+		{'#options': [
+			{username11: 'string'},
+			{password3: 'decimal'},
+			{save: 'boolean'},
+			{object2: {
+				type: 'object',
+				nested: [
+					{username4: 'string'},
+					{password5: 'decimal'},
+					{save6: 'boolean'}
+				]
+			}}
+		]}
+	], {
 		hello: '111 hello!!!',
 		params: [
 			{
@@ -127,9 +140,9 @@ define(function (require, exports, module) {
 			}
 		],
 		options: {
-			username: 'victor!',
+			username11: 'victor!',
 			object: {
-				password: 112222333
+				password5: 112222333
 			}
 		}
 	});
@@ -137,8 +150,10 @@ define(function (require, exports, module) {
 	$('#test').append(form);
 
 	var vals = formGen.serialize($('#test'));
-	var vals2 = formGen.serialize($('#test'), false);
-	console.log(vals, vals2);
+	var vals2 = formGen.serialize($('#test'), true);
+	var vals3 = formGen.serialize($('#test'), true, true);
+
+	console.log(vals, vals2, vals3);
 
 	var tpl = {
 		form: {
