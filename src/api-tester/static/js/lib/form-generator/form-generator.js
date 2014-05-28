@@ -22,6 +22,10 @@
 
 	SpecGenerator.prototype = {
 
+		COVER_TYPE: 'cover',
+
+		WRAPPER_TYPE: 'wrapper',
+
 		getNames: function () {
 			this._compile();
 			return _.keys(this._elements);
@@ -60,6 +64,7 @@
 		},
 
 		serialize: function ($container, bySpec, convert) {
+			this._compile();
 			bySpec = Boolean(bySpec);
 			var valObj = {};
 			var values = this.findValues($container);
@@ -99,16 +104,21 @@
 			return valObj;
 		},
 
-		render: function (templateName, spec, value) {
+		render: function (spec, value) {
 			this._compiled = null;
-			this.spec = { nested: spec, $$$skip$$$: true };
+			this.spec = {
+				nested: spec,
+				$$$skip$$$: true
+			};
 			this.value = value;
 
-			var tplData = {
+			return this.template(this._typeOptions(this.WRAPPER_TYPE).template, {
 				value: this._compile()
-			};
+			});
+		},
 
-			return this.template(templateName, tplData);
+		_typeOptions: function (name) {
+			return this.options.types[name];
 		},
 
 		_genNested: function (spec, value, key) {
@@ -137,7 +147,7 @@
 				if (/^#/.test(name)) {
 					name = name.replace('#', '');
 					element.$$$skip$$$ = true;
-					element.type || (element.type = 'cover');
+					element.type || (element.type = this.COVER_TYPE);
 				}
 
 				element.name = name;
@@ -160,19 +170,19 @@
 		},
 
 		_gen: function (element, parent, key) {
-			if (/^[\d\w]/i.test(parent.name) && !parent.$$$skip$$$) {
+			if (/^[\d\w]/i.test(parent.name) && !parent.$$$skip$$$ && !element.$$$skip$$$) {
 				element.name = parent.name + (key == null ? '' : '[' + key +']') + '[' + element.name + ']';
 			}
 
-			element = _.extend({}, this.options.types[element.type], element);
+			element = _.extend({}, this._typeOptions(element.type), element);
 
 			if (this._isNested(element)) {
 				if (element.array) {
 					var v = _.isEmpty(element.value) ? [undefined]: element.value;
 					element.value = _.map(v, function (value, key) {
-						var _elem =_.extend({
+						var _elem =_.extend({}, element, {
 							value: this._genNested(element, value, key)
-						},element);
+						});
 						return this.template(element.template, _elem);
 					}, this);
 				} else {

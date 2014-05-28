@@ -8,7 +8,7 @@ define(function (require, exports, module) {
 	var random = require('lib/randomizr');
 	var template = require('lib/templater');
 	var jsonFormat = require('lib/json-format');
-	var SpecCompiler = require('lib/form-generator');
+	var SpecCompiler = require('lib/form-generator/form-generator');
 	var URI = require('URIjs/URI');
 
 	var formGen = new SpecCompiler({
@@ -17,7 +17,7 @@ define(function (require, exports, module) {
 			text:   template('gen/text'),
 			flag:   template('gen/flag'),
 			cover:  template('gen/cover'),
-			form:   template('gen/form'),
+			wrapper: template('gen/form'),
 			custom: template('gen/cover')
 		},
 		types: {
@@ -60,6 +60,9 @@ define(function (require, exports, module) {
 					return Boolean(val);
 				}
 			},
+			wrapper: {
+				template: 'wrapper'
+			},
 			cover: {
 				template: 'cover'
 			},
@@ -73,7 +76,7 @@ define(function (require, exports, module) {
 		}
 	});
 
-	var form = formGen.render('form', [
+	var form = formGen.render([
 		{'hello': {
 			type: 'decimal',
 			label: 'Hello:'
