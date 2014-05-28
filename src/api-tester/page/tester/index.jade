@@ -10,7 +10,7 @@ mixin flag(id, text, value, trueMessage, falseMessage)
 
 block container
 	script
-		!= 'window.MY_ROOT = "/api-tester/";'
+		!= 'window.MY_ROOT = "/api-tester";'
 		!= 'window.API_ROOT = "/api/";'
 		!= 'window.API_JSON = ' + JSON.stringify(specsSrc) + ';'
 		!= 'window.API_ROUTES_JSON = ' + JSON.stringify(routes) + ';'
@@ -78,16 +78,6 @@ block container
 
 
 block scripts
-	script(type="text/x-handlebars-template",data-src="/form/field.hbs")!= read('/static/templates/form/field.hbs')
-	script(type="text/x-handlebars-template",data-src="/form/select.hbs")!= read('/static/templates/form/select.hbs')
-	script(type="text/x-handlebars-template",data-src="/form/text.hbs")!= read('/static/templates/form/text.hbs')
-	script(type="text/x-handlebars-template",data-src="/form/toggle.hbs")!= read('/static/templates/form/toggle.hbs')
-
-	script(type="text/x-handlebars-template",data-src="/gen/cover.hbs")!= read('/static/templates/gen/cover.hbs')
-	script(type="text/x-handlebars-template",data-src="/gen/field.hbs")!= read('/static/templates/gen/field.hbs')
-	script(type="text/x-handlebars-template",data-src="/gen/flag.hbs")!= read('/static/templates/gen/flag.hbs')
-	script(type="text/x-handlebars-template",data-src="/gen/form.hbs")!= read('/static/templates/gen/form.hbs')
-	script(type="text/x-handlebars-template",data-src="/gen/text.hbs")!= read('/static/templates/gen/text.hbs')
 
 	script.
 		require(['jquery', 'modules/tester'], function ($, run) {

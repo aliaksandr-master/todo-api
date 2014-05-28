@@ -5,35 +5,36 @@ define(function(require, exports, module){
 	var $ = require('jquery');
 
 	var tplMemo = {};
+
 	// FROM REMOTE
-	return function(path, isRemote){
-		if(!isRemote){
-			return function(params){
-				path = path.replace(/^\/+|\.hbs$/g, '');
-				params || (params = {});
-				if(!tplMemo.hasOwnProperty(path)){
-					tplMemo[path] = Handlebars.compile($('script[data-src="/' + path + '.hbs"]').html());
-				}
-				return tplMemo[path](params);
-			};
+	return function(path){
+
+		path = '/' + path + '.hbs';
+
+		if(tplMemo[path] != null){
+			return tplMemo[path];
 		}
+
 		var result = function(){
 			return "";
 		};
-		return function(params){
-			params || (params = {});
-			if(!tplMemo.hasOwnProperty(path)){
-				$.ajax({
-					url: window.MY_ROOT + 'templates/' + path,
-					async: false,
-					dataType: 'html',
-					success: function(resp){
-						result = Handlebars.compile(resp);
-					}
-				});
-				tplMemo[path] = result;
-			}
-			return tplMemo[path](params);
-		};
+
+		var $e = $('script[data-src="' + path + '"]');
+
+		if($e.length){
+			tplMemo[path] = Handlebars.compile($e.html());
+		} else {
+			$.ajax({
+				url: window.MY_ROOT + '/static/templates' + path,
+				async: false,
+				dataType: 'html',
+				success: function(resp){
+					result = Handlebars.compile(resp);
+				}
+			});
+			tplMemo[path] = result;
+		}
+
+		return tplMemo[path];
 	};
 });
