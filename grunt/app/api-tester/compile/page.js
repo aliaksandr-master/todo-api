@@ -5,6 +5,10 @@ module.exports = function (grunt) {
 
 	var _ = require('lodash');
 
+	this.run('clean', [
+		this.BUILD + '/api-tester/page'
+	]);
+
 	this.run('jade', {
 		options: {
 			client: false,
@@ -55,25 +59,6 @@ module.exports = function (grunt) {
 			dest: opt.BUILD + '/api-tester',
 			ext: '.html'
 		}]
-	});
-
-	this.run('clean', [
-		opt.BUILD + '/api-tester/inc'
-	]);
-
-	this.run('less', {
-		files: [
-			{
-				expand: true,
-				cwd: opt.SRC + '/api-tester',
-				src: [
-					'**/*.less',
-					'!inc/**/*.less'
-				],
-				dest: opt.BUILD + '/api-tester',
-				ext: '.css'
-			}
-		]
 	});
 
 };

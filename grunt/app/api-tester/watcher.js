@@ -5,22 +5,47 @@ module.exports = function (grunt) {
 
 	this.run('watch:jade', {
 		files: [
-			opt.SRC + '/api-tester/**/*.jade',
-			opt.SRC + '/api-tester/**/*.less'
+			opt.SRC + '/api-tester/**/*.jade'
 		],
 		tasks: [
-			'api-tester/install',
-			'api-tester/compile/static'
+			'api-tester/compile/page'
+		]
+	});
+
+	this.run('watch:less', {
+		files: [
+			opt.SRC + '/api-tester/**/*.{less,css}'
+		],
+		tasks: [
+			'api-tester/compile/styles'
+		]
+	});
+
+	this.run('watch:js', {
+		files: [
+			opt.SRC + '/api-tester/**/*.js'
+		],
+		tasks: [
+			'api-tester/compile/js'
+		]
+	});
+
+	this.run('watch:templates', {
+		files: [
+			opt.SRC + '/api-tester/**/*.hbs'
+		],
+		tasks: [
+			'api-tester/compile/templates'
 		]
 	});
 
 	this.run('watch', {
 		files: [
-			opt.SRC + '/api-tester/**/*.{php,js,hbs,htaccess}'
+			opt.SRC + '/api-tester/**/*.php',
+			opt.SRC + '/api-tester/.htaccess'
 		],
 		tasks: [
-			'api-tester/install',
-			'api-tester/build'
+			'api-tester/compile/env'
 		]
 	});
 
