@@ -107,10 +107,11 @@
 		render: function (spec, value) {
 			this._compiled = null;
 			this.spec = {
+				type: this.WRAPPER_TYPE,
 				nested: spec,
 				$$$skip$$$: true
 			};
-			this.value = value;
+			this.value = value || {};
 
 			return this.template(this._typeOptions(this.WRAPPER_TYPE).template, {
 				value: this._compile()
@@ -118,15 +119,23 @@
 		},
 
 		_typeOptions: function (name) {
+			if (this.options.types[name] == null) {
+				throw new Error('FORM GENERATOR: undefined type "' + name + '"');
+			}
 			return this.options.types[name];
 		},
 
 		_genNested: function (spec, value, key) {
 			return _.map(spec.nested, function (sp) {
 				var name, val, element;
-				name  = _.keys(sp)[0];
 
-				element = sp[name];
+				if (sp.name && _.isString(sp.name)) {
+					name    = sp.name;
+					element = sp;
+				} else {
+					name    = _.keys(sp)[0];
+					element = sp[name];
+				}
 
 				if (typeof element === 'string') {
 					element = { type: element };
@@ -136,7 +145,6 @@
 						nested: element
 					};
 				}
-				element || (element = {});
 				name.replace(/^(.+?):([^:]*)$/, function (w, _name, _type) {
 					element = _.extend(element || {}, {
 						type: _type
@@ -157,11 +165,15 @@
 
 				element.value = val === undefined ? (this._isNested(element) ? {} : undefined) : val;
 
+				element || (element = {});
 				return this._gen(element, spec, key);
 			}, this);
 		},
 
 		template: function (name, data) {
+			if (this.options.templates[name] == null) {
+				throw new Error('FORM GENERATOR: undefined template "' + name + '"');
+			}
 			return this.options.templates[name](data);
 		},
 

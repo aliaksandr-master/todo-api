@@ -11,14 +11,14 @@ define(function (require, exports, module) {
 	var SpecCompiler = require('lib/form-generator/form-generator');
 	var URI = require('URIjs/URI');
 
-	var formGen = new SpecCompiler({
+	var stdFormGeneratorOptions = {
 		templates: {
-			field:  template('gen/field'),
-			text:   template('gen/text'),
-			flag:   template('gen/flag'),
-			cover:  template('gen/cover'),
-			wrapper: template('gen/form'),
-			custom: template('gen/cover')
+			field:   template('gen/field'),
+			text:    template('gen/text'),
+			flag:    template('gen/flag'),
+			cover:   template('gen/cover'),
+			wrapper: template('gen/wrapper'),
+			custom:  template('gen/cover')
 		},
 		types: {
 			text: {
@@ -74,89 +74,7 @@ define(function (require, exports, module) {
 				template: 'cover'
 			}
 		}
-	});
-
-	var form = formGen.render([
-		{'hello': {
-			type: 'decimal',
-			label: 'Hello:'
-		}},
-		{'params:array': [
-			{val: {
-				type: 'string',
-				label: 'hello',
-				template: 'custom'
-			}},
-			{id: 'decimal'},
-			{'object': {
-				type: 'object',
-				nested: [
-					{username: 'string'},
-					{password: 'decimal'},
-					{save: 'boolean'}
-				]
-			}}
-		]},
-		{options: {
-			type: 'object',
-			nested: [
-				{username11: 'string'},
-				{password3: 'decimal'},
-				{save: 'boolean'},
-				{object2: {
-					type: 'object',
-					nested: [
-						{username4: 'string'},
-						{password5: 'decimal'},
-						{save6: 'boolean'}
-					]
-				}}
-			]
-		}},
-		{'#options': [
-			{username11: 'string'},
-			{password3: 'decimal'},
-			{save: 'boolean'},
-			{object2: {
-				type: 'object',
-				nested: [
-					{username4: 'string'},
-					{password5: 'decimal'},
-					{save6: 'boolean'}
-				]
-			}}
-		]}
-	], {
-		hello: '111 hello!!!',
-		params: [
-			{
-				val: 333,
-				object: {
-					username: 333444
-				}
-			},
-			{
-				val: 111,
-				object: {
-					username: 2222222
-				}
-			}
-		],
-		options: {
-			username11: 'victor!',
-			object: {
-				password5: 112222333
-			}
-		}
-	});
-
-	$('#test').append(form);
-
-	var vals = formGen.serialize($('#test'));
-	var vals2 = formGen.serialize($('#test'), true);
-	var vals3 = formGen.serialize($('#test'), true, true);
-
-	console.log(vals, vals2, vals3);
+	};
 
 	var tpl = {
 		form: {
@@ -216,10 +134,9 @@ define(function (require, exports, module) {
 
 			href = href == null ? window.location.href : href;
 
-			this.location = utils.parseUrl(href);
-			this.location.data = this.location.data == null ? {} : this.location.data;
+			this.location = URI(href);
 
-			this.spec.current = _.cloneDeep(this.spec.source[this.location.data.spec] || {});
+			this.spec.current = _.cloneDeep(this.spec.source[this.location.query(true).spec] || {});
 
 			if (this.spec.current) {
 				this.routes.current = this.routes.group[this.spec.current.name] || [];
@@ -298,63 +215,14 @@ define(function (require, exports, module) {
 			this.refreshRouterUrl();
 		},
 
-		_buildFormElement_field: function (element) {
-			return tpl.form.field(_.extend(element, {
-				label: element.name,
-				placeholder: element.name,
-				type: 'text'
-			}));
-		},
-
-		_buildFormElement_string: function (element) {
-			return this._buildFormElement_field.apply(this, arguments);
-		},
-
-		_buildFormElement_decimal: function (element) {
-			return this._buildFormElement_field.apply(this, arguments);
-		},
-
-		_buildFormElement_integer: function (element) {
-			return this._buildFormElement_field.apply(this, arguments);
-		},
-
-		_buildFormElement_float: function (element) {
-			return this._buildFormElement_field.apply(this, arguments);
-		},
-
-		_buildFormElement_text: function (element) {
-			return this._buildFormElement_field.apply(this, arguments);
-		},
-
-		_buildFormElement_boolean: function (element) {
-			return tpl.form.toggle(_.extend(element, {
-				label: element.name
-			}));
-		},
-
-		_buildFormElement: function (element) {
-			element = _.extend({
-				name: null,
-				type: null,
-				value: null
-			}, element);
-
-			if (!this['_buildFormElement_' + element.type]) {
-				console.error('must create _buildFormElement_' + element.type);
-			}
-
-			return this['_buildFormElement_' + element.type](element);
-		},
-
-		buildFormPart: function (partName, elementsArray) {
-			var elements = _.map(elementsArray, this._buildFormElement, this);
-
-			var elemId = '#api-tester-form-' + partName.toLowerCase();
-			var $container = this.$(elemId + ' .panel-body-content');
-			$container.html('');
-			_.each(elements, function (html) {
-				$container.append(html);
-			});
+		buildFormPart: function (formGen, $element, spec, values) {
+			return formGen.render(_.map(spec, function (v) {
+				return {
+					name: v.name,
+					label: v.name,
+					type: v.type
+				};
+			}), values);
 		},
 
 		buildForm: function () {
@@ -362,9 +230,28 @@ define(function (require, exports, module) {
 				return;
 			}
 
+			var params = this.loadRequestParamsFromUrl();
 			_.each(['body', 'params', 'query'], function (part) {
 				var req = _.isEmpty(this.spec.current.request) ? {} : this.spec.current.request;
-				this.buildFormPart(part, (req.input || {})[part] || []);
+				var $element = this.getRegionElement(part);
+				var formGen = new SpecCompiler(stdFormGeneratorOptions);
+				var spec = (req.input || {})[part] || [];
+				var values;
+				if (params) {
+					if (params.spec) {
+						if (!_.isEmpty(params.spec[part])) {
+							spec = params.spec[part];
+						}
+					}
+					if (params.values) {
+						if (params.values[part] != null) {
+							values = params.values[part];
+						}
+					}
+				}
+				$element.html(this.buildFormPart(formGen, $element, spec, values));
+				$element.data('formGen', formGen);
+				$element.data('spec', spec);
 			}, this);
 
 			var counter = 0;
@@ -502,23 +389,25 @@ define(function (require, exports, module) {
 			'change #api-tester-form-params [name]': 'refreshRouterUrl'
 		},
 
-		getDataFromRegion: function (regionName) {
+		getDataFromRegion: function (regionName, bySpec) {
 			var data = {};
-			var $region = this.$('#api-tester-form-' + regionName + ' .panel-body-content');
+			var $region = this.getRegionElement(regionName);
 
-			$region.find('[name]').each(function () {
-				var name = $(this).attr('name');
-				data[name] = $region.find('[name="' + name + '"]').val();
-			});
+			var formGen = $region.data('formGen');
 
+			data = formGen.serialize($region, bySpec == null ? true : bySpec);
 			return data;
+		},
+
+		getRegionElement: function (regionName) {
+			return this.$('#api-tester-form-' + regionName.toLowerCase() + ' .panel-body-content');
 		},
 
 		refreshRouterUrl: function () {
 			var that = this;
 			var routeId = this.$('#form-route').val();
 			var route = this.routes.current[routeId];
-			var data = this.getDataFromRegion('params');
+			var data = this.getDataFromRegion('params', false);
 			var url = this.reverseUrlByRoute(route, data);
 
 			url = window.API_ROOT.replace(/\/$/, '') + '/' + url.replace(/^\//, '');
@@ -622,7 +511,10 @@ define(function (require, exports, module) {
 					body: this.getDataFromRegion('body'),
 					params: this.getDataFromRegion('params')
 				},
-				form: {
+				spec: {
+					query: this.getRegionElement('query').data('spec'),
+					body: this.getRegionElement('body').data('spec'),
+					params: this.getRegionElement('params').data('spec')
 					// need add current form structure
 				},
 				format: {
@@ -631,6 +523,17 @@ define(function (require, exports, module) {
 				}
 			};
 			this.router.replaceParam('params', JSON.stringify(params));
+		},
+
+		loadRequestParamsFromUrl: function () {
+			var query = this.location.query(true);
+			var result = {};
+
+			if (query.params) {
+				result = JSON.parse(query.params);
+			}
+
+			return result;
 		},
 
 		submitForm: function () {
