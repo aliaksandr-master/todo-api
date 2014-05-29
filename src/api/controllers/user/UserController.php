@@ -41,7 +41,6 @@ class UserController extends BaseResourceController {
 
 	public function createOne () {
 		$data = $this->api->request->pipe($this->user->safeFieldsMap());
-		dump($data);
 		$data['password'] = $this->user->cryptPassword($data['password']);
 		$data['date_register'] = date("Y-m-d H:i:s", gettimeofday(true));
 		$activationCode = sha1(md5(microtime()));

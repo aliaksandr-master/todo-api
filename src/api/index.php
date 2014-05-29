@@ -160,6 +160,6 @@ $api->run($routeResult['name'], $_SERVER['REQUEST_METHOD'], $url, array(
 	'headers' => getallheaders()
 ));
 
-$api->response->send(true);
+$output = $api->response->output(false, true);
 
-exit();
+exit($output);

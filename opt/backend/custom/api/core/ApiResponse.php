@@ -241,35 +241,39 @@ class ApiResponse extends ApiAbstractComponent {
 	}
 
 
-	public function send ($compress = false) {
+	public function output ($headers = true, $compress = false) {
 		$this->compile(true);
 
-		header('HTTP/1.1: '.$this->_compiled['status']);
-		header('Status: '.$this->_compiled['status']);
-		foreach ($this->_compiled['headers'] as $headerName => $headerValue) {
-			if (!is_null($headerValue)) {
-				header($headerName.': '.$headerValue);
-			}
-		}
-
-		$this->_compiled['response'] = (string) $this->{'filter__to_'.$this->getFormat()}($this->_compiled['response']);
-
-		if ($compress) {
-			$zlibOc = @ini_get('zlib.output_compression');
-			$compressing = !$zlibOc && extension_loaded('zlib') && ApiUtils::get($this->getEncoding(), 'gzip', false);
-
-			if (!$zlibOc && !$compressing) {
-				header('Content-Length: '.strlen($this->_compiled['response']));
-			} else {
-				if ($compressing) {
-					ob_start('ob_gzhandler');
+		if ($headers) {
+			header('HTTP/1.1: '.$this->_compiled['status']);
+			header('Status: '.$this->_compiled['status']);
+			foreach ($this->_compiled['headers'] as $headerName => $headerValue) {
+				if (!is_null($headerValue)) {
+					header($headerName.': '.$headerValue);
 				}
 			}
-		} else {
-			header('Content-Length: '.strlen($this->_compiled['response']));
 		}
 
-		exit($this->_compiled['response']);
+		$this->_compiled['output'] = (string) $this->{'filter__to_'.$this->getFormat()}($this->_compiled['response']);
+
+		if ($headers) {
+			if ($compress) {
+				$zlibOc = @ini_get('zlib.output_compression');
+				$compressing = !$zlibOc && extension_loaded('zlib') && ApiUtils::get($this->getEncoding(), 'gzip', false);
+
+				if (!$zlibOc && !$compressing) {
+					header('Content-Length: '.strlen($this->_compiled['response']));
+				} else {
+					if ($compressing) {
+						ob_start('ob_gzhandler');
+					}
+				}
+			} else {
+				header('Content-Length: '.strlen($this->_compiled['response']));
+			}
+		}
+
+		return $this->_compiled['output'];
 	}
 
 
