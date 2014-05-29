@@ -32,12 +32,13 @@ abstract class KernelApplication {
 	}
 
 	protected function _initDebug () {
-		$modeFromGet = Utils::get($_GET, $this->debug_get_param);
+		$modeFromGet = Utils::get($_GET, $this->debug_get_param, $this->default_debug_level);
 		$this->_debugMode = in_array($modeFromGet, $this->debug_levels) ? $modeFromGet : $this->debug_levels[$this->default_debug_level];
 		$levels = array_flip($this->debug_levels);
 		$this->_debugLevel = Utils::get($levels, $this->_debugMode, $this->default_debug_level);
 		$this->_debugLevel = $this->max_debug_level < $this->_debugLevel ? $this->max_debug_level : $this->_debugLevel;
 		$this->_debugMode = $this->debug_levels[$this->_debugLevel];
+
 
 		if ($this->_debugLevel > 1) {
 			ini_set('xdebug.overload_var_dump', '0');

@@ -133,7 +133,7 @@ class Router {
 	 * @return array|null
 	 */
 	function match ($httpMethod, $url, $default = null) {
-		$url = preg_replace("/\?.*$/", "", $url);
+		$url = preg_replace("/^([^\?]*)\?.*$/", "$1", $url);
 		$httpMethod = strtoupper($httpMethod);
 
 		foreach ($this->routes as $route) {

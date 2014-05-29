@@ -1,6 +1,6 @@
 {
-	"max_debug_level": 1,
-	"default_debug_level": 1,
+	"max_debug_level": 3,
+	"default_debug_level": 0,
 	"debug_get_param": "_debug",
 	"debug_levels": {
 		"0": "production",

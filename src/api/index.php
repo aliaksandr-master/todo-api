@@ -23,10 +23,10 @@ define('DS', '/');
 define('SD', '\\');
 
 define('DIR', str_replace(SD, DS, __DIR__));
-define('VAR_DIR', DIR.DS.'var');
-define('CACHE_DIR', realpath(DIR.DS.'..').DS.'private.cache');
-define('SESSION_DIR', CACHE_DIR.DS.'session');
-define('OPT_DIR', realpath('..'.DS.'opt'.DS.'backend'));
+define('VAR_DIR', DIR.'/var');
+define('CACHE_DIR', realpath(DIR.'/..').'/private.cache');
+define('SESSION_DIR', CACHE_DIR.'/session');
+define('OPT_DIR', realpath('../opt/backend'));
 
 
 
@@ -35,19 +35,19 @@ define('OPT_DIR', realpath('..'.DS.'opt'.DS.'backend'));
  *   HELPERS
  * -------------------------------------------------------------------
  */
-require_once(OPT_DIR.DS.'custom'.DS.'helpers'.DS.'dump.php');
-require_once(OPT_DIR.DS.'custom'.DS.'helpers'.DS.'FsHelper.php');
+require_once(OPT_DIR.'/custom/helpers/dump.php');
+require_once(OPT_DIR.'/custom/helpers/FsHelper.php');
 
 /*
  * -------------------------------------------------------------------
  *   CORE
  * -------------------------------------------------------------------
  */
-require_once(OPT_DIR.DS.'custom'.DS.'kernel'.DS.'load.php');
+require_once(OPT_DIR.'/custom/kernel/load.php');
 
-require_once(OPT_DIR.DS.'custom'.DS.'api'.DS.'load.php');
-require_once(OPT_DIR.DS.'custom'.DS.'router'.DS.'load.php');
-require_once(DIR.DS.'extensions'.DS.'application.php');
+require_once(OPT_DIR.'/custom/api/load.php');
+require_once(OPT_DIR.'/custom/router/load.php');
+require_once(DIR.'/extensions/application.php');
 
 
 
@@ -66,8 +66,6 @@ spl_autoload_register(array($app, 'loadClass'));
  *   DEBUG LEVELS
  * -------------------------------------------------------------------
  */
-
-
 define('DB_DEBUG', $app->debugLevel > 0);
 if ($app->debugLevel > 0) {
 	error_reporting(E_ALL);
@@ -96,10 +94,10 @@ if ($app->debugLevel > 0) {
 if (!is_dir(SESSION_DIR)) {
 	FsHelper::mkDir(CACHE_DIR, 0770);
 	FsHelper::mkDir(SESSION_DIR, 0770);
-	FsHelper::mkFile(CACHE_DIR.DS.'.htaccess');
-	FsHelper::mkFile(SESSION_DIR.DS.'.htaccess');
-	file_put_contents(CACHE_DIR.DS.'.htaccess', 'DENY from all');
-	file_put_contents(SESSION_DIR.DS.'.htaccess', 'DENY from all');
+	FsHelper::mkFile(CACHE_DIR.'/.htaccess');
+	FsHelper::mkFile(SESSION_DIR.'/.htaccess');
+	file_put_contents(CACHE_DIR.'/.htaccess', 'DENY from all');
+	file_put_contents(SESSION_DIR.'/.htaccess', 'DENY from all');
 }
 
 
@@ -131,13 +129,11 @@ if ($SESSION_USER_INACTIVE_TIME > 0) {
  *  ROUTER
  * -------------------------------------------------------------------
  */
-$ROOT_URI = str_replace(SD, DS, pathinfo($_SERVER['SCRIPT_NAME'], PATHINFO_DIRNAME));
-$url = str_replace($ROOT_URI, '', $_SERVER['REQUEST_URI']);
+
+$url = str_replace('/api', '', $_SERVER['REQUEST_URI']);
 
 $router = new Router(/*#:injectData("@VAR/api/router/routes.json")*/ array() /*injectData#*/);
 $routeResult = $router->match($_SERVER['REQUEST_METHOD'], $url, array('name' => null, 'params' => array()));
-
-
 
 /*
  * -------------------------------------------------------------------

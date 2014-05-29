@@ -22,8 +22,8 @@ class SessionUserController extends BaseResourceController {
 		}
 
 		if (empty($user[0])) {
-			$this->api->validation->ruleError('username', 'login_incorrect');
-			$this->api->validation->ruleError('password', 'login_incorrect');
+			$this->api->request->inputDataError('username', 'login_incorrect');
+			$this->api->request->inputDataError('password', 'login_incorrect');
 
 			return null;
 		} else {
@@ -35,11 +35,6 @@ class SessionUserController extends BaseResourceController {
 
 
 	public function getOne () {
-		$user = $this->user->current();
-		if (empty($user)) {
-			$this->api->output->error(null, 404);
-		}
-
-		return $user;
+		return $this->user->current();
 	}
 }
