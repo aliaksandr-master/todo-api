@@ -3,25 +3,30 @@
 	color: #86001a;
 	font-weight: normal;
 }
+.json-null,
 .json-bool {
-	color: blue;
+	color: #6f9aff;
 	font-weight: normal;
 }
 .json-number {
-	color: red;
+	color: #ff724b;
 	font-weight: normal;
 }
 .json-string {
-	color: #009500;
+	color: #299511;
 	font-weight: normal;
 }
+.json-string:empty:before {
+	content: '<empty string>';
+	color: #999;
+}
 .json-coma {
-	color: black;
+	color: #5f5f5f;
 	font-style: normal;
 	font-weight: bold;
 }
 .json-braked {
-	color: black;
+	color: #5f5f5f;
 	font-style: normal;
 	font-weight: normal;
 }

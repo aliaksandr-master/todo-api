@@ -33,14 +33,19 @@ block container
 					h2#api-tester-spec-action
 					div#api-tester-spec-description
 
-				+pre-panel('interaction-info', 'Info')
-				+raw-panel('request-data', 'Request Data')
-				+raw-panel('response-headers', 'Response Headers')
+				+raw-collapsed-panel('request-data', 'Request Data', true)
+				+pre-collapsed-panel('interaction-info', 'Info', true)
+				+pre-collapsed-panel('debug-info-timers', 'Debug Timers', true)
+				+pre-collapsed-panel('debug-info-memory', 'Debug Memory', true)
+				+pre-collapsed-panel('debug-info-db', 'Debug db')
 
 			.col-md-13#api-tester-response
 				#errors
 
-				+raw-panel('response-data', 'Response Data')
+				+raw-collapsed-panel('response-data', 'Response Data', true)
+				+pre-collapsed-panel('debug-info-log', 'Stack Trace')
+				+pre-collapsed-panel('debug-info-headers', 'Request Headers', true)
+				+raw-collapsed-panel('response-headers', 'Response Headers', true)
 
 			.col-md-10#api-tester-request
 
@@ -80,13 +85,16 @@ block container
 					+run-panel('form-body',  'Request data (Body)')
 					+run-panel('form-query', 'Request data (Query)')
 
-				+collapsed-panel('api-tester-options', 'Options')#api-tester-options
+				+collapsed-panel('api-tester-options', 'Options', true)
 					.form-group
 						label Debug Attribute
 						+flag('option-debug', '', true, 'Enabled', 'Disabled')
 					.form-group
 						label Type Convert
 						+flag('option-convert', '', true, 'Enabled', 'Disabled')
+					.form-group
+						label Debug Info
+						+flag('option-debug-info', '', true, 'Enabled', 'Disabled')
 
 
 block scripts

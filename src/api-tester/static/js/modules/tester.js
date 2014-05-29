@@ -154,6 +154,60 @@ define(function (require, exports, module) {
 			this.delegateEvents();
 		},
 
+		showResponseDebugInfo: function (responseJSON) {
+			var debug = responseJSON.debug;
+			if (this.getOptions().debugInfo) {
+				delete responseJSON.debug;
+			}
+			if (_.isEmpty(debug)) {
+				return;
+			}
+			this.debug_drawTimers(debug);
+			this.debug_drawMemory(debug);
+			this.debug_drawDb(debug);
+			this.debug_drawHeaders(debug);
+			this.debug_drawStackTrace(debug);
+		},
+
+		debug_drawTimers: function (responseDebug) {
+			this.$('#api-tester-debug-info-timers .panel-body').html(this.formatJSON(responseDebug.timers));
+		},
+
+		debug_drawMemory: function (responseDebug) {
+			this.$('#api-tester-debug-info-memory .panel-body').html(this.formatJSON(responseDebug.memory));
+		},
+
+		debug_drawDb: function (responseDebug) {
+			this.$('#api-tester-debug-info-db .panel-body').html(this.formatJSON(responseDebug.db));
+		},
+
+		debug_drawHeaders: function (responseDebug) {
+			if (!responseDebug.input || !responseDebug.input.headers) {
+				return;
+			}
+			this.$('#api-tester-debug-info-headers .panel-body').html(this.formatJSON(responseDebug.input.headers.raw));
+		},
+
+		debug_drawStackTrace: function (responseDebug) {
+			console.log(responseDebug.stackTrace);
+			if (!responseDebug.stackTrace || !responseDebug.stackTrace.length) {
+				return;
+			}
+			var trace = {};
+			_.each(responseDebug.stackTrace, function (v, k) {
+				trace[k] = v;
+			});
+			this.$('#api-tester-debug-info-log .panel-body').html(this.formatJSON(trace));
+		},
+
+		clearResponseDebugInfo: function () {
+			this.$('#api-tester-debug-info-timers .panel-body').html('');
+			this.$('#api-tester-debug-info-memory .panel-body').html('');
+			this.$('#api-tester-debug-info-info-db .panel-body').html('');
+			this.$('#api-tester-debug-info-headers .panel-body').html('');
+			this.$('#api-tester-debug-info-info-log .panel-body').html('');
+		},
+
 		$: function (find) {
 			return find == null ? this.$el : this.$el.find(find);
 		},
@@ -194,6 +248,7 @@ define(function (require, exports, module) {
 		insertToRawPanel: function (name, raw, transformed) {
 			raw = (raw == null ? '' : raw) + '';
 			var $panel = this.$('#api-tester-'+name);
+			console.log(name, $panel.length);
 			$panel.find('.panel-body.-transformed').html(transformed);
 			$panel.find('.panel-body.-raw').html(raw).attr('title', '  length: ' + raw.length + 'symbols  ');
 		},
@@ -239,13 +294,16 @@ define(function (require, exports, module) {
 			if (!_.isEmpty(params.options)) {
 				this.$('#option-debug').val(params.options.debug);
 				this.$('#option-convert').val(params.options.convert);
+				this.$('#option-debug-info').val(params.options.debugInfo);
 			}
 		},
 
 		getOptions: function () {
 			var debug = this.$('#option-debug').val();
 			var convert = this.$('#option-convert').val();
+			var debugInfo = this.$('#option-debug-info').val();
 			return {
+				debugInfo: /^\d+$/.test(debugInfo) ? Number(debugInfo) : debugInfo,
 				debug: /^\d+$/.test(debug) ? Number(debug) : debug,
 				convert: /^\d+$/.test(convert) ? Number(convert) : convert
 			};
@@ -478,7 +536,12 @@ define(function (require, exports, module) {
 		},
 
 		formatJSON: function (obj, options) {
-			return jsonFormat(obj);
+			return jsonFormat(obj, _.extend({
+				unindent: true,
+				stringQuotes: false,
+				lastComma: false,
+				unwrapFirstBrace: true
+			}, options));
 		},
 
 		sendOnEnter: function (e, $thisTarget) {
@@ -487,7 +550,8 @@ define(function (require, exports, module) {
 			}
 		},
 
-		showHeaders: function (contentSrc, content) {
+		showHeaders: function (xhr, content) {
+			var contentSrc = xhr.getAllResponseHeaders();
 			var headers = {};
 			contentSrc.replace(/^(.*?):[ \t]*([^\r\n]*)$/mg, function (w, name, value) {
 				headers[name] = value;
@@ -528,10 +592,11 @@ define(function (require, exports, module) {
 		},
 
 		onRequestSuccess: function (requestObj, response, jqXHR) {
-			this.showHeaders(jqXHR.getAllResponseHeaders());
 			this.showErrors();
-			this.showResponse(jqXHR.responseText, response);
+			this.showResponseDebugInfo(response);
 			this.showInfo(requestObj, response, jqXHR);
+			this.showResponse(jqXHR.responseText, response);
+			this.showHeaders(jqXHR);
 		},
 
 		onRequestError: function (requestObj, response, jqXHR) {
@@ -539,15 +604,17 @@ define(function (require, exports, module) {
 
 			try {
 				response = JSON.parse(response, true);
+				this.showResponseDebugInfo(response);
 			} catch (e) {
 				response = responseSrc;
 			}
 
-			this.showHeaders(jqXHR.getAllResponseHeaders());
 			this.showInfo(requestObj, response, jqXHR);
 			this.showResponse(jqXHR.responseText, response);
+			this.showHeaders(jqXHR);
 
-			this.showErrors('<div class="alert alert-danger"><h4>Error <b>' + jqXHR.status + '</b> (<i>' + status + '</i>)</h4><p>' + jqXHR.statusText + '</p></div>');
+			this.showErrors('<div class="alert alert-danger">Error <b>' + jqXHR.status + '</b> <em>( ' + jqXHR.statusText + ' )</em></div>');
+
 		},
 
 		saveRequestParamsToUrl: function () {
@@ -634,6 +701,7 @@ define(function (require, exports, module) {
 
 			this.showRequestData(params.data, data);
 
+			this.clearResponseDebugInfo();
 			$.ajax(_.extend(params, {
 				success: function (response, _$, jqXHR) {
 					that.onRequestSuccess(requestObj, response, jqXHR);
