@@ -12,6 +12,9 @@
 		padding: @pad;
 		font-size: 13px;
 	}
+	.panel-run .panel-body {
+		padding: 0;
+	}
 	pre.panel-body {
 		padding: 5px;
 		border: none;
@@ -92,7 +95,7 @@
 		}
 		& {
 			display: block;
-			margin: 0 0 @pad*4;
+			margin: @pad * 4 0;
 			padding: 0;
 			font-size: 20px;
 			line-height: 1.2;
@@ -113,13 +116,6 @@
 	}
 	#api-tester-spec-description:empty {
 		display: none;
-	}
-	#api-tester-spec-name {
-		display: block;
-		line-height: 1.2;
-		font-size: 24px;
-		margin: 0 0 @pad * 4;
-		padding: 0;
 	}
 	#api-tester-spec-name:empty {
 		display: none;
@@ -156,13 +152,18 @@
 		}
 	}
 
+	form .form-control-wr {
+		max-width: 300px;
+		margin: 0 auto;
+	}
+
 	#api-tester-form {
 		margin-top: 0;
 		overflow: hidden;
 	}
 
 	.panel-body-content {
-		padding: 0 0 @pad * 4;
+		padding: @pad @pad @pad * 4;
 	}
 	.panel-body-content:empty {
 		display: none;

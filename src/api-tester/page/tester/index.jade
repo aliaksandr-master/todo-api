@@ -21,7 +21,14 @@ block container
 			.col-md-7#api-tester-info
 
 				.api-tester-spec-wr
-					h1#api-tester-spec-name
+					.input-group
+						select.form-control.input-sm#api-tester-spec-name
+							option(disabled,selected)= ''
+							each spec in specsSrc
+								option(value= spec.name)= spec.name
+						.input-group-btn
+							a#api-tester-spec-reset.btn.btn-default.btn-sm(href='#') Clear
+
 					h2#api-tester-spec-ctrl
 					h2#api-tester-spec-action
 					div#api-tester-spec-description
@@ -74,7 +81,12 @@ block container
 					+run-panel('form-query', 'Request data (Query)')
 
 				+collapsed-panel('options', 'Options')#api-tester-options
-					+flag('option-debug-mode', '', true, 'Debug Attribute Enabled', 'Debug Attribute Disabled')
+					.form-group
+						label Debug Attribute
+						+flag('option-debug', '', true, 'Enabled', 'Disabled')
+					.form-group
+						label Type Convert
+						+flag('option-convert', '', true, 'Enabled', 'Disabled')
 
 
 block scripts

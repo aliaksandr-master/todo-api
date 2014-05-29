@@ -57,6 +57,7 @@ define(function (require, exports, module) {
 			boolean: {
 				template: 'flag',
 				convert: function (val) {
+					val = /^\d+$/.test(val) ? Number(val) : val;
 					return Boolean(val);
 				}
 			},
@@ -121,9 +122,8 @@ define(function (require, exports, module) {
 		},
 
 		initSpecHeader: function () {
-			if (this.spec.current.title !== this.spec.current.name) {
-				this.$('#api-tester-spec-name').html(this.spec.current.title);
-			}
+			this.$('#api-tester-spec-name').val(this.spec.current.name);
+			this.$('#api-tester-spec-reset').attr('href', this.getSpecUrl(this.spec.current.name));
 			this.$('#api-tester-spec-ctrl').html(this.spec.current.controller);
 			this.$('#api-tester-spec-action').html(this.spec.current.action);
 			this.$('#api-tester-spec-description').html(this.spec.current.description || '');
@@ -149,6 +149,7 @@ define(function (require, exports, module) {
 			this.buildForm();
 			this.initForm();
 			this.initSpecHeader();
+			this.initOptions();
 
 			this.delegateEvents();
 		},
@@ -160,9 +161,8 @@ define(function (require, exports, module) {
 		delegateEvents: function () {
 			var that = this;
 			_.each(this.events, function (handler, event) {
-				var name = event.replace(/^([^ ]+)[ ]+(.+)$/, '$1');
 				var find = event.replace(/^([^ ]+)[ ]+(.+)$/, '$2');
-				name = name + '.' ;
+				var name = event.replace(/^([^ ]+)[ ]+(.+)$/, '$1') + '.' + find.replace(/[^a-zA-Z0-9_]/g,'_');
 
 				_.each(allFormsUID, function (uid) {
 					that.$().off(name + uid);
@@ -211,8 +211,17 @@ define(function (require, exports, module) {
 		},
 
 		initForm: function () {
-
+			this.refreshFormats();
 			this.refreshRouterUrl();
+		},
+
+		refreshFormats: function () {
+			var params = this.loadRequestParamsFromUrl();
+
+			if (!_.isEmpty(params.format)) {
+				this.$('#form-request-format').val(params.format.request);
+				this.$('#form-response-format').val(params.format.response);
+			}
 		},
 
 		buildFormPart: function (formGen, $element, spec, values) {
@@ -223,6 +232,23 @@ define(function (require, exports, module) {
 					type: v.type
 				};
 			}), values);
+		},
+
+		initOptions: function () {
+			var params = this.loadRequestParamsFromUrl();
+			if (!_.isEmpty(params.options)) {
+				this.$('#option-debug').val(params.options.debug);
+				this.$('#option-convert').val(params.options.convert);
+			}
+		},
+
+		getOptions: function () {
+			var debug = this.$('#option-debug').val();
+			var convert = this.$('#option-convert').val();
+			return {
+				debug: /^\d+$/.test(debug) ? Number(debug) : debug,
+				convert: /^\d+$/.test(convert) ? Number(convert) : convert
+			};
 		},
 
 		buildForm: function () {
@@ -255,16 +281,13 @@ define(function (require, exports, module) {
 			}, this);
 
 			var counter = 0;
-
 			var $formRouteSelect = $('#form-route');
 			$formRouteSelect.html('');
-			_.each(this.routes.current, function (v, k) {
-				var $option = $('<option/>')
-					.text(v.method + ' ' + v.reverse)
-					.attr('value', counter++);
-				$formRouteSelect.append($option);
+			_.each(this.routes.current, function (v) {
+				$formRouteSelect.append($('<option/>').text(v.method + ' ' + v.reverse).attr('value', counter++));
 			});
-			$formRouteSelect.val(0);
+			$formRouteSelect.append($('<option/>').text('custom').attr('value', -1));
+			$formRouteSelect.val(params.route || (counter ? 0 : -1));
 
 //			var curr = nameMap[currName];
 //
@@ -378,15 +401,28 @@ define(function (require, exports, module) {
 
 		events: {
 			//			'click #menu-bar li > a': 'onMenuItemClick',
-			'keyup #api-tester-form-body input': 'sendOnEnter',
-			'keyup #api-tester-form-params input': 'sendOnEnter',
-			'keyup #api-tester-form-query input': 'sendOnEnter',
-			'submit #api-tester-form': 'submitForm',
-			'click #api-tester-form-submit': 'submitForm',
-			'change #form-route': 'refreshRouterUrl',
+			'keyup     #api-tester-form-body input':     'sendOnEnter',
+			'keyup     #api-tester-form-params input':   'sendOnEnter',
+			'keyup     #api-tester-form-query input':    'sendOnEnter',
+			'submit    #api-tester-form':                'submitForm',
+			'click     #api-tester-form-submit':         'submitForm',
+			'change    #form-route':                     'refreshRouterUrl',
+			'change    #api-tester-spec-name':           'changeSpecName',
 
-			'keypress #api-tester-form-params [name]': 'refreshRouterUrl',
-			'change #api-tester-form-params [name]': 'refreshRouterUrl'
+			'keyup     #api-tester-form-params [name]':  'refreshRouterUrl',
+			'change    #api-tester-form-params [name]':  'refreshRouterUrl'
+		},
+
+		getSpecUrl: function (specName) {
+			specName = specName || this.spec.current.name;
+			var curUrl = URI(this.location.path());
+			curUrl.addQuery('spec', specName);
+			return curUrl.toString();
+		},
+
+		changeSpecName: function () {
+			var specName = this.$('#api-tester-spec-name').val();
+			window.location.href = this.getSpecUrl(specName);
 		},
 
 		getDataFromRegion: function (regionName, bySpec) {
@@ -404,16 +440,28 @@ define(function (require, exports, module) {
 		},
 
 		refreshRouterUrl: function () {
-			var that = this;
+			var params = this.loadRequestParamsFromUrl();
+
 			var routeId = this.$('#form-route').val();
-			var route = this.routes.current[routeId];
-			var data = this.getDataFromRegion('params', false);
-			var url = this.reverseUrlByRoute(route, data);
+			var route = this.routes.current[routeId] || {};
 
-			url = window.API_ROOT.replace(/\/$/, '') + '/' + url.replace(/^\//, '');
+			var root = window.API_ROOT.replace(/\/$/, '') + '/';
 
-			this.$('#form-route-method').val(route.method);
+			var url = this.$('#form-route-url').val() || root;
+			var method = this.$('#form-route-method').val() || 'GET';
+
+			if (!_.isEmpty(route)) {
+				var data = this.getDataFromRegion('params', false);
+				url = this.reverseUrlByRoute(route, data);
+				url = root + url.replace(/^\//, '');
+				method = route.method;
+			} else {
+				url    = params.url || url;
+				method = params.method || method;
+			}
 			this.$('#form-route-url').val(url);
+
+			this.$('#form-route-method').val(method);
 		},
 
 		reverseUrlByRoute: function (route, data) {
@@ -440,12 +488,10 @@ define(function (require, exports, module) {
 		},
 
 		showHeaders: function (contentSrc, content) {
-
 			var headers = {};
 			contentSrc.replace(/^(.*?):[ \t]*([^\r\n]*)$/mg, function (w, name, value) {
 				headers[name] = value;
 			});
-
 			this.insertToRawPanel('response-headers', contentSrc, this.formatJSON(headers));
 		},
 
@@ -471,7 +517,11 @@ define(function (require, exports, module) {
 
 		showInfo: function (requestObj, response, jqXHR) {
 			this.$('#api-tester-interaction-info .panel-body').html( this.formatJSON({
-				time: (Date.now() -requestObj.time)/1000,
+				jq_time: (Date.now() -requestObj.time)/1000,
+				url: requestObj.params.url,
+				method: requestObj.params.type,
+				contentType: requestObj.params.contentType,
+				dataType: requestObj.params.dataType,
 				encoding: jqXHR.getResponseHeader('Content-Encoding'),
 				compress_saved: (100 - Math.round((+jqXHR.getResponseHeader('Content-Length') / jqXHR.responseText.length)*100)) + '%'
 			}));
@@ -505,7 +555,6 @@ define(function (require, exports, module) {
 				method: this.$('#form-route-method').val(),
 				uri: this.$('#form-route-url').val(),
 				route: this.$('#form-route').val(),
-				additionalQuery: this.$('#form-request-query').val(),
 				values: {
 					query: this.getDataFromRegion('query'),
 					body: this.getDataFromRegion('body'),
@@ -520,7 +569,8 @@ define(function (require, exports, module) {
 				format: {
 					request: $('#form-request-format').val(),
 					response: $('#form-response-format').val()
-				}
+				},
+				options: this.getOptions()
 			};
 			this.router.replaceParam('params', JSON.stringify(params));
 		},
@@ -544,27 +594,47 @@ define(function (require, exports, module) {
 			};
 
 			var params = {};
+			var options = this.getOptions();
 
 			params.type = this.$('#form-route-method').val();
 
 			params.url = this.$('#form-route-url').val();
-			params.url = utils.addParamsToUrl(params.url, this.getDataFromRegion('query'));
-			params.url = params.url + '?' + this.$('#form-request-query').val();
+			params.url = utils.addParamsToUrl(params.url, this.getDataFromRegion('query', options.convert));
+
+			if (options.debug) {
+				params.url = utils.addParamsToUrl(params.url, {
+					_debug: 'debug'
+				});
+			}
 
 			params.dataType = $('#form-response-format').val();
 
-			var data = this.getDataFromRegion('body');
+			var data = this.getDataFromRegion('body', options.convert);
+
+			var requestFormat = $('#form-request-format').val();
 
 			if (params.type !== "GET") {
-				params.contentType = $('#form-request-format').val();
+				params.contentType = requestFormat;
+			}
+
+			if (_.isEmpty(data)) {
+				if (params.type !== "GET") {
+					params.data = '{}';
+				}
+			} else {
+				if (params.type === 'GET') {
+					params.contentType = requestFormat;
+				}
 				params.data = JSON.stringify(data);
 			}
+
+			requestObj.params = params;
 
 			this.saveRequestParamsToUrl();
 
 			this.showRequestData(params.data, data);
 
-			$.ajax($.extend({}, params, {
+			$.ajax(_.extend(params, {
 				success: function (response, _$, jqXHR) {
 					that.onRequestSuccess(requestObj, response, jqXHR);
 				},

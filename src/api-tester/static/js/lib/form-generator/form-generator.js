@@ -57,6 +57,14 @@
 					var $el = $container.find(element);
 					if ($el.is(':checkbox') && !$el.is(':checked')) {
 						return;
+					} else if ($el.is(':radio')) {
+						if (values[element.name] != null) {
+							return;
+						}
+						$el = $container.find('[name="' + $el.attr('name') + '"]:checked:radio');
+						if (!$el.length) {
+							return;
+						}
 					}
 					values[element.name] = $el.val();
 				});
