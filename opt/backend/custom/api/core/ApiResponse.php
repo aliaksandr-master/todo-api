@@ -172,8 +172,10 @@ class ApiResponse extends ApiAbstractComponent {
 				$debug = array_replace_recursive($debug, $this->api->context->statistic());
 			}
 
-			$debug['memory']['usage'] = ApiUtils::formatBytes(memory_get_usage(true));
-			$debug['memory']['peak'] = ApiUtils::formatBytes(memory_get_peak_usage(true));
+			$debug['memory']['emalloc']['usage'] = ApiUtils::formatBytes(memory_get_usage(false));
+			$debug['memory']['emalloc']['peak'] = ApiUtils::formatBytes(memory_get_peak_usage(false));
+			$debug['memory']['real']['usage'] = ApiUtils::formatBytes(memory_get_usage(true));
+			$debug['memory']['real']['peak'] = ApiUtils::formatBytes(memory_get_peak_usage(true));
 		}
 
 		$status = $this->status();
