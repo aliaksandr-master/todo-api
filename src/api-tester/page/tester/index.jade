@@ -71,16 +71,16 @@ block container
 								input#form-route-url.input-sm.form-control(type="text", placeholder='request url')
 
 				#api-tester-form-submit-wr.clearfix
-					button#api-tester-form-submit.btn.btn-success.pull-left(type="submit") Submit
-					button.btn.btn-default.putData.pull-right Invalid
-					button.btn.btn-default.putData.pull-right.-valid Valid
+					button#api-tester-form-submit.btn-block.btn.btn-danger.btn-lg(type="submit") Submit
+					//button.btn.btn-default.putData.pull-right Invalid
+					//button.btn.btn-default.putData.pull-right.-valid Valid
 
 				form#api-tester-form
 					+run-panel('form-params',  'Request data (Url Params)')
 					+run-panel('form-body',  'Request data (Body)')
 					+run-panel('form-query', 'Request data (Query)')
 
-				+collapsed-panel('options', 'Options')#api-tester-options
+				+collapsed-panel('api-tester-options', 'Options')#api-tester-options
 					.form-group
 						label Debug Attribute
 						+flag('option-debug', '', true, 'Enabled', 'Disabled')

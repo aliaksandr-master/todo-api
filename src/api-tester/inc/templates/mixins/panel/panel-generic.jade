@@ -11,7 +11,7 @@ mixin pre-panel(name, text)
 			block
 
 mixin collapsed-panel(name, text, collapsed)
-	.panel.panel-default
+	.panel.panel-default(id=name + '-wr')
 		.panel-heading
 			span.pull-right
 				= ' '
