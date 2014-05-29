@@ -1,0 +1,13 @@
+- var cnt = 0;
+
+mixin checkbox(name, value, text, checked)
+	- cnt++
+	- var id = name + '-chk-' + cnt;
+	input.chk(type="checkbox", value=value, name=name, id=id, checked= checked ? true : false)
+	label.chk-label(for=id)= text
+
+mixin radio(name, value, text, checked)
+	- cnt++
+	- var id = name + '-chk-' + cnt;
+	input.chk(type="radio", value=value, name=name, id=id, checked= checked ? true : false)
+	label.chk-label(for=id)= text

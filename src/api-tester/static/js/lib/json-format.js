@@ -3,38 +3,97 @@ define(function(require, exports, module){
 
 	var _ = require('lodash');
 
+	var map, types, compile;
+
+	map = function (type, obj, options) {
+		return _.map(obj, function (v, k) {
+			var isIt = (types.object.check(v) || types.array.check(v)) && !_.isEmpty(v);
+
+			var key = '<span ' + (isIt ? ' data-json-it-length="' + _.values(v).length + '" ' : '') +' class="json-f-key ' + (isIt ? 'json-f-v-it' : '') +' json-f-'+ type +'-key">' + k + '</span>';
+			return '<span class="json-f-block">' + key + compile(v, options) + '</span>';
+		}).join('');
+	};
+
+	types = {
+		'string': {
+			check: function (obj) {
+				return _.isString(obj);
+			},
+			view: function (value, options) {
+				return '<span title="String" class="json-f-value json-f-smpl json-f-string">' + value + '</span>';
+			}
+		},
+		'undefined': {
+			check: function (obj) {
+				return _.isUndefined(obj);
+			},
+			view: function (value, options) {
+				return '<span title="Undefined" class="json-f-value json-f-smpl json-f-undefined">undefined</span>';
+			}
+		},
+		'null': {
+			check: function (obj) {
+				return _.isNull(obj);
+			},
+			view: function (value, options) {
+				return '<span title="Null" class="json-f-value json-f-smpl json-f-null">null</span>';
+			}
+		},
+		'number': {
+			check: function (obj) {
+				return _.isNumber(obj);
+			},
+			view: function (value, options) {
+				return '<span title="Number" class="json-f-value json-f-smpl json-f-number">' + value + '</span>';
+			}
+		},
+		'object': {
+			check: function (obj) {
+				return _.isObject(obj) && !_.isArray(obj) && !_.isNull(obj);
+			},
+			view: function (value, options) {
+				return '<span title="Object (' + _.keys(value).length + ')" class="json-f-value json-f-it json-f-object">' + map('object', value, options) + '</span>';
+			}
+		},
+		'NaN': {
+			check: function (obj) {
+				return _.isNaN(obj);
+			},
+			view: function (value, options) {
+				return '<span title="NaN" class="json-f-value json-f-smpl json-f-nan">NaN</span>';
+			}
+		},
+		'array': {
+			check: function (obj) {
+				return _.isArray(obj);
+			},
+			view: function (value, options) {
+				return '<span title="Array (' + value.length + ')" class="json-f-value json-f-it json-f-array">' + map('array', value, options) + '</span>';
+			}
+		},
+		'boolean': {
+			check: function (obj) {
+				return _.isBoolean(obj);
+			},
+			view: function (value, options) {
+				return '<span title="Boolean" class="json-f-value json-f-smpl json-f-boolean">' + value + '</span>';
+			}
+		}
+	};
+
+	compile = function (obj, options) {
+		var result;
+		_.any(types, function (objT, type) {
+			if (objT.check(obj)) {
+				result = objT.view(obj, options);
+				return true;
+			}
+		});
+		return result;
+	};
+
 	return function(obj, options){
-		options = _.extend({
-			stringQuotes: false,
-			lastComma: true,
-			indent: 2,
-			unindent: 0,
-			unwrapFirstBrace: false
-		}, options);
 
-		var json = JSON.stringify(obj, null, options.indent);
-
-		if (options.unindent) {
-			json = json.replace(new RegExp('^ {' + (options.unindent * options.indent) + '}', 'mg'), '');
-		}
-		if (options.unwrapFirstBrace) {
-			json = json.replace(/^\s*\[|\{[^\n]*\n([\S\s]*?)\s*[\}\]]\s*$/, '$1');
-		}
-		if (!options.lastComma) {
-			json = json.replace(/\s*,\s*$/mg, '');
-		}
-
-		json = json.replace(/^(\s*".*?"\s*\:\s*)?['"](.*)['"]\s*(,?)\s*$/gm, '$1<span class=\'json-string\'>' + (options.stringQuotes ? '"$2"' : '$2') + '</span>$3');
-		json = json.replace(/^(\s*)"(.*?)"\s*(,?)\s*$/gm, '$1<span class=\'json-string\'>' + (options.stringQuotes ? '"$2"' : '$2') + '</span>$3');
-		json = json.replace(/^(\s*)(\d+)\s*([^\w\d]*)$/gm, '$1<span class=\'json-number\'>$2</span>$3');
-		json = json.replace(/^(\s*)(true|false)\s*([^\w\d]*)$/gm, '$1<span class=\'json-bool\'>$2</span>$3');
-		json = json.replace(/^(\s*)(null)\s*([^\w\d]*)$/gm, '$1<span class=\'json-null\'>$2</span>$3');
-		json = json.replace(/^(\s*)"(.+?)"\s*\:\s*(.*)$/gm, '$1<span class=\'json-index\'>$2</span><span class=\'json-coma\'>:</span> $3');
-		json = json.replace(/([\{\}\[\]])/g, '<span class=\'json-braked\'>$1</span>');
-		json = json.replace(/([^\w\d])(true|false)([^\w\d]*)$/gm, '$1<span class=\'json-bool\'>$2</span>$3');
-		json = json.replace(/([^\w\d])(null)([^\w\d]*)$/gm, '$1<span class=\'json-null\'>$2</span>$3');
-		json = json.replace(/([^\w\d])((?:[+-])?(?:\d+\.)?\d+)([^\w\d]*)$/gm, '$1<span class=\'json-number\'>$2</span>$3');
-
-		return json;
+		return '<span class="json-f-index">' + compile(obj, options, true) +'</span>';
 	};
 });

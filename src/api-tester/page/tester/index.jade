@@ -18,7 +18,7 @@ block container
 	div(style="margin: 15px 15px 0;")
 		.row#api-tester
 
-			.col-md-7#api-tester-info
+			.col-md-10#api-tester-info
 
 				.api-tester-spec-wr
 					.input-group
@@ -41,38 +41,38 @@ block container
 
 			.col-md-13#api-tester-response
 				#errors
+				#ok
 
 				+raw-collapsed-panel('response-data', 'Response Data', true)
 				+pre-collapsed-panel('debug-info-log', 'Stack Trace')
-				+pre-collapsed-panel('debug-info-headers', 'Request Headers', true)
 				+raw-collapsed-panel('response-headers', 'Response Headers', true)
+				+pre-collapsed-panel('debug-info-headers', 'Request Headers', true)
 
-			.col-md-10#api-tester-request
+			.col-md-7#api-tester-request
 
 				#form-head.clearfix
 					.row
 						.col-sm-30
 							.form-control-wr
-								label Route
+								label.form-label Route
 								select#form-route.input-sm.form-control
 					.row
 						.col-sm-10
 							.form-control-wr
-								label Method
+								label.form-label Method
 								input#form-route-method.input-sm.form-control(type="text",placeholder='http method')
 						.col-sm-10
 							.form-control-wr
-								label Request
+								label.form-label Request
 								input#form-request-format.input-sm.form-control(type="text", placeholder='request data format', value="json")
 						.col-sm-10
 							.form-control-wr
-								label Resposne
+								label.form-label Resposne
 								input#form-response-format.input-sm.form-control(type="text", placeholder='response data format', value="json")
-
 					.row
 						.col-sm-30
 							.form-control-wr
-								label Request Uri
+								label.form-label Request Uri
 								input#form-route-url.input-sm.form-control(type="text", placeholder='request url')
 
 				#api-tester-form-submit-wr.clearfix
@@ -87,14 +87,11 @@ block container
 
 				+collapsed-panel('api-tester-options', 'Options', true)
 					.form-group
-						label Debug Attribute
-						+flag('option-debug', '', true, 'Enabled', 'Disabled')
+						+checkbox('option-debug', 1, 'Debug Attribute', true)
 					.form-group
-						label Type Convert
-						+flag('option-convert', '', true, 'Enabled', 'Disabled')
+						+checkbox('option-convert', 1, 'Type Convert', true)
 					.form-group
-						label Debug Info
-						+flag('option-debug-info', '', true, 'Enabled', 'Disabled')
+						+checkbox('option-debug-info', 1, 'Debug Info', true)
 
 
 block scripts

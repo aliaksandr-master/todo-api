@@ -1,8 +1,11 @@
 @import "../../../inc/styles/mixins/mixins";
 
 #api-tester {
+	& {
+		padding-top: 40px;
+	}
 	.panel {
-		box-shadow: 0 1px 2px rgba(0,0,0,1);
+//		box-shadow: 0 1px 2px rgba(0,0,0,1);
 	}
 	.panel-heading {
 		padding: @pad;
@@ -49,7 +52,6 @@
 				line-height: 14px;
 			}
 			.panel-raw-toggle {
-				padding: 0;
 				margin: 0;
 				text-transform: uppercase;
 				font-size: 12px;
@@ -59,6 +61,8 @@
 				opacity: 0.8;
 				cursor: pointer;
 				display: none;
+				float: right;
+				padding-bottom: 0 !important;
 			}
 			&:hover .panel-raw-toggle {
 				display: block;
@@ -66,11 +70,6 @@
 			.panel-raw-toggle:hover {
 				color: #000;
 				opacity: 1;
-			}
-			.panel-raw-toggle b {
-				display: inline-block;
-				padding-right: 5px;
-				font-weight: normal;
 			}
 			input[type="checkbox"] {
 				padding: 0;
@@ -131,43 +130,61 @@
 	}
 
 	#api-tester-options-wr {
-		margin-top: @pad * 6;
+		& {
+			margin-top: @pad * 6;
+		}
+		.form-group {
+			margin: 0;
+		}
+		.form-group + .form-group{
+			margin-top: @pad;
+		}
+	}
+
+	.panel-run .panel-body {
+		background: rgb(255, 253, 215);
+	}
+
+	#form-head .row + .row {
+		padding-top: @pad;
 	}
 
 	#api-tester-form,
 	#form-head {
 		& {
-			margin: -18px 0 0;
+			margin: -13px 0 0;
 		}
-		label {
+		label.form-label {
 			display: block;
 			text-transform: uppercase;
 			font-size: 10px;
-			line-height: 10px;
+			line-height: 1.2;
 			padding: 0;
 			margin: 0;
-			color: #777;
+			color: #555;
+			font-weight: normal;
+			position: relative;
 		}
-		label:after {
+		label.form-label:after {
 			content: ':';
 		}
-		.form-control-wr {
+		label.form-label .label{
+			position: absolute;
+			top: 0;
+			right: 0;
+		}
+		.form-control-wr + .form-control-wr {
 			padding-top: @pad * 2;
 		}
 	}
 
-	form .form-control-wr {
-		max-width: 300px;
-		margin: 0 auto;
-	}
-
 	#api-tester-form {
 		margin-top: 0;
-		overflow: hidden;
+		.clearfix();
 	}
 
 	.panel-body-content {
-		padding: @pad @pad @pad * 4;
+		padding: @pad;
 	}
 	.panel-body-content:empty {
 		display: none;

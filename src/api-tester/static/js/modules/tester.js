@@ -189,15 +189,10 @@ define(function (require, exports, module) {
 		},
 
 		debug_drawStackTrace: function (responseDebug) {
-			console.log(responseDebug.stackTrace);
 			if (!responseDebug.stackTrace || !responseDebug.stackTrace.length) {
 				return;
 			}
-			var trace = {};
-			_.each(responseDebug.stackTrace, function (v, k) {
-				trace[k] = v;
-			});
-			this.$('#api-tester-debug-info-log .panel-body').html(this.formatJSON(trace));
+			this.$('#api-tester-debug-info-log .panel-body').html(this.formatJSON(responseDebug.stackTrace));
 		},
 
 		clearResponseDebugInfo: function () {
@@ -229,13 +224,12 @@ define(function (require, exports, module) {
 		},
 
 		initRawPanels: function () {
-			var $rawsCheck = this.$('.panel-raw :checkbox');
-			$rawsCheck.on('change', function () {
+			this.$().on('change', '.panel-raw-toggle :checkbox', function () {
 				var checked = $(this).is(':checked');
 				var $raw = $(this).closest('.panel-raw');
 				var $trBody = $raw.find('.panel-body.-transformed');
 				var $rawBody = $raw.find('.panel-body.-raw');
-				if (checked) {
+				if (!checked) {
 					$trBody.hide();
 					$rawBody.show();
 				} else {
@@ -248,7 +242,6 @@ define(function (require, exports, module) {
 		insertToRawPanel: function (name, raw, transformed) {
 			raw = (raw == null ? '' : raw) + '';
 			var $panel = this.$('#api-tester-'+name);
-			console.log(name, $panel.length);
 			$panel.find('.panel-body.-transformed').html(transformed);
 			$panel.find('.panel-body.-raw').html(raw).attr('title', '  length: ' + raw.length + 'symbols  ');
 		},
@@ -292,20 +285,20 @@ define(function (require, exports, module) {
 		initOptions: function () {
 			var params = this.loadRequestParamsFromUrl();
 			if (!_.isEmpty(params.options)) {
-				this.$('#option-debug').val(params.options.debug);
-				this.$('#option-convert').val(params.options.convert);
-				this.$('#option-debug-info').val(params.options.debugInfo);
+				this.$('#api-tester-options-wr [name="option-debug"]').attr('checked', params.options.debug);
+				this.$('#api-tester-options-wr [name="option-convert"]').attr('checked', params.options.convert);
+				this.$('#api-tester-options-wr [name="option-debug-info"]').attr('checked', params.options.debugInfo);
 			}
 		},
 
 		getOptions: function () {
-			var debug = this.$('#option-debug').val();
-			var convert = this.$('#option-convert').val();
-			var debugInfo = this.$('#option-debug-info').val();
+			var debug = this.$('#api-tester-options-wr [name="option-debug"]:checked').length;
+			var convert = this.$('#api-tester-options-wr [name="option-convert"]:checked').length;
+			var debugInfo = this.$('#api-tester-options-wr [name="option-debug-info"]:checked').length;
 			return {
-				debugInfo: /^\d+$/.test(debugInfo) ? Number(debugInfo) : debugInfo,
-				debug: /^\d+$/.test(debug) ? Number(debug) : debug,
-				convert: /^\d+$/.test(convert) ? Number(convert) : convert
+				debugInfo: Boolean(debugInfo),
+				debug: Boolean(debug),
+				convert: Boolean(convert)
 			};
 		},
 
@@ -460,6 +453,8 @@ define(function (require, exports, module) {
 		events: {
 			//			'click #menu-bar li > a': 'onMenuItemClick',
 			'keyup     #api-tester-form-body input':     'sendOnEnter',
+			'click     .json-f-smpl': 'jsonFormatToggleValue',
+			'click     .json-f-key.json-f-v-it': 'jsonFormatToggleObject',
 			'keyup     #api-tester-form-params input':   'sendOnEnter',
 			'keyup     #api-tester-form-query input':    'sendOnEnter',
 			'submit    #api-tester-form':                'submitForm',
@@ -469,6 +464,14 @@ define(function (require, exports, module) {
 
 			'keyup     #api-tester-form-params [name]':  'refreshRouterUrl',
 			'change    #api-tester-form-params [name]':  'refreshRouterUrl'
+		},
+
+		jsonFormatToggleValue: function (_1, $el) {
+			$el.toggleClass('-json-f-norm');
+		},
+
+		jsonFormatToggleObject: function (_1, $el) {
+			$el.toggleClass('-json-f-closed');
 		},
 
 		getSpecUrl: function (specName) {

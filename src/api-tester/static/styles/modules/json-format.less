@@ -1,32 +1,127 @@
+@import "../../../inc/styles/mixins/mixins";
 
-.json-index {
+@jsonFCommaSize: @pad * 4;
+
+.json-f-index {
+	display: block;
+	font-family: @font-mono;
+	font-size: 12px;
+}
+.json-f-key {
+	display: block;
+	float: left;
+	padding-right: @pad;
+}
+.json-f-key.json-f-v-it {
+	cursor: pointer;
+	position: relative;
+}
+.json-f-key.json-f-v-it:hover {
+	text-decoration: underline;
+}
+.json-f-key.json-f-v-it.-json-f-closed:before {
+	content: '...(' attr(data-json-it-length) ')';
+	color: #999;
+	position: absolute;
+	left: 100%;
+	top: 0;
+}
+.json-f-key.json-f-v-it.-json-f-closed + .json-f-value.json-f-it {
+	display: none;
+}
+.json-f-object-key {
 	color: #86001a;
 	font-weight: normal;
 }
-.json-null,
-.json-bool {
-	color: #6f9aff;
+.json-f-array-key {
+	color: #4062ae;
 	font-weight: normal;
 }
-.json-number {
-	color: #ff724b;
-	font-weight: normal;
+.json-f-array-key:after {
+	content: ':';
 }
-.json-string {
+.json-f-object-key:after {
+	content: ':';
+}
+.json-f-array-key {
+
+}
+.json-f-block {
+	display: block;
+	overflow: hidden;
+	clear: left;
+	padding-left: @jsonFCommaSize;
+	border-left: 1px dashed #ccc;
+}
+.json-f-value {
+	display: block;
+}
+.json-f-string {
 	color: #299511;
 	font-weight: normal;
 }
-.json-string:empty:before {
-	content: '<empty string>';
+.json-f-string:empty:before {
+	content: '"empty string"';
 	color: #999;
 }
-.json-coma {
-	color: #5f5f5f;
-	font-style: normal;
-	font-weight: bold;
-}
-.json-braked {
-	color: #5f5f5f;
-	font-style: normal;
+.json-f-undefined {
+	color: #999;
 	font-weight: normal;
+}
+.json-f-it {
+
+}
+.json-f-smpl {
+	overflow: hidden;
+	display: block;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	opacity: 1;
+}
+.json-f-smpl:hover {
+	opacity: 0.8;
+	cursor: pointer;
+}
+.json-f-smpl.-json-f-norm {
+	white-space: normal;
+	text-overflow: clip;
+}
+.json-f-null {
+	color: #6f9aff;
+	font-weight: normal;
+}
+.json-f-number {
+	color: red;
+	font-weight: normal;
+}
+.json-f-object {
+
+}
+.json-f-nan {
+	color: #6f9aff;
+	font-weight: normal;
+}
+.json-f-array {
+
+}
+.json-f-array:empty:after {
+	content: '[empty array]';
+	color: #999;
+}
+.json-f-object:empty:after {
+	content: '{empty object}';
+	color: #999;
+}
+.json-f-boolean {
+	color: #6f9aff;
+	font-weight: normal;
+}
+.json-f-array-key + .json-f-object {
+	overflow: hidden;
+}
+.json-f-array-key + .json-f-object > .json-f-block,
+.json-f-index > .json-f-array > .json-f-block,
+.json-f-index > .json-f-object > .json-f-block {
+	border-left: none;
+	padding-left: 0;
 }

@@ -1,1 +1,4 @@
-<textarea name="{{name}}" cols="30" rows="10">{{value}}</textarea>
+<div class="form-control-wr">
+    {{#if label}}<label class="form-label">{{label}} <b class="label label-default">{{type}}</b></label>{{/if}}
+    <textarea name="{{name}}" class="form-control input-sm" autocomplete="on" placeholder="{{label}}" cols="30" rows="10">{{value}}</textarea>
+</div>

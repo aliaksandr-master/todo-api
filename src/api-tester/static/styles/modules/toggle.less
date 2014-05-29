@@ -1,0 +1,97 @@
+@import "../../../inc/styles/mixins/mixins";
+
+.ToggleElement(){
+	@sqSize: 1.2em;
+	@lHeight: 1.2em;
+	@offset: 0.5em;
+	@borderWidth: 1px;
+	@border: @borderWidth solid #aaa;
+	@checkColor: #555;
+	@field-hover-shadow: #9dceff;
+
+	input[type="radio"].chk,
+	input[type="checkbox"].chk {
+		display: block;
+		opacity: 0;
+		position: absolute;
+		width: 0;
+		overflow: hidden;
+		height: 0;
+	}
+	input.chk + label,
+	input.chk + .chk-label {
+		padding-left: @offset + @sqSize;
+		position: relative;
+		display: inline-block;
+		cursor: pointer;
+		line-height: @lHeight;
+		font-size: 1em;
+		vertical-align: baseline;
+		font-weight: normal;
+	}
+	input[type="radio"].chk:checked + label,
+	input[type="radio"].chk:checked + .chk-label {
+		cursor: default;
+	}
+	input.chk + label:before,
+	input.chk + .chk-label:before {
+		content: "";
+		position: absolute;
+		display: block;
+		box-sizing: border-box;
+		width: @sqSize;
+		height: @sqSize;
+		top: @lHeight / 2;
+		margin-top: 0 - (@sqSize / 2) - 0.05em;
+		left: 0;
+		border: @border;
+		box-shadow: inset 0 1px 1px fade(black, 7.5%);
+		transition:
+			border-color ease-in-out 0.3s,
+			box-shadow ease-in-out 0.3s;
+	}
+	input.chk:focus + label:before,
+	input.chk:focus + .chk-label:before,
+	input.chk + label:focus:before,
+	input.chk + .chk-label:focus:before {
+		border-color: @field-hover-shadow;
+		box-shadow: inset 0 1px 1px fade(@field-hover-shadow, 7.5%), 0 0 8px fade(@field-hover-shadow, 60%);
+	}
+	input[type="radio"].chk + label:before,
+	input[type="radio"].chk + .chk-label:before {
+		border-radius: 100%;
+	}
+	input[type="radio"].chk:checked + label:after,
+	input[type="radio"].chk:checked + .chk-label:after {
+		content: "";
+		display: block;
+		position: absolute;
+		box-sizing: border-box;
+		width: @sqSize / 2;
+		height: @sqSize / 2;
+		top: @lHeight / 2;
+		left: @sqSize / 4;
+		margin-top: 0 - (@sqSize / 4) - 0.05em;
+		background: @checkColor;
+		border-radius: 100%;
+	}
+	input[type="checkbox"].chk:checked + label:after,
+	input[type="checkbox"].chk:checked + .chk-label:after {
+		position: absolute;
+		top: @lHeight / 2;
+		font-family: Verdana, Arial, Helvetica, sans-serif;
+		margin-left: -1em;
+		margin-top: 0 - (@lHeight / 2) - 0.05em;
+		left: 0;
+		width: ceil(@sqSize * 2);
+		height: @sqSize;
+		line-height: @sqSize;
+		text-align: center;
+		font-size: @lHeight;
+		color: @checkColor;
+		font-weight: normal;
+		content: "✔";
+	}
+}
+
+.ToggleElement();

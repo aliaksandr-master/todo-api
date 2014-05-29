@@ -1,5 +1,6 @@
 <div class="clearfix form-control-wr">
-	{{#if label}}<label for="form-{{name}}">{{label}}</label>{{/if}}
-    <label class="pull-left btn btn-sm btn-default">TRUE<input name="{{name}}" type="radio" {{#if value}} checked="checked"{{/if}} value="1"/></label>
-    <label class="pull-left btn btn-sm btn-default">FALSE<input name="{{name}}" type="radio" {{#if value}}{{else}} checked="checked"{{/if}} value="0"/></label>
+    <input class="chk" id="form-element-flag-{{cid}}-1" name="{{name}}" type="radio" {{#if value}} checked="checked"{{/if}} value="1"/>
+    <label class="chk-label" for="form-element-flag-{{cid}}-1">{{label}} <b>TRUE</b></label>
+    <input class="chk" id="form-element-flag-{{cid}}-2" name="{{name}}" type="radio" {{#if value}}{{else}} checked="checked"{{/if}} value="0"/>
+    <label class="chk-label" for="form-element-flag-{{cid}}-2">{{label}} <b>FALSE</b></label>
 </div>
