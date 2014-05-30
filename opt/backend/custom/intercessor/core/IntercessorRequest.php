@@ -32,7 +32,7 @@ class IntercessorRequest extends IntercessorAbstractComponent {
 
 	private $_headersSource = null;
 
-	const VIRTUAL_PARAM_NAME = 'virtual';
+	const VIRTUAL_FAILURE_QUERY_PARAM = 'virtual_failure';
 
 	const LIMIT_PARAM_NAME = 'limit';
 
@@ -40,7 +40,7 @@ class IntercessorRequest extends IntercessorAbstractComponent {
 
 	private $_additionalQueryParams = array(
 		array(
-			'name' => self::VIRTUAL_PARAM_NAME,
+			'name' => self::VIRTUAL_FAILURE_QUERY_PARAM,
 			'type' => 'boolean'
 		),
 		array(
@@ -160,7 +160,7 @@ class IntercessorRequest extends IntercessorAbstractComponent {
 			$contentType = preg_replace('/;.+/', '', $contentType);
 
 			if ($contentType) {
-				foreach ($this->kernel->mimes as $_format => $_mimes) {
+				foreach ($this->kernel->loader->mimes as $_format => $_mimes) {
 					if ($format) {
 						break;
 					}
@@ -173,8 +173,8 @@ class IntercessorRequest extends IntercessorAbstractComponent {
 					}
 				}
 			}
-			reset($this->kernel->mimes);
-			$defaultFormat = key($this->kernel->mimes);
+			reset($this->kernel->loader->mimes);
+			$defaultFormat = key($this->kernel->loader->mimes);
 			$this->_format = $format ? $format : $defaultFormat;
 		}
 
@@ -257,7 +257,7 @@ class IntercessorRequest extends IntercessorAbstractComponent {
 			$this->validate($errors, $fieldName, $value, $param);
 		}
 		if ($errors) {
-			$this->inputDataErrors($errors);
+			$this->kernel->error->inputData($errors);
 		}
 	}
 

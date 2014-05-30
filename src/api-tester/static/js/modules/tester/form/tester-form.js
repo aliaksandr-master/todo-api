@@ -126,7 +126,7 @@ define(function(require){
 				url.addQuery('_debug', 'debug');
 			}
 			if (options.virtual) {
-				url.addQuery('virtual', '1');
+				url.addQuery('virtual_failure', '1');
 			}
 			params.url = url.toString();
 

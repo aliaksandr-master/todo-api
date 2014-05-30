@@ -22,8 +22,8 @@ class SessionUserController extends BaseResourceController {
 		}
 
 		if (empty($user[0])) {
-			$this->api->request->inputDataError('username', 'login_incorrect');
-			$this->api->request->inputDataError('password', 'login_incorrect');
+			$this->api->error->inputField('username', 'login_incorrect');
+			$this->api->error->inputField('password', 'login_incorrect');
 
 			return null;
 		} else {

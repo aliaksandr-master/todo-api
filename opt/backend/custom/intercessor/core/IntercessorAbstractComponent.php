@@ -4,6 +4,8 @@
 
 abstract class IntercessorAbstractComponent extends IntercessorAbstract {
 
+	/** @var Intercessor */
+	protected $kernel;
 
 	public function __construct (Intercessor &$kernel) {
 		$this->kernel = $kernel;

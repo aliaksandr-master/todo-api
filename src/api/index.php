@@ -136,18 +136,20 @@ $url = str_replace('/api', '', $_SERVER['REQUEST_URI']);
 $router = new Router(/*#:injectData("@VAR/api/router/routes.json")*/ array() /*injectData#*/);
 $routeResult = $router->match($_SERVER['REQUEST_METHOD'], $url, array('name' => null, 'params' => array()));
 
+
+
+
 /*
  * -------------------------------------------------------------------
  *  LAUNCH
  * -------------------------------------------------------------------
  */
+$loader = new IntercessorLoader();
+$loader->debug = $app->debugLevel >= 3;
+$loader->mimes = /*#:injectData("@VAR/api/spec-options.json", "mimes")*/ array() /*injectData#*/;
+$loader->statuses = /*#:injectData("@VAR/api/spec-options.json", "statuses")*/ array() /*injectData#*/;
 
-$api = new Intercessor(array(
-	'debug' => $app->debugLevel >= 3
-), array(
-	'mimes' => /*#:injectData("@VAR/api/spec-options.json", "mimes")*/ array() /*injectData#*/,
-	'statuses' => /*#:injectData("@VAR/api/spec-options.json", "statuses")*/ array() /*injectData#*/
-));
+$api = new Intercessor($loader);
 
 $get = $_GET;
 

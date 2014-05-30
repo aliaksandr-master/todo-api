@@ -4,17 +4,8 @@
 
 class Intercessor extends IntercessorAbstract {
 
-	public $debugMode = 0;
-
-
-	/** @var array */
-	protected $_errors = array();
-
 	/** @var IIntercessorResourceController */
 	public $context;
-
-	/** @var Intercessor */
-	protected $kernel;
 
 	/** @var IntercessorRequest */
 	public $request;
@@ -22,111 +13,49 @@ class Intercessor extends IntercessorAbstract {
 	/** @var IntercessorResponse */
 	public $response;
 
-	protected $_components = array();
+	/** @var IntercessorLoader */
+	public $loader;
 
-	protected $_componentsMap = array(
-		'request'  => 'IntercessorRequest',
-		'response' => 'IntercessorResponse'
-	);
+	/** @var IntercessorError */
+	public $error;
 
-	private $_spec = array();
 
-	protected $_params = array();
+	private $_spec;
 
-	protected $_stackTrace = array();
-
-	protected $_configs = array();
-
-	public $mimes = array();
-
-	public $statuses = array();
+	protected $_logs = array();
 
 	public $timers = array();
 
 
-	function __construct (array $params, array $options) {
-
-		set_error_handler(array($this, 'error_handler'));
-
-		// CREATE COMPONENTS
-		foreach ($this->_componentsMap as $componentName => $Component) {
-			$this->_components[$componentName] = $this->$componentName = new $Component($this);
-		}
-
-		// INIT PARAMS
-		$this->debugMode = IntercessorUtils::get($params, 'debug', false);
-
-		// INIT OPTIONS
-		$this->mimes = IntercessorUtils::get($options, 'mimes', array());
-		$this->statuses = IntercessorUtils::get($options, 'statuses', array());
-	}
-
-
-	function error ($type, $reason = null, $status = 500, $fatal = false) {
-		if (is_null($reason)) {
-			$reason = $this->response->getMessageByStatus($status);
-			if (is_null($reason)) {
-				trigger_error('UNDEFINED STATUS CODE "'.$status.'"', E_USER_ERROR);
-			}
-		}
-
-		if (is_array($reason)) {
-			foreach ($reason as $key => $res) {
-				if (is_numeric($key)) {
-					$this->_errors[$type][] = $res;
-				} else {
-					$this->_errors[$type][$key] = $res;
-				}
-			}
-		} else {
-			$this->_errors[$type][] = $reason;
-		}
-
-		$this->response->status($status);
-
-		if ($fatal) {
-			$this->response->clear();
-			$this->response->freeze();
-		}
-	}
-
-
-	public function _configureComponents ($name, $method, $uri, array $params) {
-		foreach ($this->_components as $componentName => $component) {
-			$this->trace('configure component', $componentName);
-			/** @var IntercessorAbstractComponent $component */
-			$component->_configure($name, $method, $uri, $params);
-		}
+	function __construct (IntercessorLoader &$loader) {
+		$this->loader = $loader;
+		$this->error = new IntercessorError($this);
+		$this->request = new IntercessorRequest($this);
+		$this->response = new IntercessorResponse($this);
 	}
 
 
 	public function _configure ($name, $method, $uri, array $params) {
-
-		$this->kernel = $this;
-
-		$this->trace('Spec name', $name);
-
 		$this->_spec = @include(VAR_DIR.DS.'specs'.DS.sha1($name).'.php');
 		$this->_spec = empty($this->_spec) ? array() : $this->_spec;
 
-		$this->trace('Find Spec', !empty($this->_spec));
+		$this->trace('Spec', empty($this->_spec) ? false : $name);
 
 		$this->timers['action'] = 0;
 	}
 
-	function error_handler () {
-		dump(func_get_args());
-	}
 
 	function run ($name, $method, $uri, array $params) {
 
-		$this->_configure($name, $method, $uri, $params);
+		$this->error->_setHandler();
 
+		$this->_configure($name, $method, $uri, $params);
 
 		$this->timers['launch'] = gettimeofday(true);
 
 		if (!$this->_spec) {
-			$this->systemError(null, 405);
+			$this->error->system(null, 405);
+
 			return $this->response->compile();
 		}
 
@@ -137,7 +66,8 @@ class Intercessor extends IntercessorAbstract {
 		$Controller = $this->getSpec('controller');
 		$this->context = new $Controller($this);
 
-		$this->_configureComponents($name, $method, $uri, $params);
+		$this->response->_configure($name, $method, $uri, $params);
+		$this->request->_configure($name, $method, $uri, $params);
 
 		if ($this->valid()) {
 
@@ -149,7 +79,6 @@ class Intercessor extends IntercessorAbstract {
 
 			$this->trace('Has call data', !empty($result));
 
-
 			if (!is_null($result)) {
 				$this->response->data($result);
 			}
@@ -157,25 +86,26 @@ class Intercessor extends IntercessorAbstract {
 			$this->response->clear();
 		}
 
-		return $this->response->compile();
+		$result = $this->response->compile();
+
+		$this->error->_restoreHandler();
+
+		return $result;
 	}
+
 
 	function __destruct () {
-		restore_error_handler();
-	}
-
-	function getErrors () {
-		return $this->_errors;
+		$this->error->_restoreHandler();
 	}
 
 
 	function valid () {
-		return !$this->_errors && $this->response->getSuccessByStatus($this->response->status());
+		return !$this->error->get() && $this->response->getSuccessByStatus($this->response->status());
 	}
 
 
 	function trace ($markName, $data = null) {
-		if ($this->debugMode) {
+		if ($this->loader->debug) {
 			if (!is_object($data) && !is_array($data) && !is_null($data)) {
 				if (is_bool($data)) {
 					$data = $data ? 'true' : 'false';
@@ -184,16 +114,16 @@ class Intercessor extends IntercessorAbstract {
 				$data = null;
 			}
 			if (is_null($data)) {
-				$this->_stackTrace[] = $markName;
+				$this->_logs[] = $markName;
 			} else {
-				$this->_stackTrace[][$markName] = $data;
+				$this->_logs[][$markName] = $data;
 			}
 		}
 	}
 
 
 	function getStackTrace () {
-		return $this->_stackTrace;
+		return $this->_logs;
 	}
 
 

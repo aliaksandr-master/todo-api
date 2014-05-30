@@ -70,26 +70,22 @@ class IntercessorResponse extends IntercessorAbstractComponent {
 	}
 
 
-	function beforeActionCall () {
-	}
-
-
 	function getMessageByStatus ($status) {
-		$statusObj = IntercessorUtils::get($this->kernel->statuses, $status, array());
+		$statusObj = IntercessorUtils::get($this->kernel->loader->statuses, $status, array());
 
 		return IntercessorUtils::get($statusObj, 'message', null);
 	}
 
 
 	function getCodeByStatus ($status) {
-		$statusObj = IntercessorUtils::get($this->kernel->statuses, $status, array());
+		$statusObj = IntercessorUtils::get($this->kernel->loader->statuses, $status, array());
 
 		return IntercessorUtils::get($statusObj, 'code', null);
 	}
 
 
 	function getSuccessByStatus ($status) {
-		$statusObj = IntercessorUtils::get($this->kernel->statuses, $status, array());
+		$statusObj = IntercessorUtils::get($this->kernel->loader->statuses, $status, array());
 
 		return IntercessorUtils::get($statusObj, 'success', null);
 	}
@@ -134,7 +130,7 @@ class IntercessorResponse extends IntercessorAbstractComponent {
 		$this->setHeader('Content-Type', $this->getMime());
 
 		// DEBUG DATA (only for development and testing mode)
-		if ($this->kernel->debugMode) {
+		if ($this->kernel->loader->debug) {
 			$nowTimestamp = gettimeofday(true);
 			$debug = array(
 				'url/pathname' => $this->kernel->request->uriPathname,
@@ -176,18 +172,25 @@ class IntercessorResponse extends IntercessorAbstractComponent {
 		}
 
 		$status = $this->status();
-		$code = $this->getCodeByStatus($status);
+
+		$virtualFailureResponse = $this->kernel->request->query(IntercessorRequest::VIRTUAL_FAILURE_QUERY_PARAM, false);
+
+		$virtualSuccess    = $this->getSuccessByStatus($status);
+		$virtualStatusCode = $this->getCodeByStatus($status);
+		$virtualStatusMsg  = $this->getMessageByStatus($status);
+		$httpStatusCode    = $virtualFailureResponse && !$virtualSuccess ? $this->getCodeByStatus(self::VIRTUAL_STATUS) : $virtualStatusCode;
+
 		$this->_compiled = array(
 			'response' => array(
-				'status'  => $code,
-				'success' => $this->getSuccessByStatus($status),
-				'message' => $this->getMessageByStatus($status),
+				'status'  => $virtualStatusCode,
+				'success' => $virtualSuccess,
+				'message' => $virtualStatusMsg,
 				'data'    => $this->data(),
 				'meta'    => $this->meta(),
-				'errors'  => $this->kernel->getErrors(),
+				'errors'  => $this->kernel->error->get(),
 				'debug'   => $debug
 			),
-			'status'   => $this->getCodeByStatus($this->kernel->request->query(IntercessorRequest::VIRTUAL_PARAM_NAME, false) && $code >= 400 ? self::VIRTUAL_STATUS : $code),
+			'status'   => $httpStatusCode,
 			'headers'  => $this->getHeaders()
 		);
 
@@ -418,7 +421,7 @@ class IntercessorResponse extends IntercessorAbstractComponent {
 
 	public function getMime () {
 		if (is_null($this->_mime)) {
-			$this->_mime = $this->kernel->mimes[$this->getFormat()][0];
+			$this->_mime = $this->kernel->loader->mimes[$this->getFormat()][0];
 		}
 
 		return $this->_mime;
@@ -428,10 +431,10 @@ class IntercessorResponse extends IntercessorAbstractComponent {
 	public function getFormat () {
 		if (is_null($this->_format)) {
 			$accept = IntercessorUtils::parseQualityString($this->kernel->request->header('Accept', ''));
-			$format = IntercessorUtils::getFileFormatByFileExt(parse_url($this->kernel->request->uriPathname, PHP_URL_PATH), $this->kernel->mimes, null);
+			$format = IntercessorUtils::getFileFormatByFileExt(parse_url($this->kernel->request->uriPathname, PHP_URL_PATH), $this->kernel->loader->mimes, null);
 
 			if (!is_null($format)) {
-				$format = IntercessorUtils::getFormatByHeadersAccept($accept, $this->kernel->mimes, null);
+				$format = IntercessorUtils::getFormatByHeadersAccept($accept, $this->kernel->loader->mimes, null);
 			}
 
 			if (is_null($format)) {

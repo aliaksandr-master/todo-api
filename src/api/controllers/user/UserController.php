@@ -30,7 +30,7 @@ class UserController extends BaseResourceController {
 	public function deleteOne ($id) {
 		$user = $this->user->read($id);
 		if (empty($user)) {
-			$this->api->contentError(null, 404);
+			$this->api->error->content(null, 404);
 		} else {
 			$this->user->delete($id);
 		}

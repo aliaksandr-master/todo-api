@@ -70,13 +70,13 @@ abstract class BaseResourceController implements IIntercessorResourceController 
 
 
 	function accessError ($reason, $status = 403) {
-		$this->api->error('access', $reason);
+		$this->api->error->set('access', $reason);
 		$this->api->response->status($status);
 	}
 
 
 	function systemError ($reason, $status = 500) {
-		$this->api->error('system', $reason);
+		$this->api->error->set('system', $reason);
 		$this->api->response->status($status);
 	}
 
