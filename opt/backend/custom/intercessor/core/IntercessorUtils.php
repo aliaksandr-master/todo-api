@@ -1,6 +1,6 @@
 <?php
 
-class ApiUtils {
+class IntercessorUtils {
 
     static function get ($obj, $param, $default = null) {
         return isset($obj[$param]) ? $obj[$param] : $default;
@@ -35,7 +35,7 @@ class ApiUtils {
 		foreach (preg_split('/\s*,\s*/', $str) as $segment) {
 			preg_match('/^\s*([^\;]+)\s*;?\s*/', $segment, $matchName);
 			preg_match('/q\s*=\s*([\d\.]+)\s*/', $segment, $matchQ);
-			$some[ApiUtils::get($matchName, 1)] = (float)ApiUtils::get($matchQ, 1, 1);
+			$some[IntercessorUtils::get($matchName, 1)] = (float)IntercessorUtils::get($matchQ, 1, 1);
 		}
 		return $some;
 	}
@@ -86,7 +86,7 @@ class ApiUtils {
 		$a_data = array();
 
 		// grab multipart boundary from content type header
-		preg_match('/boundary=(.*)$/u', ApiUtils::get($headers, 'Content-Type'), $matches);
+		preg_match('/boundary=(.*)$/u', IntercessorUtils::get($headers, 'Content-Type'), $matches);
 
 		// content type is probably regular form-encoded
 		if (!count($matches)) {

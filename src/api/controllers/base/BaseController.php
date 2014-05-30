@@ -2,12 +2,12 @@
 
 
 
-abstract class BaseResourceController implements IApiResourceController {
+abstract class BaseResourceController implements IIntercessorResourceController {
 
 	/** @var UserModel */
 	public $user;
 
-	/** @var Api */
+	/** @var Intercessor */
 	protected $api = null;
 
 	private $_filterer = null;

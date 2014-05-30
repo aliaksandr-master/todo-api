@@ -3,9 +3,9 @@
 
 
 /**
- * Interface IApiController
+ * Interface IIntercessorController
  */
-interface IApiResourceController {
+interface IIntercessorResourceController {
 
 	public function resource ($action);
 

@@ -46,7 +46,7 @@ require_once(OPT_DIR.'/custom/helpers/FsHelper.php');
  */
 require_once(OPT_DIR.'/custom/kernel/load.php');
 
-require_once(OPT_DIR.'/custom/api/load.php');
+require_once(OPT_DIR.'/custom/intercessor/load.php');
 require_once(OPT_DIR.'/custom/router/load.php');
 require_once(DIR.'/extensions/application.php');
 
@@ -142,7 +142,7 @@ $routeResult = $router->match($_SERVER['REQUEST_METHOD'], $url, array('name' => 
  * -------------------------------------------------------------------
  */
 
-$api = new Api(array(
+$api = new Intercessor(array(
 	'debug' => $app->debugLevel >= 3
 ), array(
 	'mimes' => /*#:injectData("@VAR/api/spec-options.json", "mimes")*/ array() /*injectData#*/,

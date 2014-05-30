@@ -13,11 +13,11 @@ class Verifier {
 	private $controller = null;
 
 	/**
-	 * @var Api
+	 * @var Intercessor
 	 */
 	private $api = null;
 
-	public function __construct (&$controller, Api &$api) {
+	public function __construct (&$controller, Intercessor &$api) {
 		$this->controller = $controller;
 		$this->api = $api;
 	}

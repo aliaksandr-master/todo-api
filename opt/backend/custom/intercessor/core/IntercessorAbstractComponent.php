@@ -2,10 +2,10 @@
 
 
 
-abstract class ApiAbstractComponent extends ApiAbstract {
+abstract class IntercessorAbstractComponent extends IntercessorAbstract {
 
 
-	public function __construct (Api &$api) {
+	public function __construct (Intercessor &$api) {
 		$this->api = $api;
 	}
 

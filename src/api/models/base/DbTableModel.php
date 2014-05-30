@@ -53,7 +53,7 @@ abstract class DbTableModel extends DbModel {
 
 	final function getDbTableName () {
 		if (empty($this->_dbTableName)) {
-			$_tableName = ApiUtils::underscoreCase(get_class($this));
+			$_tableName = IntercessorUtils::underscoreCase(get_class($this));
 			$_tableName = preg_replace('/_*model.*$/i', '', $_tableName);
 			$this->_dbTableName = $_tableName;
 		}

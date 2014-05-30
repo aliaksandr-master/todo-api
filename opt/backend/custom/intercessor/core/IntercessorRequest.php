@@ -2,7 +2,7 @@
 
 
 
-class ApiRequest extends ApiAbstractComponent {
+class IntercessorRequest extends IntercessorAbstractComponent {
 
 	public $method = null;
 
@@ -68,18 +68,18 @@ class ApiRequest extends ApiAbstractComponent {
 		$this->uriPathname = preg_replace('/^([^\?]+)\?(.*)$/', '$1', $uri);
 		$this->uriSearch = preg_replace('/^([^\?]+)\?(.*)$/', '$2', $uri);
 
-		$this->_initHeadersSrc(ApiUtils::get($params, 'headers', array()));
+		$this->_initHeadersSrc(IntercessorUtils::get($params, 'headers', array()));
 		$this->_headers = $this->getHeadersSrc();
 
-		$this->_initArgsSrc(ApiUtils::get($params, 'params', array()));
-		$this->_initQuerySrc(ApiUtils::get($params, 'query', array()));
-		$this->_initBodySrc(ApiUtils::get($params, 'body', array()));
+		$this->_initArgsSrc(IntercessorUtils::get($params, 'params', array()));
+		$this->_initQuerySrc(IntercessorUtils::get($params, 'query', array()));
+		$this->_initBodySrc(IntercessorUtils::get($params, 'body', array()));
 
-		$requestInputSpec = ApiUtils::get($this->api->getSpec('request'), 'input', array());
+		$requestInputSpec = IntercessorUtils::get($this->api->getSpec('request'), 'input', array());
 
-		$querySpec = ApiUtils::get($requestInputSpec, 'query', array());
-		$bodySpec = ApiUtils::get($requestInputSpec, 'body', array());
-		$paramsSpec = ApiUtils::get($requestInputSpec, 'params', array());
+		$querySpec = IntercessorUtils::get($requestInputSpec, 'query', array());
+		$bodySpec = IntercessorUtils::get($requestInputSpec, 'body', array());
+		$paramsSpec = IntercessorUtils::get($requestInputSpec, 'params', array());
 
 		$this->_args = $this->_initParam($this->getArgsSrc(), $paramsSpec, array(), true);
 		$this->_body = $this->_initParam($this->getBodySrc(), $bodySpec, $this->_additionalBodyParams, false);
@@ -155,7 +155,7 @@ class ApiRequest extends ApiAbstractComponent {
 		if (is_null($this->_format)) {
 			$format = null;
 
-			$contentType = ApiUtils::get($this->_headers, 'Content-Type');
+			$contentType = IntercessorUtils::get($this->_headers, 'Content-Type');
 			$contentType = trim($contentType);
 			$contentType = preg_replace('/;.+/', '', $contentType);
 
@@ -184,7 +184,7 @@ class ApiRequest extends ApiAbstractComponent {
 
 	function getLanguage () {
 		if (is_null($this->_language)) {
-			$this->_language = ApiUtils::parseQualityString($this->header('Accept-Language', ''));
+			$this->_language = IntercessorUtils::parseQualityString($this->header('Accept-Language', ''));
 		}
 
 		return $this->_language;
@@ -192,27 +192,27 @@ class ApiRequest extends ApiAbstractComponent {
 
 
 	function body ($name = null, $default = null) {
-		return ApiUtils::getArr($this->_body, $name, $default);
+		return IntercessorUtils::getArr($this->_body, $name, $default);
 	}
 
 
 	function param ($name = null, $default = null) {
-		return ApiUtils::getArr($this->_args, $name, $default);
+		return IntercessorUtils::getArr($this->_args, $name, $default);
 	}
 
 
 	function query ($name = null, $default = null) {
-		return ApiUtils::getArr($this->_query, $name, $default);
+		return IntercessorUtils::getArr($this->_query, $name, $default);
 	}
 
 
 	function header ($name = null, $default = null) {
-		return ApiUtils::getArr($this->_headers, $name, $default);
+		return IntercessorUtils::getArr($this->_headers, $name, $default);
 	}
 
 
 	function get ($name = null, $default = null) {
-		return ApiUtils::getArr($this->_input, $name, $default);
+		return IntercessorUtils::getArr($this->_input, $name, $default);
 	}
 
 
@@ -253,7 +253,7 @@ class ApiRequest extends ApiAbstractComponent {
 		$errors = array();
 		foreach ($spec as $index => $param) {
 			$fieldName = $param["name"];
-			$value = ApiUtils::get($data, $fieldName, null);
+			$value = IntercessorUtils::get($data, $fieldName, null);
 			$this->validate($errors, $fieldName, $value, $param);
 		}
 		if ($errors) {
@@ -270,7 +270,7 @@ class ApiRequest extends ApiAbstractComponent {
 			$fieldName = $param["name"];
 			$by = $byIndex ? $index : $fieldName;
 
-			$value = ApiUtils::get($srcData, $by, null);
+			$value = IntercessorUtils::get($srcData, $by, null);
 
 			if (!is_null($value) && !empty($param['filters'])) {
 				$value = $this->api->context->filterData($value, 'to_type', array($param["type"]));

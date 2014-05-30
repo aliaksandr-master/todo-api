@@ -2,7 +2,7 @@
 
 
 
-class ApiResponse extends ApiAbstractComponent {
+class IntercessorResponse extends IntercessorAbstractComponent {
 
 	const VIRTUAL_STATUS = 200;
 
@@ -52,9 +52,9 @@ class ApiResponse extends ApiAbstractComponent {
 
 	public function _configure ($name, $method, $uri, array $params) {
 		$this->_responseSpec = $this->api->getSpec('response');
-		$this->_responseOutputSpec = ApiUtils::get($this->_responseSpec, 'output', array());
+		$this->_responseOutputSpec = IntercessorUtils::get($this->_responseSpec, 'output', array());
 
-		$this->_limit = ApiUtils::get($this->_responseOutputSpec, 'limit', null);
+		$this->_limit = IntercessorUtils::get($this->_responseOutputSpec, 'limit', null);
 
 		$this->_type = self::RESPONSE_TYPE_MANY;
 
@@ -63,9 +63,9 @@ class ApiResponse extends ApiAbstractComponent {
 			$this->_limit = 1;
 		}
 
-		$this->_offset = $this->api->request->query(ApiRequest::OFFSET_PARAM_NAME, 0);
+		$this->_offset = $this->api->request->query(IntercessorRequest::OFFSET_PARAM_NAME, 0);
 
-		$_limit = $this->api->request->query(ApiRequest::LIMIT_PARAM_NAME, $this->_limit);
+		$_limit = $this->api->request->query(IntercessorRequest::LIMIT_PARAM_NAME, $this->_limit);
 		$this->_limit = $_limit < $this->_limit ? $_limit : $this->_limit;
 	}
 
@@ -75,23 +75,23 @@ class ApiResponse extends ApiAbstractComponent {
 
 
 	function getMessageByStatus ($status) {
-		$statusObj = ApiUtils::get($this->api->statuses, $status, array());
+		$statusObj = IntercessorUtils::get($this->api->statuses, $status, array());
 
-		return ApiUtils::get($statusObj, 'message', null);
+		return IntercessorUtils::get($statusObj, 'message', null);
 	}
 
 
 	function getCodeByStatus ($status) {
-		$statusObj = ApiUtils::get($this->api->statuses, $status, array());
+		$statusObj = IntercessorUtils::get($this->api->statuses, $status, array());
 
-		return ApiUtils::get($statusObj, 'code', null);
+		return IntercessorUtils::get($statusObj, 'code', null);
 	}
 
 
 	function getSuccessByStatus ($status) {
-		$statusObj = ApiUtils::get($this->api->statuses, $status, array());
+		$statusObj = IntercessorUtils::get($this->api->statuses, $status, array());
 
-		return ApiUtils::get($statusObj, 'success', null);
+		return IntercessorUtils::get($statusObj, 'success', null);
 	}
 
 
@@ -171,8 +171,8 @@ class ApiResponse extends ApiAbstractComponent {
 			if ($this->api->context) {
 				$debug = array_replace_recursive($debug, $this->api->context->statistic());
 			}
-			$debug['memory']['usage'] = ApiUtils::formatBytes(memory_get_usage(true) - START_MEMORY);
-			$debug['memory']['peak'] = ApiUtils::formatBytes(memory_get_peak_usage(true));
+			$debug['memory']['usage'] = IntercessorUtils::formatBytes(memory_get_usage(true) - START_MEMORY);
+			$debug['memory']['peak'] = IntercessorUtils::formatBytes(memory_get_peak_usage(true));
 		}
 
 		$status = $this->status();
@@ -187,7 +187,7 @@ class ApiResponse extends ApiAbstractComponent {
 				'errors'  => $this->api->getErrors(),
 				'debug'   => $debug
 			),
-			'status'   => $this->getCodeByStatus($this->api->request->query(ApiRequest::VIRTUAL_PARAM_NAME, false) && $code >= 400 ? self::VIRTUAL_STATUS : $code),
+			'status'   => $this->getCodeByStatus($this->api->request->query(IntercessorRequest::VIRTUAL_PARAM_NAME, false) && $code >= 400 ? self::VIRTUAL_STATUS : $code),
 			'headers'  => $this->getHeaders()
 		);
 
@@ -217,7 +217,7 @@ class ApiResponse extends ApiAbstractComponent {
 
 
 	public function getHeader ($name, $default = null) {
-		return ApiUtils::get($this->_headers, $name, $default);
+		return IntercessorUtils::get($this->_headers, $name, $default);
 	}
 
 
@@ -258,7 +258,7 @@ class ApiResponse extends ApiAbstractComponent {
 		if ($headers) {
 			if ($compress) {
 				$zlibOc = @ini_get('zlib.output_compression');
-				$compressing = !$zlibOc && extension_loaded('zlib') && ApiUtils::get($this->getEncoding(), 'gzip', false);
+				$compressing = !$zlibOc && extension_loaded('zlib') && IntercessorUtils::get($this->getEncoding(), 'gzip', false);
 
 				if (!$zlibOc && !$compressing) {
 					header('Content-Length: '.strlen($this->_compiled['response']));
@@ -359,7 +359,7 @@ class ApiResponse extends ApiAbstractComponent {
 			$_data[$name] = $this->api->context->filterData($data[$name], 'to_type', array($param["type"]));
 		} else {
 			if ($strict) {
-				trigger_error("Api '".$this->api->getSpec('name')."': invalid response. '".$name."' is undefined!");
+				trigger_error("Intercessor '".$this->api->getSpec('name')."': invalid response. '".$name."' is undefined!");
 			}
 		}
 	}
@@ -409,7 +409,7 @@ class ApiResponse extends ApiAbstractComponent {
 
 	public function getEncoding () {
 		if (is_null($this->_encoding)) {
-			$this->_encoding = ApiUtils::parseQualityString($this->api->request->header('Accept-Encoding'));
+			$this->_encoding = IntercessorUtils::parseQualityString($this->api->request->header('Accept-Encoding'));
 		}
 
 		return $this->_encoding;
@@ -427,11 +427,11 @@ class ApiResponse extends ApiAbstractComponent {
 
 	public function getFormat () {
 		if (is_null($this->_format)) {
-			$accept = ApiUtils::parseQualityString($this->api->request->header('Accept', ''));
-			$format = ApiUtils::getFileFormatByFileExt(parse_url($this->api->request->uriPathname, PHP_URL_PATH), $this->api->mimes, null);
+			$accept = IntercessorUtils::parseQualityString($this->api->request->header('Accept', ''));
+			$format = IntercessorUtils::getFileFormatByFileExt(parse_url($this->api->request->uriPathname, PHP_URL_PATH), $this->api->mimes, null);
 
 			if (!is_null($format)) {
-				$format = ApiUtils::getFormatByHeadersAccept($accept, $this->api->mimes, null);
+				$format = IntercessorUtils::getFormatByHeadersAccept($accept, $this->api->mimes, null);
 			}
 
 			if (is_null($format)) {

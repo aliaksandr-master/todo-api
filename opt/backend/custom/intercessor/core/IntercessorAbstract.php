@@ -2,9 +2,9 @@
 
 
 
-abstract class ApiAbstract {
+abstract class IntercessorAbstract {
 
-	/** @var Api */
+	/** @var Intercessor */
 	protected $api;
 
 

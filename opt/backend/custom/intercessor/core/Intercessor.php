@@ -2,9 +2,7 @@
 
 
 
-class Api extends ApiAbstract {
-
-	const MODE_DEV_LEVEL = 3;
+class Intercessor extends IntercessorAbstract {
 
 	public $debugMode = 0;
 
@@ -12,23 +10,23 @@ class Api extends ApiAbstract {
 	/** @var array */
 	protected $_errors = array();
 
-	/** @var IApiResourceController */
+	/** @var IIntercessorResourceController */
 	public $context;
 
-	/** @var Api */
+	/** @var Intercessor */
 	public $api;
 
-	/** @var ApiRequest */
+	/** @var IntercessorRequest */
 	public $request;
 
-	/** @var ApiResponse */
+	/** @var IntercessorResponse */
 	public $response;
 
 	protected $_components = array();
 
 	protected $_componentsMap = array(
-		'request'  => 'ApiRequest',
-		'response' => 'ApiResponse'
+		'request'  => 'IntercessorRequest',
+		'response' => 'IntercessorResponse'
 	);
 
 	private $_apiData = array();
@@ -56,11 +54,11 @@ class Api extends ApiAbstract {
 		}
 
 		// INIT PARAMS
-		$this->debugMode = ApiUtils::get($params, 'debug', false);
+		$this->debugMode = IntercessorUtils::get($params, 'debug', false);
 
 		// INIT OPTIONS
-		$this->mimes = ApiUtils::get($options, 'mimes', array());
-		$this->statuses = ApiUtils::get($options, 'statuses', array());
+		$this->mimes = IntercessorUtils::get($options, 'mimes', array());
+		$this->statuses = IntercessorUtils::get($options, 'statuses', array());
 	}
 
 
@@ -96,7 +94,7 @@ class Api extends ApiAbstract {
 	public function _configureComponents ($name, $method, $uri, array $params) {
 		foreach ($this->_components as $componentName => $component) {
 			$this->trace('configure component', $componentName);
-			/** @var ApiAbstractComponent $component */
+			/** @var IntercessorAbstractComponent $component */
 			$component->_configure($name, $method, $uri, $params);
 		}
 	}
@@ -199,6 +197,6 @@ class Api extends ApiAbstract {
 
 
 	function getSpec ($name = null, $default = null) {
-		return ApiUtils::getArr($this->_apiData, $name, $default);
+		return IntercessorUtils::getArr($this->_apiData, $name, $default);
 	}
 }
