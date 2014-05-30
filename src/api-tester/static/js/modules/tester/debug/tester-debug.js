@@ -11,10 +11,6 @@ define(function(require){
 
 		},
 
-		refresh: function () {
-
-		},
-
 		show: function (responseJSON) {
 			var debug = responseJSON.debug;
 			if (this.tester.getOptions().debugInfo) {

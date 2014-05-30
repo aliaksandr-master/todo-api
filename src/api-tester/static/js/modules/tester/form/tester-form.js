@@ -81,10 +81,6 @@ define(function(require){
 
 		},
 
-		refresh: function () {
-
-		},
-
 		events: {
 			'keyup     #api-tester-form-body input':     'submitOnEnter',
 			'keyup     #api-tester-form-params input':   'submitOnEnter',

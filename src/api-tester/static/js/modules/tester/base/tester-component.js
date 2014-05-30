@@ -11,8 +11,6 @@ define(function(require){
 
 		init: BBUtils.abstractFunction('init'),
 
-		refresh: BBUtils.abstractFunction('reset'),
-
 		events: null,
 
 		initEvents: function () {

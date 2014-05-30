@@ -54,7 +54,7 @@ define(function (require, exports, module) {
 			};
 
 			this.initEvents();
-			this.refresh();
+			this.init();
 		},
 
 		init: function () {
@@ -66,15 +66,7 @@ define(function (require, exports, module) {
 			this.routes.group = _.groupBy(this.routes.source, 'name');
 			this.routes.current = [];
 
-			_.each(this.modules, function (module) {
-				module.init();
-			});
-		},
-
-		refresh: function (href) {
-			this.init();
-
-			href = href == null ? window.location.href : href;
+			var href = href == null ? window.location.href : href;
 
 			this.location = URI(href);
 
@@ -94,7 +86,7 @@ define(function (require, exports, module) {
 			this.initOptions();
 
 			_.each(this.modules, function (module) {
-				module.refresh();
+				module.init();
 			});
 		},
 

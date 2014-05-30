@@ -13,10 +13,6 @@ define(function(require){
 
 		},
 
-		refresh: function () {
-
-		},
-
 		toggleRaw: function (e, $el) {
 			var checked = $el.is(':checked');
 			var $raw = $el.closest('.panel-raw');

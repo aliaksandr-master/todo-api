@@ -13,10 +13,6 @@ define(function(require){
 
 		},
 
-		refresh: function () {
-
-		},
-
 		format: function (obj, options) {
 			return jsonFormat(obj, options);
 		},

@@ -9,10 +9,6 @@ define(function(require){
 
 		init: function () {
 
-		},
-
-		refresh: function () {
-
 		}
 
 	});
