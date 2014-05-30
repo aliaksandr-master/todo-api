@@ -75,7 +75,7 @@ class IntercessorRequest extends IntercessorAbstractComponent {
 		$this->_initQuerySrc(IntercessorUtils::get($params, 'query', array()));
 		$this->_initBodySrc(IntercessorUtils::get($params, 'body', array()));
 
-		$requestInputSpec = IntercessorUtils::get($this->api->getSpec('request'), 'input', array());
+		$requestInputSpec = IntercessorUtils::get($this->kernel->getSpec('request'), 'input', array());
 
 		$querySpec = IntercessorUtils::get($requestInputSpec, 'query', array());
 		$bodySpec = IntercessorUtils::get($requestInputSpec, 'body', array());
@@ -123,7 +123,7 @@ class IntercessorRequest extends IntercessorAbstractComponent {
 
 	protected function _initBodySrc ($body) {
 		if (is_string($body)) {
-			$body = $this->api->context->filterData($body, 'parse_'.$this->getFormat(), array(), null, 'input', 'Invalid input format', 400);
+			$body = $this->kernel->context->filterData($body, 'parse_'.$this->getFormat(), array(), null, 'input', 'Invalid input format', 400);
 		}
 		$this->_bodySource = is_array($body) ? $body : array();
 
@@ -160,7 +160,7 @@ class IntercessorRequest extends IntercessorAbstractComponent {
 			$contentType = preg_replace('/;.+/', '', $contentType);
 
 			if ($contentType) {
-				foreach ($this->api->mimes as $_format => $_mimes) {
+				foreach ($this->kernel->mimes as $_format => $_mimes) {
 					if ($format) {
 						break;
 					}
@@ -173,8 +173,8 @@ class IntercessorRequest extends IntercessorAbstractComponent {
 					}
 				}
 			}
-			reset($this->api->mimes);
-			$defaultFormat = key($this->api->mimes);
+			reset($this->kernel->mimes);
+			$defaultFormat = key($this->kernel->mimes);
 			$this->_format = $format ? $format : $defaultFormat;
 		}
 
@@ -222,7 +222,7 @@ class IntercessorRequest extends IntercessorAbstractComponent {
 
 			$rules = $param['validation']['rules'];
 			$required = !empty($param['validation']["required"]);
-			if ($required && !$this->api->context->verifyData($value, 'required')) {
+			if ($required && !$this->kernel->context->verifyData($value, 'required')) {
 				$errors[$fieldName] = array(
 					'required' => array()
 				);
@@ -234,7 +234,7 @@ class IntercessorRequest extends IntercessorAbstractComponent {
 					if ($valid) {
 						$ruleName = key($rule);
 						$ruleParams = $rule[$ruleName];
-						if (!$this->api->context->verifyData($value, $ruleName, $ruleParams, $fieldName)) {
+						if (!$this->kernel->context->verifyData($value, $ruleName, $ruleParams, $fieldName)) {
 
 							$errors[$fieldName] = array(
 								$ruleName => $ruleParams
@@ -273,10 +273,10 @@ class IntercessorRequest extends IntercessorAbstractComponent {
 			$value = IntercessorUtils::get($srcData, $by, null);
 
 			if (!is_null($value) && !empty($param['filters'])) {
-				$value = $this->api->context->filterData($value, 'to_type', array($param["type"]));
+				$value = $this->kernel->context->filterData($value, 'to_type', array($param["type"]));
 				foreach ($param['filters'] as $filterArr) {
 					foreach($filterArr as $filterName => $filterParams) {
-						$value = $this->api->context->filterData($value, $filterName, $filterParams);
+						$value = $this->kernel->context->filterData($value, $filterName, $filterParams);
 					}
 				}
 			}

@@ -51,7 +51,7 @@ class IntercessorResponse extends IntercessorAbstractComponent {
 
 
 	public function _configure ($name, $method, $uri, array $params) {
-		$this->_responseSpec = $this->api->getSpec('response');
+		$this->_responseSpec = $this->kernel->getSpec('response');
 		$this->_responseOutputSpec = IntercessorUtils::get($this->_responseSpec, 'output', array());
 
 		$this->_limit = IntercessorUtils::get($this->_responseOutputSpec, 'limit', null);
@@ -63,9 +63,9 @@ class IntercessorResponse extends IntercessorAbstractComponent {
 			$this->_limit = 1;
 		}
 
-		$this->_offset = $this->api->request->query(IntercessorRequest::OFFSET_PARAM_NAME, 0);
+		$this->_offset = $this->kernel->request->query(IntercessorRequest::OFFSET_PARAM_NAME, 0);
 
-		$_limit = $this->api->request->query(IntercessorRequest::LIMIT_PARAM_NAME, $this->_limit);
+		$_limit = $this->kernel->request->query(IntercessorRequest::LIMIT_PARAM_NAME, $this->_limit);
 		$this->_limit = $_limit < $this->_limit ? $_limit : $this->_limit;
 	}
 
@@ -75,21 +75,21 @@ class IntercessorResponse extends IntercessorAbstractComponent {
 
 
 	function getMessageByStatus ($status) {
-		$statusObj = IntercessorUtils::get($this->api->statuses, $status, array());
+		$statusObj = IntercessorUtils::get($this->kernel->statuses, $status, array());
 
 		return IntercessorUtils::get($statusObj, 'message', null);
 	}
 
 
 	function getCodeByStatus ($status) {
-		$statusObj = IntercessorUtils::get($this->api->statuses, $status, array());
+		$statusObj = IntercessorUtils::get($this->kernel->statuses, $status, array());
 
 		return IntercessorUtils::get($statusObj, 'code', null);
 	}
 
 
 	function getSuccessByStatus ($status) {
-		$statusObj = IntercessorUtils::get($this->api->statuses, $status, array());
+		$statusObj = IntercessorUtils::get($this->kernel->statuses, $status, array());
 
 		return IntercessorUtils::get($statusObj, 'success', null);
 	}
@@ -102,13 +102,13 @@ class IntercessorResponse extends IntercessorAbstractComponent {
 
 		$debug = array();
 
-		if ($this->api->valid()) {
+		if ($this->kernel->valid()) {
 			$this->_data = $this->prepareResponse($this->_data, 'data');
 		} else {
 			$this->clear();
 		}
 
-		if ($this->api->valid()) {
+		if ($this->kernel->valid()) {
 			$this->_meta = $this->prepareResponse($this->_meta, 'meta');
 
 			if ($this->_type == self::RESPONSE_TYPE_MANY) {
@@ -120,56 +120,56 @@ class IntercessorResponse extends IntercessorAbstractComponent {
 			$this->clear();
 		}
 
-		if ($this->api->context) {
-			if ($this->api->valid()) {
-				$this->api->context->prepareSuccess();
+		if ($this->kernel->context) {
+			if ($this->kernel->valid()) {
+				$this->kernel->context->prepareSuccess();
 			}
 
-			if (!$this->api->valid()) {
+			if (!$this->kernel->valid()) {
 				$this->clear();
-				$this->api->context->prepareError();
+				$this->kernel->context->prepareError();
 			}
 		}
 
 		$this->setHeader('Content-Type', $this->getMime());
 
 		// DEBUG DATA (only for development and testing mode)
-		if ($this->api->debugMode) {
+		if ($this->kernel->debugMode) {
 			$nowTimestamp = gettimeofday(true);
 			$debug = array(
-				'url/pathname' => $this->api->request->uriPathname,
-				'method'       => $this->api->request->method,
+				'url/pathname' => $this->kernel->request->uriPathname,
+				'method'       => $this->kernel->request->method,
 				'timers'       => array(
 					'script' => defined('START_TIMESTAMP') ? $nowTimestamp - START_TIMESTAMP : 0,
-					'action' => $this->api->timers['action'],
-					'launch' => $nowTimestamp - $this->api->timers['launch'],
+					'action' => $this->kernel->timers['action'],
+					'launch' => $nowTimestamp - $this->kernel->timers['launch'],
 				),
 				'memory' => array(),
 				'controller'   => $this->getSpec('controller', 'NOT FOUND'),
-				'action'       => $this->api->request->action,
+				'action'       => $this->kernel->request->action,
 				'db'           => null,
-				'stackTrace'   => $this->api->getStackTrace(),
+				'stackTrace'   => $this->kernel->getStackTrace(),
 				'input'        => array(
 					'headers'  => array(
-						'raw'    => $this->api->request->getHeadersSrc(),
+						'raw'    => $this->kernel->request->getHeadersSrc(),
 						'parsed' => array(
 							'encoding'     => $this->getEncoding(),
-							'language'     => $this->api->request->getLanguage(),
-							'inputFormat'  => $this->api->request->getFormat(),
+							'language'     => $this->kernel->request->getLanguage(),
+							'inputFormat'  => $this->kernel->request->getFormat(),
 							'outputFormat' => $this->getFormat(),
 							'outputMime'   => $this->getMime(),
 						)
 					),
-					"query"    => $this->api->request->query(),
-					"args"     => $this->api->request->param(),
-					"body"     => $this->api->request->body(),
-					"body:raw" => $this->api->request->getBodySrc()
+					"query"    => $this->kernel->request->query(),
+					"args"     => $this->kernel->request->param(),
+					"body"     => $this->kernel->request->body(),
+					"body:raw" => $this->kernel->request->getBodySrc()
 				),
-				"api"          => $this->api->getSpec()
+				"kernel"          => $this->kernel->getSpec()
 			);
 
-			if ($this->api->context) {
-				$debug = array_replace_recursive($debug, $this->api->context->statistic());
+			if ($this->kernel->context) {
+				$debug = array_replace_recursive($debug, $this->kernel->context->statistic());
 			}
 			$debug['memory']['usage'] = IntercessorUtils::formatBytes(memory_get_usage(true) - START_MEMORY);
 			$debug['memory']['peak'] = IntercessorUtils::formatBytes(memory_get_peak_usage(true));
@@ -184,10 +184,10 @@ class IntercessorResponse extends IntercessorAbstractComponent {
 				'message' => $this->getMessageByStatus($status),
 				'data'    => $this->data(),
 				'meta'    => $this->meta(),
-				'errors'  => $this->api->getErrors(),
+				'errors'  => $this->kernel->getErrors(),
 				'debug'   => $debug
 			),
-			'status'   => $this->getCodeByStatus($this->api->request->query(IntercessorRequest::VIRTUAL_PARAM_NAME, false) && $code >= 400 ? self::VIRTUAL_STATUS : $code),
+			'status'   => $this->getCodeByStatus($this->kernel->request->query(IntercessorRequest::VIRTUAL_PARAM_NAME, false) && $code >= 400 ? self::VIRTUAL_STATUS : $code),
 			'headers'  => $this->getHeaders()
 		);
 
@@ -261,7 +261,7 @@ class IntercessorResponse extends IntercessorAbstractComponent {
 				$compressing = !$zlibOc && extension_loaded('zlib') && IntercessorUtils::get($this->getEncoding(), 'gzip', false);
 
 				if (!$zlibOc && !$compressing) {
-					header('Content-Length: '.strlen($this->_compiled['response']));
+					header('Content-Length: '.strlen($this->_compiled['output']));
 				} else {
 					if ($compressing) {
 						ob_start('ob_gzhandler');
@@ -356,10 +356,10 @@ class IntercessorResponse extends IntercessorAbstractComponent {
 	private function _prepareData (&$_data, $data, $param, $strict = true) {
 		$name = $param["name"];
 		if (isset($data[$name])) {
-			$_data[$name] = $this->api->context->filterData($data[$name], 'to_type', array($param["type"]));
+			$_data[$name] = $this->kernel->context->filterData($data[$name], 'to_type', array($param["type"]));
 		} else {
 			if ($strict) {
-				trigger_error("Intercessor '".$this->api->getSpec('name')."': invalid response. '".$name."' is undefined!");
+				trigger_error("Intercessor '".$this->kernel->getSpec('name')."': invalid response. '".$name."' is undefined!");
 			}
 		}
 	}
@@ -409,7 +409,7 @@ class IntercessorResponse extends IntercessorAbstractComponent {
 
 	public function getEncoding () {
 		if (is_null($this->_encoding)) {
-			$this->_encoding = IntercessorUtils::parseQualityString($this->api->request->header('Accept-Encoding'));
+			$this->_encoding = IntercessorUtils::parseQualityString($this->kernel->request->header('Accept-Encoding'));
 		}
 
 		return $this->_encoding;
@@ -418,7 +418,7 @@ class IntercessorResponse extends IntercessorAbstractComponent {
 
 	public function getMime () {
 		if (is_null($this->_mime)) {
-			$this->_mime = $this->api->mimes[$this->getFormat()][0];
+			$this->_mime = $this->kernel->mimes[$this->getFormat()][0];
 		}
 
 		return $this->_mime;
@@ -427,11 +427,11 @@ class IntercessorResponse extends IntercessorAbstractComponent {
 
 	public function getFormat () {
 		if (is_null($this->_format)) {
-			$accept = IntercessorUtils::parseQualityString($this->api->request->header('Accept', ''));
-			$format = IntercessorUtils::getFileFormatByFileExt(parse_url($this->api->request->uriPathname, PHP_URL_PATH), $this->api->mimes, null);
+			$accept = IntercessorUtils::parseQualityString($this->kernel->request->header('Accept', ''));
+			$format = IntercessorUtils::getFileFormatByFileExt(parse_url($this->kernel->request->uriPathname, PHP_URL_PATH), $this->kernel->mimes, null);
 
 			if (!is_null($format)) {
-				$format = IntercessorUtils::getFormatByHeadersAccept($accept, $this->api->mimes, null);
+				$format = IntercessorUtils::getFormatByHeadersAccept($accept, $this->kernel->mimes, null);
 			}
 
 			if (is_null($format)) {

@@ -27,7 +27,7 @@ define('DIR', str_replace(SD, DS, __DIR__));
 define('VAR_DIR', DIR.'/var');
 define('CACHE_DIR', realpath(DIR.'/..').'/private.cache');
 define('SESSION_DIR', CACHE_DIR.'/session');
-define('OPT_DIR', realpath('../opt/backend'));
+define('OPT_DIR', '../opt/backend');
 
 
 

@@ -14,7 +14,7 @@ class Intercessor extends IntercessorAbstract {
 	public $context;
 
 	/** @var Intercessor */
-	public $api;
+	protected $kernel;
 
 	/** @var IntercessorRequest */
 	public $request;
@@ -29,7 +29,7 @@ class Intercessor extends IntercessorAbstract {
 		'response' => 'IntercessorResponse'
 	);
 
-	private $_apiData = array();
+	private $_spec = array();
 
 	protected $_params = array();
 
@@ -82,11 +82,11 @@ class Intercessor extends IntercessorAbstract {
 			$this->_errors[$type][] = $reason;
 		}
 
-		$this->api->response->status($status);
+		$this->response->status($status);
 
 		if ($fatal) {
-			$this->api->response->clear();
-			$this->api->response->freeze();
+			$this->response->clear();
+			$this->response->freeze();
 		}
 	}
 
@@ -102,13 +102,14 @@ class Intercessor extends IntercessorAbstract {
 
 	public function _configure ($name, $method, $uri, array $params) {
 
-		$this->api = $this;
+		$this->kernel = $this;
 
 		$this->trace('Spec name', $name);
 
-		$apiFile = VAR_DIR.DS.'specs'.DS.sha1($name).'.php';
+		$this->_spec = @include(VAR_DIR.DS.'specs'.DS.sha1($name).'.php');
+		$this->_spec = empty($this->_spec) ? array() : $this->_spec;
 
-		$this->_apiData = is_file($apiFile) ? include($apiFile) : array();
+		$this->trace('Find Spec', !empty($this->_spec));
 
 		$this->timers['action'] = 0;
 	}
@@ -124,7 +125,7 @@ class Intercessor extends IntercessorAbstract {
 
 		$this->timers['launch'] = gettimeofday(true);
 
-		if (!$this->_apiData) {
+		if (!$this->_spec) {
 			$this->systemError(null, 405);
 			return $this->response->compile();
 		}
@@ -197,6 +198,6 @@ class Intercessor extends IntercessorAbstract {
 
 
 	function getSpec ($name = null, $default = null) {
-		return IntercessorUtils::getArr($this->_apiData, $name, $default);
+		return IntercessorUtils::getArr($this->_spec, $name, $default);
 	}
 }
