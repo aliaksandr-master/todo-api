@@ -106,14 +106,6 @@ define(function (require, exports, module) {
 			this.$('#api-tester-spec-description').html(this.spec.current.description || '');
 		},
 
-		build: function (id, builder, options, $place, method) {
-			method = method || 'append';
-			options.id = id.replace(/^[#]+/, '');
-			this.$($place)[method](builder(options));
-			this.element[options.id] = this.$('#' + options.id);
-			return this;
-		},
-
 		_parseCamelCase: function (str) {
 			return str.replace(/Controller$/i, '').replace(/([A-Z])/g, ' $1').trim().toLowerCase();
 		},
@@ -148,6 +140,7 @@ define(function (require, exports, module) {
 				this.$('#api-tester-options-wr [name="option-debug"]').attr('checked', params.options.debug);
 				this.$('#api-tester-options-wr [name="option-convert"]').attr('checked', params.options.convert);
 				this.$('#api-tester-options-wr [name="option-debug-info"]').attr('checked', params.options.debugInfo);
+				this.$('#api-tester-options-wr [name="option-debug-virtual"]').attr('checked', params.options.virtual);
 			}
 		},
 
@@ -175,9 +168,11 @@ define(function (require, exports, module) {
 			var debug = this.$('#api-tester-options-wr [name="option-debug"]:checked').length;
 			var convert = this.$('#api-tester-options-wr [name="option-convert"]:checked').length;
 			var debugInfo = this.$('#api-tester-options-wr [name="option-debug-info"]:checked').length;
+			var virtual = this.$('#api-tester-options-wr [name="option-debug-virtual"]:checked').length;
 			return {
 				debugInfo: Boolean(debugInfo),
 				debug: Boolean(debug),
+				virtual: Boolean(virtual),
 				convert: Boolean(convert)
 			};
 		},
@@ -278,12 +273,6 @@ define(function (require, exports, module) {
 			}
 
 			return url;
-		},
-
-		sendOnEnter: function (e, $thisTarget) {
-			if (e.keyCode === 13) {
-				$thisTarget.closest("form").submit();
-			}
 		},
 
 		showHeaders: function (xhr, content) {

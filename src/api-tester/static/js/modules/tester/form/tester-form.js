@@ -93,6 +93,12 @@ define(function(require){
 			'click     #api-tester-form-submit':         'submit'
 		},
 
+		submitOnEnter: function (e, $e) {
+			if (e.keyCode === 13) {
+				$e.closest("form").submit();
+			}
+		},
+
 		createFormGen: function () {
 			return new SpecCompiler(stdFormGeneratorOptions);
 		},
@@ -122,6 +128,9 @@ define(function(require){
 			url.addQuery(this.getDataFromRegion('query', options.convert));
 			if (options.debug) {
 				url.addQuery('_debug', 'debug');
+			}
+			if (options.virtual) {
+				url.addQuery('virtual', '1');
 			}
 			params.url = url.toString();
 
