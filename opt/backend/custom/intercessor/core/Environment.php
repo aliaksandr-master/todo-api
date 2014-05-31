@@ -33,7 +33,7 @@ class Environment extends EventBroker {
 	public $debug = false;
 
 	/** @var bool */
-	public $error_handler = false;
+	public $error_handler = true;
 
 	/** @var bool */
 	public $default_request_format = 'json';

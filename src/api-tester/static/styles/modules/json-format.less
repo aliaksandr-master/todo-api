@@ -1,11 +1,12 @@
 @import "../../../inc/styles/mixins/mixins";
 
 @jsonFCommaSize: @pad * 4;
+@jsonFFontSize: 12px;
 
 .json-f-index {
 	display: block;
 	font-family: @font-mono;
-	font-size: 12px;
+	font-size: @jsonFFontSize;
 }
 .json-f-key {
 	display: block;
@@ -51,8 +52,8 @@
 	overflow: hidden;
 	clear: left;
 	padding-left: @jsonFCommaSize / 2;
-	margin-left: @jsonFCommaSize / 2;
-	border-left: 1px dashed #ccc;
+	margin-left: ceil(@jsonFFontSize / 4);
+	border-left: 1px dotted #eee;
 }
 .json-f-value {
 	display: block;

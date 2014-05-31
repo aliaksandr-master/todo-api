@@ -148,7 +148,7 @@ class BaseResourceController implements Intercessor\IResourceController {
 	 */
 	public function intercessorPrepareOutput (array $output, $debugMode) {
 		if ($debugMode) {
-			$output['debug']['timers']['script'] = defined('START_TIMESTAMP') ? gettimeofday(true) - START_TIMESTAMP : 0;
+			$output['debug']['timers']['total'] = defined('START_TIMESTAMP') ? gettimeofday(true) - START_TIMESTAMP : 0;
 			$output['debug']['memory']['usage']  = memory_get_usage(true) - START_MEMORY;
 		}
 		return $output;

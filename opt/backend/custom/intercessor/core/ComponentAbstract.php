@@ -63,6 +63,9 @@ abstract class ComponentAbstract extends EventBroker {
 		if (!$this->response->success()) {
 			return false;
 		}
+		if (!$this->request->spec()) {
+			return false;
+		}
 
 		return true;
 	}
@@ -95,6 +98,13 @@ abstract class ComponentAbstract extends EventBroker {
 	}
 
 
+	function formatError ($reason) {
+		$this->newError('format', $reason, 400, true);
+
+		return $this;
+	}
+
+
 	function inputFieldError ($fieldName, $reason, array $params = array()) {
 		$this->newError('input', array(
 			$fieldName => array(
@@ -112,6 +122,14 @@ abstract class ComponentAbstract extends EventBroker {
 
 
 	function newError ($type, $reason = null, $status = 500, $fatal = false) {
+
+		$this->publish('error', array(
+			'type' => $type,
+			'reason' => $reason,
+			'status' => $status,
+			'fatal' => $fatal
+		));
+
 		if (is_array($reason)) {
 			foreach ($reason as $key => $res) {
 				if (is_numeric($key)) {
@@ -152,7 +170,8 @@ abstract class ComponentAbstract extends EventBroker {
 
 
 	public function _errorHandler () {
-		$this->publish('error', func_get_args());
+		$this->env->trace('Internal Server Error', func_get_args());
+		$this->fatalError('Internal Server Error');
 	}
 
 

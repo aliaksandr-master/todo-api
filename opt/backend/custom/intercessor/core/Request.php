@@ -9,45 +9,53 @@ namespace Intercessor;
  */
 class Request extends ComponentAbstract {
 
+	/** @var array */
+	private $_spec = array();
+
+	/** @var array */
+	private $_uri = array();
+
+	/** @var string */
+	private $_method;
+
+	/** @var IResourceController */
+	private $_controller = null;
+
+	/** @var array */
+	private $_src = array (
+		'uri'     => null,
+		'body'    => array(),
+		'query'   => array(),
+		'params'  => array(),
+		'headers' => array(),
+	);
+
 	/**
 	 * @param string      $specName
 	 * @param string      $httpMethod
 	 * @param string      $uri
 	 */
-	public function __construct ($specName, $httpMethod = null, $uri = null) {
-		$this->_setSpec($specName)->httpMethod($httpMethod)->setUri($uri);
-	}
+	public function __construct ($specName, $httpMethod, $uri) {
+		$this->_src['spec'] = $specName;
+		$this->_src['uri'] = $uri;
+		$this->_src['method'] = $httpMethod;
 
-	public function _init (Environment &$env, Request &$request, Response &$response) {
-		parent::_init($env, $request, $response);
-		$this->env->trace('Spec', empty($this->_spec) ? false : $this->_spec);
-	}
+		$_spec = @include(VAR_DIR.DS.'specs'.DS.sha1($specName).'.php');
+		if (!empty($_spec)) {
+			$this->_spec = $_spec;
+		}
 
-	private $_spec = null;
+		$this->_uri = parse_url($uri);
+		foreach (pathinfo($this->uri('path')) as $info => $value) {
+			$this->_uri['path/'.$info] = $value;
+		}
+
+		$this->_method = strtoupper($httpMethod);
+	}
 
 	function spec ($name = null, $default = null) {
 		return Utils::getArr($this->_spec, $name, $default);
 	}
-
-
-	/**
-	 * @param $specName
-	 *
-	 * @return Request
-	 */
-	private function _setSpec ($specName) {
-		if (!is_null($this->_spec)) {
-			trigger_error('multiple spec set', E_USER_ERROR);
-			return $this;
-		}
-		$this->_spec = @include(VAR_DIR.DS.'specs'.DS.sha1($specName).'.php');
-		$this->_spec = empty($this->_spec) ? array() : $this->_spec;
-		return $this;
-	}
-
-	/** @var IResourceController */
-	private $_controller = null;
-
 
 	function controller ($install = false) {
 		if ($install) {
@@ -72,40 +80,17 @@ class Request extends ComponentAbstract {
 		return $this->_controller;
 	}
 
-	/** @var string */
-	private $_method = null;
-
 
 	/**
-	 * @param null $method
-	 *
 	 * @return Request|string
 	 */
-	function httpMethod ($method = null) {
-		if (!is_null($method)) {
-			if (!is_null($this->_method)) {
-				trigger_error('multiple method set', E_USER_NOTICE);
-			}
-			$this->_method = strtoupper($method);
-			return $this;
-		}
+	function httpMethod () {
 		return $this->_method;
 	}
 
-	/** @var array */
-	private $_uri = null;
 
-
-	function uri ($name = null, $default = null) {
+	function uri ($name = null, $default = '') {
 		return Utils::getArr($this->_uri, $name, $default);
-	}
-
-	function setUri ($uri) {
-		if (!is_null($this->_uri)) {
-			trigger_error('multiple method set', E_USER_NOTICE);
-		}
-		$this->_uri = parse_url($uri);
-		return $this;
 	}
 
 	public function action () {
@@ -116,7 +101,7 @@ class Request extends ComponentAbstract {
 	private $_input = array();
 
 	/** @var array */
-	private $_args = array();
+	private $_params = array();
 
 	/** @var array */
 	private $_query = array();
@@ -190,10 +175,10 @@ class Request extends ComponentAbstract {
 	/**
 	 * @return array
 	 */
-	function _parseBodySrc () {
+	private function _parseBodySrc () {
 		$body = $this->_bodySrc;
 		if (is_string($body)) {
-			$body = $this->controller()->intercessorFilterData($body, 'parse_'.$this->format(), array(), null, 'input', 'Invalid input format', 400);
+			$body = $this->controller()->intercessorFilterData($body, 'parse_'.$this->request->inputFormat(), array(), null, 'input', 'Invalid input format', 400);
 			if (is_null($body)){
 				$body = array();
 			}
@@ -222,24 +207,60 @@ class Request extends ComponentAbstract {
 		return is_array($query) && $query ? array_replace_recursive($urlQuery, $query) : $urlQuery;
 	}
 
-	private function _initInput () {
+	private function _initInputData () {
 		$requestInputSpec = Utils::get($this->spec('request'), 'input', array());
 
 		$querySpec  = Utils::get($requestInputSpec, 'query', array());
 		$bodySpec   = Utils::get($requestInputSpec, 'body', array());
 		$paramsSpec = Utils::get($requestInputSpec, 'params', array());
 
-		$this->_args  = $this->_initParam($this->_parseParamsSrc(),  $paramsSpec, array(), true);
-		$this->_body  = $this->_initParam($this->_parseBodySrc(),    $bodySpec,   array(), false);
-		$this->_query = $this->_initParam($this->_parseQuerySrc(),   $querySpec,  $this->env->_additionalQueryParams, false);
+		$this->_params = $this->_initInput($this->_parseParamsSrc(),  $paramsSpec, array(), false);
+		$this->_body   = $this->_initInput($this->_parseBodySrc(),    $bodySpec,   array(), false);
+		$this->_query  = $this->_initInput($this->_parseQuerySrc(),   $querySpec,  $this->env->_additionalQueryParams, false);
 
-		$this->_input = array_merge($this->_input, $this->_query, $this->_args, $this->_body);
+		$this->_input = array_merge($this->_input, $this->_query, $this->_params, $this->_body);
 
-		$this->_verifyInput($this->_args,  $paramsSpec);
+		$this->_verifyInput($this->_params,  $paramsSpec);
 		$this->_verifyInput($this->_body,  $bodySpec);
 		$this->_verifyInput($this->_query, $querySpec);
 
 		// TODO: need to implement filter after validation
+		$this->publish('initInputData');
+	}
+
+
+	/**
+	 * @param       $srcData
+	 * @param       $spec
+	 * @param array $additional
+	 * @param bool  $byIndex
+	 *
+	 * @return array
+	 */
+	function _initInput ($srcData, $spec, $additional = array(), $byIndex = false) {
+		$data = array();
+
+		$spec = array_merge($spec, $additional);
+		foreach ($spec as $index => $param) {
+
+			$fieldName = $param["name"];
+			$by = $byIndex ? $index : $fieldName;
+
+			$value = Utils::get($srcData, $by, null);
+
+			if (!is_null($value) && !empty($param['filters'])) {
+				$value = $this->controller()->intercessorFilterData($value, 'to_type', array($param["type"]));
+				foreach ($param['filters'] as $filterArr) {
+					foreach ($filterArr as $filterName => $filterParams) {
+						$value = $this->controller()->intercessorFilterData($value, $filterName, $filterParams);
+					}
+				}
+			}
+
+			$data[$fieldName] = $value;
+		}
+
+		return $data;
 	}
 
 	/**
@@ -254,53 +275,106 @@ class Request extends ComponentAbstract {
 
 		$this->controller(true);
 
-		$this->_initInput();
-
-		$this->publish('initInput');
+		$this->_initInputData();
 
 		if ($this->spec()) {
 
-			$this->env->trace('Launch '.$this->spec('name'));
-
 			if ($this->valid()) {
-
-				$this->env->trace('Call controller method', $this->action());
+				$this->publish('beforeActionCall');
 
 				$timerAction = gettimeofday(true);
-				$result = $callArgs = $this->controller()->intercessorResource($this->request, $this->response);
+				$result = $this->controller()->intercessorResource();
 				$this->env->timers['action'] = gettimeofday(true) - $timerAction;
 
-				$this->env->trace('Has call data', !empty($result));
-
-				if (!is_null($result)) {
+				if ($this->valid() && !is_null($result)) {
 					$this->response->data($result);
 				}
+
+				$this->publish('afterActionCall');
 			} else {
 				$this->response->clear();
+				$this->response->freeze();
 			}
 
 		} else {
 			$this->fatalError(null, 405);
 		}
 
-		$this->env->timers['total']  = gettimeofday(true) - $totalStart;
+
+		$this->publish('afterRun');
+
+		$this->env->timers['total intercessor']  = gettimeofday(true) - $totalStart;
 
 		$this->_restoreErrorHandler();
 		return $this->response;
 
 	}
 
+	private $_outputMime = null;
+
+
+	public function outputMime () {
+		if (is_null($this->_outputMime)) {
+			$this->_outputMime = $this->env->mimes[$this->request->outputFormat()][0];
+		}
+		return $this->_outputMime;
+	}
+
+
+	public function dataOffset () {
+		return $this->request->query($this->env->offset_query_param, 0);
+	}
+
+
+	public function dataLimit () {
+		$max = $this->dataMaxLimit();
+		$_limit = $this->request->query($this->env->limit_query_param, $max);
+		return $_limit < $max ? $_limit : $max;
+	}
+
+	public function dataMaxLimit () {
+		return Utils::get(Utils::get($this->request->spec('response'), 'output', array()), 'limit', 1);
+	}
+
+	public function responseType () {
+		$limit = Utils::get(Utils::get($this->request->spec('response'), 'output', array()), 'limit', null);
+		return is_null($limit) ? Response::TYPE_ONE : Response::TYPE_MANY;
+	}
+
+
+	private $_outputFormat = null;
+
+	public function outputFormat () {
+		if (is_null($this->_outputFormat)) {
+			$format = Utils::getFileFormatByFileExt($this->request->uri('path'), $this->env->mimes, null);
+
+			if (!is_null($format)) {
+				$accept = Utils::parseQualityString($this->request->header('Accept', ''));
+				$format = Utils::getFormatByHeadersAccept($accept, $this->env->mimes, null);
+			}
+
+			if (is_null($format)) {
+				$format = $this->env->default_response_format;
+			}
+
+			if (!Utils::get($this->env->mimes, $format)) {
+				$format = $this->env->default_response_format;
+				$this->formatError('invalid output format', 400);
+			}
+
+			$this->_outputFormat = $format;
+		}
+
+		return $this->_outputFormat;
+	}
 
 
 	/** @var string */
-	private $_format;
-
-	/** @var string */
-	private $_language;
+	private $_inputFormat;
 
 	/**  @return string */
-	public function format () {
-		if (is_null($this->_format)) {
+	public function inputFormat () {
+		if (is_null($this->_inputFormat)) {
 			$format = null;
 
 			$contentType = Utils::get($this->_headers, 'Content-Type');
@@ -323,12 +397,20 @@ class Request extends ComponentAbstract {
 			}
 			reset($this->env->mimes);
 			$defaultFormat = key($this->env->mimes);
-			$this->_format = $format ? $format : $defaultFormat;
+
+			$this->_inputFormat = $format ? $format : $defaultFormat;
+
+			if (!Utils::get($this->env->mimes, $this->_inputFormat)) {
+				$this->formatError('invalid input format', 400);
+			}
 		}
 
-		return $this->_format;
+		return $this->_inputFormat;
 	}
 
+
+	/** @var string */
+	private $_language;
 
 	/**  @return array|null */
 	function language () {
@@ -349,11 +431,12 @@ class Request extends ComponentAbstract {
 	}
 
 
+
 	/**
-	 * @param null $name
-	 * @param null $default
+	 * @param string $name
+	 * @param mixed $default
 	 *
-	 * @return null
+	 * @return mixed
 	 */
 	function body ($name = null, $default = null) {
 		return Utils::getArr($this->_body, $name, $default);
@@ -361,43 +444,45 @@ class Request extends ComponentAbstract {
 
 
 	/**
-	 * @param null $name
-	 * @param null $default
+	 * @param string $name
+	 * @param mixed $default
 	 *
-	 * @return null
+	 * @return mixed
 	 */
 	function param ($name = null, $default = null) {
-		return Utils::getArr($this->_args, $name, $default);
+		return Utils::getArr($this->_params, $name, $default);
 	}
 
 
 	/**
-	 * @param null $name
-	 * @param null $default
+	 * @param string $name
+	 * @param mixed $default
 	 *
-	 * @return null
+	 * @return mixed
 	 */
 	function query ($name = null, $default = null) {
 		return Utils::getArr($this->_query, $name, $default);
 	}
 
 
+
 	/**
-	 * @param null $name
-	 * @param null $default
+	 * @param string $name
+	 * @param mixed $default
 	 *
-	 * @return null
+	 * @return mixed
 	 */
 	function header ($name = null, $default = null) {
 		return Utils::getArr($this->_headers, $name, $default);
 	}
 
 
+
 	/**
-	 * @param null $name
-	 * @param null $default
+	 * @param string $name
+	 * @param mixed $default
 	 *
-	 * @return null
+	 * @return mixed
 	 */
 	function get ($name = null, $default = null) {
 		return Utils::getArr($this->_input, $name, $default);
@@ -412,7 +497,7 @@ class Request extends ComponentAbstract {
 	 *
 	 * @return bool
 	 */
-	private function validate (&$errors, $fieldName, $value, $param) {
+	private function _validateField (&$errors, $fieldName, $value, $param) {
 		$valid = true;
 		if (!empty($param['validation'])) {
 
@@ -456,46 +541,11 @@ class Request extends ComponentAbstract {
 		foreach ($spec as $param) {
 			$fieldName = $param["name"];
 			$value = Utils::get($data, $fieldName, null);
-			$this->validate($errors, $fieldName, $value, $param);
+			$this->_validateField($errors, $fieldName, $value, $param);
 		}
 		if ($errors) {
 			$this->inputDataError($errors);
 		}
-	}
-
-
-	/**
-	 * @param       $srcData
-	 * @param       $spec
-	 * @param array $additional
-	 * @param bool  $byIndex
-	 *
-	 * @return array
-	 */
-	function _initParam ($srcData, $spec, $additional = array(), $byIndex = false) {
-		$data = array();
-
-		$spec = array_merge($spec, $additional);
-		foreach ($spec as $index => $param) {
-
-			$fieldName = $param["name"];
-			$by = $byIndex ? $index : $fieldName;
-
-			$value = Utils::get($srcData, $by, null);
-
-			if (!is_null($value) && !empty($param['filters'])) {
-				$value = $this->controller()->intercessorFilterData($value, 'to_type', array($param["type"]));
-				foreach ($param['filters'] as $filterArr) {
-					foreach ($filterArr as $filterName => $filterParams) {
-						$value = $this->controller()->intercessorFilterData($value, $filterName, $filterParams);
-					}
-				}
-			}
-
-			$data[$fieldName] = $value;
-		}
-
-		return $data;
 	}
 
 

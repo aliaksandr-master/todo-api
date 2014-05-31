@@ -16,53 +16,11 @@ class Response extends ComponentAbstract {
 
 	protected $_status = null;
 
-	private $_responseSpec;
-
-	private $_responseOutputSpec = array();
-
-	private $_type;
-
 	private $_freeze = false;
-
-	private $_limit = 1;
-
-	private $_offset = 0;
 
 	private $_headers = array();
 
 	private $_compiled = null;
-
-	private $_mime = null;
-
-	private $_format = null;
-
-
-	public function _init (Environment &$env, Request &$request, Response &$response) {
-		parent::_init($env, $request, $response);
-
-		$this->subscribe($this->request, 'beforeRun', '_beforeRun');
-	}
-
-	protected  function _beforeRun () {
-		$this->_responseSpec = $this->request->spec('response');
-		$this->_responseOutputSpec = Utils::get($this->_responseSpec, 'output', array());
-
-		$this->_limit = Utils::get($this->_responseOutputSpec, 'limit', null);
-
-		$this->_type = self::TYPE_MANY;
-
-		if (is_null($this->_limit)) {
-			$this->_type = self::TYPE_ONE;
-			$this->_limit = 1;
-		}
-
-		$this->_offset = $this->request->query($this->env->offset_query_param, 0);
-
-		$_limit = $this->request->query($this->env->limit_query_param, $this->_limit);
-		$this->_limit = $_limit < $this->_limit ? $_limit : $this->_limit;
-	}
-
-
 
 	public function success () {
 		return $this->getSuccessByStatus($this->status());
@@ -101,10 +59,10 @@ class Response extends ComponentAbstract {
 		if ($this->valid($this->request, $this)) {
 			$this->_meta = $this->prepareResponse($this->_meta, 'meta');
 
-			if ($this->_type == self::TYPE_MANY) {
+			if ($this->request->responseType() == self::TYPE_MANY) {
 				$this->_meta['count'] = count($this->_data);
-				$this->_meta['limit'] = $this->_limit;
-				$this->_meta['offset'] = $this->_offset;
+				$this->_meta['limit'] = $this->request->dataLimit();
+				$this->_meta['offset'] = $this->request->dataOffset();
 			}
 		} else {
 			$this->clear();
@@ -121,7 +79,7 @@ class Response extends ComponentAbstract {
 			}
 		}
 
-		$this->setHeader('Content-Type', $this->mime());
+		$this->setHeader('Content-Type', $this->request->outputMime());
 
 
 		$debug = array();
@@ -142,13 +100,13 @@ class Response extends ComponentAbstract {
 						'parsed' => array(
 							'encoding'     => $this->request->acceptEncoding(),
 							'language'     => $this->request->language(),
-							'inputFormat'  => $this->request->format(),
-							'outputFormat' => $this->format(),
-							'outputMime'   => $this->mime(),
+							'inputFormat'  => $this->request->inputFormat(),
+							'outputFormat' => $this->request->outputFormat(),
+							'outputMime'   => $this->request->outputMime(),
 						)
 					),
 					"query"    => $this->request->query(),
-					"args"     => $this->request->param(),
+					"params"     => $this->request->param(),
 					"body"     => $this->request->body()
 				),
 				"spec"  => $this->request->spec()
@@ -215,9 +173,13 @@ class Response extends ComponentAbstract {
 	}
 
 
-	public function clear () {
-		$this->_data = array();
-		$this->_meta = array();
+	public function clear ($data = true, $meta = true) {
+		if ($data) {
+			$this->_data = array();
+		}
+		if ($meta) {
+			$this->_meta = array();
+		}
 	}
 
 
@@ -242,7 +204,7 @@ class Response extends ComponentAbstract {
 
 	public function toString () {
 		$this->compile(true);
-		return $this->request->controller()->intercessorFilterData($this->_compiled['response'], 'to_'.$this->format());
+		return $this->request->controller()->intercessorFilterData($this->_compiled['response'], 'to_'.$this->request->outputFormat());
 	}
 
 
@@ -338,28 +300,30 @@ class Response extends ComponentAbstract {
 	protected function prepareResponse ($data, $keyName) {
 		$_data = array();
 
-		if ($this->_type == static::TYPE_ONE) {
+		$outputSpec = Utils::get($this->request->spec('response'), 'output', array());
+
+		if ($this->request->responseType() == static::TYPE_ONE) {
 			if (isset($data[0]) && is_array($data[0])) {
 				$data = $data[0];
 			}
 			if (empty($data)) {
 				return array();
 			} else {
-				if (!empty($this->_responseOutputSpec[$keyName])) {
-					foreach ($this->_responseOutputSpec[$keyName] as $param) {
+				if (!empty($outputSpec[$keyName])) {
+					foreach ($outputSpec[$keyName] as $param) {
 						$this->_prepareData($_data, $data, $param, true);
 					}
 				}
 			}
 		} else {
-			if ($this->_type == static::TYPE_MANY) {
+			if ($this->request->responseType() == static::TYPE_MANY) {
 				if (!empty($data) && (!isset($data[0]) || !is_array($data[0]))) {
 					$data = array($data);
 				}
-				if (!empty($this->_responseOutputSpec[$keyName])) {
+				if (!empty($outputSpec[$keyName])) {
 					foreach ($data as $k => $_d) {
 						$_data[$k] = array();
-						foreach ($this->_responseOutputSpec[$keyName] as $param) {
+						foreach ($outputSpec[$keyName] as $param) {
 							$this->_prepareData($_data[$k], $_d, $param, true);
 						}
 						if (empty ($_data[$k])) {
@@ -367,40 +331,11 @@ class Response extends ComponentAbstract {
 						}
 					}
 				}
-				if ($this->_limit) {
-					$_data = array_slice($_data, 0, $this->_limit);
-				}
+				$_data = array_slice($_data, 0, $this->request->dataLimit());
 			}
 		}
 
 		return $_data;
 	}
 
-
-	public function mime () {
-		if (is_null($this->_mime)) {
-			$this->_mime = $this->env->mimes[$this->format()][0];
-		}
-		return $this->_mime;
-	}
-
-
-	public function format () {
-		if (is_null($this->_format)) {
-			$accept = Utils::parseQualityString($this->request->header('Accept', ''));
-			$format = Utils::getFileFormatByFileExt($this->request->uri(PHP_URL_PATH), $this->env->mimes, null);
-
-			if (!is_null($format)) {
-				$format = Utils::getFormatByHeadersAccept($accept, $this->env->mimes, null);
-			}
-
-			if (is_null($format)) {
-				$format = $this->env->default_response_format;
-			}
-
-			$this->_format = $format;
-		}
-
-		return $this->_format;
-	}
 }
