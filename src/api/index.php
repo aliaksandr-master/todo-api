@@ -136,33 +136,44 @@ $url = str_replace('/api', '', $_SERVER['REQUEST_URI']);
 $router = new Router(/*#:injectData("@VAR/api/router/routes.json")*/ array() /*injectData#*/);
 $routeResult = $router->match($_SERVER['REQUEST_METHOD'], $url, array('name' => null, 'params' => array()));
 
-
-
-
 /*
  * -------------------------------------------------------------------
  *  LAUNCH
  * -------------------------------------------------------------------
  */
-$loader = new IntercessorLoader();
-$loader->debug = $app->debugLevel >= 3;
-$loader->mimes = /*#:injectData("@VAR/api/spec-options.json", "mimes")*/ array() /*injectData#*/;
-$loader->statuses = /*#:injectData("@VAR/api/spec-options.json", "statuses")*/ array() /*injectData#*/;
+$intercessor = new Intercessor\Environment();
+$intercessor->debug = $app->debugLevel >= 3;
+$intercessor->mimes = /*#:injectData("@VAR/api/spec-options.json", "mimes")*/ array() /*injectData#*/;
+$intercessor->statuses = /*#:injectData("@VAR/api/spec-options.json", "statuses")*/ array() /*injectData#*/;
 
-$api = new Intercessor($loader);
-
-$get = $_GET;
+$request = $intercessor->request($routeResult['name'], $_SERVER['REQUEST_METHOD'], $url)
+	->inputBody(file_get_contents('php://input'))
+	->inputParams($routeResult['params'])
+	->inputQuery($_GET)
+	->inputHeaders(getallheaders());
 
 $_GET = array();
 $_POST = array();
 
-$api->run($routeResult['name'], $_SERVER['REQUEST_METHOD'], $url, array(
-	'body'    => file_get_contents('php://input'),
-	'params'  => $routeResult['params'],
-	'query'   => $get,
-	'headers' => getallheaders()
-));
+$response = $request->run();
 
-$output = $api->response->output(true, true);
+$response->sendHeaders();
+$output = $response->toString();
+
+$compressing = true;
+if ($compressing) {
+	$zlibOc = @ini_get('zlib.output_compression');
+	$compressing = !$zlibOc && extension_loaded('zlib') && preg_match('/gzip/', $_SERVER['HTTP_ACCEPT_ENCODING']);
+
+	if (!$zlibOc && !$compressing) {
+		header('Content-Length: '.strlen($output));
+	} else {
+		if ($compressing) {
+			ob_start('ob_gzhandler');
+		}
+	}
+} else {
+	header('Content-Length: '.strlen($output));
+}
 
 exit($output);

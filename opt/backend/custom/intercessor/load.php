@@ -1,18 +1,15 @@
 <?php
 
 // interfaces
-require_once(__DIR__.'/core/IIntercessorResourceController.php');
-
-// abstracts
-require_once(__DIR__.'/core/IntercessorAbstract.php');
-require_once(__DIR__.'/core/IntercessorAbstractComponent.php');
+require_once(__DIR__.'/core/IResourceController.php');
 
 // components
-require_once(__DIR__.'/core/IntercessorError.php');
-require_once(__DIR__.'/core/IntercessorLoader.php');
-require_once(__DIR__.'/core/IntercessorRequest.php');
-require_once(__DIR__.'/core/IntercessorResponse.php');
+require_once(__DIR__.'/core/EventBroker.php');
+require_once(__DIR__.'/core/ComponentAbstract.php');
+
+require_once(__DIR__.'/core/Request.php');
+require_once(__DIR__.'/core/Response.php');
 
 // core
-require_once(__DIR__.'/core/Intercessor.php');
-require_once(__DIR__.'/core/IntercessorUtils.php');
+require_once(__DIR__.'/core/Environment.php');
+require_once(__DIR__.'/core/Utils.php');

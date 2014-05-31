@@ -1,6 +1,11 @@
 <?php
 
-class IntercessorUtils {
+
+namespace Intercessor;
+
+
+
+class Utils {
 
     static function get ($obj, $param, $default = null) {
         return isset($obj[$param]) ? $obj[$param] : $default;
@@ -35,7 +40,7 @@ class IntercessorUtils {
 		foreach (preg_split('/\s*,\s*/', $str) as $segment) {
 			preg_match('/^\s*([^\;]+)\s*;?\s*/', $segment, $matchName);
 			preg_match('/q\s*=\s*([\d\.]+)\s*/', $segment, $matchQ);
-			$some[IntercessorUtils::get($matchName, 1)] = (float)IntercessorUtils::get($matchQ, 1, 1);
+			$some[Utils::get($matchName, 1)] = (float)Utils::get($matchQ, 1, 1);
 		}
 		return $some;
 	}
@@ -86,7 +91,7 @@ class IntercessorUtils {
 		$a_data = array();
 
 		// grab multipart boundary from content type header
-		preg_match('/boundary=(.*)$/u', IntercessorUtils::get($headers, 'Content-Type'), $matches);
+		preg_match('/boundary=(.*)$/u', Utils::get($headers, 'Content-Type'), $matches);
 
 		// content type is probably regular form-encoded
 		if (!count($matches)) {
@@ -166,20 +171,18 @@ class IntercessorUtils {
 	/**
 	 * Converts bytes into readable format ex. 4534344 bytes => 4.2 M
 	 *
-	 * @param $bytes
+	 * @param int $number
 	 * @param int $precision
 	 * @return string
 	 */
-	static function formatBytes ($bytes, $precision = 2) {
+	static function formatBytes ($number, $precision = 3) {
 		$units = array('B', 'KB', 'MB', 'GB', 'TB');
-
-		$bytes = max($bytes, 0);
-		$pow = floor(($bytes ? log($bytes) : 0) / log(1024));
-		$pow = min($pow, count($units) - 1);
-
-		$bytes /= pow(1024, $pow);
-
-		return round($bytes, $precision) . ' ' . $units[$pow];
+		$c = 0;
+		while ($number>=1024) {
+			$c++;
+			$number = $number/1024;
+		}
+		return number_format($number, ($c ? $precision : 0), ",", ".")." ".$units[$c];
 	}
 
 

@@ -8,18 +8,12 @@
 class Verifier {
 
 	/**
-	 * @var BaseController
+	 * @var BaseResourceController
 	 */
 	private $controller = null;
 
-	/**
-	 * @var Intercessor
-	 */
-	private $api = null;
-
-	public function __construct (&$controller, Intercessor &$api) {
+	public function __construct (BaseResourceController &$controller) {
 		$this->controller = $controller;
-		$this->api = $api;
 	}
 
 	public function apply ($value, $ruleName, array $params = array(), $contextName = null) {
@@ -40,12 +34,12 @@ class Verifier {
 
 	private function rule_need ($value, array $params = array(), $name = null) {
 		$existFiled = $params[0];
-		return $this->rule_required($this->api->request->get($existFiled), array($existFiled), $name);
+		return $this->rule_required($this->controller->request->get($existFiled), array($existFiled), $name);
 	}
 
 	private function rule_matches ($value, array $params = array(), $name = null) {
 		$matchFieldName = $params[0];
-		return (bool) ($value === $this->api->request->get($matchFieldName, null));
+		return (bool) ($value === $this->controller->request->get($matchFieldName, null));
 	}
 
 	private function rule_min_length ($value, array $params = array(), $name = null) {

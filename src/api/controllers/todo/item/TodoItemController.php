@@ -8,8 +8,8 @@ class TodoItemController extends BaseResourceController {
 	public $model;
 
 
-	public function __construct ($api) {
-		parent::__construct($api);
+	public function init () {
+		parent::init();
 		$this->model = TodoItemModel::instance();
 	}
 

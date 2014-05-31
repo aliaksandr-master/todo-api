@@ -2,87 +2,199 @@
 
 
 
-abstract class BaseResourceController implements IIntercessorResourceController {
+/**
+ * Class BaseResourceController
+ */
+class BaseResourceController implements Intercessor\IResourceController {
 
 	/** @var UserModel */
 	public $user;
 
-	/** @var Intercessor */
-	protected $api = null;
+	/**
+	 * @var Filterer
+	 */
+	private $_filterer;
 
-	private $_filterer = null;
+	/**
+	 * @var Verifier
+	 */
+	private $_verifier;
 
-	private $_verifier = null;
+	/**
+	 * @var Intercessor\Request
+	 */
+	public $request;
+
+	/**
+	 * @var Intercessor\Response
+	 */
+	public $response;
 
 
-	public function __construct ($api) {
-		$this->api = $api;
-		// base constructor
+	public final function __construct (Intercessor\Environment &$environment, Intercessor\Request &$request, Intercessor\Response &$response) {
+		$this->intercessor = &$environment;
+		$this->request     = &$request;
+		$this->response    = &$response;
+
+		$this->_filterer = new Filterer($this, $this->request, $this->response);
+
+		$this->init(); // construct for child
+	}
+
+	public function init () {
 		$this->user = UserModel::instance();
 	}
 
 
-	function resource ($action) {
-		$beforeActionResult = $this->beforeAction($action);
+	/**
+	 * @return mixed|null
+	 */
+	public function intercessorResource () {
+		$action = $this->request->action();
+		$beforeActionResult = $this->beforeAction();
 		if (!$beforeActionResult && !is_null($beforeActionResult)) {
 			return null;
 		}
-		return call_user_func_array(array($this, $action), $this->api->request->param());
+		return call_user_func_array(array($this, $action), $this->request->param());
 	}
 
 
+	/**
+	 * @param mixed  $value
+	 * @param string $filter
+	 * @param array  $params
+	 *
+	 * @return mixed
+	 */
+	function intercessorFilterData ($value, $filter, array $params = array()) {
+		return $this->filterData ($value, $filter, $params);
+	}
+
+
+	/**
+	 * @param       $value
+	 * @param       $filter
+	 * @param array $params
+	 *
+	 * @return mixed
+	 */
 	function filterData ($value, $filter, array $params = array()) {
 		if (method_exists($this, 'filter_'.$filter)) {
 			return $this->{'filter_'.$filter}($value, $filter, $params);
 		}
 		if (is_null($this->_filterer)) {
-			$this->_filterer = new Filterer($this, $this->api);
+
 		}
 		return $this->_filterer->apply($value, $filter, $params);
 	}
 
 
+	/**
+	 * @param mixed  $value
+	 * @param string $ruleName
+	 * @param array  $params
+	 * @param null   $name
+	 *
+	 * @return mixed
+	 */
+	function intercessorVerifyData ($value, $ruleName, array $params = array(), $name = null) {
+		return $this->verifyData ($value, $ruleName, $params, $name);
+	}
+
+
+	/**
+	 * @param       $value
+	 * @param       $rule
+	 * @param array $params
+	 * @param null  $name
+	 *
+	 * @return mixed
+	 */
 	function verifyData ($value, $rule, array $params = array(), $name = null) {
 		if (method_exists($this, 'rule_'.$rule)) {
 			return $this->{'rule_'.$rule}($value, $params, $name);
 		}
 		if (is_null($this->_verifier)) {
-			$this->_verifier = new Verifier($this, $this->api);
+			$this->_verifier = new Verifier($this);
 		}
 
 		return $this->_verifier->apply($value, $rule, $params, $name);
 	}
 
 
-	function prepareSuccess () {
-		$status = $this->prepareResponseStatusByMethod($this->api->response->status(), $this->api->response->data(), $this->api->request->method);
-		$this->api->response->status($status);
+	/**
+	 * @param \Intercessor\Request  $request
+	 * @param \Intercessor\Response $response
+	 */
+	function intercessorPrepareSuccess (Intercessor\Request &$request, Intercessor\Response &$response) {
+		$status = $this->prepareResponseStatusByMethod($response->status(), $response->data(), $request->httpMethod());
+		$response->status($status);
 	}
 
 
-	function prepareError () {
+	/**
+	 * @param \Intercessor\Request  $request
+	 * @param \Intercessor\Response $response
+	 */
+	function intercessorPrepareError (Intercessor\Request &$request, Intercessor\Response &$response) {
 	}
 
 
+	/**
+	 * @param array $output
+	 * @param bool $debugMode
+	 *
+	 * @return array
+	 */
+	public function intercessorPrepareOutput (array $output, $debugMode) {
+		if ($debugMode) {
+			$output['debug']['timers']['script'] = defined('START_TIMESTAMP') ? gettimeofday(true) - START_TIMESTAMP : 0;
+			$output['debug']['memory']['usage']  = memory_get_usage(true) - START_MEMORY;
+		}
+		return $output;
+	}
+
+
+	/**
+	 * @param null $name
+	 * @param null $default
+	 *
+	 * @return mixed
+	 */
 	function input ($name = null, $default = null) {
-		return $this->api->request->get($name, $default);
+		return $this->request->get($name, $default);
 	}
 
 
+	/**
+	 * @param     $reason
+	 * @param int $status
+	 */
 	function accessError ($reason, $status = 403) {
-		$this->api->error->set('access', $reason);
-		$this->api->response->status($status);
+		$this->response->newError('access', $reason);
+		$this->response->status($status);
 	}
 
 
+	function fieldError ($fieldName, $reason, $params) {
+		$this->request->inputFieldError($fieldName, $reason, $params);
+		$this->response->status(400);
+	}
+
+
+	/**
+	 * @param     $reason
+	 * @param int $status
+	 */
 	function systemError ($reason, $status = 500) {
-		$this->api->error->set('system', $reason);
-		$this->api->response->status($status);
+		$this->response->fatalError('system', $reason);
+		$this->response->status($status);
 	}
 
 
-	function hasAccess ($action) {
-		$accessSpec = $this->api->getSpec('access', array());
+	function hasAccess () {
+		$accessSpec = $this->request->spec('access', array());
+		$action     = $this->request->action();
 
 		// CHECK ONLY OWNER
 		if (!empty($accessSpec['only_owner'])) {
@@ -99,7 +211,7 @@ abstract class BaseResourceController implements IIntercessorResourceController 
 		// CHECK user permissions
 		$handler = strtolower(get_class($this))."#".$action;
 
-		$callName = strtoupper($this->api->request->method).":".$handler;
+		$callName = strtoupper($this->request->httpMethod()).":".$handler;
 		$callNameAny = "ANY:".$handler;
 
 		// TODO: must use ACCESS MODEL and USER MODEL to create Access-array
@@ -120,17 +232,24 @@ abstract class BaseResourceController implements IIntercessorResourceController 
 	}
 
 
-	function beforeAction ($action) {
-		if (!method_exists($this, $action)) {
+	function beforeAction () {
+		if (!method_exists($this, $this->request->action())) {
 			$this->systemError('Method Not Allowed', 405);
 
 			return false;
 		}
 
-		return $this->hasAccess($action);
+		return $this->hasAccess();
 	}
 
 
+	/**
+	 * @param $status
+	 * @param $data
+	 * @param $method
+	 *
+	 * @return int
+	 */
 	public function prepareResponseStatusByMethod ($status, $data, $method) {
 
 		$hasData = !empty($data);
@@ -161,6 +280,9 @@ abstract class BaseResourceController implements IIntercessorResourceController 
 	}
 
 
+	/**
+	 * @return array
+	 */
 	public function statistic () {
 
 		$dbs = BaseCrudModel::getAllDbConnections();

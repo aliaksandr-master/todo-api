@@ -2,12 +2,10 @@
 
 class Filterer {
 
-	private $controller = null;
-	private $api = null;
+	private $controller;
 
-	public function __construct (&$controller, &$api) {
+	public function __construct (BaseResourceController &$controller) {
 		$this->controller = $controller;
-		$this->api = $api;
 	}
 
 	public function apply ($value, $filterName, array $params = array()) {

@@ -8,8 +8,8 @@ class TodoListController extends BaseResourceController {
 	public $model;
 
 
-	public function __construct ($api) {
-		parent::__construct($api);
+	public function init () {
+		parent::init();
 		$this->model = TodoModel::instance();
 	}
 
@@ -26,7 +26,7 @@ class TodoListController extends BaseResourceController {
 
 	// CREATE LIST
 	public function createOne () {
-		$data = $this->api->request->pick('name', 'is_shared', 'sort_order');
+		$data = $this->request->pick('name', 'is_shared', 'sort_order');
 		$data['user_id'] = $this->user->current("id");
 		$data['date_create'] = date("Y-m-d H:i:s", gettimeofday(true));
 		$data['link'] = rand(1, 1100).gettimeofday(true).rand(1, 1100);
@@ -38,7 +38,7 @@ class TodoListController extends BaseResourceController {
 
 	// UPDATE LIST
 	public function updateOne ($listId) {
-		$data = $this->api->request->pick('name', 'is_shared', 'sort_order');
+		$data = $this->request->pick('name', 'is_shared', 'sort_order');
 		$this->model->update($data, array("id" => $listId, 'user_id' => $this->user->current("id")));
 
 		return $this->getOne($listId);

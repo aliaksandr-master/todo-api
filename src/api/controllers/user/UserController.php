@@ -4,10 +4,6 @@
 
 class UserController extends BaseResourceController {
 
-	public function __construct ($api) {
-		parent::__construct($api);
-	}
-
 	public function getOne ($userId) {
 		return $this->user->read($userId);
 	}
@@ -17,7 +13,7 @@ class UserController extends BaseResourceController {
 	}
 
 	public function updateOne ($id) {
-		$data = $this->api->request->pipe($this->user->safeFieldsMap());
+		$data = $this->request->pipe($this->user->safeFieldsMap());
 		if ($this->input('password_new')) {
 			$data['password'] = $this->input('password_new');
 		}
@@ -30,7 +26,7 @@ class UserController extends BaseResourceController {
 	public function deleteOne ($id) {
 		$user = $this->user->read($id);
 		if (empty($user)) {
-			$this->api->error->content(null, 404);
+			$this->request->contentError(null, 404);
 		} else {
 			$this->user->delete($id);
 		}
@@ -40,7 +36,7 @@ class UserController extends BaseResourceController {
 
 
 	public function createOne () {
-		$data = $this->api->request->pipe($this->user->safeFieldsMap());
+		$data = $this->request->pipe($this->user->safeFieldsMap());
 		$data['password'] = $this->user->cryptPassword($data['password']);
 		$data['date_register'] = date("Y-m-d H:i:s", gettimeofday(true));
 		$activationCode = sha1(md5(microtime()));
