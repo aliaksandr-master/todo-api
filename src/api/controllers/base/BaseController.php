@@ -161,7 +161,7 @@ class BaseResourceController implements Intercessor\IResourceController {
 	}
 
 
-	function fieldError ($fieldName, $reason, $params) {
+	function fieldError ($fieldName, $reason, $params = array()) {
 		$this->request->inputFieldError($fieldName, $reason, $params);
 		$this->response->status(400);
 	}

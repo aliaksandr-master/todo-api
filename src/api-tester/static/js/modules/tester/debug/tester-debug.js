@@ -35,11 +35,41 @@ define(function(require){
 		},
 
 		showTimers: function (responseDebug) {
-			this.$('#api-tester-debug-info-timers .panel-body').html(this.tester.modules.json.format(responseDebug.timers));
+			var timers = this.infoFormat('time', responseDebug.timers, 5);
+			this.$('#api-tester-debug-info-timers .panel-body').html(this.tester.modules.json.format(timers));
+		},
+
+		infoFormat: function (format, values, prec) {
+			var info = {};
+			_.each(values, function (v, k) {
+				info[k] = this[format + 'Format'](v, prec);
+			}, this);
+			return info;
+		},
+
+		bytesFormat: function (number, prec) {
+			var unim = ["b","kb","mb","gb","tb","pb"];
+			var c = 0;
+			while (number >= 1024) {
+				c++;
+				number = number / 1024;
+			}
+			return this.numberFormat(number, prec) + ' ' + unim[c];
+		},
+
+		numberFormat: function (number, prec) {
+			prec || (prec = 4);
+			var factor = Math.pow(10, prec);
+			return (Math.round(number * factor) / factor).toFixed(prec);
+		},
+
+		timeFormat: function (number, prec) {
+			return this.numberFormat(number, prec) + ' s';
 		},
 
 		showMemory: function (responseDebug) {
-			this.$('#api-tester-debug-info-memory .panel-body').html(this.tester.modules.json.format(responseDebug.memory));
+			var memoryInfo = this.infoFormat('bytes', responseDebug.memory, 5);
+			this.$('#api-tester-debug-info-memory .panel-body').html(this.tester.modules.json.format(memoryInfo));
 		},
 
 		showDb: function (responseDebug) {

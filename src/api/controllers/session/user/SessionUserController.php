@@ -8,17 +8,27 @@ class SessionUserController extends BaseResourceController {
 		$id = $this->user->current('id');
 		$this->user->logout();
 
-		return array('status' => (bool) $id);
+		if ($id) {
+			$this->response->status(200);
+		} else {
+			$this->response->status(410);
+		}
 	}
 
 
 	public function createOne () {
 		$password = $this->user->cryptPassword($this->input('password'));
 
-		$user = $this->user->read(array('username' => $this->input("username"), 'password' => $password));
+		$user = $this->user->read(array(
+			'username' => $this->input("username"),
+			'password' => $password)
+		);
 
 		if (empty($user[0])) {
-			$user = $this->user->read(array('email' => $this->input("username"), 'password' => $password));
+			$user = $this->user->read(array(
+				'email' => $this->input("username"),
+				'password' => $password)
+			);
 		}
 
 		if (empty($user[0])) {
@@ -30,7 +40,7 @@ class SessionUserController extends BaseResourceController {
 			$this->user->login($user[0]);
 		}
 
-		return $user[0];
+		return $this->getOne();
 	}
 
 

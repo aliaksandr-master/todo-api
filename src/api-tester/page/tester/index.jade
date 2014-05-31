@@ -37,14 +37,14 @@ block container
 				+pre-collapsed-panel('interaction-info', 'Info', true)
 				+pre-collapsed-panel('debug-info-timers', 'Debug Timers', true)
 				+pre-collapsed-panel('debug-info-memory', 'Debug Memory', true)
-				+pre-collapsed-panel('debug-info-db', 'Debug db')
+				+pre-collapsed-panel('debug-info-db', 'Debug db', true)
 
 			.col-md-13#api-tester-response
 				#errors
 				#ok
 
 				+raw-collapsed-panel('response-data', 'Response Data', true)
-				+pre-collapsed-panel('debug-info-log', 'Stack Trace')
+				+pre-collapsed-panel('debug-info-log', 'Stack Trace', false)
 				+raw-collapsed-panel('response-headers', 'Response Headers', true)
 				+pre-collapsed-panel('debug-info-headers', 'Request Headers', true)
 

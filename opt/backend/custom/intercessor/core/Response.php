@@ -217,14 +217,23 @@ class Response extends ComponentAbstract {
 	}
 
 
-	function status ($code = null) {
-		if (!is_null($code)) {
-			if (!is_numeric($code)) {
-				trigger_error('Status code "'.$code.'" must be numeric type!', E_USER_ERROR);
-			}
+	function status ($status = null) {
+		if (!is_null($status)) {
 			if (!$this->_freeze || is_null($this->_status)) {
-				$this->_status = $code;
+				if ($this->env->debug) {
+					$code = Utils::get(Utils::get($this->env->statuses, $status), 'code', 500);
+					if (!($code >= 500 && $code < 600)) {
+						$avlStatuses = Utils::get($this->request->spec('response', array()), 'statuses', null);
+						if (is_null($avlStatuses)) {
+							$this->fatalError('Empty statuses in spec'.$this->request->spec('name'));
+						} else if (!in_array($status, $avlStatuses)) {
+							$this->fatalError('undefined status "'.$status.'"');
+						}
+					}
+				}
+				$this->_status = $status;
 			}
+			return $this;
 		}
 
 		return $this->_status ? $this->_status : $this->env->default_response_status;

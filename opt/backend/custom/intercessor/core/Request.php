@@ -267,6 +267,7 @@ class Request extends ComponentAbstract {
 	 * @return Response
 	 */
 	function run () {
+		$this->env->trace('spec name', $this->spec('name', 'UNDEFINED'));
 		$totalStart = gettimeofday(true);
 
 		$this->_setErrorHandler();
@@ -299,7 +300,6 @@ class Request extends ComponentAbstract {
 		} else {
 			$this->fatalError(null, 405);
 		}
-
 
 		$this->publish('afterRun');
 
