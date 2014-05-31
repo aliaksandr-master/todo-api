@@ -116,12 +116,21 @@ abstract class ComponentAbstract extends EventBroker {
 	}
 
 
-	function getErrors () {
-		return $this->_errors;
+	function getErrors ($selfOnly = false) {
+		if ($selfOnly) {
+			return $this->_errors;
+		}
+		$requestErrors = $this->request->getErrors(true);
+		$responseErrors = $this->response->getErrors(true);
+		return array_merge($requestErrors, $responseErrors);
 	}
 
 
 	function newError ($type, $reason = null, $status = 500, $fatal = false) {
+
+		if (is_null($reason)) {
+			$reason = Utils::get(Utils::get($this->env->statuses, $status, array()), 'message', null);
+		}
 
 		$this->publish('error', array(
 			'type' => $type,

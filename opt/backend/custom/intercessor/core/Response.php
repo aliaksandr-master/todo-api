@@ -23,35 +23,20 @@ class Response extends ComponentAbstract {
 
 
 	public function success () {
-		return $this->getSuccessByStatus($this->status());
+		return Utils::get($this->getStatusInfo($this->status()), 'success', false);
+	}
+
+	private function getStatusInfo ($status) {
+		return Utils::get($this->env->statuses, $status, array());
 	}
 
 
-	private function getMessageByStatus ($status) {
-		$statusObj = Utils::get($this->env->statuses, $status, array());
-
-		return Utils::get($statusObj, 'message', null);
-	}
-
-
-	private function getCodeByStatus ($status) {
-		$statusObj = Utils::get($this->env->statuses, $status, array());
-
-		return Utils::get($statusObj, 'code', null);
-	}
-
-
-	private function getSuccessByStatus ($status) {
-		$statusObj = Utils::get($this->env->statuses, $status, array());
-
-		return Utils::get($statusObj, 'success', null);
-	}
-
-
-	public function compile ($compileOnce = false) {
+	private function _compile ($compileOnce = false) {
 		if (!is_null($this->_compiled) && ($this->_freeze || $compileOnce)) {
 			return $this->_compiled;
 		}
+
+		$this->publish('beforeCompile');
 
 		if ($this->valid($this->request, $this)) {
 			$this->_data = $this->prepareResponse($this->_data, 'data');
@@ -94,7 +79,6 @@ class Response extends ComponentAbstract {
 				'controller' => $this->request->spec('controller', $this->env->default_controller),
 				'action'     => $this->request->action(),
 				'db'         => null,
-				'stackTrace' => $this->env->getStackTrace(),
 				'input'      => array(
 					'headers' => array(
 						'raw'    => $this->request->header(),
@@ -119,24 +103,31 @@ class Response extends ComponentAbstract {
 
 		$virtualFailureResponse = $this->request->query($this->env->virtual_failure_query_param, false);
 
-		$virtualSuccess = $this->getSuccessByStatus($status);
-		$virtualStatusCode = $this->getCodeByStatus($status);
-		$virtualStatusMsg = $this->getMessageByStatus($status);
-		$httpStatusCode = $virtualFailureResponse && !$virtualSuccess ? $this->getCodeByStatus($this->env->virtual_failure_response_status) : $virtualStatusCode;
+		$virtualStatusInfo = $this->getStatusInfo($status);
+
+		$virtualSuccess = Utils::get($virtualStatusInfo, 'success', false);
+		if ($virtualFailureResponse && !$virtualSuccess) {
+			$httpStatusCode = Utils::get($this->getStatusInfo($this->env->virtual_failure_response_status), 'code', 500);
+		} else {
+			$httpStatusCode = Utils::get($virtualStatusInfo, 'code', false);
+		}
 
 		$this->setHeader('HTTP/1.1', $httpStatusCode);
 		$this->setHeader('Status', $httpStatusCode);
 
+		$response = array(
+			'success' => $virtualSuccess,
+			'code' => null,
+			'data'    => $this->data(),
+			'meta'    => $this->meta(),
+			'errors'  => $this->getErrors(),
+			'debug'   => $debug
+		);
+
+		$response = array_replace_recursive($response, $virtualStatusInfo);
+
 		$this->_compiled = array(
-			'response' => array(
-				'status'  => $virtualStatusCode,
-				'success' => $virtualSuccess,
-				'message' => $virtualStatusMsg,
-				'data'    => $this->data(),
-				'meta'    => $this->meta(),
-				'errors'  => $this->getErrors(),
-				'debug'   => $debug
-			),
+			'response' => $response,
 			'status'   => $httpStatusCode,
 			'headers'  => $this->getHeaders()
 		);
@@ -148,6 +139,12 @@ class Response extends ComponentAbstract {
 			if (empty($this->_compiled['response'][$key])) {
 				unset($this->_compiled['response'][$key]);
 			}
+		}
+
+		$this->publish('afterCompile');
+
+		if (!empty($this->_compiled['response']['debug'])) {
+			$this->_compiled['response']['debug']['stackTrace'] = $this->env->getStackTrace();
 		}
 
 		return $this->_compiled;
@@ -169,7 +166,7 @@ class Response extends ComponentAbstract {
 	}
 
 
-	public function getHeader ($name, $default = null) {
+	public function header ($name, $default = null) {
 		return Utils::get($this->_headers, $name, $default);
 	}
 
@@ -190,7 +187,7 @@ class Response extends ComponentAbstract {
 
 
 	public function sendHeaders () {
-		$this->compile(true);
+		$this->_compile(true);
 		foreach ($this->_compiled['headers'] as $headerName => $headerValue) {
 			if (!is_null($headerValue)) {
 				header($headerName.': '.$headerValue);
@@ -200,21 +197,21 @@ class Response extends ComponentAbstract {
 
 
 	public function output ($name = null, $default = null) {
-		$this->compile(true);
+		$this->_compile(true);
 
 		return Utils::getArr($this->_compiled, $name, $default);
 	}
 
 
 	public function toString () {
-		$this->compile(true);
+		$this->_compile(true);
 
 		return $this->request->controller()->intercessorFilterData($this->_compiled['response'], 'to_'.$this->request->outputFormat());
 	}
 
 
 	public function response () {
-		$this->compile(true);
+		$this->_compile(true);
 
 		return $this->_compiled['response'];
 	}

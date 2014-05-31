@@ -9,27 +9,18 @@ class EventBroker {
 	function publish ($eventName, array $params = array()) {
 		$handlers = isset($this->_events[$eventName]) ? $this->_events[$eventName] : array();
 		foreach ($handlers as $subscriptionId => $handler) {
-			$handler[0]->onPublish($this, $eventName, $handler[1], $params);
+			$handler[0]->$handler[1]($this, $params, $eventName);
 		}
 		return $this;
 	}
 
-	public function onPublish (EventBroker $object, $eventName, $handler, $params) {
-		$this->$handler($object, $params, $eventName);
-		return $this;
-	}
-
-	private function _getSubscriptionId ($object, $handlerName) {
-		return get_class($object).'.'.$handlerName;
-	}
-
 	function on ($eventName, EventBroker &$object, $handlerName) {
-		$this->_events[$eventName][$this->_getSubscriptionId($object, $handlerName)] = array($object, $handlerName);
+		$this->_events[$eventName][get_class($object).'.'.$handlerName] = array($object, $handlerName);
 		return $this;
 	}
 
 	function off ($eventName, EventBroker &$object, $handlerName) {
-		unset($this->_events[$eventName][$this->_getSubscriptionId($object, $handlerName)]);
+		unset($this->_events[$eventName][get_class($object).'.'.$handlerName]);
 		return $this;
 	}
 
