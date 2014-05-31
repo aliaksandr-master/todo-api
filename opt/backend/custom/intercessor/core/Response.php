@@ -3,7 +3,6 @@
 
 namespace Intercessor;
 
-
 class Response extends ComponentAbstract {
 
 	const TYPE_ONE = 'one';
@@ -22,22 +21,26 @@ class Response extends ComponentAbstract {
 
 	private $_compiled = null;
 
+
 	public function success () {
 		return $this->getSuccessByStatus($this->status());
 	}
 
 
-
 	private function getMessageByStatus ($status) {
 		$statusObj = Utils::get($this->env->statuses, $status, array());
+
 		return Utils::get($statusObj, 'message', null);
 	}
+
 
 	private function getCodeByStatus ($status) {
 		$statusObj = Utils::get($this->env->statuses, $status, array());
 
 		return Utils::get($statusObj, 'code', null);
 	}
+
+
 	private function getSuccessByStatus ($status) {
 		$statusObj = Utils::get($this->env->statuses, $status, array());
 
@@ -81,21 +84,19 @@ class Response extends ComponentAbstract {
 
 		$this->setHeader('Content-Type', $this->request->outputMime());
 
-
 		$debug = array();
 		if ($this->env->debug) {
-			$nowTimestamp = gettimeofday(true);
 			$debug = array(
-				'uri'    => $this->request->uri(),
-				'method' => $this->request->httpMethod(),
-				'timers' => $this->env->timers,
-				'memory' => array(),
-				'controller'   => $this->request->spec('controller', $this->env->default_controller),
-				'action'       => $this->request->action(),
-				'db'           => null,
-				'stackTrace'   => $this->env->getStackTrace(),
-				'input'        => array(
-					'headers'  => array(
+				'uri'        => $this->request->uri(),
+				'method'     => $this->request->httpMethod(),
+				'timers'     => $this->env->timers,
+				'memory'     => array(),
+				'controller' => $this->request->spec('controller', $this->env->default_controller),
+				'action'     => $this->request->action(),
+				'db'         => null,
+				'stackTrace' => $this->env->getStackTrace(),
+				'input'      => array(
+					'headers' => array(
 						'raw'    => $this->request->header(),
 						'parsed' => array(
 							'encoding'     => $this->request->acceptEncoding(),
@@ -105,23 +106,23 @@ class Response extends ComponentAbstract {
 							'outputMime'   => $this->request->outputMime(),
 						)
 					),
-					"query"    => $this->request->query(),
-					"params"     => $this->request->param(),
-					"body"     => $this->request->body()
+					"query"   => $this->request->query(),
+					"params"  => $this->request->param(),
+					"body"    => $this->request->body()
 				),
-				"spec"  => $this->request->spec()
+				"spec"       => $this->request->spec()
 			);
-			$debug['memory']['peak']   = memory_get_peak_usage(true);
+			$debug['memory']['peak'] = memory_get_peak_usage(true);
 		}
 
 		$status = $this->status();
 
 		$virtualFailureResponse = $this->request->query($this->env->virtual_failure_query_param, false);
 
-		$virtualSuccess    = $this->getSuccessByStatus($status);
+		$virtualSuccess = $this->getSuccessByStatus($status);
 		$virtualStatusCode = $this->getCodeByStatus($status);
-		$virtualStatusMsg  = $this->getMessageByStatus($status);
-		$httpStatusCode    = $virtualFailureResponse && !$virtualSuccess ? $this->getCodeByStatus($this->env->virtual_failure_response_status) : $virtualStatusCode;
+		$virtualStatusMsg = $this->getMessageByStatus($status);
+		$httpStatusCode = $virtualFailureResponse && !$virtualSuccess ? $this->getCodeByStatus($this->env->virtual_failure_response_status) : $virtualStatusCode;
 
 		$this->setHeader('HTTP/1.1', $httpStatusCode);
 		$this->setHeader('Status', $httpStatusCode);
@@ -140,8 +141,8 @@ class Response extends ComponentAbstract {
 			'headers'  => $this->getHeaders()
 		);
 
-
 		$this->_compiled['response'] = $this->request->controller()->intercessorPrepareOutput($this->_compiled['response'], $this->env->debug);
+
 
 		foreach ($this->env->optional_response_keys as $key) {
 			if (empty($this->_compiled['response'][$key])) {
@@ -197,13 +198,17 @@ class Response extends ComponentAbstract {
 		}
 	}
 
+
 	public function output ($name = null, $default = null) {
 		$this->compile(true);
+
 		return Utils::getArr($this->_compiled, $name, $default);
 	}
 
+
 	public function toString () {
 		$this->compile(true);
+
 		return $this->request->controller()->intercessorFilterData($this->_compiled['response'], 'to_'.$this->request->outputFormat());
 	}
 
@@ -337,5 +342,4 @@ class Response extends ComponentAbstract {
 
 		return $_data;
 	}
-
 }

@@ -141,21 +141,6 @@ class BaseResourceController implements Intercessor\IResourceController {
 
 
 	/**
-	 * @param array $output
-	 * @param bool $debugMode
-	 *
-	 * @return array
-	 */
-	public function intercessorPrepareOutput (array $output, $debugMode) {
-		if ($debugMode) {
-			$output['debug']['timers']['total'] = defined('START_TIMESTAMP') ? gettimeofday(true) - START_TIMESTAMP : 0;
-			$output['debug']['memory']['usage']  = memory_get_usage(true) - START_MEMORY;
-		}
-		return $output;
-	}
-
-
-	/**
 	 * @param null $name
 	 * @param null $default
 	 *
@@ -280,37 +265,42 @@ class BaseResourceController implements Intercessor\IResourceController {
 	}
 
 
+
+
 	/**
+	 * @param array $output
+	 * @param bool $debugMode
+	 *
 	 * @return array
 	 */
-	public function statistic () {
+	public function intercessorPrepareOutput (array $output, $debugMode) {
+		if ($debugMode) {
+			$output['debug']['timers']['total'] = defined('START_TIMESTAMP') ? gettimeofday(true) - START_TIMESTAMP : 0;
+			$output['debug']['timers']['db'] = 0;
+			$output['debug']['memory']['usage']  = memory_get_usage(true) - START_MEMORY;
+			$output['debug']['db'] = array();
 
-		$dbs = BaseCrudModel::getAllDbConnections();
+			// DB DEBUG INFO
+			$dbs = BaseCrudModel::getAllDbConnections();
 
-		$queries = array();
-		$error = array();
-		$time = 0;
-
-		foreach ($dbs as $db) {
-			if (!empty($db->queries)) {
-				foreach ($db->queries as $key => $query) {
-					if ($db->query_times[$key]) {
-						$queries[] = array('query' => $query, 'time' => $db->query_times[$key]);
-					} else {
-						$error[] = array('query' => $query, 'time' => $db->query_times[$key]);
+			foreach ($dbs as $db) {
+				if (!empty($db->queries)) {
+					foreach ($db->queries as $key => $query) {
+						$data = array();
+						if (!$db->query_times[$key]) {
+							$data['fail'] = $query;
+						} else {
+							$data['pass'] = $query;
+							$data['time'] = $db->query_times[$key];
+						}
+						$output['debug']['db'][] = $data;
+						$output['debug']['timers']['db'] += $db->query_times[$key];
 					}
-					$time += $db->query_times[$key];
 				}
 			}
-		}
 
-		return array(
-			'db' => array(
-				'queriesCount'  => count($queries) + count($error),
-				'totalTime'     => $time,
-				'errorQueries'  => $error,
-				'NormalQueries' => $queries
-			));
+		}
+		return $output;
 	}
 }
 
