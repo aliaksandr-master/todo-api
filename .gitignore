@@ -10,12 +10,15 @@
 */*~
 *.sublime*
 
+# package managers
+/composer.lock
+/opt/frontend/bower/
+/node_modules/
+/opt/backend/composer/
+
 
 # compile files
-/node_modules/
-/opt/frontend/bower/
 /.developer/
 /var/
-/opt/backend/composer/
 /deploy/
 /build/
