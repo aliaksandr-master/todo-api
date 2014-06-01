@@ -8,7 +8,7 @@ require_once(OPT_DIR.DS.'vendor'.DS.'ci_active_record'.DS.'ci_active_record.init
 /**
  * Class DbModel
  */
-abstract class DbModel {
+abstract class DbModel extends Model {
 
 	/**
 	 * @var CI_DB_active_record $db
@@ -24,7 +24,21 @@ abstract class DbModel {
 	/**
 	 * @return string
 	 */
-	abstract protected function getDbName ();
+	protected function getDbName () {
+		$connection = $this->getConnectDbParams();
+		return $connection['database'];
+	}
+
+
+	/**
+	 * @return CI_DB_active_record
+	 */
+	protected function connection () {
+		if (is_null($this->db)) {
+			$this->db = $this->connect();
+		}
+		return $this->db;
+	}
 
 
 	/**
@@ -43,14 +57,14 @@ abstract class DbModel {
 	 *
 	 */
 	protected function __construct () {
-		$this->db = $this->connection();
+
 	}
 
 
 	/**
 	 * @return mixed
 	 */
-	protected function &connection () {
+	protected function &connect () {
 		$dbName = $this->getDbName();
 
 		$params = $this->getConnectDbParams();

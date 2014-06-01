@@ -1,6 +1,7 @@
 @import "../../../inc/styles/mixins/mixins";
 
 .ToggleElement(){
+	@sqBg: #fff;
 	@sqSize: 1.2em;
 	@lHeight: 1.2em;
 	@offset: 0.5em;
@@ -46,6 +47,7 @@
 		left: 0;
 		border: @border;
 		box-shadow: inset 0 1px 1px fade(black, 7.5%);
+		background: @sqBg;
 		transition:
 			border-color ease-in-out 0.3s,
 			box-shadow ease-in-out 0.3s;

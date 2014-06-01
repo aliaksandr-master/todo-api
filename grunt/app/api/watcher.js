@@ -8,7 +8,8 @@ module.exports = function (grunt) {
 			opt.SRC + '/api/**/*.spec.{json,js}'
 		],
 		tasks: [
-			'api/specs'
+			'api/specs',
+			'api-tester/build'
 		]
 	});
 

@@ -5,7 +5,7 @@
 /**
  * Class BaseCrudModel
  */
-abstract class BaseCrudModel extends DbTableModel implements ICrudMoldel {
+abstract class BaseCrudModel extends DbTableModel implements ICRUDModel {
 
 
 	/**
@@ -35,29 +35,38 @@ abstract class BaseCrudModel extends DbTableModel implements ICrudMoldel {
 	public function create (array $data) {
 		$tableFields = $this->getTableFields();
 
+		$db = $this->connection();
+
 		foreach ($data as $key => $value) {
 			if (in_array($key, $tableFields)) {
-				$this->db->set($key, $value);
+				$db->set($key, $value);
 			} else {
 				trigger_error('undefined key "'.$key.'" must be in array ['.implode(',', $tableFields).']', E_USER_WARNING);
 				die();
 			}
 		}
 
-		$this->db->from($this->getDbTableName())->insert();
-
-		return $this->db->insert_id();
+		$db->from($this->getDbTableName())->insert();
+		return $db->insert_id();
 	}
 
+	public function &promoter ($name = 'get') {
+		$criteria = new BaseCrudModelPromoter($this, $name);
+		return $criteria;
+	}
 
 	/**
 	 * @param null   $whereOrId
+	 * @param array  $options
 	 * @param string $resultAs
-	 * @param null   $select
 	 *
 	 * @return CI_DB_active_record|object
 	 */
-	public function read ($whereOrId = null, $resultAs = self::RESULT_ARRAY, $select = null) {
+	public function read ($whereOrId = null, array $options = array(), $resultAs = self::RESULT_ARRAY) {
+		$select = isset($options['select']) ? $options['select'] : null;
+		$limit  = isset($options['limit']) ? $options['limit'] : null;
+		$offset = isset($options['offset']) ? $options['offset'] : null;
+
 
 		// CHECK SELECT DATA
 		if (is_null($select)) {
@@ -89,13 +98,26 @@ abstract class BaseCrudModel extends DbTableModel implements ICrudMoldel {
 		}
 
 		// EXECUTE
-		$this->db->select($select, true)->where($whereOrId)->from($this->getDbTableName());
+		$db = $this->connection()
+			->select($select, true)
+			->where($whereOrId)
+			->from($this->getDbTableName());
 
-		if ($resultAs == self::RESULT_ACTIVE_RECORD) {
-			return $this->db;
+		/** @var CI_DB_active_record $db */
+
+		if (!is_null($limit)) {
+			if (is_null($offset)) {
+				$db->limit($limit);
+			} else {
+				$db->limit($limit, $offset);
+			}
 		}
 
-		$result = $this->db->get();
+		if ($resultAs == self::RESULT_ACTIVE_RECORD) {
+			return $db;
+		}
+
+		$result = $db->get();
 
 		if ($resultAs == self::RESULT_OBJECT) {
 			return $result;
@@ -118,17 +140,20 @@ abstract class BaseCrudModel extends DbTableModel implements ICrudMoldel {
 
 		$tableFields = $this->getTableFields();
 
+		$db = $this->connection();
+
 		foreach ($data as $key => $value) {
 			if (in_array($key, $tableFields)) {
-				$this->db->set($key, $value);
+				$db->set($key, $value);
 			} else {
 				trigger_error('undefined key "'.$key.'" must be in array ['.implode(',', $tableFields).']', E_USER_WARNING);
 				die();
 			}
 		}
-		$this->db->from($this->getDbTableName())->where($whereOrId)->update();
-
-		return $this->db->result_id;
+		$result = $db
+			->where($whereOrId)
+			->update($this->getDbTableName());
+		return $result;
 	}
 
 
@@ -143,7 +168,7 @@ abstract class BaseCrudModel extends DbTableModel implements ICrudMoldel {
 			$whereOrId = array($this->idAttribute() => $whereOrId);
 		}
 
-		$this->db->from($this->getDbTableName())->where($whereOrId)->delete();
+		$this->connection()->from($this->getDbTableName())->where($whereOrId)->delete();
 
 		// TODO return boolean
 		return true;

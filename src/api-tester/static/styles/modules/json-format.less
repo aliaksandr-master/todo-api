@@ -2,11 +2,13 @@
 
 @jsonFCommaSize: @pad * 4;
 @jsonFFontSize: 12px;
+@jsonFLineHeight: 14px;
 
 .json-f-index {
 	display: block;
 	font-family: @font-mono;
 	font-size: @jsonFFontSize;
+	line-height: @jsonFLineHeight;
 }
 .json-f-key {
 	display: block;
@@ -126,4 +128,16 @@
 	border-left: none;
 	padding-left: 0;
 	margin-left: 0;
+}
+
+.json-f-mlt {
+	white-space: pre-line;
+	height: @jsonFLineHeight;
+	color: violet;
+}
+
+.json-f-mlt.-json-f-norm {
+	height: auto;
+	white-space: pre-line;
+	color: #299511;
 }

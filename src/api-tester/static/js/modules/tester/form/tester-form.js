@@ -177,7 +177,12 @@ define(function(require){
 						}
 					}
 				}
-				$element.html(this.buildFormPart(formGen, $element, spec, values));
+				if (_.isEmpty(spec)) {
+					$element.closest('.panel').hide();
+				} else {
+					$element.closest('.panel').show();
+					$element.html(this.buildFormPart(formGen, $element, spec, values));
+				}
 				$element.data('formGen', formGen);
 				$element.data('spec', spec);
 			}, this);
@@ -233,6 +238,12 @@ define(function(require){
 			if (options.virtual) {
 				url.addQuery('virtual_failure', '1');
 			}
+			if (options.offset.length) {
+				url.addQuery('offset', options.offset);
+			}
+			if (options.limit.length) {
+				url.addQuery('limit', options.limit);
+			}
 			params.url = url.toString();
 
 			params.dataType = $('#form-response-format').val();
@@ -286,7 +297,7 @@ define(function(require){
 					$el.closest('.form-control-wr').addClass('has-error');
 				});
 				window.alert('Please fill the required fields!');
-				return;
+				return false;
 			}
 
 			this.tester.save();

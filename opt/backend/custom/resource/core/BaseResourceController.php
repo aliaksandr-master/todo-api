@@ -5,10 +5,13 @@
 /**
  * Class BaseResourceController
  */
-class BaseResourceController implements Intercessor\IResourceController {
+class BaseResourceController extends \Intercessor\EventBroker implements Intercessor\IResourceController {
 
 	/** @var UserModel */
 	public $user;
+
+	/** @var BaseCrudModel */
+	public $model;
 
 	/**
 	 * @var Filterer
@@ -30,6 +33,11 @@ class BaseResourceController implements Intercessor\IResourceController {
 	 */
 	public $response;
 
+	/**
+	 * @var Intercessor\Environment
+	 */
+	public $intercessor;
+
 
 	public final function __construct (Intercessor\Environment &$environment, Intercessor\Request &$request, Intercessor\Response &$response) {
 		$this->intercessor = &$environment;
@@ -43,6 +51,11 @@ class BaseResourceController implements Intercessor\IResourceController {
 
 	public function init () {
 		$this->user = UserModel::instance();
+
+		if ($this->model && is_string($this->model)) {
+			$Model = $this->model;
+			$this->model = $Model::instance();
+		}
 	}
 
 
@@ -55,9 +68,20 @@ class BaseResourceController implements Intercessor\IResourceController {
 		if (!$beforeActionResult && !is_null($beforeActionResult)) {
 			return null;
 		}
-		return call_user_func_array(array($this, $action), $this->request->param());
+		$result = call_user_func_array(array($this, $action), $this->request->param());
+		if ($result instanceof BaseCrudModelPromoter) {
+			$result = $result->result();
+		}
+		if ($result instanceof CI_DB_result) {
+			$result = $result->result_array();
+		}
+		$result = $this->prepareResult($result);
+		return $result;
 	}
 
+	function prepareResult ($result) {
+		return $result;
+	}
 
 	/**
 	 * @param mixed  $value

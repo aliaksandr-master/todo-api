@@ -61,7 +61,7 @@ class Utils {
 	static function getFormatByHeadersAccept ($headersAccept, array $supportedFormats, $defaultFormat) {
 
 		if (empty($supportedFormats[$defaultFormat])) {
-			throw new Exception('unsupported default response format');
+			trigger_error('unsupported default response format', E_USER_ERROR);
 		}
 
 		$headersAcceptStr = implode(',', $headersAccept);

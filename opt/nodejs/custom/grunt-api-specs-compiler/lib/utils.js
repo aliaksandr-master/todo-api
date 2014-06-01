@@ -330,6 +330,10 @@ module.exports = function (options) {
 
 					var typeOption = options.types[inputItem.type] || nestedTypes[inputItem.type];
 
+					if (typeOption.filters == null) {
+						typeOption.filters = [];
+					}
+
 					if (inputItem.length.min) {
 						addValidationRule(inputItem, 'min_length', [inputItem.length.min], true);
 					}

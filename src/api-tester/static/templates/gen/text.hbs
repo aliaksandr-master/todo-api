@@ -1,12 +1,7 @@
 <div class="form-control-wr">
 	{{#if label}}
         <label class="form-label">
-			{{#if required}}
-			<b title="required!" class="label pull-right label-danger">
-				<span class="glyphicon glyphicon-star"></span>
-			</b>
-			{{/if}}
-            <b class="label pull-right label-default">{{type}}</b>
+            <span {{#if required}}title="required!"{{/if}} class="label pull-right label-{{#if required}}warning{{else}}danger{{/if}}">{{type}}</span>
 			{{label}}
         </label>
 	{{/if}}

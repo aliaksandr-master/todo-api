@@ -16,7 +16,9 @@ define(function(require){
 			convert:        {selector: '[name="option-convert"]',        default: true},
 			debugInfo:      {selector: '[name="option-debug-info"]',     default: true},
 			virtual:        {selector: '[name="option-debug-virtual"]',  default: false},
-			ignoreRequired: {selector: '[name="option-ignore-require"]', default: false}
+			ignoreRequired: {selector: '[name="option-ignore-require"]', default: false},
+			limit:			{selector: '[name="option-limit"]', default: ''},
+			offset:			{selector: '[name="option-offset"]', default: ''}
 		},
 
 		_memo: null,

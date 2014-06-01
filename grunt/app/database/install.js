@@ -4,9 +4,13 @@ module.exports = function (grunt) {
 	var opt = this;
 
 	this.run('mysql-schema', {
-		options: {
-			connection: opt.DEV + '/configs/database/default.json',
-			outputJSON: opt.VAR + '/database/default.scheme.json'
-		}
+		files: [
+			{
+				expand: true,
+				cwd: opt.DEV + '/configs/database/',
+				src: '**/*.json',
+				dest: opt.VAR + '/database/scheme/'
+			}
+		]
 	});
 };

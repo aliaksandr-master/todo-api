@@ -56,6 +56,7 @@
 				.each(function (index, element) {
 					var $el = $container.find(element);
 					if ($el.is(':checkbox') && !$el.is(':checked')) {
+						values[element.name] = false;
 						return;
 					} else if ($el.is(':radio')) {
 						if (values[element.name] != null) {

@@ -5,7 +5,6 @@ module.exports = function (grunt) {
 		var _ = require('lodash');
 		var path = require('path');
 		var fileProcessor = require('../grunt-additional-task-utils/gruntTaskFileProcessor')(this);
-		var logFileOk = require('../grunt-additional-task-utils/logFileOk');
 
 		var options = this.options({
 

@@ -20,9 +20,7 @@ module.exports = function (grunt) {
 			expand: true,
 			cwd: opt.SRC + '/api/',
 			src: [
-				'controllers/**/*.php',
-				'models/**/*.php',
-				'extensions/**/*.php',
+				'**/*.php',
 				'.htaccess',
 				'index.php'
 			],
@@ -32,12 +30,11 @@ module.exports = function (grunt) {
 
 	this.run('find-php-classes', {
 		options: {
-			cwd: opt.BUILD + '/',
+			cwd: opt.BUILD + '/api/',
 			src: [
-				'api/index.php',
-				'api/controllers/**/*.php',
-				'api/extensions/**/*.php',
-				'api/models/**/*.php'
+				'controllers/**/*.php',
+				'lib/**/*.php',
+				'models/**/*.php'
 			],
 			beauty: false,
 			outputJSON: opt.VAR + '/classes/api.json'

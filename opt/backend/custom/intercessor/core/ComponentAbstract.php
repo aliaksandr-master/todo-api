@@ -177,10 +177,14 @@ abstract class ComponentAbstract extends EventBroker {
 		restore_error_handler();
 	}
 
+	private $_hasFatal = false;
 
 	public function _errorHandler () {
 		$this->env->trace('Internal Server Error', func_get_args());
-		$this->fatalError('Internal Server Error');
+		if (!$this->_hasFatal) {
+			$this->_hasFatal = true;
+			$this->fatalError('Internal Server Error');
+		}
 	}
 
 

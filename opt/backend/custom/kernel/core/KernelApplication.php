@@ -27,7 +27,7 @@ abstract class KernelApplication {
 	function loadClass ($name) {
 		$path = Utils::get($this->_CLASS_MAP, $name);
 		if (isset($path)) {
-			require_once(DIR.DS.'..'.DS.$path);
+			require_once(DIR.DS.$path);
 		}
 	}
 

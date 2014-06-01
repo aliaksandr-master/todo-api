@@ -2,24 +2,12 @@
 
 abstract class DefaultDbModel extends BaseCrudModel  {
 
-	function getDbName () {
-		return 'default';
-	}
-
 	function getDbScheme () {
-		return
-			//#:injectData("@VAR/database/default.scheme.json")
-			array()
-			//injectData#
-			;
+		return /*#:injectData("@VAR/database/scheme/default.json")*/array()/*injectData#*/;
 	}
 
 	function getConnectDbParams () {
-		return
-			//#:injectData(".developer/configs/database/default.json")
-			array()
-			//injectData#
-			;
+		return /*#:injectData(".developer/configs/database/default.json")*/ array() /*injectData#*/;
 	}
 
 }

@@ -1,0 +1,5 @@
+mixin field(name, value, text, required)
+	- var id = name + '-field';
+	label.form-label= text
+		block
+	input.form-control.input-sm(type="text", placeholder=text, value=value, name=name, id=id, required= required ? true : false)

@@ -45,10 +45,7 @@ require_once(OPT_DIR.'/custom/helpers/FsHelper.php');
  * -------------------------------------------------------------------
  */
 require_once(OPT_DIR.'/custom/kernel/load.php');
-
-require_once(OPT_DIR.'/custom/intercessor/load.php');
-require_once(OPT_DIR.'/custom/router/load.php');
-require_once(DIR.'/extensions/application.php');
+require_once(DIR.'/kernel/application.php');
 
 
 
@@ -59,7 +56,6 @@ require_once(DIR.'/extensions/application.php');
  * -------------------------------------------------------------------
  */
 $app = new Application();
-spl_autoload_register(array($app, 'loadClass'));
 
 
 /*
@@ -84,6 +80,13 @@ if ($app->debugLevel > 0) {
  *   CLASS AUTO-LOADER
  * -------------------------------------------------------------------
  */
+
+require_once(OPT_DIR.'/custom/intercessor/load.php');
+require_once(OPT_DIR.'/custom/router/load.php');
+require_once(OPT_DIR.'/custom/resource/load.php');
+require_once(OPT_DIR.'/custom/crud/load.php');
+
+spl_autoload_register(array($app, 'loadClass'));
 
 
 

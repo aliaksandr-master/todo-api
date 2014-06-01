@@ -8,7 +8,6 @@ define(function(require, exports, module){
 	map = function (type, obj, options) {
 		return _.map(obj, function (v, k) {
 			var isIt = (types.object.check(v) || types.array.check(v)) && !_.isEmpty(v);
-
 			var key = '<span ' + (isIt ? ' data-json-it-length="' + _.values(v).length + '" ' : '') +' class="json-f-key ' + (isIt ? 'json-f-v-it' : '') +' json-f-'+ type +'-key">' + k + '</span>';
 			return '<span class="json-f-block">' + key + compile(v, options) + '</span>';
 		}).join('');
@@ -20,7 +19,8 @@ define(function(require, exports, module){
 				return _.isString(obj);
 			},
 			view: function (value, options) {
-				return '<span title="String" class="json-f-value json-f-smpl json-f-string">' + value + '</span>';
+				value = value.trim();
+				return '<span title="' + (/\n/.test(value) ? 'Multi-line ' : '') + 'String" class="json-f-value ' + (/\n/.test(value) ? 'json-f-mlt' : '') + ' json-f-smpl json-f-string">' + value + '</span>';
 			}
 		},
 		'undefined': {

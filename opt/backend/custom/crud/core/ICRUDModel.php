@@ -2,7 +2,7 @@
 
 
 
-interface ICrudMoldel {
+interface ICRUDModel {
 
 	const RESULT_ARRAY = "array";
 
@@ -11,7 +11,7 @@ interface ICrudMoldel {
 	const RESULT_ACTIVE_RECORD = "active record";
 
 
-	function read ($whereOrId, $resultAs = self::RESULT_ARRAY, $select);
+	function read ($whereOrId, array $options = array(), $resultAs = self::RESULT_ARRAY);
 
 
 	function create (array $data);

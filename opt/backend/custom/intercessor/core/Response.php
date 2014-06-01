@@ -35,7 +35,9 @@ class Response extends ComponentAbstract {
 		if (!is_null($this->_compiled) && ($this->_freeze || $compileOnce)) {
 			return $this->_compiled;
 		}
+		$responseCompileTime = gettimeofday(true);
 
+		$this->_setErrorHandler();
 		$this->publish('beforeCompile');
 
 		if ($this->valid($this->request, $this)) {
@@ -66,8 +68,6 @@ class Response extends ComponentAbstract {
 				$this->request->controller()->intercessorPrepareError($this->request, $this);
 			}
 		}
-
-		$this->setHeader('Content-Type', $this->request->outputMime());
 
 		$debug = array();
 		if ($this->env->debug) {
@@ -115,6 +115,8 @@ class Response extends ComponentAbstract {
 		$this->setHeader('HTTP/1.1', $httpStatusCode);
 		$this->setHeader('Status', $httpStatusCode);
 
+		$this->setHeader('Content-Type', $this->request->outputMime());
+
 		$response = array(
 			'success' => $virtualSuccess,
 			'code' => null,
@@ -145,8 +147,9 @@ class Response extends ComponentAbstract {
 
 		if (!empty($this->_compiled['response']['debug'])) {
 			$this->_compiled['response']['debug']['stackTrace'] = $this->env->getStackTrace();
+			$this->_compiled['response']['debug']['timers']['response_compile'] = gettimeofday(true) - $responseCompileTime;
 		}
-
+		$this->_restoreErrorHandler();
 		return $this->_compiled;
 	}
 
@@ -199,7 +202,7 @@ class Response extends ComponentAbstract {
 	public function output ($name = null, $default = null) {
 		$this->_compile(true);
 
-		return Utils::getArr($this->_compiled, $name, $default);
+		return Utils::getArr($this->_compiled['response'], $name, $default);
 	}
 
 
@@ -300,10 +303,8 @@ class Response extends ComponentAbstract {
 		$name = $param["name"];
 		if (isset($data[$name])) {
 			$_data[$name] = $this->request->controller()->intercessorFilterData($data[$name], 'to_type', array($param["type"]));
-		} else {
-			if ($strict) {
-				trigger_error("Intercessor '".$this->request->spec('name')."': invalid response. '".$name."' is undefined!");
-			}
+		} else if ($strict) {
+			trigger_error("Intercessor '".$this->request->spec('name')."': invalid response. '".$name."' is undefined!", E_USER_NOTICE);
 		}
 	}
 
