@@ -159,7 +159,7 @@
 			display: block;
 			text-transform: uppercase;
 			font-size: 10px;
-			line-height: 1.2;
+			line-height: 12px;
 			padding: 0;
 			margin: 0;
 			color: #555;
@@ -169,10 +169,18 @@
 		label.form-label:after {
 			content: ':';
 		}
-		label.form-label .label{
-			position: absolute;
-			top: 0;
-			right: 0;
+		label.form-label .label {
+			font-size: 12px;
+			padding: 0 @pad;
+			line-height: 12px;
+			font-family: @font-mono;
+			border-radius: 0;
+			font-weight: normal;
+			height: 12px;
+			letter-spacing: 1px;
+		}
+		.label .glyphicon {
+			line-height: 11px;
 		}
 		.form-control-wr + .form-control-wr {
 			padding-top: @pad * 2;

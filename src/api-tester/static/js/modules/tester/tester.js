@@ -80,10 +80,6 @@ define(function (require, exports, module) {
 				this.spec.current = {};
 			}
 
-			this.buildForm();
-			this.initForm();
-			this.initSpecHeader();
-
 			var loadParams = this.load();
 			_.each(this.modules, function (module, name) {
 				module.init();
@@ -91,42 +87,6 @@ define(function (require, exports, module) {
 					module.load(loadParams[name]);
 				}
 			}, this);
-		},
-
-		initSpecHeader: function () {
-			this.$('#api-tester-spec-name').val(this.spec.current.name);
-			this.$('#api-tester-spec-reset').attr('href', this.getSpecUrl(this.spec.current.name));
-			this.$('#api-tester-spec-ctrl').html(this.spec.current.controller);
-			this.$('#api-tester-spec-action').html(this.spec.current.action);
-			this.$('#api-tester-spec-description').html(this.spec.current.description || '');
-		},
-
-		_parseCamelCase: function (str) {
-			return str.replace(/Controller$/i, '').replace(/([A-Z])/g, ' $1').trim().toLowerCase();
-		},
-
-		initForm: function () {
-			this.refreshFormats();
-			this.refreshRouterUrl();
-		},
-
-		refreshFormats: function () {
-			var params = this.load();
-
-			if (!_.isEmpty(params.format)) {
-				this.$('#form-request-format').val(params.format.request);
-				this.$('#form-response-format').val(params.format.response);
-			}
-		},
-
-		buildFormPart: function (formGen, $element, spec, values) {
-			return formGen.render(_.map(spec, function (v) {
-				return {
-					name: v.name,
-					label: v.name,
-					type: v.type
-				};
-			}), values);
 		},
 
 		saveToHistory: function (href, params) {
@@ -147,104 +107,6 @@ define(function (require, exports, module) {
 					'<a href="' + href + '">' + '<span class="label label-success">' + params.method + '</span> ' + params.uri + ' <b>(' + time + ')</b>' +'</a>' +
 				'</div>'
 			);
-		},
-
-		buildForm: function () {
-			if (_.isEmpty(this.spec.current)) {
-				return;
-			}
-
-			var params = this.load();
-			_.each(['body', 'params', 'query'], function (part) {
-				var req = _.isEmpty(this.spec.current.request) ? {} : this.spec.current.request;
-				var $element = this.modules.form.getRegionElement(part);
-				var formGen = this.modules.form.createFormGen();
-				var spec = (req.input || {})[part] || [];
-				var values;
-				if (params) {
-					if (params.spec) {
-						if (!_.isEmpty(params.spec[part])) {
-							spec = params.spec[part];
-						}
-					}
-					if (params.values) {
-						if (params.values[part] != null) {
-							values = params.values[part];
-						}
-					}
-				}
-				$element.html(this.buildFormPart(formGen, $element, spec, values));
-				$element.data('formGen', formGen);
-				$element.data('spec', spec);
-			}, this);
-
-			var counter = 0;
-			var $formRouteSelect = $('#form-route');
-			$formRouteSelect.html('');
-			_.each(this.routes.current, function (v) {
-				$formRouteSelect.append($('<option/>').text(v.method + ' ' + v.reverse).attr('value', counter++));
-			});
-			$formRouteSelect.append($('<option/>').text('custom').attr('value', -1));
-			$formRouteSelect.val(params.route || (counter ? 0 : -1));
-
-		},
-
-		events: {
-			'change    #form-route':                     'refreshRouterUrl',
-			'change    #api-tester-spec-name':           'changeSpecName',
-
-			'keyup     #api-tester-form-params [name]':  'refreshRouterUrl',
-			'change    #api-tester-form-params [name]':  'refreshRouterUrl'
-		},
-
-		getSpecUrl: function (specName) {
-			specName = specName || this.spec.current.name;
-			var curUrl = URI(this.location.path());
-			curUrl.addQuery('spec', specName);
-			return curUrl.toString();
-		},
-
-		changeSpecName: function () {
-			var specName = this.$('#api-tester-spec-name').val();
-			window.location.href = this.getSpecUrl(specName);
-		},
-
-		refreshRouterUrl: function () {
-			var params = this.load();
-
-			var routeId = this.$('#form-route').val();
-			var route = this.routes.current[routeId] || {};
-
-			var root = window.API_ROOT.replace(/\/$/, '') + '/';
-
-			var url = this.$('#form-route-url').val() || root;
-			var method = this.$('#form-route-method').val() || 'GET';
-
-			if (!_.isEmpty(route)) {
-				var data = this.modules.form.getDataFromRegion('params', false);
-				url = this.reverseUrlByRoute(route, data);
-				url = root + url.replace(/^\//, '');
-				method = route.method;
-			} else {
-				url    = params.url || url;
-				method = params.method || method;
-			}
-			this.$('#form-route-url').val(url);
-
-			this.$('#form-route-method').val(method);
-		},
-
-		reverseUrlByRoute: function (route, data) {
-			var url = route.reverse;
-			_.each(data, function (v, k) {
-				url = url.replace('<' + k + '>', v);
-			});
-
-			if (/<([^>]+)>/.test(url)) {
-				throw new Error('invalid route params in reverse "' + url + '"');
-			}
-
-			return url;
 		},
 
 		showHeaders: function (xhr, content) {

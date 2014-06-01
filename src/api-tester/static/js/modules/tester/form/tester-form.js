@@ -78,15 +78,118 @@ define(function(require){
 	var FormComponent = BaseComponent.extend('FormComponent', {
 
 		init: function () {
-
+			this.buildForm();
+			this.refreshFormats();
+			this.refreshRouterUrl();
 		},
 
 		events: {
+			'change    #form-route':                     'refreshRouterUrl',
+			'keyup     #api-tester-form-params [name]':  'refreshRouterUrl',
+			'change    #api-tester-form-params [name]':  'refreshRouterUrl',
+
 			'keyup     #api-tester-form-body input':     'submitOnEnter',
 			'keyup     #api-tester-form-params input':   'submitOnEnter',
 			'keyup     #api-tester-form-query input':    'submitOnEnter',
 			'submit    #api-tester-form':                'submit',
 			'click     #api-tester-form-submit':         'submit'
+		},
+
+		refreshFormats: function () {
+			var params = this.tester.load();
+
+			if (!_.isEmpty(params.format)) {
+				this.$('#form-request-format').val(params.format.request);
+				this.$('#form-response-format').val(params.format.response);
+			}
+		},
+
+		buildFormPart: function (formGen, $element, spec, values) {
+			return formGen.render(_.map(spec, function (v) {
+				return {
+					name: v.name,
+					label: v.name,
+					type: v.type,
+					required: v.validation.required
+				};
+			}), values);
+		},
+
+		refreshRouterUrl: function () {
+			var params = this.tester.load();
+
+			var routeId = this.$('#form-route').val();
+			var route = this.tester.routes.current[routeId] || {};
+
+			var root = window.API_ROOT.replace(/\/$/, '') + '/';
+
+			var url = this.$('#form-route-url').val() || root;
+			var method = this.$('#form-route-method').val() || 'GET';
+
+			if (!_.isEmpty(route)) {
+				var data = this.getDataFromRegion('params', false);
+				url = this.reverseUrlByRoute(route, data);
+				url = root + url.replace(/^\//, '');
+				method = route.method;
+			} else {
+				url    = params.url || url;
+				method = params.method || method;
+			}
+
+			this.$('#form-route-url').val(url);
+			this.$('#form-route-method').val(method);
+		},
+
+		reverseUrlByRoute: function (route, data) {
+			var url = route.reverse;
+			_.each(data, function (v, k) {
+				url = url.replace('<' + k + '>', v);
+			});
+
+			if (/<([^>]+)>/.test(url)) {
+				throw new Error('invalid route params in reverse "' + url + '"');
+			}
+
+			return url;
+		},
+
+		buildForm: function () {
+			if (_.isEmpty(this.tester.spec.current)) {
+				return;
+			}
+
+			var params = this.tester.load();
+			_.each(['body', 'params', 'query'], function (part) {
+				var req = _.isEmpty(this.tester.spec.current.request) ? {} : this.tester.spec.current.request;
+				var $element = this.tester.modules.form.getRegionElement(part);
+				var formGen = this.tester.modules.form.createFormGen();
+				var spec = (req.input || {})[part] || [];
+				var values;
+				if (params) {
+					if (params.spec) {
+						if (!_.isEmpty(params.spec[part])) {
+							spec = params.spec[part];
+						}
+					}
+					if (params.values) {
+						if (params.values[part] != null) {
+							values = params.values[part];
+						}
+					}
+				}
+				$element.html(this.buildFormPart(formGen, $element, spec, values));
+				$element.data('formGen', formGen);
+				$element.data('spec', spec);
+			}, this);
+
+			var counter = 0;
+			var $formRouteSelect = $('#form-route');
+			$formRouteSelect.html('');
+			_.each(this.tester.routes.current, function (v) {
+				$formRouteSelect.append($('<option/>').text(v.method + ' ' + v.reverse).attr('value', counter++));
+			});
+			$formRouteSelect.append($('<option/>').text('custom').attr('value', -1));
+			$formRouteSelect.val(params.route || (counter ? 0 : -1));
 		},
 
 		submitOnEnter: function (e, $e) {
@@ -114,6 +217,8 @@ define(function(require){
 			var requestObj = {
 				time: Date.now()
 			};
+
+			var customUrlParamsMode = this.$('#form-route').val() === '-1';
 
 			var params = {};
 			var options = this.tester.modules.options.get();
@@ -152,6 +257,37 @@ define(function(require){
 			}
 
 			requestObj.params = params;
+			var errorElements = [];
+			var allRequiredFieldsNotEmpty = _.all(['params', 'query', 'body'], function (name) {
+				var $region = this.getRegionElement(name);
+
+				var norm = true;
+				$region.find('[name]').each(function () {
+					var $el = $(this);
+					if ($el.is('[required]')) {
+						if ($el.is(':radio')) {
+							norm = $region.find('[name="' + $el.attr('name') + '"]:checked').length;
+						} else {
+							norm = $el.val() != null ? Boolean($el.val().length) : false;
+
+						}
+					}
+					$el.closest('.form-control-wr').removeClass('has-error');
+					if (!norm) {
+						errorElements.push($el);
+					}
+				});
+
+				return norm;
+			}, this);
+
+			if (!options.ignoreRequired && !allRequiredFieldsNotEmpty && !customUrlParamsMode) {
+				_.each(errorElements, function ($el) {
+					$el.closest('.form-control-wr').addClass('has-error');
+				});
+				window.alert('Please fill the required fields!');
+				return;
+			}
 
 			this.tester.save();
 

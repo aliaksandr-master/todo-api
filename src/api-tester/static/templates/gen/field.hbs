@@ -1,4 +1,9 @@
 <div class="form-control-wr">
-	{{#if label}}<label class="form-label">{{label}} <b class="label label-default">{{type}}</b></label>{{/if}}
-	<input autocomplete="on" placeholder="{{label}}" type="text" class="form-control input-sm" value="{{value}}" name="{{name}}"/>
+	{{#if label}}
+		<label class="form-label">
+			<span {{#if required}}title="required!"{{/if}} class="label pull-right label-{{#if required}}warning{{else}}danger{{/if}}">{{type}}</span>
+			{{label}}
+		</label>
+	{{/if}}
+	<input autocomplete="on" {{#if required}}required{{/if}} placeholder="{{label}}" type="text" class="form-control input-sm" value="{{value}}" name="{{name}}"/>
 </div>
