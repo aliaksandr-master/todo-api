@@ -83,11 +83,14 @@ define(function (require, exports, module) {
 			this.buildForm();
 			this.initForm();
 			this.initSpecHeader();
-			this.initOptions();
 
-			_.each(this.modules, function (module) {
+			var loadParams = this.load();
+			_.each(this.modules, function (module, name) {
 				module.init();
-			});
+				if (module.load) {
+					module.load(loadParams[name]);
+				}
+			}, this);
 		},
 
 		initSpecHeader: function () {
@@ -108,7 +111,7 @@ define(function (require, exports, module) {
 		},
 
 		refreshFormats: function () {
-			var params = this.loadRequestParamsFromUrl();
+			var params = this.load();
 
 			if (!_.isEmpty(params.format)) {
 				this.$('#form-request-format').val(params.format.request);
@@ -124,16 +127,6 @@ define(function (require, exports, module) {
 					type: v.type
 				};
 			}), values);
-		},
-
-		initOptions: function () {
-			var params = this.loadRequestParamsFromUrl();
-			if (!_.isEmpty(params.options)) {
-				this.$('#api-tester-options-wr [name="option-debug"]').attr('checked', params.options.debug);
-				this.$('#api-tester-options-wr [name="option-convert"]').attr('checked', params.options.convert);
-				this.$('#api-tester-options-wr [name="option-debug-info"]').attr('checked', params.options.debugInfo);
-				this.$('#api-tester-options-wr [name="option-debug-virtual"]').attr('checked', params.options.virtual);
-			}
 		},
 
 		saveToHistory: function (href, params) {
@@ -156,25 +149,12 @@ define(function (require, exports, module) {
 			);
 		},
 
-		getOptions: function () {
-			var debug = this.$('#api-tester-options-wr [name="option-debug"]:checked').length;
-			var convert = this.$('#api-tester-options-wr [name="option-convert"]:checked').length;
-			var debugInfo = this.$('#api-tester-options-wr [name="option-debug-info"]:checked').length;
-			var virtual = this.$('#api-tester-options-wr [name="option-debug-virtual"]:checked').length;
-			return {
-				debugInfo: Boolean(debugInfo),
-				debug: Boolean(debug),
-				virtual: Boolean(virtual),
-				convert: Boolean(convert)
-			};
-		},
-
 		buildForm: function () {
 			if (_.isEmpty(this.spec.current)) {
 				return;
 			}
 
-			var params = this.loadRequestParamsFromUrl();
+			var params = this.load();
 			_.each(['body', 'params', 'query'], function (part) {
 				var req = _.isEmpty(this.spec.current.request) ? {} : this.spec.current.request;
 				var $element = this.modules.form.getRegionElement(part);
@@ -230,7 +210,7 @@ define(function (require, exports, module) {
 		},
 
 		refreshRouterUrl: function () {
-			var params = this.loadRequestParamsFromUrl();
+			var params = this.load();
 
 			var routeId = this.$('#form-route').val();
 			var route = this.routes.current[routeId] || {};
@@ -308,7 +288,7 @@ define(function (require, exports, module) {
 			}));
 		},
 
-		saveRequestParamsToUrl: function () {
+		save: function () {
 			var params = {
 				method: this.$('#form-route-method').val(),
 				uri: this.$('#form-route-url').val(),
@@ -327,15 +307,21 @@ define(function (require, exports, module) {
 				format: {
 					request: $('#form-request-format').val(),
 					response: $('#form-response-format').val()
-				},
-				options: this.getOptions()
+				}
 			};
+
+			_.each(this.modules, function (module, name) {
+				if (module.save) {
+					params[name] = module.save();
+				}
+			});
+
 			this.router.replaceParam('params', JSON.stringify(params));
 
 			this.saveToHistory(window.location.href, params);
 		},
 
-		loadRequestParamsFromUrl: function () {
+		load: function () {
 			var query = this.location.query(true);
 			return query.params ? JSON.parse(query.params) : {};
 		}

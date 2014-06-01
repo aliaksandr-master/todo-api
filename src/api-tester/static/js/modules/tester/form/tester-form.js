@@ -116,7 +116,7 @@ define(function(require){
 			};
 
 			var params = {};
-			var options = this.tester.getOptions();
+			var options = this.tester.modules.options.get();
 
 			params.type = this.$('#form-route-method').val();
 
@@ -153,7 +153,7 @@ define(function(require){
 
 			requestObj.params = params;
 
-			this.tester.saveRequestParamsToUrl();
+			this.tester.save();
 
 			this.tester.showRequestData(params.data, data);
 

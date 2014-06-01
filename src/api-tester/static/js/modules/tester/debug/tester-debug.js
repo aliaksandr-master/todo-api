@@ -13,7 +13,7 @@ define(function(require){
 
 		show: function (responseJSON) {
 			var debug = responseJSON.debug;
-			if (this.tester.getOptions().debugInfo) {
+			if (this.tester.modules.options.get().debugInfo) {
 				delete responseJSON.debug;
 			}
 			if (_.isEmpty(debug)) {
