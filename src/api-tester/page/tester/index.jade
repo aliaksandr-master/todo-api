@@ -33,20 +33,20 @@ block container
 					h2#api-tester-spec-action
 					div#api-tester-spec-description
 
+				+pre-collapsed-panel('response-status', 'Response Status', true)
 				+raw-collapsed-panel('request-data', 'Request Data', true)
 				+pre-collapsed-panel('interaction-info', 'Info', true)
 				+pre-collapsed-panel('debug-info-timers', 'Debug Timers', true)
 				+pre-collapsed-panel('debug-info-memory', 'Debug Memory', true)
 				+pre-collapsed-panel('debug-info-db', 'Debug db', true)
+				+pre-collapsed-panel('debug-info-log', 'Stack Trace', false)
 
 			.col-md-15#api-tester-response
 				#errors
 
-				+pre-collapsed-panel('response-status', 'Response Status', true)
-				+pre-collapsed-panel('response-meta', 'Response Meta', true)
 				+raw-mlt-collapsed-panel('response-data', 'Response Data', true, 1)
+				+pre-collapsed-panel('response-meta', 'Response Meta', true)
 				+raw-collapsed-panel('response', 'Response', false)
-				+pre-collapsed-panel('debug-info-log', 'Stack Trace', false)
 				+raw-collapsed-panel('response-headers', 'Response Headers', true)
 				+pre-collapsed-panel('debug-info-headers', 'Request Headers', true)
 

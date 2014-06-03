@@ -59,7 +59,6 @@ define(function(require){
 				_.each(data, function (item, k) {
 					body += '<tr>';
 					_.each(headKeys, function (key) {
-						console.log(item[key]);
 						body += '<td>' + this.tester.modules.json.format(item[key]) + '</td>';
 					}, this);
 					body += '</tr>';
