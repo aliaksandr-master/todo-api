@@ -18,7 +18,7 @@ block container
 	div(style="margin: 15px 15px 0;")
 		.row#api-tester
 
-			.col-md-10#api-tester-info
+			.col-md-8#api-tester-info
 
 				.api-tester-spec-wr
 					.input-group
@@ -39,12 +39,12 @@ block container
 				+pre-collapsed-panel('debug-info-memory', 'Debug Memory', true)
 				+pre-collapsed-panel('debug-info-db', 'Debug db', true)
 
-			.col-md-13#api-tester-response
+			.col-md-15#api-tester-response
 				#errors
 
 				+pre-collapsed-panel('response-status', 'Response Status', true)
-				+raw-mlt-panel('response-data', 'Response Data', 1)
 				+pre-collapsed-panel('response-meta', 'Response Meta', true)
+				+raw-mlt-collapsed-panel('response-data', 'Response Data', true, 1)
 				+raw-collapsed-panel('response', 'Response', false)
 				+pre-collapsed-panel('debug-info-log', 'Stack Trace', false)
 				+raw-collapsed-panel('response-headers', 'Response Headers', true)

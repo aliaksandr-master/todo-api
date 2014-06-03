@@ -46,7 +46,20 @@ mixin raw-mlt-panel(name, text, value)
 			span.pull-left!= text
 			span.panel-raw-select: +select('_' + name, (value ? value : 0), viewTypes)
 		each item, index in viewTypes
-			pre.panel-body(class='-raw-mlt-' + index,class='-raw-mlt-n-' + item, style=value == index ? '' : 'display: none;')
+			pre.panel-body(class='-raw-mlt-' + index + ' -raw-mlt-n-' + item, style=value == index ? '' : 'display: none;')
+
+mixin raw-mlt-collapsed-panel(name, text, collapsed, value)
+	.panel.panel-default.panel-raw-mlt(id='api-tester-' + name)
+		- var viewTypes = ['json', 'table', 'html', 'raw'];
+		.panel-heading.clearfix
+			span.pull-right
+				= ' '
+				span.caret
+			span.panel-raw-select: +select('_' + name, (value ? value : 0), viewTypes)
+			a.panel-title(data-toggle="collapse", href='#api-tester-' + name + '--clps', style='display: block')!= text
+		.panel-collapse.collapse(id='api-tester-' + name+ '--clps', class=collapsed ? 'in' : '')
+			each item, index in viewTypes
+				pre.panel-body(class='-raw-mlt-' + index + ' -raw-mlt-n-' + item, style=value == index ? '' : 'display: none;')
 
 mixin raw-panel(name, text)
 	.panel.panel-default.panel-raw(id='api-tester-' + name)

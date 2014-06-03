@@ -129,10 +129,12 @@ define(function (require, exports, module) {
 				this.modules.panel.insertToRawMlt('response-data', contentSrc, content.data);
 				this.modules.panel.insertTo('response-meta', this.tester.modules.json.format(content.meta));
 				this.modules.panel.insertTo('response-status', this.tester.modules.json.format(_.omit(content, 'meta', 'data')));
+				this.modules.panel.insertToRaw('response', contentSrc, this.tester.modules.json.format(content));
 			} else {
 				this.modules.panel.insertToRawMlt('response-data', contentSrc, null);
-				this.modules.panel.insertToRaw('response-meta', '', '');
-				this.modules.panel.insertToRaw('response-status', '', '');
+				this.modules.panel.insertTo('response-meta', '');
+				this.modules.panel.insertTo('response-status', '');
+				this.modules.panel.insertToRaw('response', contentSrc, contentSrc);
 			}
 		},
 

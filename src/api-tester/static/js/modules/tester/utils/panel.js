@@ -36,7 +36,7 @@ define(function(require){
 			raw = (raw == null ? '' : raw) + '';
 			var $panel = this.$('#api-tester-'+name);
 			$panel.find('.panel-body.-transformed').html(transformed);
-			$panel.find('.panel-body.-raw').html(raw).attr('title', '  length: ' + raw.length + 'symbols  ');
+			$panel.find('.panel-body.-raw').text(raw).attr('title', '  length: ' + raw.length + 'symbols  ');
 		},
 
 		buildTableByArray: function (data) {
@@ -75,7 +75,7 @@ define(function(require){
 				}, this);
 				body += '</tbody>';
 			}
-			return '<table class="table table-bordered">' + head + body + '</table>';
+			return '<table class="table">' + head + body + '</table>';
 		},
 
 		buildJSON: function (data) {
