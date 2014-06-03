@@ -21,7 +21,6 @@ mixin collapsed-panel(name, text, collapsed)
 			.panel-body
 				block
 
-
 mixin pre-collapsed-panel(name, text, collapsed)
 	.panel.panel-default(id=name + '-wr')
 		.panel-heading
@@ -39,17 +38,15 @@ mixin run-panel(name, text)
 			span.pull-left!= text
 		.panel-body
 			.panel-body-content
-		//
-			.input-group
-				.input-group-btn
-					button.run-panel-add-button.btn.btn-default.btn-sm(type='button') Add
-				select.run-panel-add-button.form-control.input-sm
-					option(value='string') String
-					option(value='text')  Textarea
-					option(value='decimal')  Decimal
-					option(value='float')  Float
-					option(value='boolean')  Boolean
-					option(value='integer')  Integer
+
+mixin raw-mlt-panel(name, text, value)
+	.panel.panel-default.panel-raw-mlt(id='api-tester-' + name)
+		- var viewTypes = ['json', 'table', 'html', 'raw'];
+		.panel-heading.clearfix
+			span.pull-left!= text
+			span.panel-raw-select: +select('_' + name, (value ? value : 0), viewTypes)
+		each item, index in viewTypes
+			pre.panel-body(class='-raw-mlt-' + index,class='-raw-mlt-n-' + item, style=value == index ? '' : 'display: none;')
 
 mixin raw-panel(name, text)
 	.panel.panel-default.panel-raw(id='api-tester-' + name)

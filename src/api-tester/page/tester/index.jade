@@ -41,9 +41,11 @@ block container
 
 			.col-md-13#api-tester-response
 				#errors
-				#ok
 
-				+raw-collapsed-panel('response-data', 'Response Data', true)
+				+pre-collapsed-panel('response-status', 'Response Status', true)
+				+raw-mlt-panel('response-data', 'Response Data', 1)
+				+pre-collapsed-panel('response-meta', 'Response Meta', true)
+				+raw-collapsed-panel('response', 'Response', false)
 				+pre-collapsed-panel('debug-info-log', 'Stack Trace', false)
 				+raw-collapsed-panel('response-headers', 'Response Headers', true)
 				+pre-collapsed-panel('debug-info-headers', 'Request Headers', true)

@@ -1,0 +1,5 @@
+
+mixin select(name, value, options)
+	select(name=name)
+		each text, val in options
+			option(value=val, selected= value == val)= text
