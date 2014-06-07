@@ -2,7 +2,7 @@
 
 module.exports = function(grunt){
 
-	grunt.task.registerMultiTask('copy-new-files', function(){
+	grunt.task.registerMultiTask('copyNewFiles', function(){
 
 		var _ = require('lodash');
 		var fileFilterer = require('../grunt-additional-task-utils/fileFilterer');

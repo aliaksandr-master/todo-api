@@ -2,7 +2,7 @@
 
 module.exports = function (grunt) {
 
-	grunt.task.registerMultiTask('js-to-json', function () {
+	grunt.task.registerMultiTask('jsToJSON', function () {
 		var fileFilterer = require('../grunt-additional-task-utils/fileFilterer');
 		var logFileOk = require('../grunt-additional-task-utils/logFileOk');
 

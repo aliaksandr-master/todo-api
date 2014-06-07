@@ -1,7 +1,7 @@
 "use strict";
 module.exports = function (grunt) {
 
-	grunt.task.registerMultiTask('api-specs-compiler', function () {
+	grunt.task.registerMultiTask('apiSpecsCompiler', function () {
 		var _ = require('lodash');
 		var sha1 = require('sha1');
 

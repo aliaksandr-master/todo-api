@@ -2,7 +2,7 @@
 
 module.exports = function (grunt, options) {
 
-	grunt.task.registerMultiTask('split-files', function () {
+	grunt.task.registerMultiTask('splitFiles', function () {
 
 		var _ = require('lodash');
 		var fileFilterer = require('../grunt-additional-task-utils/fileFilterer');

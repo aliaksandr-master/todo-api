@@ -4,7 +4,13 @@ var _ = require('lodash');
 
 module.exports = function (grunt) {
 
-	var cwd = process.cwd();
+	var grind = require('./opt/nodejs/custom/grind-grunt/grind-grunt')(grunt, {
+		modulesDir: 'grunt',
+		autoLoad: true,
+		runners: true
+	});
+
+	var CWD = process.cwd();
 
 	var pkg = require('./package.json');
 
@@ -12,32 +18,26 @@ module.exports = function (grunt) {
 		'opt/nodejs/**/grunt-*.js',
 		'!opt/nodejs/**/grunt-grumble.js'
 	]);
+
 	_.each(fs, function (f) {
-		require(cwd + '/' + f)(grunt);
+		require(CWD + '/' + f)(grunt);
 	});
 
-	require('./opt/nodejs/custom/grunt-grumble/grunt-grumble')(grunt, {
-		modulesDir: '/grunt/app',
-		tasksDir: '/grunt/tasks',
-
-		CWD:    cwd,
-		SRC:    cwd + '/src',
-		OPT:    cwd + '/opt',
-		DEPLOY: cwd + '/deploy',
-		DEV:    cwd + '/.developer',
-		GRUNT:  cwd + '/grunt',
-		BUILD:  cwd + '/build',
-		VAR:    cwd + '/var',
+	grind.run({
+		CWD:    CWD,
+		SRC:    CWD + '/src',
+		OPT:    CWD + '/opt',
+		DEPLOY: CWD + '/deploy',
+		DEV:    CWD + '/.developer',
+		GRUNT:  CWD + '/grunt',
+		BUILD:  CWD + '/build',
+		VAR:    CWD + '/var',
 
 		utils: {
 			json2php: require('./opt/nodejs/custom/json-to-php-array/json-to-php-array')
 		},
 
 		buildTimestamp: Date.now(),
-		package: pkg,
-		liveReload: {
-			port: 35729,
-			src: '//' + pkg.name + ':35729/livereload.js'
-		}
+		package: pkg
 	});
 };

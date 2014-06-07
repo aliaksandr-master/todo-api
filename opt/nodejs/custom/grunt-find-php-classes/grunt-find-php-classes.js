@@ -2,7 +2,7 @@
 
 module.exports = function (grunt) {
 
-	grunt.task.registerMultiTask('find-php-classes', function () {
+	grunt.task.registerMultiTask('findPhpClasses', function () {
 		var _ = require('lodash');
 		var fileFilterer = require('../grunt-additional-task-utils/fileFilterer');
 		var logFileOk = require('../grunt-additional-task-utils/logFileOk');

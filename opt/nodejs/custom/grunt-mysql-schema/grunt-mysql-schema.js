@@ -2,7 +2,7 @@
 
 module.exports = function(grunt){
 
-	grunt.task.registerMultiTask('mysql-schema', function () {
+	grunt.task.registerMultiTask('MySQLDbSchema', function () {
 
 		var _ = require('lodash');
 		var shell = require("shelljs");

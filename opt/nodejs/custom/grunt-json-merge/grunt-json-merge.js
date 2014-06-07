@@ -1,7 +1,7 @@
 'use strict';
 
 module.exports = function (grunt) {
-	grunt.task.registerMultiTask('json-merge', function () {
+	grunt.task.registerMultiTask('jsonMerge', function () {
 		var _ = require('lodash');
 		var path = require('path');
 		var fileProcessor = require('../grunt-additional-task-utils/gruntTaskFileProcessor')(this);
