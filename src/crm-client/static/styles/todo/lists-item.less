@@ -1,0 +1,15 @@
+@import url('../base/base.less');
+
+@listsItemHeight: 32px;
+@listsItemFontSize: 16px;
+@listsItemLiPad: 5px;
+.todo-lists-li { display: block; list-style: none; ._clearfix(); border: 1px solid #ccc; ._grad_v(#ffffff, #eeeeee); border-radius: 4px; }
+.todo-lists-li + .todo-lists-li { margin-top: 5px; }
+.todo-lists-li-placeholder { height: @listsItemHeight; display: block; }
+.todo-lists-li-move { float: left; display: block; text-align: center; width: 20px !important; height: @listsItemHeight !important; line-height: @listsItemHeight + 4px !important; cursor: pointer; }
+.todo-lists-li-move:hover { background: #CCC; }
+.todo-lists-li-link { ._text_overflow(); height: @listsItemHeight; display: block; ._text(16px, @listsItemHeight); padding: 0 10px; }
+.todo-lists-li-share { display: none !important; }
+.todo-lists-li-remove { float: right; border-color: transparent; margin: 0; }
+.todo-lists-li.-active { background: #fff; }
+.todo-lists-li .btn { background: transparent; box-shadow: none; border: none; }

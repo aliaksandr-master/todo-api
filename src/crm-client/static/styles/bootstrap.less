@@ -1,0 +1,39 @@
+@import "base/base.less";
+@import url('../vendor/bootstrap/custom/css/bootstrap.css');
+
+/* CUSTOM INPUT */
+input.-click2edit { border-color: transparent; box-shadow: none; background: transparent; }
+input.-click2edit:focus {
+	background: #fff;
+}
+input.-click2edit.-empty { border-color: #ccc; }
+.-txt-center { text-align: center; }
+
+.btn {
+	font-family: @font-custom !important;
+	font-weight: normal;
+}
+.form-group {
+	position: relative;
+}
+.form-group label {
+	color: #371f05;
+	font-weight: normal;
+}
+.form-group .form-error {
+	position: absolute;
+	color: #b81900;
+	right: 6px;
+}
+.form-group + .form-group {
+	margin-top: 20px;
+}
+.form-group.form-submits {
+	margin-top: 35px;
+}
+input[type="password"].form-control.input-lg {
+	font-size: 30px;
+}
+.navbar {
+	box-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
+}

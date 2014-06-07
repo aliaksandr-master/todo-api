@@ -55,6 +55,7 @@ module.exports = function (grunt) {
 		'api/install',
 		'api-tester/install',
 		'client/install',
+		'crm-client/install',
 		'copyByConfig:install/vendor'
 	]);
 

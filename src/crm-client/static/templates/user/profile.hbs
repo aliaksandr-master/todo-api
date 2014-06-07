@@ -1,0 +1,13 @@
+<div class="user-profile">
+    <div class="text-right user-profile-logout-wr">
+        <div class="pull-left">
+            <select class="form-control input-lg user-profile-lang-select">
+                <option value="en"{{#if langIsEn}} selected="selected"{{/if}}>English Language</option>
+                <option value="ru"{{#if langIsRu}} selected="selected"{{/if}}>Русский Язык</option>
+            </select>
+        </div>
+        <a href="{{url 'user-logout'}}" class="btn btn-default btn-lg user-profile-logout pull-right">
+            <span class="glyphicon glyphicon-remove-circle"></span>&nbsp;&nbsp;{{t 'user.profile.log_out'}}
+        </a>
+    </div>
+</div>

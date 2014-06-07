@@ -1,0 +1,12 @@
+._load_font(@name, @path, @svgId: '', @font-weight: normal, @font-style: normal){
+	@font-face {
+		font-family: '@{name}';
+		src: url('@{path}.eot');
+		src:
+			url('@{path}.woff') format('woff'),
+			url('@{path}.ttf') format('truetype'),
+			url('@{path}.svg#@{svgId}') format('svg');
+		font-weight: @font-weight;
+		font-style: @font-style;
+	}
+}

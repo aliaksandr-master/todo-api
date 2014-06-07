@@ -1,0 +1,29 @@
+<div class="user-register">
+
+    <form action="/user/" data-name="register" method="post">
+        <br>
+        <h1>{{t 'user.register.register'}}</h1>
+        <br/>
+        <br/>
+        <div class="form-group">
+            <label>{{t 'forms.register.username'}}</label>
+            <input type="text" name="username" placeholder="" maxlength="40" class="form-control input-lg">
+        </div>
+        <div class="form-group">
+            <label>{{t 'forms.register.email'}}</label>
+            <input type="text" name="email" maxlength="255" class="form-control input-lg">
+        </div>
+        <div class="form-group">
+            <label>{{t 'forms.register.password'}}</label>
+            <input type="password" name="password" maxlength="255" class="form-control input-lg">
+        </div>
+        <div class="form-group">
+            <label>{{t 'forms.register.confirm_password'}}</label>
+            <input type="password" name="confirm_password" maxlength="255" class="form-control input-lg">
+        </div>
+        <div class="form-group text-right form-submits">
+            <a href="{{url 'user-login'}}" style="margin-right: 30px" class="btn btn-link">{{t 'user.login.login'}}</a>
+            <button type="submit" class="btn btn-warning btn-lg register-submit">{{t 'user.register.register'}}</button>
+        </div>
+    </form>
+</div>

@@ -8,4 +8,7 @@ RewriteRule ^api/?(.*)$ api/$1 [L]
 RewriteRule ^files/(.+)$ files/$1 [L]
 
 RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^crm/(.*)$ crm-client/$1 [L]
+
+RewriteCond %{REQUEST_FILENAME} !-f
 RewriteRule ^(.*)$ client/$1 [L]

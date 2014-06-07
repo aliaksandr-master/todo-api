@@ -3,8 +3,6 @@
 module.exports = function (grunt) {
 	var opt = this;
 
-	this.options('jshint', grunt.file.readJSON(opt.CWD + '/.jshintrc'), true);
-
 	this.pragma({
 		options: {
 			processors: {
@@ -57,6 +55,7 @@ module.exports = function (grunt) {
 		'api/build',
 		'api-tester/build',
 		'client/build',
+		'crm-client/build',
 		'pragma:build',
 		'copy:build/htaccess'
 	]);
