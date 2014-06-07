@@ -1,9 +1,10 @@
 "use strict";
 
-var _ = require('lodash');
+var time = Date.now();
 
 module.exports = function (grunt) {
 
+	var pkg = require('./package.json');
 	var grind = require('./opt/nodejs/custom/grind-grunt/grind-grunt')(grunt, {
 		modulesDir: 'grunt',
 		taskMethods: true
@@ -11,14 +12,7 @@ module.exports = function (grunt) {
 
 	var CWD = process.cwd();
 
-	var pkg = require('./package.json');
-
-	var fs = grunt.file.expand([
-		'opt/nodejs/**/grunt-*.js',
-		'!opt/nodejs/**/grunt-grumble.js'
-	]);
-
-	_.each(fs, function (f) {
+	grunt.file.expand([ 'opt/nodejs/**/grunt-*.js' ]).forEach(function (f) {
 		require(CWD + '/' + f)(grunt);
 	});
 
@@ -41,4 +35,6 @@ module.exports = function (grunt) {
 		buildTimestamp: Date.now(),
 		package: pkg
 	});
+
+	console.log('>> grunt time:', (Date.now() - time) / 1000, 's');
 };

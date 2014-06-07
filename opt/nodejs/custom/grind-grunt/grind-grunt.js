@@ -216,7 +216,7 @@ module.exports = function (grunt, options) {
 
 				if (conf != null) {
 					_.extend(config, conf);
-					conf = null;
+
 				}
 
 				if (!grind.$$main.$$name) {
