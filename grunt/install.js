@@ -3,20 +3,6 @@
 module.exports = function (grunt) {
 	var opt = this;
 
-	this.copyNewFiles('config', {
-		files: [
-			{
-				expand: true,
-				cwd: opt.SRC + '/configs',
-				src: '**/*.json',
-				dest: opt.DEV + '/configs'
-			}
-		]
-	}, false);
-
-	this.clean('temp', [
-		opt.VAR
-	]);
 
 	this.jshint('compile', {
 		src: [
@@ -33,30 +19,25 @@ module.exports = function (grunt) {
 		]
 	});
 
-	this.copyByConfig('vendor', {
-		files: [
-			{
-				expand: true,
-				cwd:  opt.SRC,
-				src: '**/vendor.runtime.json',
-				dest: opt.BUILD
-			}
-		]
-	}, false);
+	this.copyNewFiles('configs', {
+		files: [{
+			expand: true,
+			cwd: opt.SRC,
+			src: '**/configs/**/*.json',
+			dest: opt.DEV
+		}]
+	});
+
+	this.clean('temp', [
+		opt.VAR
+	]);
 
 	this.include([
-		'jshint:install/compile',
-		'jshint:install/src',
-		'copyNewFiles:install/config',
-
-		'clean:install/temp',
 		'opt/install',
 		'database/install',
 		'api/install',
 		'api-tester/install',
 		'client/install',
-		'crm-client/install',
-		'copyByConfig:install/vendor'
+		'crm-client/install'
 	]);
-
 };

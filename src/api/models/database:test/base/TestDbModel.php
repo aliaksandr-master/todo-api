@@ -11,7 +11,7 @@ abstract class TestDbModel extends BaseCrudModel  {
 	}
 
 	function getConnectDbParams () {
-		return /*#:injectData(".developer/configs/database/test.json")*/array()/*injectData#*/;
+		return /*#:injectData(".developer/database/configs/test.json")*/array()/*injectData#*/;
 	}
 
 }
