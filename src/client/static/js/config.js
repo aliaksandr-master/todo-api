@@ -26,9 +26,7 @@ require.config({
 		'jquery.swipe': '../vendor/jquery.event.swipe/jquery.event.swipe',
 		'jquery.move':  '../vendor/jquery.event.move/jquery.event.move',
 
-		'jquery-ui-touch-punch': '../vendor/jquery-ui-touch-punch-amd/jquery.ui.touch-punch',
-
-		'backbone.shim': 'shim/backbone.shim'
+		'jquery-ui-touch-punch': '../vendor/jquery-ui-touch-punch-amd/jquery.ui.touch-punch'
 	},
 
 	map:{

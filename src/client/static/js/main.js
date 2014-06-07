@@ -2,7 +2,7 @@
 
 define(function(require){
 
-	var BackboneShim = require('backbone.shim');
+	var BackboneShim = require('shim/backbone');
 	var BackboneStickIt = require('backbone.stickit');
 
 	var routes = require('routes');

@@ -9,12 +9,8 @@ module.exports = function (grunt) {
 
 	this.bower({
 		options: {
-			install: true,
 			verbose: true,
-			layout: 'byType',
-			targetDir: opt.BUILD + '/client/static/vendor',
-			cleanBowerDir: false,
-			cleanTargetDir: true
+			copy: false
 		}
 	});
 

@@ -11,7 +11,6 @@ module.exports = function (grunt) {
 		'client/compile/html',
 		'client/compile/script',
 		'client/compile/template',
-		'client/compile/content',
 		'client/compile/router'
 	]);
 

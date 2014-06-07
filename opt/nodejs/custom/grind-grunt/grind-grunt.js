@@ -11,9 +11,9 @@ var joinPaths = function (one, two) {
 };
 
 
-function GrindSequence (prefix, isSys) {
+function GrindSequence (grind, isSys) {
+	this.$$grind = grind;
 	this.$$sys = !!isSys;
-	this.$$prefix = prefix;
 	this.$$sq = [];
 	this.$$config = {};
 	this.$$options = {};
@@ -46,7 +46,7 @@ GrindSequence.prototype = {
 
 	include: function (arrTasks) {
 		if (_.isEmpty(arrTasks)) {
-			throw new Error(this.$$prefix + ' invalid tasks array (first argument) in include function');
+			throw new Error(this.$$grind.$$prefix + ' invalid tasks array (first argument) in include function');
 		}
 
 		if (!_.isArray(arrTasks)) {
@@ -59,12 +59,12 @@ GrindSequence.prototype = {
 
 	run: function (name, options, addToMain) {
 		var that = this,
-			target = that.$$prefix.replace(/^[\/]/, ''),
+			target = that.$$grind.$$prefix.replace(/^[\/]/, ''),
 			ref;
 
 		this.$$addToMain(addToMain);
 		if (!_.isObject(options) && !_.isArray(options) && !_.isFunction(options)) {
-			throw new Error(this.$$prefix + ': invalid config param of "' + name +'", must use array|object|function type');
+			throw new Error(this.$$grind.$$prefix + ': invalid config param of "' + name +'", must use array|object|function type');
 		}
 
 		name = name.replace(NAME_EXP, function (w, $1, $2) {
@@ -75,7 +75,7 @@ GrindSequence.prototype = {
 		ref = name + ':' + target;
 
 		if (this.$$config[name] && this.$$config[name][target] != null) {
-			throw new Error(this.$$prefix + ': Duplicate config name "' + ref + '"');
+			throw new Error(this.$$grind.$$prefix + ': Duplicate config name "' + ref + '"');
 		}
 
 		if (this.$$config[name] == null) {
@@ -94,7 +94,7 @@ GrindSequence.prototype = {
 		if (this.$$name != null) {
 			throw new Error('Rename "' + this.$$name + '" to "' + name + '" impossible!');
 		}
-		this.$$name = joinPaths(this.$$prefix, name).replace(/^[\/]/, '');
+		this.$$name = joinPaths(this.$$grind.$$prefix, name).replace(/^[\/]/, '');
 		return this;
 	}
 
@@ -102,15 +102,15 @@ GrindSequence.prototype = {
 
 function Grind (fpath, options) {
 	_.extend(this, options);
-	this.$$prefix = fpath.replace(/\.js$/, '');
+	this.$$prefix = fpath.replace(/\\+/g,'/').replace(/\.js$/, '').replace('/default', '');
 	this.$$nested = [];
-	this.$$main = new GrindSequence(this.$$prefix);
+	this.$$main = new GrindSequence(this);
 }
 
 Grind.prototype = {
 
 	$$mkGrind: function (isSys) {
-		var sq = new GrindSequence(this.$$prefix, isSys);
+		var sq = new GrindSequence(this, isSys);
 		this.$$nested.push(sq);
 		return sq;
 	},

@@ -28,6 +28,17 @@ module.exports = function (grunt) {
 		BUILD:  CWD + '/build',
 		VAR:    CWD + '/var',
 
+		lnk: function (before, after) {
+			var link = this.$$prefix.replace(/^([^\/]+)\/.+$/, '$1').trim();
+			if (before) {
+				link = before.replace(/\/?$/, '/') + link;
+			}
+			if (after) {
+				link = link + after.replace(/^\/?/, '/');
+			}
+			return link;
+		},
+
 		utils: {
 			json2php: require('./opt/nodejs/custom/json-to-php-array/json-to-php-array')
 		},

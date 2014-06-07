@@ -47,13 +47,22 @@ module.exports = function (grunt) {
 	});
 
 	this.copy('fonts', {
-		files: [{
-			expand: true,
-			cwd: opt.SRC + "/client/static/",
-			src: '**/*.{ttf,svg,eot,woff}',
-			dest: opt.BUILD + "/client/static/fonts/",
-			flatten: true
-		}]
+		files: [
+			{
+				expand: true,
+				cwd: opt.SRC + "/client/static/",
+				src: '**/*.{ttf,svg,eot,woff}',
+				dest: opt.BUILD + "/client/static/fonts/",
+				flatten: true
+			},
+			{
+				expand: true,
+				cwd: opt.OPT + "/frontend",
+				src: '**/{font,fonts}/**/*.{ttf,svg,eot,woff}',
+				dest: opt.BUILD + "/client/static/fonts/",
+				flatten: true
+			}
+		]
 	});
 
 	this.replace('fonts', {
