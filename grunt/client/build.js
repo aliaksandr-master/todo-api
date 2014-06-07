@@ -3,7 +3,7 @@
 module.exports = function (grunt) {
 	var opt = this;
 
-	this.add([
+	this.include([
 		'client/compile/env',
 		'client/compile/lang',
 		'client/compile/image',

@@ -20,7 +20,7 @@ module.exports = function (grunt) {
 		'env/test'
 	], false);
 
-	this.add([
+	this.include([
 		'install',
 		'deploy',
 		'client/deploy'

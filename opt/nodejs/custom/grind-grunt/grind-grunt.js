@@ -3,20 +3,11 @@
 var _ = require('lodash');
 var path = require('path');
 
-var NAME_EXP = /^([^:]+)\:?(.*)$/;
+var NAME_EXP = /^([^:]+):*(.*)$/;
 var CWD = process.cwd();
 
 var joinPaths = function (one, two) {
 	return path.join(one == null ? '' : one + '', two == null ? '' : two + '').replace(/\\/g, '/').replace(/\/$/, '');
-};
-
-var parseName = function (str, pref) {
-	var res = {};
-	str.replace(NAME_EXP, function (w, $1, $2) {
-		res.name = $1;
-		res.target = joinPaths(pref, $2).replace(/^[\/]/, '');
-	});
-	return res;
 };
 
 
@@ -25,10 +16,12 @@ function GrindSequence (prefix, isSys) {
 	this.$$prefix = prefix;
 	this.$$sq = [];
 	this.$$config = {};
-	this.$$opts = {};
+	this.$$options = {};
 	this.$$name = null;
 	this.$$skip = false;
 }
+
+var $$ALL = {};
 
 GrindSequence.prototype = {
 
@@ -39,26 +32,21 @@ GrindSequence.prototype = {
 		this.$$skip = !addToMain;
 	},
 
-	$$all: {},
-
 	options: function (taskName, options, isGlobal) {
-		isGlobal = isGlobal || false;
 		taskName = taskName.replace(NAME_EXP, '$1').trim();
-		var taskObj = {};
-		taskObj[taskName] = options;
 
 		if (isGlobal) {
-			_.merge(this.$$all, taskObj);
+			$$ALL[taskName] = options;
 		} else {
-			_.merge(this.$$opts, taskObj);
+			this.$$options[taskName] = options;
 		}
 
 		return this;
 	},
 
-	add: function (arrTasks) {
+	include: function (arrTasks) {
 		if (_.isEmpty(arrTasks)) {
-			throw new Error('invalid tasks array (first argument) in add function');
+			throw new Error(this.$$prefix + ' invalid tasks array (first argument) in include function');
 		}
 
 		if (!_.isArray(arrTasks)) {
@@ -70,23 +58,34 @@ GrindSequence.prototype = {
 	},
 
 	run: function (name, options, addToMain) {
+		var that = this,
+			target = that.$$prefix.replace(/^[\/]/, ''),
+			ref;
+
 		this.$$addToMain(addToMain);
 		if (!_.isObject(options) && !_.isArray(options) && !_.isFunction(options)) {
 			throw new Error(this.$$prefix + ': invalid config param of "' + name +'", must use array|object|function type');
 		}
 
-		var runner = parseName(name, this.$$prefix);
+		name = name.replace(NAME_EXP, function (w, $1, $2) {
+			target = joinPaths(target, $2.trim());
+			return $1.trim();
+		});
 
-		var ref = runner.name + ':' + runner.target;
+		ref = name + ':' + target;
 
-		var taskConfig = {};
-		taskConfig[runner.name] = {};
-		taskConfig[runner.name][runner.target] = options;
-		if (this.$$config[runner.name] && this.$$config[runner.name][runner.target] != null) {
+		if (this.$$config[name] && this.$$config[name][target] != null) {
 			throw new Error(this.$$prefix + ': Duplicate config name "' + ref + '"');
 		}
-		_.merge(this.$$config, taskConfig);
+
+		if (this.$$config[name] == null) {
+			this.$$config[name] = {};
+		}
+
+		this.$$config[name][target] = options;
+
 		this.$$sq.push(ref);
+
 		return this;
 	},
 
@@ -101,30 +100,33 @@ GrindSequence.prototype = {
 
 };
 
-function Grind (prefix, options) {
+function Grind (fpath, options) {
 	_.extend(this, options);
-	this.$$prefix = prefix;
+	this.$$prefix = fpath.replace(/\.js$/, '');
 	this.$$nested = [];
 	this.$$main = new GrindSequence(this.$$prefix);
 }
 
 Grind.prototype = {
 
-	_$mkGrind: function (isSys) {
+	$$mkGrind: function (isSys) {
 		var sq = new GrindSequence(this.$$prefix, isSys);
 		this.$$nested.push(sq);
 		return sq;
 	},
 
 	run: function (taskName, config, addToMain) {
-		var sq = this._$mkGrind();
+		var sq = this.$$mkGrind();
 		if (arguments.length === 1) {
 			return sq.alias(taskName, addToMain);
 		}
 		return sq.run(taskName, config, addToMain);
 	},
 
-	add: function (tasks) {
+	include: function (tasks) {
+		if (tasks != null && !_.isArray(tasks)) {
+			tasks = [tasks];
+		}
 		this.alias(tasks);
 		return null;
 	},
@@ -138,38 +140,28 @@ Grind.prototype = {
 		if (!_.isString(name)) {
 			throw new Error(this.$$prefix + ': invalid name type');
 		}
-		var sq = this._$mkGrind(!name);
+		var sq = this.$$mkGrind(!name);
 		sq.alias(name, addToMain);
-		sq.add(tasks);
+		sq.include(tasks);
 		return sq;
 	},
 
-	options: function (taskName, options, opt) {
-		this.$$main.options(taskName, options, opt);
+	options: function (taskName, options, isGlobal) {
+		this.$$main.options(taskName, options, isGlobal);
 		return null;
 	}
 
 };
 
-function filterator (grunt, cwd, callback, obj) {
-	cwd = joinPaths(CWD, cwd.replace(CWD, '').replace(/^.?[\/]]/, ''));
-	grunt.file.expand({ cwd: cwd }, '**/*.js').forEach(function (fpath) {
-		if (!/^_|[\/\\]_/.test(fpath)) {
-			callback.call(obj, joinPaths(cwd, fpath), fpath);
-		}
-	});
-}
-
 module.exports = function (grunt, options) {
 	options || (options = {});
 
 	options.modulesDir || (options.modulesDir = 'grunt');
-	options.autoLoad = options.autoLoad == null ? true : options.autoLoad;
-	options.runners  = options.runners == null ? true : options.runners;
+	options.taskMethods  = options.taskMethods == null ? true : options.taskMethods;
 
 	var tasks = [];
 
-	if (options.runners) {
+	if (options.taskMethods) {
 		var registerTask = grunt.task.registerTask;
 		grunt.task.registerTask = grunt.registerTask = function (taskName) {
 			tasks.push(taskName);
@@ -183,37 +175,49 @@ module.exports = function (grunt, options) {
 		};
 	}
 
-	if (options.autoLoad) {
-		require('load-grunt-tasks')(grunt);
-	}
+	var addTasksMethodsToRunner = function () {
+		if (!options.taskMethods) {
+			return;
+		}
+
+		_.each(tasks, function (name) {
+			var runner = function (targetName, config, addToMain) {
+				if (!_.isString(targetName)) {
+					addToMain = config;
+					config = targetName;
+					targetName = '';
+				}
+				targetName = targetName ? name + ':' + targetName : name;
+				return this.run(targetName, config, addToMain);
+			};
+			GrindSequence.prototype['RUN_' + name] = Grind.prototype['RUN_' + name] = runner;
+			if (!GrindSequence.prototype[name] && !Grind.prototype[name]) {
+				GrindSequence.prototype[name] = Grind.prototype[name] = runner;
+			}
+		});
+	};
 
 	return {
 		run: function (context) {
 			context || (context = {});
 			var config = {};
 
-			_.each(tasks, function (name) {
-				var runner = function (targetName, config, addToMain) {
-					if (!_.isString(targetName)) {
-						addToMain = config;
-						config = targetName;
-						targetName = '';
-					}
-					targetName = targetName ? name + ':' + targetName : name;
-					return this.run(targetName, config, addToMain);
-				};
-				GrindSequence.prototype['RUN_' + name] = Grind.prototype['RUN_' + name] = runner;
-				if (!GrindSequence.prototype[name] && !Grind.prototype[name]) {
-					GrindSequence.prototype[name] = Grind.prototype[name] = runner;
+			addTasksMethodsToRunner();
+
+			var modulesDir = joinPaths(CWD, options.modulesDir.replace(CWD, '').replace(/^.?[\/]]/, ''));
+			grunt.file.expand({ cwd: modulesDir }, '**/*.js').forEach(function (fpath) {
+				if (/^_|[\/\\]_/.test(fpath)) {
+					return;
 				}
-			});
 
-			filterator(grunt, options.modulesDir, function (absPath, fpath) {
-				var prefix = fpath.replace(/\.js$/, '').replace(/([^\/]+)\/\1$/, '$1');
+				var grind = new Grind(fpath, context);
 
-				var grind = new Grind(prefix, context);
+				var conf = require(joinPaths(modulesDir, fpath)).call(grind, grunt, context);
 
-				require(absPath).call(grind, grunt, context);
+				if (conf != null) {
+					_.extend(config, conf);
+					conf = null;
+				}
 
 				if (!grind.$$main.$$name) {
 					grind.$$main.alias();
@@ -222,30 +226,23 @@ module.exports = function (grunt, options) {
 				var nestedSq = [];
 				_.each(grind.$$nested, function (grindSq, index) {
 
-					_.each(grindSq.$$opts, function (options, taskName) {
+					_.each(grindSq.$$options, function (options, taskName) {
 						if (grindSq.$$config[taskName] == null) {
-							throw new Error('undefined task name "' + taskName +'" in config for add options ' + JSON.stringify(options));
+							throw new Error(grindSq.$$prefix + ' add options to undefined task "' + taskName +'"');
 						}
 						_.each(grindSq.$$config[taskName], function (v, k) {
 							grindSq.$$config[taskName][k].options = _.extend({}, options, grindSq.$$config[taskName][k].options);
 						});
 					});
 
-					_.each(grindSq.$$all, function (v, k) {
-						if (config[k] == null) {
-							config[k] = {};
-						}
-						config[k].options = _.extend({}, v, config[k].options);
-					});
-
 					_.each(grindSq.$$config, function (v, k) {
-						if (config[k] != null) {
-							_.each(v, function (_v, _k) {
-								config[k][_k] = _v;
-							});
-						} else {
+						if (config[k] == null) {
 							config[k] = v;
+							return;
 						}
+						_.each(v, function (_v, _k) {
+							config[k][_k] = _v;
+						});
 					});
 
 					if (grindSq.$$sys) {
@@ -253,20 +250,27 @@ module.exports = function (grunt, options) {
 						return;
 					}
 
-					var sq = grindSq.$$sq;
-					if (grindSq.$$name != null) {
-						grunt.task.registerTask(grindSq.$$name, sq);
-						if (!grindSq.$$skip && sq.length) {
-							nestedSq.push(grindSq.$$name);
+					if (grindSq.$$name) {
+						grunt.task.registerTask(grindSq.$$name, grindSq.$$sq);
+					}
+
+					if (!grindSq.$$skip && grindSq.$$sq.length) {
+						var sq = grindSq.$$sq;
+						if (grindSq.$$name) {
+							sq = [grindSq.$$name];
 						}
-					} else {
-						if (!grindSq.$$skip && sq.length) {
-							nestedSq = nestedSq.concat(sq);
-						}
+						nestedSq = nestedSq.concat(sq);
 					}
 				});
 
 				grunt.task.registerTask(grind.$$main.$$name, nestedSq);
+			});
+
+			_.each($$ALL, function (v, k) {
+				if (config[k] == null) {
+					config[k] = {};
+				}
+				config[k].options = v;
 			});
 
 			grunt.initConfig(config);

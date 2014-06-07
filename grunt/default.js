@@ -3,7 +3,7 @@
 module.exports = function (grunt) {
 	var opt = this;
 
-	this.add([
+	this.include([
 		'install',
 		'build'
 	]);

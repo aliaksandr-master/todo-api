@@ -40,10 +40,8 @@ module.exports = function (grunt) {
 				beauty: false,
 				outputJSON: opt.VAR + '/classes/api.json'
 			}
-		});
+		})
 
-	this.add([
-		"api/specs"
-	]);
+		.include( "api/specs" );
 
 };

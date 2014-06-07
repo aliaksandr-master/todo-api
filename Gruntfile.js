@@ -6,8 +6,7 @@ module.exports = function (grunt) {
 
 	var grind = require('./opt/nodejs/custom/grind-grunt/grind-grunt')(grunt, {
 		modulesDir: 'grunt',
-		autoLoad: true,
-		runners: true
+		taskMethods: true
 	});
 
 	var CWD = process.cwd();
@@ -22,6 +21,8 @@ module.exports = function (grunt) {
 	_.each(fs, function (f) {
 		require(CWD + '/' + f)(grunt);
 	});
+
+	require('load-grunt-tasks')(grunt);
 
 	grind.run({
 		CWD:    CWD,

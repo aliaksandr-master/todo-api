@@ -53,7 +53,7 @@ module.exports = function (grunt) {
 		}]
 	}, false);
 
-	this.add([
+	this.include([
 		'api/build',
 		'api-tester/build',
 		'client/build',

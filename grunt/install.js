@@ -44,7 +44,7 @@ module.exports = function (grunt) {
 		]
 	}, false);
 
-	this.add([
+	this.include([
 		'jshint:install/compile',
 		'jshint:install/src',
 		'copyNewFiles:install/config',
