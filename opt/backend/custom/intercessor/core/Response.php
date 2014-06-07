@@ -226,11 +226,13 @@ class Response extends ComponentAbstract {
 				if ($this->env->debug) {
 					$code = Utils::get(Utils::get($this->env->statuses, $status), 'code', 500);
 					if (!($code >= 500 && $code < 600)) {
-						$avlStatuses = Utils::get($this->request->spec('response', array()), 'statuses', null);
-						if (is_null($avlStatuses)) {
-							$this->fatalError('Empty statuses in spec'.$this->request->spec('name'));
-						} else if (!in_array($status, $avlStatuses)) {
-							$this->fatalError('undefined status "'.$status.'"');
+						if ($this->request->spec()) {
+							$avlStatuses = Utils::get($this->request->spec('response', array()), 'statuses', null);
+							if (is_null($avlStatuses)) {
+								$this->fatalError('Empty statuses in spec'.$this->request->spec('name'));
+							} else if (!in_array($status, $avlStatuses)) {
+								$this->fatalError('undefined status "'.$status.'"');
+							}
 						}
 					}
 				}
