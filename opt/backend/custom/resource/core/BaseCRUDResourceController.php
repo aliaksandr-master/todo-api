@@ -2,24 +2,77 @@
 
 class BaseCRUDResourceController extends BaseResourceController {
 
+	function accessOnlyOwner () {
+		$attr = !empty($this->onlyOwnerMethodMap[$this->request->action()]) ? $this->onlyOwnerMethodMap[$this->request->action()] : null;
+		$specAccess = $this->request->spec('access');
+		if (!$attr && !empty($specAccess['only_owner'])) {
+			$attr = $specAccess['only_owner'];
+		}
+		if ($attr) {
+			if (!is_string($attr)) {
+				$attr = $this->onlyOwnerAttr;
+			}
+		}
+		return $attr;
+	}
+
+	protected $onlyOwnerAttr = 'user_id';
+
+	protected $onlyOwnerMethodMap = array();
+
 	function getOne ($id) {
-		return $this->model->promoter('get')->byId($id)->limit(1, 0);
+		$promoter = &$this->model->promoter('get');
+
+		$onlyOwnerAttr = $this->accessOnlyOwner();
+		if ($onlyOwnerAttr) {
+			$promoter->where($onlyOwnerAttr, $this->user->current("id"));
+		}
+
+		return $promoter->byId($id)->limit(1, 0);
 	}
 
 	function getMany () {
-		return $this->model->promoter('get')->limit($this->request->dataLimit(), $this->request->dataOffset());
+		$promoter = &$this->model->promoter('get');
+
+		$onlyOwnerAttr = $this->accessOnlyOwner();
+		if ($onlyOwnerAttr) {
+			$promoter->where($onlyOwnerAttr, $this->user->current("id"));
+		}
+
+		return $promoter->limit($this->request->dataLimit(), $this->request->dataOffset());
 	}
 
 	function createOne () {
-		return $this->model->promoter('create')->set($this->prepareInputData($this->request->body()));
+		$promoter = &$this->model->promoter('create');
+
+		$onlyOwnerAttr = $this->accessOnlyOwner();
+		if ($onlyOwnerAttr) {
+			$promoter->set($onlyOwnerAttr, $this->user->current("id"));
+		}
+
+		return $promoter->set($this->prepareInputData($this->request->body()));
 	}
 
 	function updateOne ($id) {
-		return $this->model->promoter('update')->set($this->prepareInputData($this->request->body()))->byId($id);
+		$promoter = &$this->model->promoter('update');
+
+		$onlyOwnerAttr = $this->accessOnlyOwner();
+		if ($onlyOwnerAttr) {
+			$promoter->set($onlyOwnerAttr, $this->user->current("id"));
+		}
+
+		return $promoter->set($this->prepareInputData($this->request->body()))->byId($id);
 	}
 
 	function deleteOne ($id) {
-		return $this->model->promoter('delete')->byId($id);
+		$promoter = &$this->model->promoter('delete');
+
+		$onlyOwnerAttr = $this->accessOnlyOwner();
+		if ($onlyOwnerAttr) {
+			$promoter->where($onlyOwnerAttr, $this->user->current("id"));
+		}
+
+		return $promoter->byId($id);
 	}
 
 	function prepareInputData ($data) {

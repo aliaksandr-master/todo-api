@@ -51,11 +51,15 @@ abstract class DbTableModel extends DbModel {
 		return array();
 	}
 
+	protected function compileDbTableName () {
+		$_tableName = Intercessor\Utils::underscoreCase(get_class($this));
+		$_tableName = preg_replace('/_*model.*$/i', '', $_tableName);
+		return $_tableName;
+	}
+
 	final function getDbTableName () {
 		if (empty($this->_dbTableName)) {
-			$_tableName = Intercessor\Utils::underscoreCase(get_class($this));
-			$_tableName = preg_replace('/_*model.*$/i', '', $_tableName);
-			$this->_dbTableName = $_tableName;
+			$this->_dbTableName = $this->compileDbTableName();
 		}
 
 		return $this->_dbTableName;
