@@ -28,14 +28,21 @@ module.exports = function(grunt){
 
 			var shellResult = shell.exec(command, { silent: true }).output;
 
-			var dumpJSON = xml.toJson(shellResult, {
-				object: true,
-				reversible: false,
-				coerce: true,
-				sanitize: true,
-				trim: true,
-				arrayNotation: false
-			});
+			var dumpJSON = {};
+
+			try {
+				dumpJSON = xml.toJson(shellResult, {
+					object: true,
+					reversible: false,
+					coerce: true,
+					sanitize: true,
+					trim: true,
+					arrayNotation: false
+				});
+			} catch (e) {
+				grunt.fail.fatal(shellResult);
+				return {};
+			}
 
 			var sourceScheme = {table:{},tables:[]};
 
