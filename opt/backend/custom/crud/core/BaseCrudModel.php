@@ -5,7 +5,7 @@
 /**
  * Class BaseCrudModel
  */
-abstract class BaseCrudModel extends DbTableModel implements ICRUDModel {
+abstract class BaseCrudModel extends DbTableModel implements ICRUDModel, IModelPromoter {
 
 
 	/**
