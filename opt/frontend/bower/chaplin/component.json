@@ -1,12 +1,12 @@
 {
   "name": "chaplin",
-  "repo": "chaplinjs/downloads",
-  "version": "1.0.0",
+  "repo": "YAndrew91/downloads",
+  "version": "1.0.0-dev-3",
   "main": "chaplin.js",
   "scripts": [
     "chaplin.js"
   ],
   "dependencies": {
-    "components/backbone": "1.0.0"
+    "bower_components/backbone": "1.0.0"
   }
 }

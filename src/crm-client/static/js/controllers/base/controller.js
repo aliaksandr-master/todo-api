@@ -28,8 +28,6 @@ define(function(require, exports, module){
 		},
 
 		initialize: function(){
-			$(document).off('.mainSwipe').off('swipeleft.mainSwipe');
-			$(document).off('.mainSwipe').off('swiperight.mainSwipe');
 			BaseController.__super__.initialize.apply(this, arguments);
 			preloader.off();
 		}

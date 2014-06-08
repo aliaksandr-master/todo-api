@@ -1,6 +1,6 @@
 {
   "name": "chaplin",
-  "version": "1.0.0",
+  "version": "1.0.0-dev-3",
   "description": "Chaplin.js",
   "main": "chaplin.js",
   "scripts": {
@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/chaplinjs/downloads.git"
+    "url": "git://github.com/YAndrew91/downloads.git"
   },
   "author": "Chaplin team",
   "license": "MIT",

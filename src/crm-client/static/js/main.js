@@ -1,19 +1,17 @@
 define(function(require){
 	'use strict';
 
-	require('backbone');
 	require('lib/shim/backbone');
-	require('backbone.stickit');
 
 	var Chaplin = require('chaplin');
 	var routes = require('routes');
 
 	var Application = Chaplin.Application.extend({});
 
-	if(window.localStorage && localStorage.getItem('build') !== window.build){
-		localStorage.clear();
-		localStorage.setItem('build', window.build);
-	}
+//	if(window.localStorage && localStorage.getItem('build') !== window.build){
+//		localStorage.clear();
+//		localStorage.setItem('build', window.build);
+//	}
 
 	return new Application({
 
@@ -25,7 +23,7 @@ define(function(require){
 		trailing: true,
 
 		// DISPATCHER
-		controllerPath: 'controllers/',
+		controllerPath: 'controllers/modules/',
 		controllerSuffix: ''
 
 	});

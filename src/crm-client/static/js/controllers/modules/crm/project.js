@@ -11,13 +11,14 @@ define(function(require, exports, module){
 
 	var StaticController = BaseController.extend({
 
-		list: function () {
-			this.collection = new CrmProjectCollection();
-			this.collection.fetch().then(function () {
-				this.view = new CrmProjectListView({
-					collection: this.collection,
+		index: function () {
+			this.projectCollection = new CrmProjectCollection();
+			this.projectCollection.fetch().then(function () {
+				this.projectsView = new CrmProjectListView({
+					collection: this.projectCollection,
 					region: "main/content"
 				});
+				this.projectsView.render();
 			}.bind(this));
 		},
 

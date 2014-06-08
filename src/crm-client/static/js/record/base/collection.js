@@ -11,8 +11,14 @@ define(function(require, exports, module){
 
 		format: "json",
 
+		remote: true, // DualStorage option
+
+		local: true,   // DualStorage option
+
 		initialize: function(models, options){
 			options = options || {};
+
+			this.requestMeta = [];
 
 			if(options.propModel){
 				options = _.clone(options);
@@ -23,20 +29,14 @@ define(function(require, exports, module){
 			BaseCollection.__super__.initialize.apply(this, arguments);
 		},
 
-		remote: true, // DualStorage option
-
-		local: true,   // DualStorage option
-
 		dispose: function(){
-			this.propModel = {};
+			this.propModel = null;
 			return BaseCollection.__super__.dispose.apply(this, arguments);
 		},
 
-		clean: function(){
-			while (this.length) {
-				this.first().destroy.apply(arguments);
-			}
-			return this;
+		parse: function (resp, f1, f2, f3) {
+			this.requestMeta.push(resp.meta);
+			return BaseCollection.__super__.parse.call(this, resp.data, f1, f2, f3);
 		}
 
 	});

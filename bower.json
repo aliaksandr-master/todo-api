@@ -17,7 +17,7 @@
 		"backbone.dualstorage": "~1.1.0",
 		"backbone.stickit": "~0.7.0",
 		"handlebars": "~1.0.0",
-		"chaplin": "latest",
+		"chaplin": "git://github.com/YAndrew91/downloads.git#1.0.0-dev-3",
 		"lodash": "~2.0.0",
 		"almond": "latest",
 		"requirejs": "~2.1.9",

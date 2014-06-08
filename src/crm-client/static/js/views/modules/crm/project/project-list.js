@@ -1,19 +1,17 @@
 define(function(require, exports, module){
 	'use strict';
 
-	var BaseCollectionView = require('views/base/collection-view');
-	var CrmProjectListItemView = require('views/base/collection-view');
+	var BaseView = require('views/base/view');
 	var template = require('templates/modules/crm/project/project-list');
 
-	require('css!styles/modules/crm/project/project-list');
+	var CrmProjectListItem = require('./project-list-item');
 
-	var CrmProjectListView = BaseCollectionView.extend({
+	var Chaplin = require('chaplin');
+	var CrmProjectListView = Chaplin.CollectionView.extend({
 
-		itemView: CrmProjectListItemView,
+		itemView: CrmProjectListItem,
 
-		listSelector: '.crm-project-list-l',
-
-		autoRender: true,
+		getTemplateFunction: BaseView.prototype.getTemplateFunction,
 
 		template: template
 
