@@ -318,7 +318,7 @@ define(function(require){
 		},
 
 		onRequestSuccess: function (requestObj, response, jqXHR) {
-
+			requestObj.headers = jqXHR.getAllResponseHeaders();
 			requestObj.requestTime = (Date.now() - requestObj.time)/1000;
 			this.tester.showErrors();
 			this.tester.modules.debug.show(response, requestObj);
@@ -330,6 +330,7 @@ define(function(require){
 		onRequestError: function (requestObj, response, jqXHR) {
 			var responseSrc = response;
 
+			requestObj.headers = jqXHR.getAllResponseHeaders();
 			requestObj.requestTime = (Date.now() - requestObj.time)/1000;
 
 			try {

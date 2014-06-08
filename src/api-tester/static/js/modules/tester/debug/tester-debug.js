@@ -48,7 +48,6 @@ define(function(require){
 
 		showTimers: function (responseDebug) {
 			var timers = {};
-			console.log(responseDebug.timers);
 			_.each(responseDebug.timers, function (timer, name) {
 				timers[name] = timer.stop[0] - timer.start[0];
 			});
