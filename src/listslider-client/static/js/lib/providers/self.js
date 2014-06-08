@@ -7,7 +7,7 @@ define(function(require, exports, module){
 
 		version: '',
 
-		base: 'client/',
+		base: window.moduleName + '/',
 
 		defaultParams: {
 			dataType: 'json',

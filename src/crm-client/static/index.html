@@ -10,12 +10,13 @@
     <!--meta-->
     <title>List Slider Dashboard</title>
     <!--/meta-->
-    <link rel="icon" href="/crm-client/static/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/${module:NAME}/static/favicon.ico" type="image/x-icon">
 </head>
 <body>
-    <script>window.build='${config:buildTimestamp}';</script>
+    <script>window.build = '${build:timestamp}';</script>
+    <script>window.moduleName = '${module:NAME}';</script>
     <script src="/opt/frontend/bower/requirejs/require.js"></script>
-    <script src="/crm-client/static/js/config.js"></script>
+    <script src="/${module:NAME}/static/js/config.js"></script>
     <script>require(['main']);</script>
 </body>
 </html>

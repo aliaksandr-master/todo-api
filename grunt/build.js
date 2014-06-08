@@ -54,7 +54,7 @@ module.exports = function (grunt) {
 	this.include([
 		'api/build',
 		'api-tester/build',
-		'client/build',
+		'listslider-client/build',
 		'crm-client/build',
 		'pragma:build',
 		'copy:build/htaccess'

@@ -11,4 +11,4 @@ RewriteCond %{REQUEST_FILENAME} !-f
 RewriteRule ^crm/(.*)$ crm-client/$1 [L]
 
 RewriteCond %{REQUEST_FILENAME} !-f
-RewriteRule ^(.*)$ client/$1 [L]
+RewriteRule ^(.*)$ listslider-client/$1 [L]

@@ -4,7 +4,7 @@ require.config({
 
 	enforceDefine: false,
 
-	baseUrl: '/client/static-${config:buildTimestamp}/js/',
+	baseUrl: '/${module:NAME}/static-${build:timestamp}/js/',
 
 	paths: {
 		'styles': '../styles',

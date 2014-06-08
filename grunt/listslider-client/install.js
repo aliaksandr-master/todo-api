@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 module.exports = function (grunt) {
 	var opt = this,
@@ -6,5 +6,8 @@ module.exports = function (grunt) {
 		SRC = this.lnk(opt.SRC),
 		BUILD = this.lnk(opt.BUILD);
 
+	this.clean([
+		BUILD
+	]);
 
 };

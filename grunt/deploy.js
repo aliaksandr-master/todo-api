@@ -23,7 +23,7 @@ module.exports = function (grunt) {
 	this.include([
 		'install',
 		'deploy',
-		'client/deploy',
+		'listslider-client/deploy',
 		'crm-client/deploy'
 	]);
 

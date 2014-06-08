@@ -1,28 +1,31 @@
-"use strict";
+'use strict';
 
 module.exports = function (grunt) {
-	var opt = this;
+	var opt = this,
+		NAME = this.lnk(),
+		SRC = this.lnk(opt.SRC),
+		BUILD = this.lnk(opt.BUILD);
 
 	this.clean([
-		opt.BUILD + '/client/images'
+		BUILD + '/images'
 	]);
 
 	this.copy({
 		files: [
 			{
 				expand: true,
-				cwd: this.SRC + "/client/static/",
+				cwd: SRC + '/static/',
 				src: [
 					'images/**/*.{png,jpg,jpeg,svg,gif,ico}',
 					'images/*.{png,jpg,jpeg,gif,svg,ico}',
 					'vendor/**/*.{png,jpg,jpeg,gif,svg,ico}',
 					'vendor/*.{png,jpg,jpeg,gif,svg,ico}'
 				],
-				dest: this.BUILD + "/client/static/"
+				dest: BUILD + '/static/'
 			},
 			{
-				src: this.SRC + '/client/static/favicon.ico',
-				dest: this.BUILD + '/client/static/favicon.ico'
+				src: SRC + '/static/favicon.ico',
+				dest: BUILD + '/static/favicon.ico'
 			}
 		]
 	});

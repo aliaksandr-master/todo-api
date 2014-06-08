@@ -2,7 +2,10 @@
 
 
 module.exports = function (grunt) {
-	var opt = this;
+	var opt = this,
+		NAME = this.lnk(),
+		SRC = this.lnk(opt.SRC),
+		BUILD = this.lnk(opt.BUILD);
 	var _ = require('lodash');
 
 	this

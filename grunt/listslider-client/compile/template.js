@@ -1,10 +1,13 @@
-"use strict";
+'use strict';
 
 module.exports = function (grunt) {
-	var opt = this;
+	var opt = this,
+		NAME = this.lnk(),
+		SRC = this.lnk(opt.SRC),
+		BUILD = this.lnk(opt.BUILD);
 
 	this.clean([
-		opt.BUILD + '/client/static/templates'
+		BUILD + '/static/templates'
 	]);
 
 	this.handlebars({
@@ -17,9 +20,9 @@ module.exports = function (grunt) {
 		},
 		files: [{
 			expand: true,
-			cwd: opt.SRC + "/client/static/templates",
+			cwd: SRC + '/static/templates',
 			src: '**/*.hbs',
-			dest: opt.BUILD + '/client/static/templates',
+			dest: BUILD + '/static/templates',
 			ext: '.js'
 		}]
 	});

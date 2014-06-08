@@ -1,46 +1,54 @@
-"use strict";
+'use strict';
 
 module.exports = function (grunt) {
-	var opt = this;
+	var opt = this,
+		NAME = this.lnk(),
+		SRC = this.lnk(opt.SRC),
+		BUILD = this.lnk(opt.BUILD);
 
 	var _ = require('lodash');
 
 	var configs = {
+		module: {
+			NAME: NAME,
+			BUILD: BUILD,
+			SRC: SRC
+		},
 		config: opt,
 		options: opt,
-		package: opt.package || {},
-		build: opt.build || {}
+		package: opt.package,
+		build: opt.build
 	};
 
 	this.jshint({
 		src: [
-			opt.SRC + '/client/static/js/**/*.js',
-			opt.SRC + '/client/static/*.js'
+			SRC + '/static/js/**/*.js',
+			SRC + '/static/*.js'
 		]
 	});
 
 	this.clean([
-		opt.BUILD + '/client/js/**/*.js',
-		opt.BUILD + '/client/js/main.js',
-		opt.BUILD + '/client/js/config.js'
+		BUILD + '/js/**/*.js',
+		BUILD + '/js/main.js',
+		BUILD + '/js/config.js'
 	]);
 
 	this.copy({
 		files: [{
 			expand: true,
-			cwd: opt.SRC + "/client/static/js/",
+			cwd: SRC + '/static/js/',
 			src: '**/*.js',
-			dest: opt.BUILD + "/client/static/js/"
+			dest: BUILD + '/static/js/'
 		}]
 	});
 
 	this.replace({
 		src: [
-			opt.BUILD + '/client/static/**/*.{js,html,css}'
+			BUILD + '/static/**/*.{js,html,css}'
 		],
 		overwrite: true,
 		replacements: [{
-			from: /\$\{(config|build|options|package):([^\}]+)\}/g,
+			from: /\$\{(config|build|options|module|package):([^\}]+)\}/g,
 			to: function (word, _i, _f, matches) {
 				var config = configs[matches[0]],
 					name = matches[1],
@@ -49,7 +57,7 @@ module.exports = function (grunt) {
 					},config);
 
 				if (value == null) {
-					console.error('Configuration variable "' + name + '" is not defined in config files!');
+					grunt.fail.fatal(_f + 'Configuration variable "' + name + '" is not defined in config files!');
 					grunt.fail();
 				}
 				return value;

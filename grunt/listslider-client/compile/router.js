@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 module.exports = function (grunt) {
 	var opt = this,
@@ -10,16 +10,14 @@ module.exports = function (grunt) {
 		options: {
 			data: {
 				routes: function() {
-					return require(opt.lnk(opt.SRC, 'static/config/route.json'));
+					return require(SRC + '/static/config/route.json');
 				}
 			}
 		},
-		files: [
-			{
-				src: opt.GRUNT + '/_assets/templates/route.tpl',
-				dest: opt.lnk(opt.BUILD, 'static/js/routes.js')
-			}
-		]
+		files: [{
+			src: opt.GRUNT + '/_assets/templates/route.tpl',
+			dest: BUILD + '/static/js/routes.js'
+		}]
 	});
 
 };

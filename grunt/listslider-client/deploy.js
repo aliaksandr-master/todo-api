@@ -1,7 +1,10 @@
 'use strict';
 
 module.exports = function (grunt) {
-	var opt = this;
+	var opt = this,
+		NAME = this.lnk(),
+		SRC = this.lnk(opt.SRC),
+		BUILD = this.lnk(opt.BUILD);
 
 	this.less({
 		options: {
@@ -13,22 +16,22 @@ module.exports = function (grunt) {
 				expand: true,
 				overwrite: true,
 				src: [
-					opt.BUILD + '/client/**/*.css'
+					BUILD + '/**/*.css'
 				]
 			}
 		]
 	});
 
 	this.clean('deploy', [
-		opt.DEPLOY + '/client'
+		opt.DEPLOY + '/' + NAME
 	]);
 
 	this.copy('2deploy', {
 		files: [{
 			expand: true,
-			cwd: opt.BUILD + '/client',
+			cwd: BUILD,
 			src: [ '**/*' ],
-			dest: opt.DEPLOY + '/client'
+			dest: opt.DEPLOY + '/' + NAME
 		}]
 	});
 
@@ -36,7 +39,7 @@ module.exports = function (grunt) {
 	var _ = require('lodash');
 
 	var incOptions = {
-		cwd: opt.BUILD + '/client/static/js',
+		cwd: BUILD + '/static/js',
 		rename: function(base, opt) {
 			return opt.replace(/\.js$/, '');
 		}
@@ -46,15 +49,15 @@ module.exports = function (grunt) {
 
 	this.requirejs({
 		options: {
-			appDir: opt.BUILD + '/client/static',
+			appDir: BUILD + '/static',
 			baseUrl: 'js',
-			dir: opt.DEPLOY + '/client/static',
+			dir: opt.DEPLOY + '/' + NAME + '/static',
 			modules: [{
 				name: 'main',
 				include: include,
 				insertRequire: ['main']
 			}],
-			mainConfigFile: opt.DEPLOY + '/client/static/js/config.js',
+			mainConfigFile: opt.DEPLOY + '/' + NAME + '/static/js/config.js',
 			almond: true,
 			optimize: 'uglify2',
 			useStrict: true,
@@ -64,7 +67,7 @@ module.exports = function (grunt) {
 			inlineText: false
 			//				generateSourceMaps: true,
 			//				cssIn: 'styles/index.css',
-			//				out: opt.DEPLOY + '/client/static/styles/main.css',
+			//				out: opt.DEPLOY + '/' + NAME + '/static/styles/main.css',
 			//				optimizeCss: 'standard.keepLines',
 			//				cssImportIgnore: null,
 			//				uglify2: {
@@ -105,15 +108,15 @@ module.exports = function (grunt) {
 	});
 
 	this.clean('build', [
-		opt.BUILD + '/client'
+		BUILD
 	]);
 
 	this.copy('2build', {
 		files: [{
 			expand: true,
-			cwd: opt.DEPLOY + '/client',
+			cwd: opt.DEPLOY + '/' + NAME,
 			src: [ '**/*' ],
-			dest: opt.BUILD + '/client'
+			dest: BUILD
 		}]
 	});
 

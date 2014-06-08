@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 module.exports = function (grunt) {
 	var opt = this,
@@ -12,8 +12,8 @@ module.exports = function (grunt) {
 		},
 
 		files: [{
-			src: opt.lnk(opt.SRC, '.htaccess'),
-			dest: opt.lnk(opt.BUILD, '.htaccess')
+			src: SRC + '/.htaccess',
+			dest: BUILD + '/.htaccess'
 		}]
 	});
 

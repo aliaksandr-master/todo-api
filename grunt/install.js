@@ -62,7 +62,7 @@ module.exports = function (grunt) {
 		'database/install',
 		'api/install',
 		'api-tester/install',
-		'client/install',
+		'listslider-client/install',
 		'crm-client/install'
 	]);
 };

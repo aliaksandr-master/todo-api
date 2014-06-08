@@ -1,18 +1,21 @@
-"use strict";
+'use strict';
 
 module.exports = function (grunt) {
-	var opt = this;
+	var opt = this,
+		NAME = this.lnk(),
+		SRC = this.lnk(opt.SRC),
+		BUILD = this.lnk(opt.BUILD);
 
 	this.copy({
 		files: [
 			{
 				expand: true,
-				cwd: opt.SRC + "/client/static/",
+				cwd: SRC + '/static',
 				src: [
 					'**/*.{html,htm,xhtml}',
 					'*.{html,htm,xhtml}'
 				],
-				dest: opt.BUILD + "/client/static/",
+				dest: BUILD + '/static',
 				ext: '.html'
 			}
 		]
@@ -21,11 +24,11 @@ module.exports = function (grunt) {
 	this.replace({
 		overwrite: true,
 		src: [
-			opt.BUILD + '/client/static/index.html'
+			BUILD + '/static/index.html'
 		],
 		replacements: [{
 			from: 'static/',
-			to: 'static-' + opt.buildTimestamp + '/'
+			to: 'static-' + opt.build.timestamp + '/'
 		}]
 	});
 

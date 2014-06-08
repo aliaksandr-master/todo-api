@@ -201,7 +201,7 @@ AddDefaultCharset utf-8
 <ifModule mod_rewrite.c>
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteCond %{REQUEST_FILENAME} !-f
-    RewriteCond %{REQUEST_URI} (/crm-client)?(.*/[^/.]+)($|\?)
+    RewriteCond %{REQUEST_URI} (.*/[^/.]+)($|\?)
     RewriteRule ^.*$ %2/ [R=301,L]
 
 #    RewriteCond %{REQUEST_FILENAME} !-d

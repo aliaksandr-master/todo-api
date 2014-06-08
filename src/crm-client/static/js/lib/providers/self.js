@@ -7,7 +7,7 @@ define(function(require, exports, module){
 
 		version: '',
 
-		base: 'crm-client/',
+		base: window.moduleName + '/',
 
 		defaultParams: {
 			dataType: 'json',

@@ -1,7 +1,10 @@
 "use strict";
 
 module.exports = function (grunt) {
-	var opt = this;
+	var opt = this,
+		NAME = this.lnk(),
+		SRC = this.lnk(opt.SRC),
+		BUILD = this.lnk(opt.BUILD);
 
 	var _ = require('lodash');
 
@@ -9,10 +12,15 @@ module.exports = function (grunt) {
 	var build = opt.lnk(opt.BUILD);
 
 	var configs = {
+		module: {
+			NAME: NAME,
+			BUILD: BUILD,
+			SRC: SRC
+		},
 		config: opt,
 		options: opt,
-		package: opt.package || {},
-		build: opt.build || {}
+		package: opt.package,
+		build: opt.build
 	};
 
 	this.jshint({
@@ -43,7 +51,7 @@ module.exports = function (grunt) {
 		],
 		overwrite: true,
 		replacements: [{
-			from: /\$\{(config|build|options|package):([^\}]+)\}/g,
+			from: /\$\{(config|build|options|module|package):([^\}]+)\}/g,
 			to: function (word, _i, _f, matches) {
 				var config = configs[matches[0]],
 					name = matches[1],
@@ -52,7 +60,7 @@ module.exports = function (grunt) {
 					},config);
 
 				if (value == null) {
-					console.error('Configuration variable "' + name + '" is not defined in config files!');
+					grunt.fail.fatal(_f + 'Configuration variable "' + name + '" is not defined in config files!');
 					grunt.fail();
 				}
 				return value;

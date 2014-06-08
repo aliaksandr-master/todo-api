@@ -43,7 +43,10 @@ module.exports = function (grunt) {
 			json2php: require('./opt/nodejs/custom/json-to-php-array/json-to-php-array')
 		},
 
-		buildTimestamp: Date.now(),
+		build: {
+			timestamp: Date.now()
+		},
+
 		package: pkg
 	});
 

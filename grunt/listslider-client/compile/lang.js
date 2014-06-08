@@ -1,7 +1,10 @@
 'use strict';
 
 module.exports = function (grunt) {
-	var opt = this;
+	var opt = this,
+		NAME = this.lnk(),
+		SRC = this.lnk(opt.SRC),
+		BUILD = this.lnk(opt.BUILD);
 
 	this.jsonMerge({
 		options: {
@@ -16,15 +19,15 @@ module.exports = function (grunt) {
 		files: [
 			{
 				expand: true,
-				cwd: opt.SRC + '/client/lang/en',
+				cwd: SRC + '/lang/en',
 				src: [ '**/*.json' ],
-				dest: opt.VAR + '/client/lang/en.json'
+				dest: opt.VAR + '/' + NAME + '/lang/en.json'
 			},
 			{
 				expand: true,
-				cwd: opt.SRC + '/client/lang/ru',
+				cwd: SRC + '/lang/ru',
 				src: [ '**/*.json' ],
-				dest: opt.VAR + '/client/lang/ru.json'
+				dest: opt.VAR + '/' + NAME + '/lang/ru.json'
 			}
 		]
 	});
@@ -35,19 +38,19 @@ module.exports = function (grunt) {
 		},
 		files: [{
 			src: [
-				opt.VAR + '/client/lang/en.json',
-				opt.VAR + '/client/lang/ru.json'
+				opt.VAR + '/' + NAME + '/lang/en.json',
+				opt.VAR + '/' + NAME + '/lang/ru.json'
 			],
-			dest: opt.VAR + '/client/lang/ru.json'
+			dest: opt.VAR + '/' + NAME + '/lang/ru.json'
 		}]
 	});
 
 	this.copy({
 		files: [{
 			expand: true,
-			cwd: opt.VAR + '/client/lang',
+			cwd: opt.VAR + '/' + NAME + '/lang',
 			src: '*.json',
-			dest: opt.BUILD + '/client/var/lang'
+			dest: BUILD + '/var/lang'
 		}]
 	});
 
