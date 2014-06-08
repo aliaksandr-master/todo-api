@@ -1,13 +1,14 @@
 define(function(require){
 	'use strict';
 
+	require('backbone');
 	require('lib/shim/backbone');
 	require('backbone.stickit');
 
-	var
-		routes = require('routes'),
-		Application = require('application')
-	;
+	var Chaplin = require('chaplin');
+	var routes = require('routes');
+
+	var Application = Chaplin.Application.extend({});
 
 	if(window.localStorage && localStorage.getItem('build') !== window.build){
 		localStorage.clear();

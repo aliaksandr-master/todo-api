@@ -1,14 +1,15 @@
 define(function(require, exports, module){
-	"use strict";
+	'use strict';
 
 	var BaseView = require('views/base/view');
-	var template = require('templates/modules/crm/project/item');
+	var template = require('templates/modules/crm/project/project');
 
-	require('css!styles/modules/crm/project/item');
+	require('css!styles/modules/crm/project/project');
 
 	var CrmProjectItemView = BaseView.extend({
 
 		autoRender: true,
+
 		template: template
 
 	});

@@ -1,28 +1,21 @@
 define(function(require){
 	'use strict';
 
-	var _ = require('underscore');
 	var BaseCollection = require('record/base/collection');
-	var CrmProjectModel = require('record/modules/crm/project/model');
+	var CrmProjectModel = require('./model');
 
-	var ListItemCollection = BaseCollection.extend({
+	var CrmProjectCollection = BaseCollection.extend({
 
-		initialize: function(){
-			ListItemCollection.__super__.initialize.apply(this, arguments);
-		},
-
-		url: function(){
-			return '/crm/project/';
-		},
+		url: '/crm/project/',
 
 		model: CrmProjectModel,
 
-		comparator: function (model) {
-			return model.get('sortOrder');
-		}
+//		comparator: function (model) {
+//			return model.get('sortOrder');
+//		}
 
 	});
 
-	return ListItemCollection;
+	return CrmProjectCollection;
 
 });

@@ -1,9 +1,9 @@
 define(function(require){
-	"use strict";
+	'use strict';
 
 	var BaseModel = require('record/base/model');
 
-	return BaseModel.extend({
+	var CrmProjectModel = BaseModel.extend({
 
 		toJSON: function(){
 			var model = this;
@@ -16,15 +16,10 @@ define(function(require){
 			return resp;
 		},
 
-		defaults: function(){
-
-			return {
-			};
-
-		},
-
 		idAttribute: "id"
 
 	});
+
+	return CrmProjectModel;
 
 });

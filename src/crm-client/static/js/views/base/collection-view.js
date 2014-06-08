@@ -1,5 +1,5 @@
 define(function(require, exports, module){
-    "use strict";
+    'use strict';
 
     var _ = require('underscore');
     var Chaplin = require('chaplin');
@@ -12,17 +12,15 @@ define(function(require, exports, module){
 		noWrap: true,
 
 		useCssAnimation: true,
+
 		animationStartClass: '-animation-start',
+
 		animationEndClass: '-animation-end',
 
 		getTemplateFunction: BaseView.prototype.getTemplateFunction,
 
 		filterCallback: function(view, included) {
-			if (included) {
-				view.$el.css('display', '');
-			} else {
-				view.$el.hide();
-			}
+			view.$el.css('display', included ? '' : 'none');
 		},
 
 		getTemplateData: function () {
@@ -41,7 +39,6 @@ define(function(require, exports, module){
 				}
 			});
 			BaseCollectionView.__super__.render.apply(this, arguments);
-
 		}
 	});
 

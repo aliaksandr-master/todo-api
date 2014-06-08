@@ -1,26 +1,24 @@
 define(function(require, exports, module){
-	"use strict";
+	'use strict';
 
 	var Session = require('lib/session');
 	var BaseController = require('controllers/base/controller');
 
 	var CrmProjectCollection = require('record/modules/crm/project/collection');
 
-	var CrmProjectListView = require('views/modules/crm/project/list');
-	var CrmProjectItemView = require('views/modules/crm/project/item');
+	var CrmProjectListView = require('views/modules/crm/project/project-list');
+	var CrmProjectView = require('views/modules/crm/project/project');
 
 	var StaticController = BaseController.extend({
 
 		list: function () {
-			var ctrl = this;
 			this.collection = new CrmProjectCollection();
 			this.collection.fetch().then(function () {
-				ctrl.view = new CrmProjectListView({
-					collection: ctrl.collection,
+				this.view = new CrmProjectListView({
+					collection: this.collection,
 					region: "main/content"
 				});
-			});
-
+			}.bind(this));
 		},
 
 		item: function(){
