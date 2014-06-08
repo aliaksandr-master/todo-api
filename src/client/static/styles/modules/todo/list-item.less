@@ -1,0 +1,59 @@
+@import '../../base/mixins';
+
+@listItemHeight: 32px;
+@listItemFontSize: 16px;
+@listItemLiPad: 5px;
+.todo-list-li {
+	position: relative;
+	margin-bottom: @listItemLiPad;
+	border: 1px solid #ccc;
+	._grad_v(#ffffff, #eeeeee);
+	display: block;
+	list-style: none;
+	border-radius: 4px;
+	._clearfix();
+	transition: opacity 0.5s linear;
+}
+.todo-list-li:hover {
+	._grad_v(#ffffff, #dddddd);
+}
+.todo-list-li-placeholder { height: @listItemHeight + @listItemLiPad + 2px; }
+.todo-list-li:first-child { border-top-color: #ccc; }
+.todo-list-li .chk + label { float: right; position: relative; z-index: 1; margin: 4px 2px 0; font-size: 20px; }
+.todo-list-li {
+	.todo-list-li-move {
+		display: block; 
+		text-align: center; 
+		width: 20px !important; 
+		height: @listItemHeight; 
+		line-height: @listItemHeight + 7px  !important; 
+		cursor: pointer; 
+		color: #777; 
+		position: absolute;
+		left: -20px;
+		top: 0;
+		opacity: 0;
+		transition: opacity 0.2;
+	}
+	&:hover .todo-list-li-move {
+		opacity: 1;
+	}
+	.todo-list-li-move:hover {
+		color: #b81900;
+	}
+}
+.todo-list-li.ui-sortable-helper {
+	& {
+		width: 100%;
+		opacity: 0.7;
+	}
+}
+.todo-list-li-link { display: block; color: #428bca; ._text(@listItemFontSize, @listItemHeight); font-weight: normal; ._text_overflow(); padding: 0 10px; height: @listItemHeight; }
+.todo-list-li.-done .todo-list-li-link { text-decoration: line-through; color: #aaa; }
+.todo-list-li.-done { opacity: 0.5; }
+
+@media (max-width: 700px) {
+	.todo-list-li-move {
+		opacity: 1 !important;
+	}
+}

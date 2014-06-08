@@ -3,9 +3,9 @@ define(function(require, exports, module){
 
 	var BaseCollectionView = require('views/base/collection-view');
 	var CrmProjectListItemView = require('views/base/collection-view');
-	var template = require('templates/crm/project/list');
+	var template = require('templates/modules/crm/project/list');
 
-	require('css!styles/crm/project/list');
+	require('css!styles/modules/crm/project/list');
 
 	var CrmProjectListView = BaseCollectionView.extend({
 

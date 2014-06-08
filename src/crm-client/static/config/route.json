@@ -2,56 +2,56 @@
 	{
 		"name": "user-register",
 		"route": "user/register",
-		"controller": "user",
+		"controller": "modules/user",
 		"action": "register",
 		"params": {}
 	},
 	{
 		"name": "crm-project-list",
-		"route": "crm/projects",
-		"controller": "crm-project",
+		"route": "projects",
+		"controller": "modules/crm/project",
 		"action": "list",
 		"params": {}
 	},
 	{
 		"name": "crm-project-item",
-		"route": "crm/project/:id",
-		"controller": "crm-project",
+		"route": "project/:id",
+		"controller": "modules/crm/project",
 		"action": "item",
 		"params": {}
 	},
 	{
 		"name": "user-profile",
 		"route": "user/profile",
-		"controller": "user",
+		"controller": "modules/user",
 		"action": "profile",
 		"params": {}
 	},
 	{
 		"name": "user-login",
 		"route": "user/login",
-		"controller": "user",
+		"controller": "modules/user",
 		"action": "login",
 		"params": {}
 	},
 	{
 		"name": "user-logout",
 		"route": "user/logout",
-		"controller": "user",
+		"controller": "modules/user",
 		"action": "logout",
 		"params": {}
 	},
 	{
 		"name": "static-home",
 		"route": "",
-		"controller": "static",
+		"controller": "modules/static",
 		"action": "home",
 		"params": {}
 	},
 	{
 		"name": "static-about",
 		"route": "about",
-		"controller": "static",
+		"controller": "modules/static",
 		"action": "about",
 		"params": {}
 	}

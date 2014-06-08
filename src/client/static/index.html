@@ -15,7 +15,8 @@
 </head>
 <body>
     <script>window.build='${config:buildTimestamp}';</script>
-    <script data-main="/client/static/js/main.js" src="/client/static/vendor/requirejs/require.js"></script>
+    <script src="/opt/frontend/bower/requirejs/require.js"></script>
     <script src="/client/static/js/config.js"></script>
+    <script>require(['main']);</script>
 </body>
 </html>

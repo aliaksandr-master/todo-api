@@ -34,8 +34,17 @@ define(function(require){
 			this.$('#api-tester-debug-info-info-log .panel-body').html('');
 		},
 
+		flipObj: function (obj) {
+			var res = {};
+			_.each(obj, function (v, k) {
+				res[v] = k;
+			});
+			return res;
+		},
+
 		showTimers: function (responseDebug) {
 			var timers = this.infoFormat('time', responseDebug.timers, 5);
+			timers = this.flipObj(timers);
 			this.$('#api-tester-debug-info-timers .panel-body').html(this.tester.modules.json.format(timers));
 		},
 
@@ -54,7 +63,7 @@ define(function(require){
 				c++;
 				number = number / 1024;
 			}
-			return this.numberFormat(number, prec) + ' ' + unim[c];
+			return this.numberFormat(number, prec) + '' + unim[c];
 		},
 
 		numberFormat: function (number, prec) {
@@ -64,11 +73,12 @@ define(function(require){
 		},
 
 		timeFormat: function (number, prec) {
-			return this.numberFormat(number, prec) + ' s';
+			return this.numberFormat(number, prec) + 's';
 		},
 
 		showMemory: function (responseDebug) {
 			var memoryInfo = this.infoFormat('bytes', responseDebug.memory, 5);
+			memoryInfo = this.flipObj(memoryInfo);
 			this.$('#api-tester-debug-info-memory .panel-body').html(this.tester.modules.json.format(memoryInfo));
 		},
 

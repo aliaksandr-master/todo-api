@@ -3,7 +3,7 @@ define(function(require){
 
 	var _ = require('underscore');
 	var BaseCollection = require('record/base/collection');
-	var CrmProjectModel = require('record/crm/project/model');
+	var CrmProjectModel = require('record/modules/crm/project/model');
 
 	var ListItemCollection = BaseCollection.extend({
 

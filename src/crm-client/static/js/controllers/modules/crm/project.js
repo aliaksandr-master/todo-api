@@ -4,7 +4,7 @@ define(function(require, exports, module){
 	var Session = require('lib/session');
 	var BaseController = require('controllers/base/controller');
 
-	var CrmProjectCollection = require('record/crm/project/collection');
+	var CrmProjectCollection = require('record/modules/crm/project/collection');
 
 	var CrmProjectListView = require('views/modules/crm/project/list');
 	var CrmProjectItemView = require('views/modules/crm/project/item');

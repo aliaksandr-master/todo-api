@@ -4,7 +4,7 @@ define(function(require, exports, module){
     var BaseView = require('views/base/view'),
 		template = require('templates/user/login');
 
-	require('css!styles/user/login');
+	require('css!styles/modules/user/login');
 
 	var UserLoginPageView = BaseView.extend({
 

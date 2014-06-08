@@ -1,7 +1,7 @@
 define(function(require){
 	'use strict';
 
-	require('shim/backbone');
+	require('lib/shim/backbone');
 	require('backbone.stickit');
 
 	var
@@ -20,7 +20,7 @@ define(function(require){
 		routes: routes,
 		pushState: true,
 		hashChange: true,
-		root: '/',
+		root: '/crm/',
 		trailing: true,
 
 		// DISPATCHER
