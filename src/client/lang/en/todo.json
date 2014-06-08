@@ -1,0 +1,11 @@
+{
+	"description": "Description",
+	"task_tittle": "Tasks List Name",
+	"add_task_tittle": "Add new task here...",
+	"move_to_remove": "Move to remove",
+	"filter": {
+		"active": "Active",
+		"done": "Done",
+		"all": "all"
+	}
+}

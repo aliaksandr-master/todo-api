@@ -1,0 +1,11 @@
+{
+	"login": {
+		"login": "Sign In"
+	},
+	"register": {
+		"register": "Create New Profile"
+	},
+	"profile": {
+		"log_out": "Log Out"
+	}
+}

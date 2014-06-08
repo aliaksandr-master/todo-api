@@ -1,0 +1,23 @@
+{
+	"default": "Incorrect format",
+	"login_incorrect": "Login or password incorrect",
+	"required" : "Field is required",
+	"need" : "Field \"{{param.0.value}}\" is required",
+	"matches" : "Must matches with \"{{param.0.value}}\"",
+	"min_length" :"Length must be more than {{param.0.value}}",
+	"max_length" : "Length must be less than {{param.0.value}}",
+	"exact_length" : "Length must be {{param.0.value}}",
+	"valid_email" : "Invalid email address",
+	"alpha" : "Must contains letters only",
+	"alpha_numeric" : "Must contains either a letters or a digits only",
+	"alpha_dash" : "Must contains either a letters, numbers, underscores and the minus only",
+	"numeric" : "Invalid number format",
+	"integer" : "Invalid number format",
+	"decimal" : "Invalid number format",
+	"is_natural" : "Invalid number format",
+	"is_natural_no_zero" : "Invalid number format",
+	"valid_base64" : "Invalid base64 format",
+	"valid_url" : "Invalid URL",
+	"valid_date" : "Invalid Date",
+	"unique" : "{{fieldName}} \"{{value}}\" already exists"
+}

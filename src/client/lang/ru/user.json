@@ -1,0 +1,11 @@
+{
+	"login": {
+		"login": "Войти"
+	},
+	"register": {
+		"register": "Создать Аккаунт"
+	},
+	"profile": {
+		"log_out": "Выйти"
+	}
+}

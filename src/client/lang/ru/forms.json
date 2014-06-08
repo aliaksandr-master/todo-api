@@ -1,0 +1,13 @@
+{
+	"login": {
+		"login": "Логин",
+		"password": "Пароль"
+	},
+
+	"register": {
+		"username": "Логин",
+		"email": "Email",
+		"password": "Пароль",
+		"confirm_password": "Повторите пароль"
+	}
+}
