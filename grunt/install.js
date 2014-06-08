@@ -19,6 +19,31 @@ module.exports = function (grunt) {
 		]
 	});
 
+	this.bower({
+		options: {
+			verbose: true,
+			copy: false
+		}
+	});
+
+	this.concat({
+		src: [
+			opt.OPT + '/frontend/bower/bootstrap-less/js/transition.js',
+			opt.OPT + '/frontend/bower/bootstrap-less/js/alert.js',
+			opt.OPT + '/frontend/bower/bootstrap-less/js/button.js',
+			opt.OPT + '/frontend/bower/bootstrap-less/js/carousel.js',
+			opt.OPT + '/frontend/bower/bootstrap-less/js/collapse.js',
+			opt.OPT + '/frontend/bower/bootstrap-less/js/dropdown.js',
+			opt.OPT + '/frontend/bower/bootstrap-less/js/modal.js',
+			opt.OPT + '/frontend/bower/bootstrap-less/js/tooltip.js',
+			opt.OPT + '/frontend/bower/bootstrap-less/js/popover.js',
+			opt.OPT + '/frontend/bower/bootstrap-less/js/scrollspy.js',
+			opt.OPT + '/frontend/bower/bootstrap-less/js/tab.js',
+			opt.OPT + '/frontend/bower/bootstrap-less/js/affix.js'
+		],
+		dest: opt.OPT + '/frontend/bower/bootstrap/bootstrap.js'
+	});
+
 	this.copyNewFiles('configs', {
 		files: [{
 			expand: true,

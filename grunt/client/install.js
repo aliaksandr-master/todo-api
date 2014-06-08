@@ -7,13 +7,6 @@ module.exports = function (grunt) {
 		opt.BUILD + '/client'
 	]);
 
-	this.bower({
-		options: {
-			verbose: true,
-			copy: false
-		}
-	});
-
 	this.copy({
 		files: [{
 			expand: true,
