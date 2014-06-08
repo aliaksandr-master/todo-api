@@ -46,6 +46,7 @@ abstract class BaseCrudModel extends DbTableModel implements ICRUDModel, IModelP
 			}
 		}
 
+		$this->publish('dbQuery:create');
 		$db->from($this->getDbTableName())->insert();
 		return $db->insert_id();
 	}
@@ -56,6 +57,7 @@ abstract class BaseCrudModel extends DbTableModel implements ICRUDModel, IModelP
 	}
 
 	public function count (array $where = array(), array $options = array()) {
+		$this->publish('dbQuery:count');
 		return $this->connection()
 			->where($where)
 			->count_all($this->getDbTableName());
@@ -119,6 +121,8 @@ abstract class BaseCrudModel extends DbTableModel implements ICRUDModel, IModelP
 			}
 		}
 
+		$this->publish('dbQuery:read');
+
 		if ($resultAs == self::RESULT_ACTIVE_RECORD) {
 			return $db;
 		}
@@ -156,6 +160,7 @@ abstract class BaseCrudModel extends DbTableModel implements ICRUDModel, IModelP
 				die();
 			}
 		}
+		$this->publish('dbQuery:update');
 		$result = $db
 			->where($whereOrId)
 			->update($this->getDbTableName());
@@ -174,6 +179,7 @@ abstract class BaseCrudModel extends DbTableModel implements ICRUDModel, IModelP
 			$whereOrId = array($this->idAttribute() => $whereOrId);
 		}
 
+		$this->publish('dbQuery:delete');
 		$this->connection()->from($this->getDbTableName())->where($whereOrId)->delete();
 
 		// TODO return boolean

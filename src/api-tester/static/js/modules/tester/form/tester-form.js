@@ -318,8 +318,10 @@ define(function(require){
 		},
 
 		onRequestSuccess: function (requestObj, response, jqXHR) {
+
+			requestObj.requestTime = (Date.now() - requestObj.time)/1000;
 			this.tester.showErrors();
-			this.tester.modules.debug.show(response);
+			this.tester.modules.debug.show(response, requestObj);
 			this.tester.showInfo(requestObj, response, jqXHR);
 			this.tester.showResponse(jqXHR.responseText, response);
 			this.tester.showHeaders(jqXHR);
@@ -328,9 +330,11 @@ define(function(require){
 		onRequestError: function (requestObj, response, jqXHR) {
 			var responseSrc = response;
 
+			requestObj.requestTime = (Date.now() - requestObj.time)/1000;
+
 			try {
 				response = JSON.parse(response, true);
-				this.tester.modules.debug.show(response);
+				this.tester.modules.debug.show(response, requestObj);
 			} catch (e) {
 				response = responseSrc;
 			}

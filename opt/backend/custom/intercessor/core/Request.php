@@ -225,7 +225,7 @@ class Request extends ComponentAbstract {
 		$this->_verifyInput($this->_query, $querySpec);
 
 		// TODO: need to implement filter after validation
-		$this->publish('initInputData');
+		$this->publish('initRequestInputData');
 	}
 
 
@@ -267,12 +267,12 @@ class Request extends ComponentAbstract {
 	 * @return Response
 	 */
 	function run () {
-		$this->env->trace('spec name', $this->spec('name', 'UNDEFINED'));
+		$this->publish('requestRunCall');
 		$totalStart = gettimeofday(true);
 
 		$this->_setErrorHandler();
 
-		$this->publish('beforeRun');
+		$this->publish('beforeRequestRun');
 
 		$this->controller(true);
 
@@ -281,17 +281,17 @@ class Request extends ComponentAbstract {
 		if ($this->spec()) {
 
 			if ($this->valid()) {
-				$this->publish('beforeActionCall');
+				$this->publish('beforeRequestActionCall');
 
 				$timerAction = gettimeofday(true);
 				$result = $this->controller()->intercessorResource();
-				$this->env->timers['action'] = gettimeofday(true) - $timerAction;
+				Debugger::addTimer('action', $timerAction);
 
 				if ($this->valid() && !is_null($result)) {
 					$this->response->data($result);
 				}
 
-				$this->publish('afterActionCall');
+				$this->publish('afterRequestActionCall');
 			} else {
 				$this->response->clear();
 				$this->response->freeze();
@@ -301,9 +301,9 @@ class Request extends ComponentAbstract {
 			$this->fatalError(null, 405);
 		}
 
-		$this->publish('afterRun');
+		$this->publish('afterRequestRun');
 
-		$this->env->timers['total intercessor']  = gettimeofday(true) - $totalStart;
+		Debugger::addTimer('run', $totalStart);
 
 		$this->_restoreErrorHandler();
 		return $this->response;

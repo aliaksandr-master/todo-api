@@ -26,13 +26,6 @@ abstract class ComponentAbstract extends EventBroker {
 
 	private $_init = false;
 
-
-	public function publish ($eventName, array $params = array()) {
-		$r = parent::publish($eventName, $params);
-		$this->env->trace(str_replace('\\', '', get_class($this)).' event \''.$eventName.'\'', $params);
-		return $r;
-	}
-
 	/**
 	 * @param Environment $env
 	 * @param Request     $request
@@ -180,13 +173,16 @@ abstract class ComponentAbstract extends EventBroker {
 	private $_hasFatal = false;
 
 	public function _errorHandler () {
-		$this->env->trace('Internal Server Error', func_get_args());
+		$this->publish('fatal error', func_get_args());
 		if (!$this->_hasFatal) {
 			$this->_hasFatal = true;
 			$this->fatalError('Internal Server Error');
 		}
 	}
 
+	function __construct() {
+		$this->publish('init');
+	}
 
 	function __destruct () {
 		$this->_restoreErrorHandler();

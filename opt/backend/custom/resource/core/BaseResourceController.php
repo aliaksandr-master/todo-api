@@ -302,8 +302,7 @@ class BaseResourceController extends \Intercessor\EventBroker implements Interce
 	 */
 	public function intercessorPrepareOutput (array $output, $debugMode) {
 		if ($debugMode) {
-			$output['debug']['timers']['total'] = defined('START_TIMESTAMP') ? gettimeofday(true) - START_TIMESTAMP : 0;
-			$output['debug']['timers']['db'] = 0;
+			Intercessor\Debugger::addTimer('total', START_TIMESTAMP);
 			$output['debug']['memory']['usage']  = memory_get_usage(true) - START_MEMORY;
 			$output['debug']['db'] = array();
 
@@ -321,7 +320,6 @@ class BaseResourceController extends \Intercessor\EventBroker implements Interce
 							$data['time'] = $db->query_times[$key];
 						}
 						$output['debug']['db'][] = $data;
-						$output['debug']['timers']['db'] += $db->query_times[$key];
 					}
 				}
 			}

@@ -1,5 +1,5 @@
 <?php
 
 function trace ($var) {
-	\Intercessor\Environment::dump($var);
+	\Intercessor\Debugger::dump($var);
 }

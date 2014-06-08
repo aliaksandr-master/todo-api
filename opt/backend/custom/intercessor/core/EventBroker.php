@@ -7,6 +7,7 @@ class EventBroker {
 	private $_events = array();
 
 	function publish ($eventName, array $params = array()) {
+		Debugger::log('event '.$eventName, $params);
 		$handlers = isset($this->_events[$eventName]) ? $this->_events[$eventName] : array();
 		foreach ($handlers as $subscriptionId => $handler) {
 			$handler[0]->$handler[1]($this, $params, $eventName);

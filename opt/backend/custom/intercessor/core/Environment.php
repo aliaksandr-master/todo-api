@@ -33,9 +33,8 @@ class Environment extends EventBroker {
 	public $debug = false;
 
 	/** @var bool */
-	public $error_handler = false;
+	public $error_handler = true;
 
-	/** @var bool */
 	public $default_request_format = 'json';
 	public $default_response_format = 'json';
 	public $default_response_status = '200';
@@ -43,56 +42,12 @@ class Environment extends EventBroker {
 
 	public $optional_response_keys = array( 'errors', 'debug', 'meta', 'data' );
 
-	private $_logs = array();
-
-	public $timers = array();
-
-
 	function request ($name, $method, $url) {
+		Debugger::init($this->debug);
 		$request  = new Request($name, $method, $url);
 		$response = new Response();
 		$request->_init($this, $request, $response);
 		$response->_init($this, $request, $response);
 		return $request;
-	}
-
-
-	function trace ($markName, $data = null) {
-		if ($this->debug) {
-			if (!is_object($data) && !is_array($data) && !is_null($data)) {
-				if (is_bool($data)) {
-					$data = $data ? 'true' : 'false';
-				}
-				$markName .= ': '.$data;
-				$data = null;
-			}
-			if ((is_array($data) || is_object($data)) && empty($data)) {
-				$data = null;
-			}
-			if (is_null($data)) {
-				$this->_logs[] = $markName;
-			} else {
-				$this->_logs[][$markName] = $data;
-			}
-		}
-	}
-
-
-	function getStackTrace () {
-		return $this->_logs;
-	}
-
-	private static $_dumps = array();
-
-	static function dump ($var) {
-		self::$_dumps[] = $var;
-	}
-
-	function getDumps () {
-		return self::$_dumps;
-	}
-
-	function clearDumps () {
-		self::$_dumps = array();
 	}
 }

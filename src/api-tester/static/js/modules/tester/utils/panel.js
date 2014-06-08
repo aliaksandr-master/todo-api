@@ -82,7 +82,7 @@ define(function(require){
 				}, this);
 				body += '</tbody>';
 			}
-			return '<table class="table table-hover">' + head + body + '</table>';
+			return '<table class="table table-hover table-striped">' + head + body + '</table>';
 		},
 
 		buildJSON: function (data) {

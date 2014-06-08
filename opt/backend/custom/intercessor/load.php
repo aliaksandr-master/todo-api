@@ -4,6 +4,7 @@
 require_once(__DIR__.'/core/IResourceController.php');
 
 // components
+require_once(__DIR__.'/core/Debugger.php');
 require_once(__DIR__.'/core/EventBroker.php');
 require_once(__DIR__.'/core/ComponentAbstract.php');
 

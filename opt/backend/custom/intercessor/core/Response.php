@@ -40,10 +40,11 @@ class Response extends ComponentAbstract {
 		if (!is_null($this->_compiled) && ($this->_freeze || $compileOnce)) {
 			return $this->_compiled;
 		}
+		Debugger::startTimer('response compile');
 		$responseCompileTime = gettimeofday(true);
 
 		$this->_setErrorHandler();
-		$this->publish('beforeCompile');
+		$this->publish('beforeResponseCompile');
 
 		if ($this->valid($this->request, $this)) {
 			$this->_data = $this->prepareResponse($this->_data, 'data');
@@ -82,8 +83,6 @@ class Response extends ComponentAbstract {
 			$debug = array(
 				'uri'        => $this->request->uri(),
 				'method'     => $this->request->httpMethod(),
-				'timers'     => $this->env->timers,
-				'memory'     => array(),
 				'controller' => $this->request->spec('controller', $this->env->default_controller),
 				'action'     => $this->request->action(),
 				'db'         => null,
@@ -151,14 +150,15 @@ class Response extends ComponentAbstract {
 			}
 		}
 
-		$this->publish('afterCompile');
+		$this->publish('afterResponseCompile');
+
+		Debugger::stopTimer('response compile');
 
 		if (!empty($this->_compiled['response']['debug'])) {
-			$this->_compiled['response']['debug']['stackTrace'] = $this->env->getStackTrace();
-			$this->_compiled['response']['debug']['dump'] = $this->env->getDumps();
-			$this->env->clearDumps();
-			$this->_compiled['response']['debug']['timers']['response_compile'] = gettimeofday(true) - $responseCompileTime;
+			$debugger = Debugger::flush();
+			$this->_compiled['response']['debug'] = array_merge($this->_compiled['response']['debug'], $debugger);
 		}
+
 		$this->_restoreErrorHandler();
 		return $this->_compiled;
 	}

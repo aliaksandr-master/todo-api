@@ -254,4 +254,147 @@
 		text-overflow: ellipsis;
 		overflow: hidden;
 	}
+
+	.api-tester-debug-time-graph {
+		position: relative;
+		width: 100%;
+		font-family: @font-mono;
+	}
+	.api-tester-debug-time-graph-in {
+		height: 240px;
+		position: relative;
+		margin: 0 auto;
+	}
+	.api-tester-debug-time-graph-l {
+		height: 240px;
+		position: relative;
+		width: 100%;
+	}
+	.api-tester-debug-time-graph-li {
+		height: 40px;
+		background: rgba(0, 153, 0, 0.34);
+		position: absolute;
+		top: 30%;
+		left: 0;
+		outline: 1px solid #009900;
+		font-size: 15px;
+		opacity: 0.7;
+	}
+	.api-tester-debug-time-graph-li:before {
+		content: attr(data-number);
+		display: block;
+		position: absolute;
+		left: 0;
+		top: 0;
+		color: #009900;
+	}
+	.api-tester-debug-time-graph-li:hover {
+		outline: 1px solid red;
+		opacity: 1;
+	}
+	.api-tester-debug-time-graph-log {
+		position: absolute;
+		display: block;
+		height: 30px;
+		width: 2px;
+		background: #307bff;
+		top: 0;
+		left: -1px;
+		font-size: 10px;
+		opacity: 0.7;
+	}
+	.api-tester-debug-time-graph-log:after,
+	.api-tester-debug-time-graph-log:before {
+		content: '';
+		position: absolute;
+		left: 50%;
+		margin-left: -4px;
+		border: 4px solid transparent;
+	}
+	.api-tester-debug-time-graph-log:before {
+		top: 0;
+		border-top-color: #307bff;
+	}
+	.api-tester-debug-time-graph-log:after {
+		bottom: 0;
+		border-bottom-color: #307bff;
+	}
+	.api-tester-debug-time-graph-log.-db-query {
+		background: orange;
+	}
+	.api-tester-debug-time-graph-log.-db-query:before {
+		border-top-color: orange;
+	}
+	.api-tester-debug-time-graph-log.-db-query:after {
+		border-bottom-color: orange;
+	}
+	.api-tester-debug-time-graph-log:hover {
+		opacity: 1;
+	}
+	.api-tester-debug-time-graph-ruler {
+		position: absolute;
+		height: 100%;
+		top: 0;
+		bottom: 0;
+		width: 1px;
+		background: #ccc;
+	}
+	.api-tester-debug-time-graph-ruler:after {
+		content: attr(data-percent) '%';
+		position: absolute;
+		left: 1px;
+		bottom: 0;
+		color: #777;
+		font-size: 14px;
+		line-height: 1;
+	}
+	.api-tester-debug-time-graph-ruler[data-percent="0"] {
+		left: 0;
+	}
+	.api-tester-debug-time-graph-ruler[data-percent="25"] {
+		left: 25%;
+	}
+	.api-tester-debug-time-graph-ruler[data-percent="50"] {
+		left: 50%;
+	}
+	.api-tester-debug-time-graph-ruler[data-percent="75"] {
+		left: 75%;
+	}
+	.api-tester-debug-time-graph-ruler[data-percent="100"] {
+		right: 0;
+	}
+	.api-tester-debug-time-graph-ruler[data-percent="100"]:after {
+		left: auto;
+		right: 1px;
+	}
+	.api-tester-debug-time-graph-h {
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		font-size: 12px;
+		line-height: 1;
+		text-align: right;
+		z-index: 0;
+		font-weight: normal;
+		font-family: @font-mono;
+		margin: 0;
+	}
+	.api-tester-debug-time-graph-req-time {
+		margin-top: 10px;
+		width: 100%;
+		position: relative;
+		height: 20px;
+		background: rgba(255, 229, 0, 0.47);
+		outline: 1px solid rgba(255, 229, 0, 1);
+		opacity: 0.8;
+	}
+	.api-tester-debug-time-graph-req-time:after {
+		font-size: 12px;
+		line-height: 1;
+		content: attr(title);
+		position: absolute;
+		top: 0;
+		right: 0;
+	}
 }

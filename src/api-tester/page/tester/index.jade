@@ -16,7 +16,7 @@ block container
 		!= 'window.API_ROUTES_JSON = ' + JSON.stringify(routes) + ';'
 	div(style="margin: 0 10px;")
 		.row#api-tester
-			.col-md-9#api-tester-info
+			.col-md-8#api-tester-info
 				.api-tester-spec-wr
 					.input-group
 						select.form-control.input-sm#api-tester-spec-name
@@ -37,16 +37,17 @@ block container
 				+pre-collapsed-panel('debug-info-memory', 'Memory', true)
 				+pre-collapsed-panel('debug-info-db', 'Database', true)
 				+pre-collapsed-panel('debug-dump', 'Dump', true)
-				+pre-collapsed-panel('debug-info-log', 'Stack Trace', false)
+				+pre-collapsed-panel('debug-log', 'Log', false)
 
-			.col-md-15#api-tester-response
+			.col-md-16#api-tester-response
 				#errors
 
 				+raw-mlt-collapsed-panel('response-data', 'Response Data', true, 1)
 				+pre-collapsed-panel('response-meta', 'Response Meta', true)
-				+raw-collapsed-panel('response', 'Response', false)
+				+pre-collapsed-panel('debug-graph', 'Request Time Graph', true)
 				+raw-collapsed-panel('response-headers', 'Response Headers', true)
 				+pre-collapsed-panel('debug-info-headers', 'Request Headers', true)
+				+raw-collapsed-panel('response', 'Response', false)
 
 			.col-md-6#api-tester-request
 
