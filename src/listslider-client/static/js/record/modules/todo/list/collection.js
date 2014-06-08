@@ -1,5 +1,5 @@
 define(function(require){
-	"use strict";
+	'use strict';
 
 	var BaseCollection = require('record/base/collection');
 	var ListModel = require('./model');

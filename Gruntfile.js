@@ -27,6 +27,7 @@ module.exports = function (grunt) {
 		GRUNT:  CWD + '/grunt',
 		BUILD:  CWD + '/build',
 		VAR:    CWD + '/var',
+		TMP:    CWD + '/tmp',
 
 		lnk: function (before, after) {
 			var link = this.$$prefix.replace(/^([^\/]+)\/.+$/, '$1').trim();

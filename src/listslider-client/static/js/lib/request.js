@@ -1,5 +1,5 @@
 define(function(require, exports, module){
-    "use strict";
+    'use strict';
 
 	var ApiProvider  = require('lib/providers/api');
 	var SelfProvider = require('lib/providers/self');

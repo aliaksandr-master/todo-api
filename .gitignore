@@ -20,5 +20,6 @@
 # compile files
 /.developer/
 /var/
+/tmp/
 /deploy/
 /build/

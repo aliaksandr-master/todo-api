@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 module.exports = function (grunt) {
 	var opt = this,
@@ -31,14 +31,10 @@ module.exports = function (grunt) {
 
 	this.less({
 		options: {
-			syncImport: true,
-			dumpLineNumbers: false,
-			ieCompat: true,
-			relativeUrls: false,
 			strictUnits: true,
-			strictImports: true,
-			rootpath: '',
-			paths: [ opt.lnk(opt.SRC, 'static/client') ]
+			sourceMap: false,
+			relativeUrls: true,
+			report: false
 		},
 		files: [{
 			expand: true,

@@ -65,16 +65,24 @@ define(function(require){
 				}, this);
 				body += '</tbody>';
 			} else if (_.isObject(data)) {
+
+				head += '<thead>';
+				head += '<tr>';
+				head += '<th class="text-right">Name</th>';
+				head += '<th>Value</th>';
+				head += '</tr>';
+				head += '</thead>';
+
 				body = '<tbody>';
 				_.each(data, function (item, key) {
 					body += '<tr>';
-					body += '<th width="1%" class="text-right">' + key + '</th>';
+					body += '<th class="text-right">' + key + '</th>';
 					body += '<td>' + this.tester.modules.json.format(item) + '</td>';
 					body += '</tr>';
 				}, this);
 				body += '</tbody>';
 			}
-			return '<table class="table">' + head + body + '</table>';
+			return '<table class="table table-hover">' + head + body + '</table>';
 		},
 
 		buildJSON: function (data) {

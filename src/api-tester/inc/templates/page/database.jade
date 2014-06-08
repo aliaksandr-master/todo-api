@@ -1,0 +1,23 @@
+extends ../../../../src/api-tester/inc/templates/layout-empty
+
+// need for compiling many pages by one template
+
+block container
+	- var NAME = '/*FROM GRUNT TASK*/';
+	div#database-page(style='margin: 0 15px')
+		.row
+			.col-md-7#database-page-connection
+				h1 <small>connection</small>
+				+panel('database-' + NAME + 'connection', 'Params', 'success')
+					!= formatJSON(db[NAME].connection)
+			.col-md-23
+				h1!= NAME + ' <small>database</small>'
+				- var i = 0;
+				each table, tableName in db[NAME].scheme
+					+panel('database-' + NAME + i++, 'table: <b>' + tableName + '</b>', 'primary')
+						.row
+							each field, fieldName in table
+								.col-md-5.database-scheme-field
+									+panel('database-' + NAME + '-' + fieldName + '-' + i++, fieldName, 'default')
+										!= formatJSON(field)
+

@@ -55,6 +55,12 @@ abstract class BaseCrudModel extends DbTableModel implements ICRUDModel, IModelP
 		return $criteria;
 	}
 
+	public function count (array $where = array(), array $options = array()) {
+		return $this->connection()
+			->where($where)
+			->count_all($this->getDbTableName());
+	}
+
 	/**
 	 * @param null   $whereOrId
 	 * @param array  $options

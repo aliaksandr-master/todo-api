@@ -1,5 +1,5 @@
 define(function(require, exports, module){
-    "use strict";
+    'use strict';
 
 	var request = require('lib/request');
 	var DEFAULT_LANG = 'ru';

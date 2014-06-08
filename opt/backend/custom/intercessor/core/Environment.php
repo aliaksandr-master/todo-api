@@ -81,4 +81,18 @@ class Environment extends EventBroker {
 	function getStackTrace () {
 		return $this->_logs;
 	}
+
+	private static $_dumps = array();
+
+	static function dump ($var) {
+		self::$_dumps[] = $var;
+	}
+
+	function getDumps () {
+		return self::$_dumps;
+	}
+
+	function clearDumps () {
+		self::$_dumps = array();
+	}
 }

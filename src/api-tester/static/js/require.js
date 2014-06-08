@@ -26,10 +26,10 @@ require.config({
 			handlebars: 'packages/handlebars/handlebars',
 			lodash: 'packages/lodash/dist/lodash',
 			underscore: 'packages/lodash/dist/lodash',
-			bootstrap: 'vendor/bootstrap/custom/js/bootstrap.min',
+			bootstrap: 'packages/bootstrap/bootstrap',
 
 			'text': 'packages/requirejs-text/text',
-			'css':  'packages/require-css/css'
+			'css': 'packages/require-css/css'
 		}
 	},
 
@@ -39,7 +39,7 @@ require.config({
 				return window.jQuery;
 			}
 		},
-		'vendor/bootstrap/custom/js/bootstrap.min': {
+		'packages/bootstrap/bootstrap': {
 			deps: ['packages/jquery/jquery']
 		},
 		'packages/handlebars/handlebars': {

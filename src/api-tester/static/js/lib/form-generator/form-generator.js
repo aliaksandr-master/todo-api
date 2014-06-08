@@ -1,5 +1,5 @@
 (function(root, factory) {
-	"use strict";
+	'use strict';
 	if (typeof define === 'function' && define.amd) {
 		define(['underscore'], function(_) {
 			return factory(_);
@@ -10,7 +10,7 @@
 		root.SpecGenerator = factory(root._);
 	}
 }(this, function(_) {
-	"use strict";
+	'use strict';
 
 	var SpecGenerator = function (options) {
 		this.options = _.extend({

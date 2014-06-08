@@ -13,3 +13,5 @@ require_once(__DIR__.'/core/Response.php');
 // core
 require_once(__DIR__.'/core/Environment.php');
 require_once(__DIR__.'/core/Utils.php');
+
+require_once(__DIR__.'/core/trace.php');

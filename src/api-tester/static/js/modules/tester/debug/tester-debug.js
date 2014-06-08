@@ -1,5 +1,5 @@
 define(function(require){
-	"use strict";
+	'use strict';
 
 	var $ = require('jquery');
 	var _ = require('lodash');
@@ -24,6 +24,7 @@ define(function(require){
 			this.showDb(debug);
 			this.showHeaders(debug);
 			this.showStackTrace(debug);
+			this.showDump(debug);
 		},
 
 		clear: function () {
@@ -32,6 +33,7 @@ define(function(require){
 			this.$('#api-tester-debug-info-info-db .panel-body').html('');
 			this.$('#api-tester-debug-info-headers .panel-body').html('');
 			this.$('#api-tester-debug-info-info-log .panel-body').html('');
+			this.$('#api-tester-debug-dump .panel-body').html('');
 		},
 
 		flipObj: function (obj) {
@@ -98,6 +100,14 @@ define(function(require){
 				return;
 			}
 			this.$('#api-tester-debug-info-log .panel-body').html(this.tester.modules.json.format(responseDebug.stackTrace));
+		},
+
+		showDump: function (responseDebug) {
+			var val = responseDebug.dump;
+			if (!val || !val.length) {
+				return;
+			}
+			this.$('#api-tester-debug-dump .panel-body').html(this.tester.modules.json.format(val));
 		}
 	});
 	

@@ -70,6 +70,9 @@ class BaseResourceController extends \Intercessor\EventBroker implements Interce
 		}
 		$result = call_user_func_array(array($this, $action), $this->request->param());
 		if ($result instanceof BaseCrudModelPromoter) {
+			if ($this->request->responseType() === Intercessor\Response::TYPE_MANY) {
+				$this->response->setTotalItemsCount($result->getTotal());
+			}
 			$result = $result->result();
 		}
 		if ($result instanceof CI_DB_result) {

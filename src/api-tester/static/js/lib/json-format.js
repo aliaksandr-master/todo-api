@@ -1,7 +1,16 @@
-define(function(require, exports, module){
-    "use strict";
-
-	var _ = require('lodash');
+(function(root, factory) {
+	'use strict';
+	if (typeof define === 'function' && define.amd) {
+		define(['lodash'], function(_) {
+			return factory(_);
+		});
+	} else if (typeof module !== 'undefined' && typeof module.exports !== 'undefined') {
+		module.exports = factory(require('lodash'));
+	} else {
+		root.SpecGenerator = factory(root._);
+	}
+}(this, function(_) {
+    'use strict';
 
 	var map, types, compile;
 
@@ -96,4 +105,4 @@ define(function(require, exports, module){
 
 		return '<span class="json-f-index">' + compile(obj, options, true) +'</span>';
 	};
-});
+}));

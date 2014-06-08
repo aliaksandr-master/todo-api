@@ -68,18 +68,30 @@
 				font-family: @font-mono;
 				font-size: 12px;
 				line-height: 1.2;
-				padding: @pad;
+				padding: floor(@pad / 2) @pad * 2;
+				border-top-style: dashed;
 			}
 			&:last-child {
 				padding-right: 0;
 			}
 			&:first-child {
-				padding-left: 0;
+				width: 1px;
+			}
+		}
+		thead tr:last-child {
+			td, th {
+				border-top: 1px solid @brand-primary;
+				border-bottom: 1px solid @brand-primary;
+				background: @brand-primary;
+				color: #fff;
+				font-weight: normal;
+				text-shadow: none;
+				text-transform: uppercase;
 			}
 		}
 		th + th,
 		td + td {
-			border-left: 1px solid #ededed;
+			border-left: 1px dashed @gray-lighter;
 		}
 	}
 	.panel-raw {

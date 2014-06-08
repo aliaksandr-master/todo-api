@@ -19,7 +19,6 @@
 
 		"grunt-contrib-less": "latest",
 		"grunt-contrib-handlebars": "latest",
-		"grunt-webfont": "latest",
 
 		"grunt-contrib-compress": "latest",
 
@@ -31,11 +30,9 @@
 
 		"grunt-contrib-uglify": "latest",
 		"grunt-contrib-cssmin": "latest",
-		"grunt-contrib-htmlmin": "latest",
 		"grunt-autoprefixer": "latest",
 
 		"grunt-contrib-watch": "latest",
-		"grunt-newer": "latest",
 
 		"grunt-contrib-jshint": "latest",
 

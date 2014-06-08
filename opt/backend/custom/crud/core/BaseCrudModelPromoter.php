@@ -79,6 +79,10 @@ class BaseCrudModelPromoter {
 		return $this->{$this->mode.'Flow'}();
 	}
 
+	function getTotal () {
+		return $this->model->count($this->where);
+	}
+
 	function deleteFlow () {
 		if (empty($this->where)) {
 			return null;

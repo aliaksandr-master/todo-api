@@ -1,5 +1,5 @@
 define(function(require, exports, module){
-    "use strict";
+    'use strict';
 
     var Chaplin = require('chaplin');
     var _ = require('underscore');

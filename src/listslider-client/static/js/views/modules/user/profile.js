@@ -1,5 +1,5 @@
 define(function(require, exports, module){
-	"use strict";
+	'use strict';
 
 	var BaseView = require('views/base/view'),
 		template = require('templates/modules/user/profile');

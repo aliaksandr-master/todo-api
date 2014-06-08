@@ -1,5 +1,5 @@
 define(function(require){
-    "use strict";
+    'use strict';
 
 	var BaseModel = require('record/base/model');
 

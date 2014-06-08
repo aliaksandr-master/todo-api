@@ -14,12 +14,9 @@ block container
 		!= 'window.API_ROOT = "/api/";'
 		!= 'window.API_JSON = ' + JSON.stringify(specsSrc) + ';'
 		!= 'window.API_ROUTES_JSON = ' + JSON.stringify(routes) + ';'
-	#test
-	div(style="margin: 15px 15px 0;")
+	div(style="margin: 0 10px;")
 		.row#api-tester
-
-			.col-md-8#api-tester-info
-
+			.col-md-9#api-tester-info
 				.api-tester-spec-wr
 					.input-group
 						select.form-control.input-sm#api-tester-spec-name
@@ -36,9 +33,10 @@ block container
 				+pre-collapsed-panel('response-status', 'Response Status', true)
 				+raw-collapsed-panel('request-data', 'Request Data', true)
 				+pre-collapsed-panel('interaction-info', 'Info', true)
-				+pre-collapsed-panel('debug-info-timers', 'Debug Timers', true)
-				+pre-collapsed-panel('debug-info-memory', 'Debug Memory', true)
-				+pre-collapsed-panel('debug-info-db', 'Debug db', true)
+				+pre-collapsed-panel('debug-info-timers', 'Timers', true)
+				+pre-collapsed-panel('debug-info-memory', 'Memory', true)
+				+pre-collapsed-panel('debug-info-db', 'Database', true)
+				+pre-collapsed-panel('debug-dump', 'Dump', true)
 				+pre-collapsed-panel('debug-info-log', 'Stack Trace', false)
 
 			.col-md-15#api-tester-response
@@ -50,7 +48,7 @@ block container
 				+raw-collapsed-panel('response-headers', 'Response Headers', true)
 				+pre-collapsed-panel('debug-info-headers', 'Request Headers', true)
 
-			.col-md-7#api-tester-request
+			.col-md-6#api-tester-request
 
 				#form-head.clearfix
 					.row
@@ -79,8 +77,6 @@ block container
 
 				#api-tester-form-submit-wr.clearfix
 					button#api-tester-form-submit.btn.btn-primary(type="submit") REQUEST
-					//button.btn.btn-default.putData.pull-right Invalid
-					//button.btn.btn-default.putData.pull-right.-valid Valid
 
 				form#api-tester-form
 					+run-panel('form-params',  'Request data (Url Params)')
@@ -107,7 +103,6 @@ block container
 
 
 block scripts
-
 	script.
 		require(['jquery', 'modules/tester/app'], function ($, run) {
 			$(function () {

@@ -1,7 +1,7 @@
-mixin panel(name, text)
-	.panel.panel-default(id='api-tester-' + name)
+mixin panel(name, text, type)
+	.panel(id='api-tester-' + name, class='panel-' + (type ? type : 'default'))
 		.panel-heading!= text
-		pre.panel-body
+		.panel-body
 			block
 
 mixin pre-panel(name, text)

@@ -21,6 +21,11 @@ class Response extends ComponentAbstract {
 
 	private $_compiled = null;
 
+	private $_total = null;
+
+	public function setTotalItemsCount ($count) {
+		$this->_total = $count;
+	}
 
 	public function success () {
 		return Utils::get($this->getStatusInfo($this->status()), 'success', false);
@@ -51,8 +56,11 @@ class Response extends ComponentAbstract {
 
 			if ($this->request->responseType() == self::TYPE_MANY) {
 				$this->_meta['count'] = count($this->_data);
-				$this->_meta['limit'] = $this->request->dataLimit();
-				$this->_meta['offset'] = $this->request->dataOffset();
+				$this->_meta['limit'] = (integer) $this->request->dataLimit();
+				$this->_meta['offset'] = (integer) $this->request->dataOffset();
+				if (!is_null($this->_total)) {
+					$this->_meta['total'] = $this->_total;
+				}
 			}
 		} else {
 			$this->clear();
@@ -147,6 +155,8 @@ class Response extends ComponentAbstract {
 
 		if (!empty($this->_compiled['response']['debug'])) {
 			$this->_compiled['response']['debug']['stackTrace'] = $this->env->getStackTrace();
+			$this->_compiled['response']['debug']['dump'] = $this->env->getDumps();
+			$this->env->clearDumps();
 			$this->_compiled['response']['debug']['timers']['response_compile'] = gettimeofday(true) - $responseCompileTime;
 		}
 		$this->_restoreErrorHandler();

@@ -28,14 +28,10 @@ module.exports = function (grunt) {
 
 	this.less({
 		options: {
-			syncImport: true,
-			dumpLineNumbers: false,
-			ieCompat: true,
-			relativeUrls: false,
 			strictUnits: true,
-			strictImports: true,
-			rootpath: '',
-			paths: [ SRC + '/static/client' ]
+			sourceMap: false,
+			relativeUrls: true,
+			report: false
 		},
 		files: [{
 			expand: true,
@@ -82,7 +78,7 @@ module.exports = function (grunt) {
 				// FONTS
 				if(/\.(woff|ttf|eot|svg)/.test(url)){
 					fileName = url.split(/[\/\\]+/).pop();
-					url = '/client/static-' + opt.build.timestamp + '/fonts/'+fileName;
+					url = '/' + NAME + '/static-' + opt.build.timestamp + '/fonts/'+fileName;
 				}else if(/^[\/\\]*static\//.test(url) && /\.(png|jpg|jpeg|gif)/.test(url)){
 					url = url.replace(/([\/\\]?)static[\\\/]]/,'$1static-' + opt.build.timestamp + '/');
 				}

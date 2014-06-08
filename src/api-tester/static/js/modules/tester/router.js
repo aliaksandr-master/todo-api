@@ -1,5 +1,5 @@
 define(function(require){
-    "use strict";
+    'use strict';
 
 	var $ = require('jquery');
 	var URI = require('URIjs/URI');
