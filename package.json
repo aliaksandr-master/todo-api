@@ -38,7 +38,10 @@
 
 		"grunt-bower-task": "latest",
 
-		"grunt-template": "latest"
+		"grunt-template": "latest",
+
+		"handlebars": "latest",
+		"markdown": "latest"
     },
 	"scripts": {
 		"install": "php composer.phar install && grunt install build watch"
