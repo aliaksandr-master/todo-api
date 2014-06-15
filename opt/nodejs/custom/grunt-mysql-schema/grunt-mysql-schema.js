@@ -30,6 +30,8 @@ module.exports = function(grunt){
 
 			var dumpJSON = {};
 
+			shellResult = shellResult.replace(/^Warning\s*:[^\n]+\n/gi, '');
+
 			try {
 				dumpJSON = xml.toJson(shellResult, {
 					object: true,
