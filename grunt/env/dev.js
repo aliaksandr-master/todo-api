@@ -6,25 +6,27 @@ module.exports = function (grunt) {
 		SRC = this.lnk(opt.SRC),
 		BUILD = this.lnk(opt.BUILD);
 
-	this.copy({
-		files: [
-			{
-				expand: true,
-				cwd: opt.BUILD,
-				src: [
-					'**/*', '*'
-				],
-				dest: opt.DEPLOY
-			},
-			{
-				expand: true,
-				cwd: opt.GRUNT + "/_assets/env/dev/",
-				src: [
-					'**/*', '*'
-				],
-				dest: opt.DEPLOY
-			}
-		]
-	});
+	this
+		.copy({
+			files: [
+				{
+					expand: true,
+					cwd: opt.BUILD,
+					src: [
+						'**/*', '*'
+					],
+					dest: opt.DEPLOY
+				},
+				{
+					expand: true,
+					cwd: opt.GRUNT + "/_assets/env/dev/",
+					src: [
+						'**/*', '*'
+					],
+					dest: opt.DEPLOY
+				}
+			]
+		})
+	;
 
 };

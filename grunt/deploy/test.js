@@ -8,8 +8,8 @@ module.exports = function (grunt) {
 
 	this
 		.include([
-			this.lnk(null, 'install'),
-			this.lnk(null, 'build')
+			'deploy',
+			'env/test'
 		])
 	;
 

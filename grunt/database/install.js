@@ -6,12 +6,14 @@ module.exports = function (grunt) {
 		SRC = this.lnk(opt.SRC),
 		BUILD = this.lnk(opt.BUILD);
 
-	this.MySQLDbSchema({
-		files: [{
-			expand: true,
-			cwd: opt.DEV + '/database/configs/',
-			src: '**/*.json',
-			dest: opt.VAR + '/database/scheme/'
-		}]
-	});
+	this
+		.MySQLDbSchema({
+			files: [{
+				expand: true,
+				cwd: opt.DEV + '/database/configs/',
+				src: '**/*.json',
+				dest: opt.VAR + '/database/scheme/'
+			}]
+		})
+	;
 };

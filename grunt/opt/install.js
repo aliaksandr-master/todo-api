@@ -6,16 +6,19 @@ module.exports = function () {
 		SRC = this.lnk(opt.SRC),
 		BUILD = this.lnk(opt.BUILD);
 
-	this.clean([
-		opt.BUILD + '/opt'
-	]);
+	this
+		.clean([
+			opt.BUILD + '/opt'
+		])
 
-	this.symlink({
-		options: {
-			overwrite: true,
-			type: 'dir'
-		},
-		target: opt.CWD + '/opt',
-		link: opt.BUILD + '/opt'
-	});
+		.symlink({
+			options: {
+				overwrite: true,
+				type: 'dir'
+			},
+			target: opt.CWD + '/opt',
+			link: opt.BUILD + '/opt'
+		})
+	;
+
 };

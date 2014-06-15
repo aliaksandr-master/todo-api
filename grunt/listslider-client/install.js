@@ -6,8 +6,10 @@ module.exports = function (grunt) {
 		SRC = this.lnk(opt.SRC),
 		BUILD = this.lnk(opt.BUILD);
 
-	this.clean([
-		BUILD
-	]);
+	this
+		.clean([
+			BUILD
+		])
+	;
 
 };

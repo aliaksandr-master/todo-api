@@ -7,14 +7,14 @@ module.exports = function (grunt) {
 		BUILD = this.lnk(opt.BUILD);
 
 	this.include([
-		this.lnk(null, 'compile/env'),
-		this.lnk(null, 'compile/lang'),
-		this.lnk(null, 'compile/image'),
-		this.lnk(null, 'compile/style'),
-		this.lnk(null, 'compile/html'),
-		this.lnk(null, 'compile/script'),
-		this.lnk(null, 'compile/template'),
-		this.lnk(null, 'compile/router')
+		NAME + '/compile/env',
+		NAME + '/compile/lang',
+		NAME + '/compile/image',
+		NAME + '/compile/style',
+		NAME + '/compile/html',
+		NAME + '/compile/script',
+		NAME + '/compile/template',
+		NAME + '/compile/router'
 	]);
 
 };

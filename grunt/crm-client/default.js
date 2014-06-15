@@ -6,9 +6,11 @@ module.exports = function (grunt) {
 		SRC = this.lnk(opt.SRC),
 		BUILD = this.lnk(opt.BUILD);
 
-	this.include([
-		this.lnk(null, 'install'),
-		this.lnk(null, 'build')
-	]);
+	this
+		.include([
+			this.lnk(null, 'install'),
+			this.lnk(null, 'build')
+		])
+	;
 
 };

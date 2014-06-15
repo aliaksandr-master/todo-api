@@ -6,14 +6,16 @@ module.exports = function (grunt) {
 		SRC = this.lnk(opt.SRC),
 		BUILD = this.lnk(opt.BUILD);
 
-	this.watch({
-		files: [
-			opt.SRC + "/opt/**/*.php"
-		],
-		tasks: [
-			'copy:opt/install',
-			'pragma'
-		]
-	});
+	this
+		.watch({
+			files: [
+				opt.SRC + "/opt/**/*.php"
+			],
+			tasks: [
+				'copy:opt/install',
+				'pragma'
+			]
+		})
+	;
 
 };

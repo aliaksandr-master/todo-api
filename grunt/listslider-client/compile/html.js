@@ -6,30 +6,34 @@ module.exports = function (grunt) {
 		SRC = this.lnk(opt.SRC),
 		BUILD = this.lnk(opt.BUILD);
 
-	this.copy({
-		files: [
-			{
-				expand: true,
-				cwd: SRC + '/static',
-				src: [
-					'**/*.{html,htm,xhtml}',
-					'*.{html,htm,xhtml}'
-				],
-				dest: BUILD + '/static',
-				ext: '.html'
-			}
-		]
-	});
+	this
+		.copy({
+			files: [
+				{
+					expand: true,
+					cwd: SRC + '/static',
+					src: [
+						'**/*.{html,htm,xhtml}',
+						'*.{html,htm,xhtml}'
+					],
+					dest: BUILD + '/static',
+					ext: '.html'
+				}
+			]
+		})
+	;
 
-	this.replace({
-		overwrite: true,
-		src: [
-			BUILD + '/static/index.html'
-		],
-		replacements: [{
-			from: 'static/',
-			to: 'static-' + opt.build.timestamp + '/'
-		}]
-	});
+	this
+		.replace({
+			overwrite: true,
+			src: [
+				BUILD + '/static/index.html'
+			],
+			replacements: [{
+				from: 'static/',
+				to: 'static-' + opt.build.timestamp + '/'
+			}]
+		})
+	;
 
 };

@@ -45,7 +45,7 @@ module.exports = function (grunt) {
 		},
 
 		build: {
-			timestamp: Date.now()
+			timestamp: time
 		},
 
 		package: pkg

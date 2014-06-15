@@ -6,15 +6,17 @@ module.exports = function (grunt) {
 		SRC = this.lnk(opt.SRC),
 		BUILD = this.lnk(opt.BUILD);
 
-	this.copy({
-		options: {
-			excludeEmpty: true
-		},
+	this
+		.copy({
+			options: {
+				excludeEmpty: true
+			},
 
-		files: [{
-			src: SRC + '/.htaccess',
-			dest: BUILD + '/.htaccess'
-		}]
-	});
+			files: [{
+				src: SRC + '/.htaccess',
+				dest: BUILD + '/.htaccess'
+			}]
+		})
+	;
 
 };

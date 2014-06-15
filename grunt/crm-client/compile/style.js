@@ -9,104 +9,101 @@ module.exports = function (grunt) {
 	var src = opt.lnk(opt.SRC);
 	var build = opt.lnk(opt.BUILD);
 
-	this.clean([
-		build + '/static/styles'
-	]);
+	this
+		.clean([
+			build + '/static/styles'
+		])
 
-	this.clean('fonts', [
-		build + '/static/fonts'
-	]);
+		.clean('fonts', [
+			build + '/static/fonts'
+		])
 
-	this.copy({
-		files: [{
-			expand: true,
-			cwd: src + "/",
-			src: [
-				'**/*.css',
-				'*.css'
-			],
-			dest: build + "/"
-		}]
-	});
-
-	this.less({
-		options: {
-			strictUnits: true,
-			sourceMap: false,
-			relativeUrls: true,
-			report: false
-		},
-		files: [{
-			expand: true,
-			cwd: src + "/static/styles",
-			src: [
-				'*.less',
-				'**/*.less'
-			],
-			dest: build + '/static/styles',
-			ext: '.css'
-		}]
-	});
-
-	this.copy('fonts', {
-		files: [
-			{
+		.copy({
+			files: [{
 				expand: true,
-				cwd: src + "/static/",
-				src: '**/*.{ttf,svg,eot,woff}',
-				dest: build + "/static/fonts/",
-				flatten: true
-			},
-			{
-				expand: true,
-				cwd: opt.OPT + "/frontend",
+				cwd: src + "/",
 				src: [
-					'**/font/**/*.{ttf,svg,eot,woff}',
-					'**/fonts/**/*.{ttf,svg,eot,woff}'
+					'**/*.css',
+					'*.css'
 				],
-				dest: build + "/static/fonts/",
-				flatten: true
-			}
-		]
-	});
+				dest: build + "/"
+			}]
+		})
 
-	this.copy('opt-fonts', {
+		.less({
+			options: {
+				strictUnits: true,
+				sourceMap: false,
+				relativeUrls: true,
+				report: false
+			},
+			files: [{
+				expand: true,
+				cwd: src + "/static/styles",
+				src: [
+					'*.less',
+					'**/*.less'
+				],
+				dest: build + '/static/styles',
+				ext: '.css'
+			}]
+		})
 
-	});
-
-	this.replace('fonts', {
-		overwrite: true,
-		src: [
-			build + '/static/**/*.css'
-		],
-		replacements: [{
-			from: /url\s*\([^\)]+\)/gi,
-			to: function($0){
-				$0 = $0.replace(/^url/,"");
-				var url = $0.replace(/['"\s\(\)]+/g, "").trim();
-				var fileName;
-				// FONTS
-				if(/\.(woff|ttf|eot|svg)/.test(url)){
-					fileName = url.split(/[\/\\]+/).pop();
-					url = opt.lnk('/', 'static-' + opt.build.timestamp + '/fonts/' + fileName);
-				}else if(/^[\/\\]*static\//.test(url) && /\.(png|jpg|jpeg|gif)/.test(url)){
-					url = url.replace(/([\/\\]?)static[\\\/]]/,'$1static-' + opt.build.timestamp +'/');
+		.copy('fonts', {
+			files: [
+				{
+					expand: true,
+					cwd: src + "/static/",
+					src: '**/*.{ttf,svg,eot,woff}',
+					dest: build + "/static/fonts/",
+					flatten: true
+				},
+				{
+					expand: true,
+					cwd: opt.OPT + "/frontend",
+					src: [
+						'**/font/**/*.{ttf,svg,eot,woff}',
+						'**/fonts/**/*.{ttf,svg,eot,woff}'
+					],
+					dest: build + "/static/fonts/",
+					flatten: true
 				}
-				//							console.log($0,'  url: ',url);
-				return "url('"+url+"')";
-			}
-		}]
-	});
+			]
+		})
 
-	this.autoprefixer({
-		expand: true,
-		overwrite: true,
-		src: [
-			build + '/static/styles/*.css',
-			build + '/static/styles/**/*.css',
-			build + '/static/styles/**/*.css',
-			build + '/static/vendor/**/*.css',
-			build + '/static/vendor/*.css'
-		]
-	});
+		.replace('fonts', {
+			overwrite: true,
+			src: [
+				build + '/static/**/*.css'
+			],
+			replacements: [{
+				from: /url\s*\([^\)]+\)/gi,
+				to: function($0){
+					$0 = $0.replace(/^url/,"");
+					var url = $0.replace(/['"\s\(\)]+/g, "").trim();
+					var fileName;
+					// FONTS
+					if(/\.(woff|ttf|eot|svg)/.test(url)){
+						fileName = url.split(/[\/\\]+/).pop();
+						url = opt.lnk('/', 'static-' + opt.build.timestamp + '/fonts/' + fileName);
+					}else if(/^[\/\\]*static\//.test(url) && /\.(png|jpg|jpeg|gif)/.test(url)){
+						url = url.replace(/([\/\\]?)static[\\\/]]/,'$1static-' + opt.build.timestamp +'/');
+					}
+					//							console.log($0,'  url: ',url);
+					return "url('"+url+"')";
+				}
+			}]
+		})
+
+		.autoprefixer({
+			expand: true,
+			overwrite: true,
+			src: [
+				build + '/static/styles/*.css',
+				build + '/static/styles/**/*.css',
+				build + '/static/styles/**/*.css',
+				build + '/static/vendor/**/*.css',
+				build + '/static/vendor/*.css'
+			]
+		});
 };

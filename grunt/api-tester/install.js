@@ -6,7 +6,9 @@ module.exports = function (grunt) {
 		SRC = this.lnk(opt.SRC),
 		BUILD = this.lnk(opt.BUILD);
 
-	this.clean([
-		opt.BUILD + '/api-tester'
-	]);
+	this
+		.clean([
+			opt.BUILD + '/api-tester'
+		])
+	;
 };
