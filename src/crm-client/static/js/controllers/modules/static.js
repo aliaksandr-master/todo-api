@@ -13,14 +13,14 @@ define(function(require, exports, module){
 				this.redirectTo('crm-project-list');
 			} else {
 				this.view = new PageHomeView({
-					region: "main/content"
+					region: "layout/content"
 				});
 			}
 		},
 
 		about: function(){
 			this.view = new PageAboutView({
-				region: "main/content"
+				region: "layout/content"
 			});
 		}
 

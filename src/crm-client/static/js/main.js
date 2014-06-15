@@ -23,7 +23,7 @@ define(function(require){
 		trailing: true,
 
 		// DISPATCHER
-		controllerPath: 'controllers/modules/',
+		controllerPath: 'controllers/',
 		controllerSuffix: ''
 
 	});

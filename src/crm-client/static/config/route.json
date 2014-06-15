@@ -1,57 +1,104 @@
 [
 	{
+		"name": "crm-projects",
+		"route": "project",
+		"controller": "modules/crm/project/projects",
+		"action": "show",
+		"params": {}
+	},
+	{
+		"name": "crm-project",
+		"route": "project/:projectId",
+		"controller": "modules/crm/project/project",
+		"action": "show",
+		"params": {}
+	},
+
+	{
+		"name": "crm-settings-leed-types",
+		"route": "setting/leed/type",
+		"controller": "modules/crm/setting/leed/type/types",
+		"action": "show",
+		"params": {}
+	},
+	{
+		"name": "crm-settings-leed-type",
+		"route": "setting/leed/type/:typeId",
+		"controller": "modules/crm/setting/leed/type/type",
+		"action": "show",
+		"params": {}
+	},
+
+	{
+		"name": "crm-settings-leed-statuses",
+		"route": "setting/leed/status",
+		"controller": "modules/crm/setting/leed/status/statuses",
+		"action": "show",
+		"params": {}
+	},
+	{
+		"name": "crm-settings-leed-status",
+		"route": "setting/leed/status/:statusId",
+		"controller": "modules/crm/setting/leed/status/status",
+		"action": "show",
+		"params": {}
+	},
+
+	{
+		"name": "crm-project-leed",
+		"route": "project/:projectId/leed/:leedId",
+		"controller": "modules/crm/project/leed/leed",
+		"action": "show",
+		"params": {}
+	},
+	{
+		"name": "crm-project-leeds",
+		"route": "project/:projectId/leed",
+		"controller": "modules/crm/project/leed/leeds",
+		"action": "show",
+		"params": {}
+	},
+
+	{
 		"name": "user-register",
 		"route": "user/register",
-		"controller": "user",
+		"controller": "modules/user",
 		"action": "register",
-		"params": {}
-	},
-	{
-		"name": "crm-project-list",
-		"route": "project",
-		"controller": "crm/project",
-		"action": "index",
-		"params": {}
-	},
-	{
-		"name": "crm-project-item",
-		"route": "project/:id",
-		"controller": "crm/project",
-		"action": "project",
 		"params": {}
 	},
 	{
 		"name": "user-profile",
 		"route": "user/profile",
-		"controller": "user",
+		"controller": "modules/user",
 		"action": "profile",
 		"params": {}
 	},
 	{
 		"name": "user-login",
 		"route": "user/login",
-		"controller": "user",
+		"controller": "modules/user",
 		"action": "login",
 		"params": {}
 	},
 	{
 		"name": "user-logout",
 		"route": "user/logout",
-		"controller": "user",
+		"controller": "modules/user",
 		"action": "logout",
 		"params": {}
 	},
+
 	{
 		"name": "static-home",
 		"route": "",
-		"controller": "static",
+		"controller": "modules/static",
 		"action": "home",
 		"params": {}
 	},
 	{
 		"name": "static-about",
 		"route": "about",
-		"controller": "static",
+		"controller": "modules/static",
 		"action": "about",
 		"params": {}
 	}

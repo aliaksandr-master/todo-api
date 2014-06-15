@@ -3,7 +3,7 @@ define(function(require, exports, module){
 
 	var $ = require('jquery');
     var BaseController = require('controllers/base/controller'),
-		UserModel = require('record/user/model'),
+		UserModel = require('models/user/model'),
 		PageUserRegisterView = require('views/modules/user/register'),
 		PageUserLoginView = require('views/modules/user/login'),
 		PageUserProfileView = require('views/modules/user/profile');
@@ -19,7 +19,7 @@ define(function(require, exports, module){
 
 		login: function () {
 			this.view = new PageUserLoginView({
-				region: "main/content"
+				region: "layout/content"
 			});
 			this.listenTo(this.view, 'trigger:login', function (data) {
 				this.userModel = new UserModel(data.data, {parse: true});
@@ -35,12 +35,12 @@ define(function(require, exports, module){
 		profile: function(){
 			this.view = new PageUserProfileView({
 				model: this.user.model(),
-				region: "main/content"
+				region: "layout/content"
 			});
 		},
 
 		register: function(){
-			this.view = new PageUserRegisterView({region: "main/content"});
+			this.view = new PageUserRegisterView({region: "layout/content"});
 			this.listenTo(this.view, 'registered', function(data){
 				this.redirectTo('user-login');
 			});

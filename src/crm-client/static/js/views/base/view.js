@@ -5,7 +5,7 @@ define(function(require, exports, module){
 	var Handlebars = require('handlebars');
 	var Chaplin = require('chaplin');
 	var preloader = require('lib/preloader');
-	var sessionUser = require('lib/session');
+	var session = require('lib/session');
 	var lang = require('lib/lang');
 
 	require('lib/view-helper');
@@ -17,6 +17,8 @@ define(function(require, exports, module){
 		noWrap: true,
 		autoRender: true,
 		autoAttach: true,
+
+		session: session,
 
 		attach: function(){
 			var r = BaseView.__super__.attach.apply(this, arguments);
@@ -48,8 +50,9 @@ define(function(require, exports, module){
 
 		getTemplateData: function () {
 			var data = BaseView.__super__.getTemplateData.apply(this, arguments);
-			data._user = (sessionUser.model() || {}).attributes;
-			data._lang = lang;
+			data._session = (this.session.model() || {}).attributes;
+			data._locale = lang;
+			console.log('getTemplateData', data);
 			return data;
 		},
 

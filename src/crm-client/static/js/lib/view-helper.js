@@ -11,6 +11,8 @@ define(function(require, exports, module){
 
 	var lang = require('lib/lang');
 
+	require('bootstrap');
+
 	var forms = {
 		defaults: {
 			provider: "api",

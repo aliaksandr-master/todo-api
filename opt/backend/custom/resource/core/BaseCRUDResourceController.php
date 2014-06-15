@@ -102,12 +102,12 @@ class BaseCRUDResourceController extends BaseResourceController {
 				$this->response->status(404);
 				return null;
 			}
-		} else if ($this->request->action() === 'getMany') {
+		} /*else if ($this->request->action() === 'getMany') {
 			if (!$result) {
 				$this->response->status(404);
 				return null;
 			}
-		}
+		}*/
 		return $result;
 	}
 

@@ -5,7 +5,7 @@ define(function(require, exports, module){
 		request = require('lib/request'),
 		utils = require('lib/utils'),
 		Chaplin = require('chaplin'),
-		User = require('record/modules/user/model');
+		User = require('models/modules/user/model');
 
     var session;
 

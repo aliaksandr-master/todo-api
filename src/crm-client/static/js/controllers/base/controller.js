@@ -2,9 +2,7 @@ define(function(require, exports, module){
     'use strict';
 
     var Chaplin = require('chaplin');
-    var $ = require('jquery');
-    var SimpleLayoutView = require('views/layouts/simple');
-    var LoggedLayoutView = require('views/layouts/logged');
+    var LayoutView = require('views/layout');
 	var preloader = require('lib/preloader');
 
 	var user = require('lib/session');
@@ -17,13 +15,11 @@ define(function(require, exports, module){
 		request: request,
 
 		getLayout: function () {
-			var layout =  this.user.logged() ? LoggedLayoutView : SimpleLayoutView;
-//			console.log(this.user.logged());
-			return layout;
+			return LayoutView;
 		},
 
 		beforeAction: function () {
-			this.reuse("site", this.getLayout());
+			this.reuse("layout", this.getLayout());
 			BaseController.__super__.beforeAction.apply(this, arguments);
 		},
 

@@ -69,6 +69,9 @@ class BaseResourceController extends \Intercessor\EventBroker implements Interce
 			return null;
 		}
 		$result = call_user_func_array(array($this, $action), $this->request->param());
+		if (!$this->request->valid()) {
+			return null;
+		}
 		if ($result instanceof BaseCrudModelPromoter) {
 			if ($this->request->responseType() === Intercessor\Response::TYPE_MANY) {
 				$this->response->setTotalItemsCount($result->getTotal());
@@ -279,13 +282,13 @@ class BaseResourceController extends \Intercessor\EventBroker implements Interce
 				} else {
 					return 410; // empty GET result
 				}
-			} else {
+			}/* else {
 				if ($method == "GET") {
 					if (!$hasData) {
 						return 404;
 					}
 				}
-			}
+			}*/
 		}
 
 		return $status;

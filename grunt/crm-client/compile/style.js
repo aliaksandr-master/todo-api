@@ -41,8 +41,8 @@ module.exports = function (grunt) {
 				expand: true,
 				cwd: src + "/static/styles",
 				src: [
-					'*.less',
-					'**/*.less'
+					'**/*.less',
+					'!**/{inc,base}/**/*.less'
 				],
 				dest: build + '/static/styles',
 				ext: '.css'
