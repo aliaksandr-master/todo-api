@@ -2,16 +2,16 @@ define(function(require){
 	'use strict';
 
 	var BaseCollection = require('models/base/collection');
-	var CrmSettingLeedTypeModel = require('./model');
+	var CrmSettingLeedStatusModel = require('./model');
 
-	var CrmSettingLeedTypeCollection = BaseCollection.extend({
+	var CrmSettingLeedStatusCollection = BaseCollection.extend({
 
 		url: '/crm/setting/leed/type/',
 
-		model: CrmSettingLeedTypeModel
+		model: CrmSettingLeedStatusModel
 
 	});
 
-	return CrmSettingLeedTypeCollection;
+	return CrmSettingLeedStatusCollection;
 
 });

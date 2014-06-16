@@ -3,7 +3,7 @@ define(function(require){
 
 	var BaseModel = require('models/base/model');
 
-	var CrmSettingLeedTypeModel = BaseModel.extend({
+	var CrmSettingLeedStatusModel = BaseModel.extend({
 
 		urlRoot: '/crm/setting/leed/type/',
 
@@ -11,6 +11,6 @@ define(function(require){
 
 	});
 
-	return CrmSettingLeedTypeModel;
+	return CrmSettingLeedStatusModel;
 
 });
