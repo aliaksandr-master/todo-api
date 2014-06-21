@@ -61,19 +61,33 @@ GruntO.prototype = {
 
 		_.each(this._scans, function (scan) {
 			_.each(that.grunt.file.expand(scan, scan.src), function (fPath) {
-				var cwd =  (scan.cwd || '').replace(/^\.\//, '') || '';
-
-				var modulePath = utils.joinPaths(cwd, fPath);
+				var cwd =  (scan.cwd || '').replace(/^\.\//, '') || '',
+					prefix = '',
+					modulePath = utils.joinPaths(cwd, fPath);
 
 				if (!that.grunt.file.isPathAbsolute(modulePath)) {
 					modulePath = process.cwd() + '/' + modulePath;
+				}
+
+				if (scan.prefix) {
+					if (_.isRegExp(scan.prefix)) {
+						prefix = fPath.replace(scan.prefix, '$1');
+					} else if (_.isString(scan.prefix)){
+						prefix = scan.prefix;
+					} else if (_.isFunction(scan.prefix)) {
+						prefix = scan.prefix(fPath, cwd);
+					} else {
+						that.grunt.fail.fatal('invalid prefix type, must be string/regExp/function');
+					}
+				} else {
+					prefix = that.getPrefix(fPath, cwd);
 				}
 
 				files.push({
 					path: fPath,
 					modulePath: modulePath,
 					cwd: cwd,
-					prefix: that.getPrefix(fPath, cwd)
+					prefix: prefix
 				});
 			});
 		});
@@ -105,6 +119,7 @@ GruntO.prototype = {
 		if (aliases.grunto == null) {
 			aliases.grunto = [];
 		}
+
 		_.each(aliases, function (tasks, name) {
 			_.each(tasks, function (taskName) {
 				if (!refs[taskName]) {

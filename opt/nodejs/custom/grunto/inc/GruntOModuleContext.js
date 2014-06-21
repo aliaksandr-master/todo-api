@@ -3,34 +3,41 @@
 var _ = require('lodash');
 var utils = require('./utils');
 
-function GruntOModuleContext (grunt, aliases, refs, config, prefix, context) {
+function Context (grunt, aliases, refsObj, config, prefix, context) {
 	_.extend(this, context);
 
+	if (aliases[prefix] != null) {
+		grunt.fail.fatal('duplicate module name "' + prefix + '"');
+	}
 	aliases[prefix] = [];
+	refsObj[prefix] = true;
+
+	this.CURRENT_PREFIX = prefix;
 	this.$prop$ = {
+		num: 0,
+		refs: refsObj,
 		grunt: grunt,
 		prefix: prefix,
-		sq: aliases[prefix],
-		num: 0,
 		config: config,
-		refs: refs
+		current: aliases[prefix]
 	};
-} GruntOModuleContext.prototype = {
+}
+
+Context.prototype = {
 
 	include: function (arrTasks) {
-		if (_.isEmpty(arrTasks)) {
-			this.$prop$.grunt.fail.fatal(this.$prop$.prefix + ': Invalid tasks array in include');
-		}
-
 		if (_.isString(arrTasks)) {
 			arrTasks = [arrTasks];
 		}
 
-		if (!_.isArray(arrTasks)) {
+		if (!_.isArray(arrTasks) || _.isEmpty(arrTasks)) {
 			this.$prop$.grunt.fail.fatal(this.$prop$.prefix + ': Invalid tasks type. Must be string or array');
 		}
 
-		this.$prop$.sq = this.$prop$.sq.concat(arrTasks);
+		_.each(arrTasks, function (task) {
+			this.$prop$.current.push(task);
+		}, this);
+
 		return this;
 	},
 
@@ -59,11 +66,11 @@ function GruntOModuleContext (grunt, aliases, refs, config, prefix, context) {
 
 		that.$prop$.config[name][target] = config;
 
-		that.$prop$.sq.push(ref);
+		that.$prop$.current.push(ref);
 
 		return this;
 	}
 
 };
 
-module.exports = GruntOModuleContext;
+module.exports = Context;
