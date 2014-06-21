@@ -2,7 +2,7 @@
 
 var time = Date.now();
 
-module.exports = require('./opt/nodejs/custom/grunto/grunto')(function(grunt) {
+module.exports = require('grunto')(function(grunt) {
 	var pkg = require('./package.json'),
 		CWD = process.cwd();
 
@@ -23,7 +23,7 @@ module.exports = require('./opt/nodejs/custom/grunto/grunto')(function(grunt) {
 		TMP:    CWD + '/tmp',
 
 		lnk: function (before, after) {
-			var link = this.$prop$.prefix.replace(/^([^\/]+)\/.+$/, '$1').trim();
+			var link = this.CURRENT_PREFIX.replace(/^([^\/]+)\/.+$/, '$1').trim();
 			if (before) {
 				link = before.replace(/\/?$/, '/') + link;
 			}
@@ -59,14 +59,18 @@ module.exports = require('./opt/nodejs/custom/grunto/grunto')(function(grunt) {
 		},
 
 		autoprefixer: {
-			browsers: ['last 2 version', 'ie 9'],
-			diff: false,
-			map: false
+			options: {
+				browsers: ['last 2 version', 'ie 9'],
+				diff: false,
+				map: false
+			}
 		},
 
 		watch: {
-			livereload: true,
-			interrupt: true
+			options: {
+				livereload: true,
+				interrupt: true
+			}
 		}
 	};
 

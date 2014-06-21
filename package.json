@@ -11,6 +11,8 @@
 
 		"lodash": "latest",
 
+		"grunto": "latest",
+
 		"grunt-php-router-gen": "latest",
 
 		"grunt-symbolic-link": "latest",
@@ -44,6 +46,7 @@
 		"markdown": "latest"
     },
 	"scripts": {
-		"install": "php composer.phar install && grunt install build watch"
+		"update": "npm install && bower cache clean && php composer.phar install && grunt install build",
+		"dev": "grunt install build watch"
 	}
 }
