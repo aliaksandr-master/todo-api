@@ -2,23 +2,16 @@
 
 var time = Date.now();
 
-module.exports = function (grunt) {
-
-	var pkg = require('./package.json');
-	var grind = require('./opt/nodejs/custom/grind-grunt/grind-grunt')(grunt, {
-		modulesDir: 'grunt',
-		taskMethods: true
-	});
-
-	var CWD = process.cwd();
+module.exports = require('./opt/nodejs/custom/grunto/grunto')(function(grunt) {
+	var pkg = require('./package.json'),
+		CWD = process.cwd();
 
 	grunt.file.expand([ 'opt/nodejs/**/grunt-*.js' ]).forEach(function (f) {
 		require(CWD + '/' + f)(grunt);
 	});
 
-	require('load-grunt-tasks')(grunt);
+	this.context({
 
-	grind.run({
 		CWD:    CWD,
 		SRC:    CWD + '/src',
 		OPT:    CWD + '/opt',
@@ -30,7 +23,7 @@ module.exports = function (grunt) {
 		TMP:    CWD + '/tmp',
 
 		lnk: function (before, after) {
-			var link = this.$$prefix.replace(/^([^\/]+)\/.+$/, '$1').trim();
+			var link = this.$prop$.prefix.replace(/^([^\/]+)\/.+$/, '$1').trim();
 			if (before) {
 				link = before.replace(/\/?$/, '/') + link;
 			}
@@ -51,5 +44,30 @@ module.exports = function (grunt) {
 		package: pkg
 	});
 
-	console.log('>> grunt time:', (Date.now() - time) / 1000, 's');
-};
+	this.scan([{
+		cwd: 'grunt/',
+		src: [
+			'**/*.js',
+			'!**/_*.js',
+			'!**/_*/**/*.js'
+		]
+	}]);
+
+	return {
+		jshint: {
+			options: grunt.file.readJSON('.jshintrc')
+		},
+
+		autoprefixer: {
+			browsers: ['last 2 version', 'ie 9'],
+			diff: false,
+			map: false
+		},
+
+		watch: {
+			livereload: true,
+			interrupt: true
+		}
+	};
+
+});
