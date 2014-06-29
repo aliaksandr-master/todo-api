@@ -3,7 +3,6 @@
 module.exports = function (grunt) {
 	var opt = this;
 
-
 	this
 		.jshint('compile', {
 			src: [

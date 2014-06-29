@@ -10,18 +10,26 @@ var save = function (caller, options, fpath) {
 			grunt.fail.fatal('invalid destination');
 			return;
 		}
-		caller.result = options.processResult(caller.result, caller.dest);
-		if (!_.isString(caller.result) && !_.isNumber(caller.result)) {
-			caller.result = JSON.stringify(caller.result, null, options.beautifyJSON ? 4 : null);
-		}
-		grunt.file.write(caller.dest, caller.result);
-		if (options.okMessage) {
-			grunt.log.ok(options.okMessage(caller.dest, fpath));
-		}
+
+		var files = options.splittingIntoFiles.call(caller, caller.result, caller.dest);
+
+		_.each(files, function (content, file) {
+			content = options.processResult.call(caller, content, caller.dest);
+			if (!_.isString(content) && !_.isNumber(content)) {
+				content = JSON.stringify(content, null, options.beautifyJSON ? 4 : null);
+			}
+			grunt.file.write(file, content);
+			if (options.okMessage) {
+				grunt.log.ok(options.okMessage.call(caller, file, fpath));
+			}
+		});
 	}
 };
 
 var mkCaller = function (file) {
+	if (file.orig.overwrite) {
+		file.dest = file.src;
+	}
 	return {
 		src: file.src,
 		dest: file.dest,
@@ -31,8 +39,8 @@ var mkCaller = function (file) {
 };
 
 var iterator = function (callback, caller, options, fpath, file) {
-	var content = options.readFile(fpath);
-	content = options.processContent(content, fpath, caller.dest);
+	var content = options.readFile.call(caller, fpath, options.readOptions);
+	content = options.processContent.call(caller, content, fpath, caller.dest);
 	var objRes = caller.result;
 	var result = callback.call(caller, fpath, content);
 	if (result != null  && result !== caller.result) {
@@ -45,46 +53,69 @@ var iterator = function (callback, caller, options, fpath, file) {
 
 module.exports = function (thisTaskObj) {
 
-	var mOptions = {};
+	var mOptions = {
+
+		blockMode: false,
+
+		beautifyJSON: false,
+
+		emptyResult: false,
+
+		readOptions: {},
+
+		eachCallback: function (fpath, content) {
+			return content;
+		},
+
+		readFile: function (fpath, readOptions) {
+			return null;
+		},
+
+		processContent: function (content, fpath, dest) {
+			return content;
+		},
+
+		processResult: function (result, dest) {
+			return result;
+		},
+
+		okMessage: function (dest, fpath) {
+			var cwd = process.cwd().replace(/^[\\\/]+/, '/');
+
+			dest = dest.replace(/^[\\\/]+/, '/').replace(cwd, '').replace(/^[\\\/]+/, '');
+			fpath = fpath.replace(/^[\\\/]+/, '/').replace(cwd, '').replace(/^[\\\/]+/, '');
+
+			return 'File ' + dest + (fpath === dest ? ' processed' : ' created');
+		},
+
+		splittingIntoFiles: function (content, dest) {
+			var obj = {};
+			obj[dest] = content;
+			return obj;
+		}
+
+	};
 
 	return {
 
 		configure: function (options) {
+			_.each(options, function (v, k) {
+				if (v != null) {
+					mOptions[k] = v;
+				}
+			});
+		},
 
-			mOptions = _.extend({
-
-				beautifyJSON: false,
-
-				emptyResult: false,
-
-				readFile: function (fpath) {
-					return null;
-				},
-
-				processContent: function (content, fpath, dest) {
-					return content;
-				},
-
-				processResult: function (result, dest) {
-					return result;
-				},
-
-				okMessage: function (dest, fpath) {
-					var cwd = process.cwd().replace(/^[\\\/]+/, '/');
-					dest = dest
-						.replace(/^[\\\/]+/, '/')
-						.replace(cwd, '')
-						.replace(/^[\\\/]+/, '');
-					return 'File ' + dest + (fpath === dest ? ' processed' : ' created');
-				},
-
-				dest: false
-
-			}, mOptions, options);
+		options: function () {
+			return this.configure.apply(this, arguments);
 		},
 
 		each: function (callback) {
 			var options = mOptions;
+
+			if (!callback) {
+				callback = options.eachCallback;
+			}
 
 			var defaultKey = '-';
 			var sortedFiles = {};

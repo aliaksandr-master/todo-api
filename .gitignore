@@ -1,14 +1,15 @@
 # ide and os files
 /.idea/
-*.idea/
+**/*.idea/
 /npm-debug.log
-*.DS_Store
-*.desktop
-*.thumb
-*/.~*
-*/~*
-*/*~
-*.sublime*
+**/*.DS_Store
+**/*.kate-swp
+**/*.desktop
+**/*.thumb
+**/*/.~*
+**/*/~*
+**/*/*~
+**/*.sublime*
 
 # package managers
 /composer.lock
