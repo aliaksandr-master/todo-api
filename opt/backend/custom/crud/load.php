@@ -1,5 +1,8 @@
 <?php
 
+require_once(__DIR__.'/core/IUser.php');
+require_once(__DIR__.'/core/IUserSession.php');
+
 require_once(__DIR__.'/core/ICRUDModel.php');
 require_once(__DIR__.'/core/IModelPromoter.php');
 
