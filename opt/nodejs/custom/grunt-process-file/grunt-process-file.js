@@ -10,10 +10,8 @@ module.exports = function (grunt) {
 				switch (require('path').extname(fpath)) {
 					case '.json':
 						return grunt.file.readJSON(fpath, readOptions);
-						break;
 					case '.yaml':
 						return grunt.file.readYAML(fpath, readOptions);
-						break;
 				}
 				return grunt.file.read(fpath, readOptions);
 			},

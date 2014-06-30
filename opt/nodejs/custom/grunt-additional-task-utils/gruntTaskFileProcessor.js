@@ -82,8 +82,8 @@ module.exports = function (thisTaskObj) {
 		okMessage: function (dest, fpath) {
 			var cwd = process.cwd().replace(/^[\\\/]+/, '/');
 
-			dest = dest.replace(/^[\\\/]+/, '/').replace(cwd, '').replace(/^[\\\/]+/, '');
-			fpath = fpath.replace(/^[\\\/]+/, '/').replace(cwd, '').replace(/^[\\\/]+/, '');
+			dest = (dest||'').replace(/^[\\\/]+/, '/').replace(cwd, '').replace(/^[\\\/]+/, '');
+			fpath = (fpath||'').replace(/^[\\\/]+/, '/').replace(cwd, '').replace(/^[\\\/]+/, '');
 
 			return 'File ' + dest + (fpath === dest ? ' processed' : ' created');
 		},

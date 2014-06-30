@@ -32,16 +32,12 @@ module.exports = function (grunt) {
 
 			deepMerge: true,
 
-			beautify: false
+			beautifyJSON: false
 		});
 
-		fileProcessor.configure({
-			blockMode: true,
-			readFile: options.readFile,
-			beautifyJSON: options.beautify,
-			processContent: options.processContent,
-			processResult: options.processResult
-		});
+		options.blockMode = true;
+
+		fileProcessor.options(options);
 
 		fileProcessor.each(function (fpath, json) {
 			var result = this.result == null ? (options.array ? [] : {}) : this.result;
