@@ -2,7 +2,7 @@
 
 
 
-class UserController extends CrmBaseController {
+class CrmUserController extends CrmBaseController {
 
 	public function getOne ($userId) {
 		return $this->user->read($userId);
