@@ -1,10 +1,8 @@
 <?php
 
-class CrmProjectController extends BaseCRUDResourceController {
+class CrmProjectController extends CrmBaseController {
 
-	/**
-	 * @var TestModel
-	 */
+	/** @var TestModel */
 	public $model = 'CrmProjectModel';
 
 }

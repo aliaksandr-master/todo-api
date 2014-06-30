@@ -1,6 +1,6 @@
 <?php
 
-class CrmSettingLeedStatusController extends BaseCRUDResourceController {
+class CrmSettingLeedStatusController extends CrmSettingLeedBaseController {
 
 	/**
 	 * @var TestModel
