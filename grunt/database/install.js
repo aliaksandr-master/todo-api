@@ -8,6 +8,9 @@ module.exports = function (grunt) {
 
 	this
 		.MySQLDbSchema({
+			options: {
+				verboseRaw: opt.VAR + '/database/scheme-raw/'
+			},
 			files: [{
 				expand: true,
 				cwd: opt.DEV + '/database/configs/',
