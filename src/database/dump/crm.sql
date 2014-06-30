@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 4.2.3deb1
+-- version 4.2.2deb2
 -- http://www.phpmyadmin.net
 --
--- Host: localhost
--- Generation Time: Jun 30, 2014 at 12:12 PM
--- Server version: 5.5.37-1
--- PHP Version: 5.6.0beta4
+-- Хост: localhost
+-- Время создания: Июл 01 2014 г., 00:50
+-- Версия сервера: 5.5.37-1
+-- Версия PHP: 5.6.0beta4
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
@@ -17,13 +17,13 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8 */;
 
 --
--- Database: `crm`
+-- База данных: `crm`
 --
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `leed`
+-- Структура таблицы `leed`
 --
 
 CREATE TABLE IF NOT EXISTS `leed` (
@@ -39,7 +39,7 @@ CREATE TABLE IF NOT EXISTS `leed` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `leed_status`
+-- Структура таблицы `leed_status`
 --
 
 CREATE TABLE IF NOT EXISTS `leed_status` (
@@ -52,7 +52,7 @@ CREATE TABLE IF NOT EXISTS `leed_status` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `leed_type`
+-- Структура таблицы `leed_type`
 --
 
 CREATE TABLE IF NOT EXISTS `leed_type` (
@@ -65,7 +65,34 @@ CREATE TABLE IF NOT EXISTS `leed_type` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `project`
+-- Структура таблицы `permission`
+--
+
+CREATE TABLE IF NOT EXISTS `permission` (
+`id` int(11) unsigned NOT NULL,
+  `permission_type_id` int(111) unsigned NOT NULL,
+  `abbr` varchar(255) NOT NULL,
+  `note` text NOT NULL,
+  `value` tinyint(2) unsigned NOT NULL DEFAULT '0',
+  `forse` tinyint(1) unsigned NOT NULL DEFAULT '0'
+) ENGINE=InnoDB DEFAULT CHARSET=armscii8 AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
+-- Структура таблицы `permission_type`
+--
+
+CREATE TABLE IF NOT EXISTS `permission_type` (
+`id` int(11) unsigned NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `note` text NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
+-- Структура таблицы `project`
 --
 
 CREATE TABLE IF NOT EXISTS `project` (
@@ -76,7 +103,7 @@ CREATE TABLE IF NOT EXISTS `project` (
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=11 ;
 
 --
--- Dumping data for table `project`
+-- Дамп данных таблицы `project`
 --
 
 INSERT INTO `project` (`id`, `user_id`, `name`, `note`) VALUES
@@ -86,7 +113,7 @@ INSERT INTO `project` (`id`, `user_id`, `name`, `note`) VALUES
 -- --------------------------------------------------------
 
 --
--- Table structure for table `project__user`
+-- Структура таблицы `project__user`
 --
 
 CREATE TABLE IF NOT EXISTS `project__user` (
@@ -98,7 +125,7 @@ CREATE TABLE IF NOT EXISTS `project__user` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `user`
+-- Структура таблицы `user`
 --
 
 CREATE TABLE IF NOT EXISTS `user` (
@@ -112,21 +139,7 @@ CREATE TABLE IF NOT EXISTS `user` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `user_permission`
---
-
-CREATE TABLE IF NOT EXISTS `user_permission` (
-`id` int(11) unsigned NOT NULL,
-  `abbr` varchar(255) NOT NULL,
-  `note` text NOT NULL,
-  `value` tinyint(2) unsigned NOT NULL DEFAULT '0',
-  `forse` tinyint(1) unsigned NOT NULL DEFAULT '0'
-) ENGINE=InnoDB DEFAULT CHARSET=armscii8 AUTO_INCREMENT=1 ;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `user_role`
+-- Структура таблицы `user_role`
 --
 
 CREATE TABLE IF NOT EXISTS `user_role` (
@@ -138,12 +151,12 @@ CREATE TABLE IF NOT EXISTS `user_role` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `user_role__user_permission`
+-- Структура таблицы `user_role__permission`
 --
 
-CREATE TABLE IF NOT EXISTS `user_role__user_permission` (
+CREATE TABLE IF NOT EXISTS `user_role__permission` (
 `id` int(11) unsigned NOT NULL,
-  `user_permission_id` int(11) NOT NULL,
+  `permission_id` int(11) NOT NULL,
   `user_role_id` int(11) NOT NULL,
   `date_added` datetime NOT NULL,
   `date_expiration` datetime NOT NULL,
@@ -154,13 +167,13 @@ CREATE TABLE IF NOT EXISTS `user_role__user_permission` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `user__user_permission`
+-- Структура таблицы `user__permission`
 --
 
-CREATE TABLE IF NOT EXISTS `user__user_permission` (
+CREATE TABLE IF NOT EXISTS `user__permission` (
 `id` int(11) unsigned NOT NULL,
+  `permission_id` int(11) unsigned NOT NULL,
   `user_id` int(11) NOT NULL,
-  `user_permission_id` int(11) NOT NULL,
   `date_added` datetime NOT NULL,
   `date_expiration` datetime NOT NULL,
   `value` tinyint(2) unsigned NOT NULL DEFAULT '0',
@@ -190,6 +203,18 @@ ALTER TABLE `leed_type`
  ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `permission`
+--
+ALTER TABLE `permission`
+ ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `permission_type`
+--
+ALTER TABLE `permission_type`
+ ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `project`
 --
 ALTER TABLE `project`
@@ -208,27 +233,21 @@ ALTER TABLE `user`
  ADD PRIMARY KEY (`id`);
 
 --
--- Indexes for table `user_permission`
---
-ALTER TABLE `user_permission`
- ADD PRIMARY KEY (`id`);
-
---
 -- Indexes for table `user_role`
 --
 ALTER TABLE `user_role`
  ADD PRIMARY KEY (`id`);
 
 --
--- Indexes for table `user_role__user_permission`
+-- Indexes for table `user_role__permission`
 --
-ALTER TABLE `user_role__user_permission`
+ALTER TABLE `user_role__permission`
  ADD PRIMARY KEY (`id`);
 
 --
--- Indexes for table `user__user_permission`
+-- Indexes for table `user__permission`
 --
-ALTER TABLE `user__user_permission`
+ALTER TABLE `user__permission`
  ADD PRIMARY KEY (`id`);
 
 --
@@ -251,6 +270,16 @@ MODIFY `id` int(11) unsigned NOT NULL AUTO_INCREMENT;
 ALTER TABLE `leed_type`
 MODIFY `id` int(11) unsigned NOT NULL AUTO_INCREMENT;
 --
+-- AUTO_INCREMENT for table `permission`
+--
+ALTER TABLE `permission`
+MODIFY `id` int(11) unsigned NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `permission_type`
+--
+ALTER TABLE `permission_type`
+MODIFY `id` int(11) unsigned NOT NULL AUTO_INCREMENT;
+--
 -- AUTO_INCREMENT for table `project`
 --
 ALTER TABLE `project`
@@ -266,24 +295,19 @@ MODIFY `id` int(10) unsigned NOT NULL AUTO_INCREMENT;
 ALTER TABLE `user`
 MODIFY `id` int(10) unsigned NOT NULL AUTO_INCREMENT;
 --
--- AUTO_INCREMENT for table `user_permission`
---
-ALTER TABLE `user_permission`
-MODIFY `id` int(11) unsigned NOT NULL AUTO_INCREMENT;
---
 -- AUTO_INCREMENT for table `user_role`
 --
 ALTER TABLE `user_role`
 MODIFY `id` int(11) unsigned NOT NULL AUTO_INCREMENT;
 --
--- AUTO_INCREMENT for table `user_role__user_permission`
+-- AUTO_INCREMENT for table `user_role__permission`
 --
-ALTER TABLE `user_role__user_permission`
+ALTER TABLE `user_role__permission`
 MODIFY `id` int(11) unsigned NOT NULL AUTO_INCREMENT;
 --
--- AUTO_INCREMENT for table `user__user_permission`
+-- AUTO_INCREMENT for table `user__permission`
 --
-ALTER TABLE `user__user_permission`
+ALTER TABLE `user__permission`
 MODIFY `id` int(11) unsigned NOT NULL AUTO_INCREMENT;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
