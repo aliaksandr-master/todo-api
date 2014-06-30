@@ -10,13 +10,14 @@ module.exports = function(grunt){
 		var fileProcessor = require('../grunt-additional-task-utils/gruntTaskFileProcessor')(this);
 
 		var options = this.options({
+			verboseDir: '',
 			beautify: false
 		});
 
 		fileProcessor.configure({
 			readFile: function (fpath) {
 				var connection = grunt.file.readJSON(fpath);
-				var command = 'mysqldump -u {username} -h {hostname} --no-data --password="{password}" {database} --xml';
+				var command = 'mysqldump -u {username} -h {hostname} --password="{password}" {database} --no-data --xml';
 				return command.replace(/\{([^\}]+)\}/g, function (w, name) {
 					return connection[name];
 				});
@@ -53,6 +54,11 @@ module.exports = function(grunt){
 			if (!_.isArray(dumpJSON.mysqldump.database.table_structure)) {
 				dumpJSON.mysqldump.database.table_structure = [dumpJSON.mysqldump.database.table_structure];
 			}
+
+			if (options.verboseRaw) {
+				grunt.file.write(options.verboseRaw.replace(/\/?$/, '/') + require('path').basename(this.dest), JSON.stringify(dumpJSON, null, 4));
+			}
+
 			_.each(dumpJSON.mysqldump.database.table_structure, function(table, tableCounter){
 
 				sourceScheme.table[table.name] = {
@@ -61,11 +67,14 @@ module.exports = function(grunt){
 				};
 
 				_.each(table.field, function (field) {
+					var dataType,
+						attr = field.Type.split(/[^\d\w]+/),
+						type = attr.shift(),
+						length = /^\d+$/.test(attr[0]||'') ? attr.shift() : undefined;
+
 					sourceScheme.table[table.name].fields.push(field.Field);
-					var type = field.Type.replace(/^(\w+)(?:\((\d+)\))?/, '$1');
-					var length = field.Type.replace(/^(\w+)(?:\((\d+)\))?/, '$2');
-					var dataType;
-					switch(type){
+
+					switch (type) {
 						case 'int':
 						case 'tinyint':
 						case 'smallint':
@@ -88,13 +97,18 @@ module.exports = function(grunt){
 							break;
 					}
 					sourceScheme.table[table.name].field[field.Field] = {
+						'name': field.Field,
 						'category': dataType,
 						'type': type,
 						'length': length,
+						'attr': attr,
 						'default': field.Default,
-						'null': field.Null,
+						'null': field.Null !== 'NO',
+						'relation': /_id$/.test(field.Field) ? {table: field.Field.replace(/_id$/, ''), field: 'id'} : null,
 						'pk' : field.Key === 'PRI',
-						'ai' : field.Extra === 'auto_increment'
+						'ai' : field.Extra === 'auto_increment',
+						'comment': field.Comment || null/*,
+						'src': field*/
 					};
 				});
 				sourceScheme.tables.push(table.name);
