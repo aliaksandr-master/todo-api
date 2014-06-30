@@ -56,7 +56,7 @@ module.exports = function(grunt){
 			}
 
 			if (options.verboseRaw) {
-				grunt.file.write(options.verboseRaw.replace(/\/?$/, '/') + require('path').basename(this.dest), JSON.stringify(dumpJSON, null, 4));
+				grunt.file.write(options.verboseRaw.replace(/\/?$/, '/') + require('path').basename(this.dest), JSON.stringify(dumpJSON.mysqldump.database, null, 4));
 			}
 
 			_.each(dumpJSON.mysqldump.database.table_structure, function(table, tableCounter){
