@@ -2,9 +2,11 @@
 
 
 
-class UserModel extends DefaultDbModel {
+class UserModel extends DefaultDbModel implements IUserSession, IUser {
 
-	const USER = "user";
+	function getSessionCell () {
+		return '/todo/user';
+	}
 
 
 	public function cryptPassword ($value) {
@@ -14,27 +16,25 @@ class UserModel extends DefaultDbModel {
 
 	public function current ($dataName = null, $default = null) {
 		if (!is_null($dataName)) {
-			return isset($_SESSION[self::USER][$dataName]) ? $_SESSION[self::USER][$dataName] : $default;
+			return isset($_SESSION[$this->getSessionCell()][$dataName]) ? $_SESSION[$this->getSessionCell()][$dataName] : $default;
 		}
 
-		return isset($_SESSION[self::USER]) ? $_SESSION[self::USER] : array();
+		return isset($_SESSION[$this->getSessionCell()]) ? $_SESSION[$this->getSessionCell()] : array();
 	}
 
 
 	public function login ($user) {
-		if ($user) {
-			$_SESSION[self::USER] = $user;
-		}
+		$_SESSION[$this->getSessionCell()] = $user;
 	}
 
 
 	public function logout () {
-		unset($_SESSION[self::USER]);
-		$_SESSION[self::USER] = array();
+		unset($_SESSION[$this->getSessionCell()]);
+		$_SESSION[$this->getSessionCell()] = array();
 	}
 
 
 	public function isLogged () {
-		return !empty($_SESSION[self::USER]);
+		return !empty($_SESSION[$this->getSessionCell()]);
 	}
 }
