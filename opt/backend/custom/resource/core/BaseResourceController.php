@@ -8,7 +8,7 @@
 class BaseResourceController extends \Intercessor\EventBroker implements Intercessor\IResourceController {
 
 	/** @var UserModel */
-	public $user;
+	public $user = 'UserModel';
 
 	/** @var BaseCrudModel */
 	public $model;
@@ -49,13 +49,17 @@ class BaseResourceController extends \Intercessor\EventBroker implements Interce
 		$this->init(); // construct for child
 	}
 
-	public function init () {
-		$this->user = UserModel::instance();
-
-		if ($this->model && is_string($this->model)) {
-			$Model = $this->model;
-			$this->model = $Model::instance();
+	protected function _initModelField ($fieldName) {
+		if ($this->$fieldName && is_string($this->$fieldName)) {
+			$Model = $this->$fieldName;
+			/* @var $Model BaseCrudModel */
+			$this->$fieldName = $Model::instance();
 		}
+	}
+
+	public function init () {
+		$this->_initModelField('user');
+		$this->_initModelField('model');
 	}
 
 
