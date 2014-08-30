@@ -3,7 +3,9 @@ define(function(require){
 
 	/* REQUIREMENTS */
 	var BaseComponent = require('modules/tester/base/tester-component');
-	var jsonFormat = require('lib/json-format');
+	var jsonFormat = require('packages/js-object-format/dist/json-format');
+	require('css!opt/json-format/default-skin');
+	var _ = require('lodash');
 
 	/* APPLICATION */
 
@@ -13,8 +15,10 @@ define(function(require){
 
 		},
 
-		format: function (obj, options) {
-			return jsonFormat(obj, options);
+		format: function (obj, options, skin) {
+			return jsonFormat.format(obj, _.extend({
+				pref: 'fjson-' + (skin || 'compact') + '-'
+			},options));
 		},
 
 		events: {
