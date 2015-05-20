@@ -1,5 +1,5 @@
 {
-	"name": "listslider",
+	"name": "todo-api",
 	"version": "0.2.1",
 	"dependencies": {
 		"h_less": "https://github.com/aliaksandr-pasynkau/H_Less.git",
